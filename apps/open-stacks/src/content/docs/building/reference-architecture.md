@@ -1,23 +1,32 @@
 ---
 title: A Reference Architecture
-description: A buildable design for a personal "catalog of everything" — bulk-first source adapters, an immutable raw lake, an ID crosswalk and work clustering, a unified work record, a best-free-copy resolver, parsing, enrichment, static-first indexes and several UIs — with October 2026 data sizes, parser benchmarks, embedding and index options, and the failure modes that sink such builds.
+description: A buildable design for a personal "catalog of everything" built from bulk-first source adapters, an immutable raw lake, ID crosswalks and work clustering, a unified work record, a best-free-copy resolver, parsing, enrichment, static-first indexes and several UIs. Includes October 2026 data sizes, rate limits, parser benchmarks, embedding and index options, build tiers and the failure modes that sink such builds.
 ---
 
-*Status: draft, October 2026. Dataset sizes, API prices, benchmark scores and product statuses are as of October 2026 (most were measured by the research agents on 2026-10-15) and go stale fastest. The pipeline, the record schema, the resolver ranking and the static semantic index are our design proposals. None has been tested at the 10M-work scale. Inline tags: [I] marks our inference or arithmetic, [S] a secondary source, [P] background knowledge not re-verified in October 2026. Sources: the [R10 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R10-catalog-architecture-and-costs.md), the [R05 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R05-book-discovery-and-catalogs.md), and primary sources linked inline.*
+*Status: draft, October 2026. Dataset sizes, API prices, benchmark scores and product statuses are as of October 2026 (most were measured against primary endpoints on 2026-10-15) and go stale fastest. The most load-bearing figures (OpenAlex, Claude and Voyage prices and limits, Open Library terms, OmniDocBench, HTRC, Hathifile fields, dataset cards, the OCLC opinion) were re-checked on their primary pages on 2026-10-15. The pipeline, the record schema, the resolver ranking and the static semantic index are design proposals. None has been tested at the 10M-work scale. Inline tags: [I] marks inference or arithmetic, [S] a secondary source, [P] background knowledge not re-verified in October 2026. Sources: the [R10 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R10-catalog-architecture-and-costs.md), the [R05 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R05-book-discovery-and-catalogs.md), and primary sources linked inline.*
 
 ## The design in brief
 
-Open Stacks rests on one idea: keep the catalog separate from the content. This chapter turns that idea into a pipeline. The catalog layer holds identity, titles, tables of contents, summaries, topic placement and a pointer to every legal copy. It is small. For 10M works it comes to roughly 5–20 GB of Parquet plus about 320 MB of binary vectors [I, rough]. The content layer is terabyte-scale, scattered across hosts, and mostly not yours to copy. So the system:
+Open Stacks rests on one idea: keep the catalog separate from the content. This chapter turns that idea into a pipeline. The catalog layer holds identity, titles, tables of contents, summaries, topic placement and a pointer to every legal copy. It is small: for 10M works, roughly 5–20 GB of Parquet plus about 320 MB of binary vectors [I, rough]. The content layer is terabyte-scale, scattered across hosts, and mostly not yours to copy. So the system:
 
 1. downloads open metadata in bulk;
 2. resolves it into one record per work;
 3. decides, for each work and each reader, where it can actually be read and at which page;
 4. parses only the open subset.
 
-Two claims drive the design. Both are conclusions of R10, and we hold them with high confidence.
+Two judgments from R10 drive the design.
 
-- **The work record and the crosswalk are the product.** In 2026, search, embeddings and LLM summaries are commodities. What no existing tool does well across books, papers and lectures together is clean work clustering plus a "best legal free copy" resolver.
-- **Correctness is the bottleneck, not cost.** Summarizing 100,000 books from metadata and TOC costs about \$15 with Claude Haiku 5.5 batch, as of October 2026 (see [Costs and Effort](/building/costs-and-effort/)). Builds fail on harder questions: are these two records the same book, and is this scan legally readable where the reader lives?
+- **The work record and the crosswalk are the product** [I, ~75%]. Search, embeddings and LLM summaries are commodities in 2026. R10 found no existing tool that does clean work clustering plus a "best legal free copy" resolver across books, papers and lectures together. That is a negative finding from one research pass, not a survey.
+- **Correctness is the bottleneck, not cost** [I, ~85%]. Summarizing 100,000 books from metadata and TOC costs about \$15 on Claude Haiku 5.5 batch as of October 2026 (see [Costs and Effort](/building/costs-and-effort/)). Builds fail on harder questions: are these two records the same book, and is this scan legally readable where the reader lives?
+
+**Decisions at a glance** (each is argued below):
+
+- Start with born-digital open sources (Gutenberg, OpenStax, DOAB) and no OCR. A weekend gets about 10k works with summaries and a map.
+- Load snapshots and dumps. Spend metered API budget only on deltas and single lookups.
+- Put the first serious engineering effort into clustering and a 300–500-pair gold set, before enrichment.
+- Store every legal copy with its rights basis, and rank copies per reader at query time.
+- Stay on static hosting until you need chunk-level semantic search over millions of chunks, or multi-user writes.
+- Do not ingest shadow-library metadata or scraped WorldCat records.
 
 ## The pipeline
 
@@ -74,30 +83,26 @@ Each stage should be a pure function of the previous stage's files plus a versio
 
 - **Metering.** OpenAlex now charges per call (below).
 - **Explicit terms.** Open Library's API page says "Please do not use our APIs to bulk download metadata" ([OL API](https://openlibrary.org/developers/api), edited 2026-10-09).
-- **Bot walls.** On a single day, 2026-10-15, R05's scripted checks were blocked by:
-  - Cloudflare challenges on HathiTrust's full-text search (`babel`), The StoryGraph and Literal;
-  - a "Human Verification" page on Open Library `/explore`;
-  - a sign-in wall on LibraryThing;
-  - an F5 challenge on Stanford SearchWorks.
+- **Bot walls.** On 2026-10-15 alone, R05's scripted checks hit Cloudflare challenges on HathiTrust's full-text search (`babel`), The StoryGraph and Literal; a "Human Verification" page on Open Library `/explore`; a sign-in wall on LibraryThing; and an F5 challenge on Stanford SearchWorks.
 
 ### What to ingest
 
 | Source | Bulk route | Size or count (date) | Cadence | Metadata terms | What it contributes |
 |---|---|---|---|---|---|
 | [OpenAlex](https://help.openalex.org/access/snapshot/) | Snapshot at `s3://openalex`, no AWS account needed | ~745 GB JSONL gz or ~770 GB Parquet; ~626M records (Sept 2026 release) | Quarterly | CC0 | Papers, authors, topics, OA locations, a deletion log |
-| [Crossref](https://crossref.org/services/metadata-retrieval/public-data-file/) | Public data file | 208 GB; ~180M records (registrations through part of March 2026) | Annual | Mostly free to reuse [P] | DOIs, including per-chapter DOIs for books |
+| [Crossref](https://crossref.org/services/metadata-retrieval/public-data-file/) | Public data file | 208 GB; ~180M records (registrations through part of March 2026) | Annual | Not stated on the data-file page; generally treated as free to reuse, abstracts aside [P] | DOIs, including per-chapter DOIs for books |
 | [Semantic Scholar](https://api.semanticscholar.org/datasets/v1/release/latest) | Datasets API (free key) | 200M papers; 100M abstracts; 58M TLDRs; 120M SPECTER2 vectors (~840 GB); 2.4B citations (release 2026-10-06) | Roughly weekly | Per dataset: abstracts ODC-BY, SPECTER embeddings Apache-2.0 | Precomputed summaries and vectors for papers |
 | [arXiv](https://info.arxiv.org/help/bulk_data_s3.html) | OAI-PMH or Kaggle metadata; full text on requester-pays S3 (~9.2 TB, April 2025) | 3,213,484 submissions (2026-10-15) | Continuous | Default paper license bars redistribution; tools must link back | Preprints, LaTeX source |
 | [Open Library](https://openlibrary.org/developers/dumps) | Monthly dumps | 18.18 GB gz for all types (editions 12.62, works 4.07, authors 0.78), 2026-09-30 | Monthly | IA "does not assert any new copyright" ([licensing](https://openlibrary.org/developers/licensing)); not a formal CC0 | The book spine: works, editions, LCC/DDC, ISBN/OCLC/LCCN |
 | [Wikidata](https://dumps.wikimedia.org/wikidatawiki/entities/) | JSON dump | 156.5 GB gz (2026-10-13) | Weekly | CC0 | ID hub for canonical works and authors |
 | [HathiTrust Hathifiles](https://www.hathitrust.org/hathifiles) | Full file plus daily updates | 1.23 GB gz; 19,701,406 items under 9,745,536 bibliographic records (2026-10-01) | Monthly, plus daily | Freely downloadable | Rights code and access per scanned volume |
 | [HTRC Extracted Features 2.5](https://htrc.atlassian.net/wiki/spaces/COM/pages/975306753/Extracted+Features+v.2.5) | rsync, per volume | 18.7M volumes; 6.87B pages; 4.4 TB bz2 (April 2025 snapshot) | Incremental | CC BY 4.0 | Per-page token counts, including 9.97M in-copyright volumes |
-| [LoC id.loc.gov](https://id.loc.gov/download/) | Bulk RDF/JSON-LD; experimental embeddings | LCSH 141 MB; LCNAF 5 GB; embeddings in 22 files, ≈190 GB gz | Weekly increments | "public domain data set" ([about](https://id.loc.gov/about/)) | Subject graph, name authorities, 1024-d record vectors |
+| [LoC id.loc.gov](https://id.loc.gov/download/) | Bulk RDF/JSON-LD; experimental embeddings | LCSH 141 MB; LCNAF 5 GB; embeddings in 22 files, ≈190 GB gz | Weekly increments | "public domain data set" ([about](https://id.loc.gov/about/)); probably covers the embeddings too [~75%] | Subject graph, name authorities, 1024-d record vectors |
 | [LoC MDSConnect](https://www.loc.gov/cds/products/marcDist.php), [Harvard MARC](https://library.harvard.edu/services-tools/harvard-library-apis-datasets) | MARC downloads | ~25M records (frozen at 2016); 12.7M records (CC0) | Static | Free; CC0 | LCC, LCSH, MARC 505 contents notes |
-| [Project Gutenberg](https://www.gutenberg.org/ebooks/offline_catalogs.html) | `pg_catalog.csv`, RDF | 78,325 texts, 61,817 of them English (2026-10-15) | Daily or weekly | PD texts; trademark terms apply | Clean EPUB and HTML |
+| [Project Gutenberg](https://www.gutenberg.org/ebooks/offline_catalogs.html) | `pg_catalog.csv` (weekly), RDF (daily) | 78,325 texts, 61,817 of them English (2026-10-15) | Daily or weekly | Texts public domain in the US; Gutenberg trademark terms apply [P] | Clean EPUB and HTML |
 | DOAB, OAPEN | OAI-PMH | 128,285 and 59,193 records (2026-10-15); DOAB records may include chapters | Continuous | DOAB metadata CC0 [S] | Open-access monographs |
 | OpenStax | CMS API | 129 book pages; the live books are 70 CC BY-NC-SA, 4 CC BY and 10 with no license field (2026-10-15) | As published | Per book | Textbooks as HTML |
-| LibreTexts, Wikibooks | [Kiwix ZIMs](https://opds.library.kiwix.org/catalog/v2/entries?name=wikipedia_en_all) | e.g. LibreTexts Humanities 4.43 GB (2026-07) | Per release | Mixed CC | Textbooks, offline |
+| LibreTexts, Wikibooks | [Kiwix ZIMs](https://opds.library.kiwix.org/catalog/v2/entries?q=libretexts) | e.g. LibreTexts Humanities 4.43 GB (2026-07) | Per release | Mixed CC, per page [P] | Textbooks, offline |
 | Internet Archive | `advancedsearch` and scrape API | 52.7M `texts` items, 46.8M not access-restricted (2026-10-15) | — | Item-specific; PD flags unreliable | Scans, lending, search-inside |
 | YouTube | [Data API](https://developers.google.com/youtube/v3/getting-started) (own or listed channels) | 10,000 units/day, plus 100 `search.list` calls/day (page updated 2026-09-14) | — | API terms | Lecture metadata only. `captions.download` requires edit rights on the video |
 
@@ -105,7 +110,7 @@ All figures are from R10 and R05, which measured most of them against primary en
 
 ### OpenAlex is metered: worked numbers
 
-As of October 2026, a free OpenAlex key buys \$1/day of usage, and keyless use gets \$0.10/day ([pricing](https://help.openalex.org/access/pricing)). Per 1,000 calls ([example costs](https://help.openalex.org/access/example-costs/), checked 2026-10-15):
+As of October 2026, a free OpenAlex key buys \$1/day of usage, and keyless use gets \$0.10/day ([pricing](https://help.openalex.org/access/pricing), [example costs](https://help.openalex.org/access/example-costs/), both checked 2026-10-15). Per 1,000 calls:
 
 | Call | Price |
 |---|---|
@@ -116,16 +121,16 @@ As of October 2026, a free OpenAlex key buys \$1/day of usage, and keyless use g
 | Semantic search | \$1, and limited to 1 req/s |
 | Cached PDF download | \$10 |
 
-The page-size cap is 100 results per call ([authentication and limits](https://help.openalex.org/api-reference/authentication)), and cursor paging past page 1 needs a key. Harvesting the default API corpus of ~327M works through list calls therefore takes 3.27M calls. That is about \$327, or about 327 days of the free \$1/day allowance [I, arithmetic on the verified prices]. The quarterly snapshot holds the same data for free, and AWS Open Data pays the roughly \$70 transfer cost of each download.
+The [authentication page](https://help.openalex.org/api-reference/authentication) (updated 2026-10-14) caps `per_page` at 100, caps basic paging at 10,000 results, and requires a key for cursor paging past the first page. Harvesting the default API corpus of ~327M works through list calls therefore takes 3.27M calls: about \$327, or 327 days of the free allowance [I, arithmetic on the listed prices]. The quarterly snapshot holds the same data for free, and AWS Open Data pays the roughly \$70 transfer cost of each download ([snapshot](https://help.openalex.org/access/snapshot/), updated 2026-09-24).
 
 **What to do:**
 
 - Load each quarterly snapshot.
-- Apply `deleted_ids.csv.gz`, which has been in the bucket since 2026-09-23.
+- Apply `deleted_ids.csv.gz`, which has been in the public bucket since the 2026-09-23 release.
 - Use free single-entity lookups for resolver queries ("is this DOI open?").
-- Pull between-snapshot deltas with filtered list calls. At \$1/day those reach about 1M changed records per day [I].
+- Pull between-snapshot deltas with filtered list calls. OpenAlex's own example puts the \$1/day budget at about 10,000 list calls, or about 1M results a day.
 
-Decide explicitly whether to include XPAC works. The API default is ~327M works, ~476M with `corpus=all`. A daily snapshot comes only with the Member+ plan at \$10,000/yr. The ~250 TB archive of 50M+ cached OA PDFs is not personal-scale: 10,000 PDFs through the API cost \$100.
+Decide explicitly whether to include XPAC works. The API default is ~327M works, ~476M with `corpus=all`. The snapshot holds all of them, and an `is_xpac` field lets you reproduce the API's default view locally. A daily snapshot comes only with the Member+ plan at \$10,000/yr. The ~250 TB archive of 50M+ cached OA PDFs is not personal-scale: 10,000 PDFs through the API cost \$100.
 
 ### Other limits that shape adapters
 
@@ -134,8 +139,8 @@ Decide explicitly whether to include XPAC works. The API default is ~327M works,
 - **Semantic Scholar.** API keys start at 1 req/s.
 - **Google Books.** At most 40 results per call. Anonymous calls hit an exhausted shared quota (HTTP 429, 2026-10-15), so bring a key ([docs](https://developers.google.com/books/docs/v1/using)).
 - **Closed to tools:**
-  - **WorldCat.** APIs are for member institutions. In *OCLC v. Anna's Archive* (S.D. Ohio, [opinion](https://librarytechnology.org/docs/32142.pdf) filed 2026-01-15), a federal court granted OCLC a default judgment and a permanent injunction against scraping WorldCat.org, on browsewrap-contract and trespass-to-chattels claims.
-  - **Goodreads.** Issued no new API keys after 2020-12-08.
+  - **WorldCat.** APIs are for member institutions. In *OCLC v. Anna's Archive* (S.D. Ohio, No. 2:24-cv-144, [opinion](https://librarytechnology.org/docs/32142.pdf) filed 2026-01-15), the court granted OCLC default judgment on browsewrap-contract and trespass-to-chattels claims and a permanent injunction barring Anna's Archive from scraping, storing or distributing WorldCat data.
+  - **Goodreads.** Stopped issuing API keys on 2020-12-08; `/api` now redirects to the homepage.
   - **Anna's Archive.** Its metadata includes WorldCat records under a court deletion order. Do not ingest it. See [The Legal Map](/building/legal-map/).
 
 ### The adapter contract
@@ -152,21 +157,9 @@ class Adapter(Protocol):
         # optional; the only method allowed to spend metered API budget
 ```
 
-`EditionRecord` carries the following fields:
+`EditionRecord` carries `source`, `source_id`, `snapshot_date`, `ids{}`, `title`, `subtitle`, `creators[]`, `pub_year`, `publisher`, `language`, `n_pages`, `lcc[]`, `ddc[]`, `subjects{}`, `access_urls[]`, `rights{}`, `raw_ref` and `metadata_license`.
 
-- `source`, `source_id`, `snapshot_date`
-- `ids{}`, `title`, `subtitle`, `creators[]`
-- `pub_year`, `publisher`, `language`, `n_pages`
-- `lcc[]`, `ddc[]`, `subjects{}`
-- `access_urls[]`, `rights{}`
-- `raw_ref`, `metadata_license`
-
-Give each adapter four protections:
-
-- a contract test against a pinned fixture of about 100 raw records, so it fails loudly when the upstream schema changes;
-- an identifying `User-Agent`;
-- exponential backoff;
-- a response cache.
+Give each adapter a contract test against a pinned fixture of about 100 raw records (so it fails loudly when the upstream schema changes), an identifying `User-Agent`, exponential backoff and a response cache.
 
 ## 2. The raw lake and data sizes
 
@@ -192,10 +185,10 @@ Raw sizes are verified in R10. The lake totals are R10's sums as corrected in it
 
 ## 3. ID crosswalk and work clustering
 
-This stage is the hardest engineering problem in the system. R10 suggests budgeting about a third of build effort for it [I, high confidence]. Each source counts something different:
+R10 judges this the hardest engineering problem in the system [I, high confidence] and suggests budgeting about a third of build effort for it [I]. Each source counts something different:
 
 - **HathiTrust counts items (scanned volumes).** It lists 19.7M items under 9.75M bibliographic records, about two per record, and a record is still not a work.
-- **Open Library separates works from editions.** R05's full-file count of the 2026-09-30 dump found 56.8M editions and 41.7M works. The verification pass could not reproduce that count, so treat it as approximate. OL also contains duplicate works.
+- **Open Library separates works from editions.** R05's full-file count of the 2026-09-30 dump found 56.8M editions and 41.7M works. The verification pass could not reproduce that count, so treat it as unverified. OL also contains duplicate works.
 - **Crossref mints a DOI per chapter**, so chapter DOIs swamp book DOIs.
 - **OpenAlex hides part of its corpus by default.** It leaves XPAC records out of the default API corpus: 327M works versus 476M with `corpus=all`.
 - **Translations, multi-volume sets, reprints and anthologies** break every naive key.
@@ -208,32 +201,26 @@ This stage is the hardest engineering problem in the system. R10 suggests budget
 | OCLC number | A bibliographic record | 35.2% of OL editions; in Hathifiles | Strong for editions |
 | LCCN | A bibliographic record | 22.3% of OL editions; in Hathifiles and the LoC embeddings | Strong for editions |
 | OL work / edition ID | Work / edition | 96.6% of OL editions link to a work | Strong, but OL has duplicate works |
-| Wikidata QID (P629 "edition of") | Work or edition | ~335k items with ISBN-13; ~240k items with an OL work or edition ID | Strong, but covers only notable books |
+| Wikidata QID (P629 "edition of") | Work or edition | ~335k items with ISBN-13; ~240k items with an OL work or edition ID; ~241k items with P629 | Strong, but covers only notable books |
 | HathiTrust `htid` / `ht_bib_key` | Volume / record | Every Hathifile row | Many volumes per record; a record is not a work |
 | IA `ocaid` | One scan | 11.3% of OL editions | Strong for that scan |
 | DOI | A paper or a chapter | Crossref, OpenAlex | Strong for papers. Never merge a book with its chapter DOIs |
 | OpenAlex W-id, S2 corpusId, arXiv ID | A paper | OpenAlex, S2 | Strong. Start from their clustering for papers |
 | Gutenberg number, DOAB/OAPEN handle | One open text | Their catalogs | Strong for that copy |
 
-The OL coverage percentages are R05's dump counts. They are upper bounds (an empty array still counts as present) and were not independently reproduced. The Wikidata counts are as corrected in R05's verification pass: 257,125 of the 496,710 items with an OL ID are people. The Hathifiles carry `oclc_num`, `isbn`, `lccn` and `ht_bib_key` but no LCC field ([field list](https://www.hathitrust.org/files/hathifiles/hathi_field_list.txt)). Class numbers have to come from a join to OL, LoC or Harvard MARC.
+The OL coverage percentages are R05's dump counts. They are upper bounds (an empty array still counts as present) and were not independently reproduced. The Wikidata counts are as corrected in R05's verification pass: 257,125 of the 496,710 items with an OL ID are people. The Hathifiles' 26 fields include `oclc_num`, `isbn`, `lccn` and `ht_bib_key` but no LCC or call-number field ([field list](https://www.hathitrust.org/files/hathifiles/hathi_field_list.txt), checked 2026-10-15). Class numbers have to come from a join to OL, LoC or Harvard MARC.
 
 ### The clustering pipeline
 
 1. **Hard links.** Run union-find over shared edition-level IDs (ISBN, OCLC, LCCN), OL edition→work links and Wikidata P629. Cap component size and send oversized components to review. One bad ID shared by a series or a set can chain hundreds of unrelated records together [I].
 2. **Blocking.** Group candidates by normalized title (lowercased, articles and subtitle stripped, transliterated), first-author surname and language. Without blocking, pairwise scoring is quadratic.
-3. **Pairwise scoring.** Features:
-   - title similarity;
-   - author identity through Wikidata, VIAF, LCNAF or OL author IDs;
-   - a publication-year window;
-   - page-count ratio;
-   - LCC and subject overlap;
-   - cosine similarity of title-plus-TOC embeddings.
-4. **Three bands.** Auto-merge above a high threshold and keep apart below a low one. Send the middle band to an LLM with both records, asking for "same work / same edition / translation / volume of / contained in / different". At about 1,500 input and 100 output tokens per pair this costs ~\$0.0002 per pair on Claude Haiku 5.5 [I]. Tune both thresholds on the gold set.
+3. **Pairwise scoring.** Features: title similarity; author identity through Wikidata, VIAF, LCNAF or OL author IDs; a publication-year window; page-count ratio; LCC and subject overlap; cosine similarity of title-plus-TOC embeddings.
+4. **Three bands.** Auto-merge above a high threshold and keep apart below a low one. Send the middle band to an LLM with both records, asking for "same work / same edition / translation / volume of / contained in / different". At about 1,500 input and 100 output tokens per pair this costs ~\$0.0002 per pair on Claude Haiku 5.5 at standard prices, ~\$0.0001 in batch, before tokenizer inflation [I, arithmetic]. A million adjudicated pairs is therefore about \$100–270. Tune both thresholds on the gold set.
 5. **Typed relations.** Translations, volumes, reprints and anthology contents become cluster members with a `relation` flag. They are never silently merged.
 6. **Evaluation.** Keep 300–500 labeled pairs, stratified by score band and by source pair. Track precision and recall per release. Favor precision. An over-merge hides a distinct book: many different books are titled *Introduction to Probability*. An under-merge only shows a duplicate card [our judgment, ~75%].
 7. **Feedback.** An "edition collapser" UI shows one card per work, expandable to its members, with the reason for each link (shared ID, score, LLM verdict). Users split and merge, and each correction becomes a labeled pair.
 
-**Seed data.** [Institutional Books](https://huggingface.co/datasets/institutional/institutional-books-1.0) (983,004 public-domain volumes) ships likely-duplicate flags that can seed training pairs. Its terms are gated, noncommercial and bar redistribution.
+**Seed data.** [Institutional Books](https://huggingface.co/datasets/institutional/institutional-books-1.0) (983,004 public-domain volumes) has a `likely_duplicates_barcodes_gen` field listing other volumes whose OCR text is highly similar. These are mostly scan-level duplicates, so they seed "same edition" pairs better than "same work" pairs [I]. Its early-access terms are gated, noncommercial and bar redistribution; noncommercial derivatives are allowed (card checked 2026-10-15).
 
 **Papers.** For papers, adopt OpenAlex work IDs as the primary clusters and attach arXiv and S2 IDs by DOI and arXiv ID. Spend your clustering effort on books [I].
 
@@ -347,7 +334,7 @@ The resolver is a function of two arguments: the work and the reader's access pr
 
 The ranking is our proposal [I]. Rank 1 beats rank 3 because clean text reflows on e-ink and supports chunk-level search.
 
-**HathiTrust rights, from the 2026-10-01 Hathifile:**
+**HathiTrust rights, from a full count of the 2026-10-01 [Hathifile](https://www.hathitrust.org/hathifiles)** (reproduced exactly in both dossiers' verification passes):
 
 | Status | Items |
 |---|---|
@@ -363,22 +350,18 @@ Outside the US the `pdus` volumes are not open. A non-US reader therefore sees a
 
 **Rights traps to encode as rules,** each verified in R10 as of October 2026:
 
-- **Internet Archive PD flags.** IA asked for the 653,983-book US-PD-Books dataset to be removed because its metadata is "too unreliable for determining public domain status" ([dataset card](https://huggingface.co/datasets/storytracer/US-PD-Books)). Never infer public domain from IA flags alone.
+- **Internet Archive PD flags.** The [US-PD-Books card](https://huggingface.co/datasets/storytracer/US-PD-Books) says "The Internet Archive has requested that this dataset be deleted", because IA considers its metadata "too unreliable to determine whether a book is in the public domain". The 653,983 OCR texts were removed; the metadata remains. Never infer public domain from IA flags alone.
 - **NC-SA licenses.** OpenStax's live books are mostly CC BY-NC-SA; its CC BY editions are mostly retired. MIT OCW is CC BY-NC-SA 4.0. A noncommercial license is fine for a personal tool and a blocker for a paid one.
 - **arXiv.** The default license does not permit redistribution, and tools built on the full text must link back to arXiv.
-- **Gated datasets.** Institutional Books is noncommercial and bans redistribution. Semantic Scholar abstracts are ODC-BY.
+- **Dataset terms.** Institutional Books is gated, noncommercial and bans redistribution. Semantic Scholar abstracts are ODC-BY, which requires attribution.
 
-**Operations:**
-
-- Re-run the resolver every 1 January.
-- Subscribe to the daily Hathifile updates, and re-check a work when its rights code flips.
-- Store `checked_at` on every row.
+**Operations.** Re-run the resolver every 1 January, subscribe to the daily Hathifile updates and re-check a work when its rights code flips, and store `checked_at` on every row.
 
 **Routing to the right page.** Store a page-addressing scheme for each access row, for example a HathiTrust `seq` or an EPUB CFI. Also store the offset between printed page numbers and scan sequence. TOCs cite printed pages, and readers address scans by sequence number. Without the offset, "chapter 4, p. 112" lands on the wrong leaf [I].
 
 ## 6. Content acquisition and parsing
 
-Fetch and parse only items the resolver marks open or licensed. Route by document type. Most of the cost and error comes from parsing things that could have been downloaded clean.
+Fetch and parse only items the resolver marks open or licensed, and route by document type. Do not parse what you can download clean: born-digital EPUB and HTML need no OCR and carry their own TOC.
 
 | Input | Route | Notes |
 |---|---|---|
@@ -386,9 +369,9 @@ Fetch and parse only items the resolver marks open or licensed. Route by documen
 | arXiv | LaTeX source (requester-pays S3), or s2orc_v2 full text (16M papers), or OpenAlex GROBID TEI (~43M works, ~20 TB) | Check each dataset's license before storing text |
 | Scholarly PDFs | [GROBID](https://github.com/kermitt2/grobid): headers, references, TEI | Apache-2.0. No OCR; not built for books. One user reports ~10.6 PDFs/s on 16 CPUs |
 | Born-digital book PDFs | Marker, Docling or MinerU | Check the weights licenses (below) |
-| Scanned public-domain books | Start from the IA or HathiTrust OCR. Re-OCR only low-quality volumes with a ~1B document VLM | Institutional Books' OCR-quality scores can act as the router |
+| Scanned public-domain books | Start from the IA or HathiTrust OCR. Re-OCR only low-quality volumes with a ~1B document VLM | Institutional Books' OCR-quality scores (`ocr_score_src`, `ocr_score_gen`, 0–100) can act as the router |
 
-**Benchmarks.** On [OmniDocBench](https://github.com/opendatalab/OmniDocBench) v1.6 (end-to-end overall score; models added through 2026-09-11), small specialized vision-language models now beat frontier general models. The README says the benchmark moved to v1.7 on 2026-04-30, but the main table is still captioned "v1.6_full". The rows below are a selection.
+**Benchmarks.** On [OmniDocBench](https://github.com/opendatalab/OmniDocBench) v1.6 (end-to-end overall score; models added through 2026-09-11; re-checked 2026-10-15), small specialized vision-language models now beat frontier general models. The README says the benchmark moved to v1.7 on 2026-04-30, but the main table is still captioned "v1.6_full". The rows below are a selection; TeleOCR is the top score in the table.
 
 | Model | Type | Overall |
 |---|---|---|
@@ -414,20 +397,20 @@ Treat every vendor table as contested. Build a 50-page gold set per source type 
 
 | Tool | Best for | License | Hardware and throughput | Status (Oct 2026) | Catch |
 |---|---|---|---|---|---|
-| PaddleOCR-VL | Top-tier accuracy at 0.9B parameters | Apache-2.0 [P, medium] | Small GPU | Active | Not verified directly by R10 |
+| [PaddleOCR-VL](https://huggingface.co/PaddlePaddle/PaddleOCR-VL) | Top-tier accuracy at 0.9B parameters | Apache-2.0 (model card tag, checked 2026-10-15) | Small GPU | Active; the card points to a newer PaddleOCR-VL-1.6 | Throughput not benchmarked in R10 |
 | [MinerU](https://github.com/opendatalab/MinerU) 4.0 | Layout, tables, formulas; also EPUB, Office, HTML | "MinerU Open Source License": Apache 2.0 plus extra conditions | CPU tiers (2 GB RAM); GPU tier ≥8 GB VRAM; 0.54 pg/s in Marker's test | Active | Read the extra conditions; slowest in Marker's throughput table |
 | [olmOCR](https://github.com/allenai/olmocr) v0.4 | Scanned books and long PDFs at scale | Apache-2.0 code | GPU with ≥12 GB; claims under \$200 per million pages | v0.4.0 (2025-10); PyPI 0.4.27 (2026-03) | Linear text output, little structure [P]; cost claim is self-reported |
 | [Marker](https://github.com/datalab-to/marker) | Fast born-digital PDF to Markdown/JSON | Code Apache-2.0; weights modified OpenRAIL-M, free only under \$5M funding or revenue | One B200: 2.9 pg/s balanced, 7.4 fast; 23.7 pg/s on CPU without OCR | Active | The weights license matters for commercial tools |
 | [Docling](https://github.com/docling-project/docling) | Structured output from many formats; MCP server | MIT (models under their own licenses) | CPU works; 2.1 pg/s in Marker's test | v2.139.0 on PyPI | Contested benchmark standing |
 | GROBID | Scholarly headers, references, TEI | Apache-2.0 | CPU | Mature | No OCR |
 | Nougat | arXiv-style PDFs | MIT code; CC-BY-NC weights | GPU | Low activity | `[MISSING_PAGE]` false positives. Superseded |
-| [LlamaParse](https://www.llamaindex.ai/pricing) | Hosted parsing | Commercial | Hosted | Active | Basic parsing from about \$1.25 per 1,000 pages (1,000 credits = \$1.25; "as low as 1 credit/page"); agentic modes cost more; 10k free credits/month |
+| [LlamaParse](https://www.llamaindex.ai/pricing) | Hosted parsing | Commercial | Hosted | Active | Basic parsing from about \$1.25 per 1,000 pages (1,000 credits = \$1.25; "as low as 1 credit" per page; checked 2026-10-15); agentic modes cost more; 10k free credits/month |
 | Mistral OCR | Hosted OCR | Commercial | Hosted | OCR 4.1 current; three generations retired in 12 months | Per-page price not verified; churn risk |
 
 **Which to use:**
 
 - If your corpus is Gutenberg, OpenStax and DOAB, you need no OCR model at all.
-- If you are re-OCRing scans, run a ~1B specialist (PaddleOCR-VL or MinerU2.5) on one GPU. Specialists beat Gemini 3 Pro on OmniDocBench and avoid per-page API fees.
+- If you are re-OCRing scans, run a ~1B specialist (PaddleOCR-VL or MinerU2.5) on one GPU. Specialists beat Gemini 3 Pro on OmniDocBench and avoid per-page API fees. OmniDocBench is a mixed set of document pages, not a test on 19th-century library scans, so confirm on your own gold pages first [I].
 - If the tool may ever be commercial, rule out Nougat's weights, and read Marker's and MinerU's terms first.
 
 **TOC extraction, in priority order:**
@@ -447,21 +430,13 @@ TOCs are the weakest layer of open metadata. Only about 2.5% of OL editions carr
 
 ### LLM fields
 
-Generate these fields:
+Generate a blurb, chapter summaries, level and prerequisites, key questions and "why read this", and quality flags. Every field carries a grounding label. Prices are Anthropic's list prices ([pricing page](https://platform.claude.com/docs/en/about-claude/pricing), checked 2026-10-15). Full cost tables are in [Costs and Effort](/building/costs-and-effort/).
 
-- a blurb;
-- chapter summaries;
-- level and prerequisites;
-- key questions and "why read this";
-- quality flags.
-
-Every field carries a grounding label. Prices below are from the [pricing reference](https://platform.claude.com/docs/en/about-claude/pricing) as of October 2026. Full cost tables are in [Costs and Effort](/building/costs-and-effort/).
-
-- **Base prices.** Claude Haiku 5.5 is \$0.10/\$0.50 per MTok, and batch halves that. Prompts over 100K tokens cost 5× more.
+- **Base prices.** Claude Haiku 5.5 is \$0.10/\$0.50 per MTok, and batch halves that. A request whose prompt exceeds 100,000 tokens pays 5× (\$0.50/\$2.50).
   - 100k books from metadata plus TOC (~1,500 input and ~300 output tokens each): about \$15 on Haiku 5.5 batch, \$300 on Sonnet 5.5 batch.
-  - 10k books from full text, chunked under 100K tokens: about \$90 on Haiku 5.5 batch [I, R10].
-- **Map-reduce long books.** Summarize chunks of at most 100K tokens into chapter summaries, then the chapter summaries into a book summary. This keeps Haiku on the cheap tier. A scanned library volume averages ~246k tokens (Institutional Books: 242B tokens over 983k volumes). As a side effect you get chapter summaries, the most useful unit for "find the best chapter on X".
-- **Pack items and control thinking.** Pack 10–50 short items per request to amortize the instructions [I]. Disable thinking, or use low effort, for bulk jobs. Newer Claude tokenizers (Opus 4.7 and later, per Anthropic's model reference) produce about 1.0–1.35× as many tokens as older ones for the same text, so re-baseline with `count_tokens` instead of reusing counts from another tokenizer.
+  - 10k books from full text, chunked under 100K tokens: about \$90 on Haiku 5.5 batch [I, R10's arithmetic].
+- **Map-reduce long books.** Summarize chunks under 100K Claude tokens into chapter summaries, then the chapter summaries into a book summary. This keeps Haiku on the cheap tier. A scanned library volume averages ~246k tokens (Institutional Books: 242B `o200k_base` tokens over 983k volumes). As a side effect you get chapter summaries, the most useful unit for "find the best chapter on X".
+- **Pack items and control thinking.** Pack 10–50 short items per request to amortize the instructions [I]. Disable thinking, or use low effort, for bulk jobs. Claude models from 4.7 on, which includes all current ones, use a tokenizer that the pricing page says produces "approximately 30% more tokens" for the same text (the model reference gives 1.0–1.35×). Re-baseline with `count_tokens`; if your counts come from another tokenizer, cut chunks at about 70–75k to stay under the 100K tier [I].
 - **Reuse before generating.** Semantic Scholar ships 58M TLDRs and 120M SPECTER2 vectors. OpenAlex ships topics and GROBID TEI. Check each license.
 - **Put the expensive model where it pays.** Run a small model over the long tail and Sonnet 5.5 or Opus 5.5 over a curated 1k–10k core shelf. Before any batch over 10k items, check a stratified 200-item sample for faithfulness. [Generative Interfaces](/interfaces/generative-interfaces/) covers the faithfulness evidence.
 
@@ -470,7 +445,8 @@ Every field carries a grounding label. Prices below are from the [pricing refere
 | Model | Price (Oct 2026) | Dims | Context | License | Use when |
 |---|---|---|---|---|---|
 | OpenAI text-embedding-3-small | \$0.02/MTok | 1536, shortenable [P] | 8k [P] | API | A cheap hosted default |
-| Voyage voyage-4-lite / voyage-4 / voyage-4-large | \$0.02 / \$0.06 / \$0.12 per MTok; batch 33% off; 200M free tokens per model (not for batch) | — | — | API | The free tokens cover ~100k books of metadata plus TOC |
+| Voyage voyage-4-lite / voyage-4 / voyage-4-large | \$0.02 / \$0.06 / \$0.12 per MTok; batch 33% off; 200M free tokens per model (not for batch) | 1024 default | 32k | API | The free tokens cover ~100k books of metadata plus TOC. All voyage-4 models share one embedding space |
+| [voyage-4-nano](https://huggingface.co/voyageai/voyage-4-nano) | Free, open weights | 2048 / 1024 / 512 / 256 (MRL) | 32k | Apache-2.0 | ~340M parameters. Embeds queries locally into the same space as the hosted voyage-4 models |
 | Gemini Embedding 2 | \$0.20/MTok (\$0.10 batch) | — | — | API | Multimodal needs |
 | Qwen3-Embedding 0.6B / 4B / 8B | Free, self-hosted | up to 1024 / 2560 / 4096, MRL | 32k | Apache-2.0 | Offline or private; long chapters. The 8B ranked #1 on multilingual MTEB as of 2025-06-05, probably surpassed since |
 | EmbeddingGemma-300M | Free | 768, MRL to 512/256/128 | 2,048 | Gemma terms | In-browser query embedding; MTEB English v2 69.67 (768-d), 66.66 (128-d) |
@@ -478,24 +454,19 @@ Every field carries a grounding label. Prices below are from the [pricing refere
 | SPECTER2 | Free, precomputed for 120M papers | 768 [P] | Title plus abstract | Apache-2.0 | Papers: do not re-embed |
 | LoC experimental embeddings | Free, precomputed | 1024 (Amazon Titan Text Embeddings V2) | — | Probably PD, like other id.loc.gov data [~75%] | Semantic neighbours of ~19–20M LoC records [I, estimate]; which fields were embedded is unknown |
 
-Prices and model facts are from R10, which checked the vendor pricing pages and Hugging Face model cards ([OpenAI](https://developers.openai.com/api/docs/pricing), [Voyage](https://docs.voyageai.com/docs/pricing), [Gemini](https://ai.google.dev/gemini-api/docs/pricing), [Qwen3](https://huggingface.co/Qwen/Qwen3-Embedding-8B), [EmbeddingGemma](https://huggingface.co/google/embeddinggemma-300m), [nomic](https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe)).
+Prices and model facts are from R10, which checked the vendor pricing pages and Hugging Face model cards ([OpenAI](https://developers.openai.com/api/docs/pricing), [Voyage](https://docs.voyageai.com/docs/pricing), [Gemini](https://ai.google.dev/gemini-api/docs/pricing), [Qwen3](https://huggingface.co/Qwen/Qwen3-Embedding-8B), [EmbeddingGemma](https://huggingface.co/google/embeddinggemma-300m), [nomic](https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe)). The Voyage pricing, the voyage-4 shared space ([embeddings docs](https://docs.voyageai.com/docs/embeddings)) and the voyage-4-nano card were re-checked on 2026-10-15.
 
-**The constraint that decides the model: query and documents must share an embedding space.** If you want fully static semantic search, with the query embedded in the browser, then the documents must be embedded with that same browser-sized model. A hosted API model cannot embed queries without a server [I].
+**The constraint that decides the model: query and document vectors must live in the same embedding space.** For fully static semantic search the query is embedded in the browser, so the browser model must produce vectors comparable with the document vectors. Three setups satisfy that:
 
-That leaves two consistent setups:
+- **One small open model for both.** EmbeddingGemma-300M embeds documents offline and queries in the browser through a community ONNX build ([onnx-community/embeddinggemma-300m-ONNX](https://huggingface.co/onnx-community/embeddinggemma-300m-ONNX), tagged for transformers.js).
+- **A shared-space family.** Embed documents with voyage-4 or voyage-4-lite through the API, and queries in the browser with voyage-4-nano. A community ONNX export exists ([onnx-community/voyage-4-nano-ONNX](https://huggingface.co/onnx-community/voyage-4-nano-ONNX)), but Voyage does not document browser use, and whether a 4-bit export stays aligned with the hosted models is untested [I, ~60% that recall holds within a few points].
+- **A hosted model plus a query endpoint.** Any API model, with a small server or serverless function that embeds queries. This is no longer fully static.
 
-- **Fully static.** EmbeddingGemma-300M or a small open model for both documents and queries.
-- **Hosted model.** A hosted model plus a small query-embedding endpoint.
+The browser model is a large first download. As of 2026-10-15 the EmbeddingGemma ONNX weights are 175–197 MB at 4-bit and 309 MB at 8-bit; voyage-4-nano's are 211–243 MB at 4-bit. Cache the model, and measure what a smaller model costs in recall [I].
 
-A 300M-parameter model is roughly 300 MB at 8-bit, so the first query on a phone is slow. Cache the model, or pick a smaller one, and measure the cost to recall [I].
+Embed at three levels: the **work** (metadata, TOC and summary), the **chapter** (title plus summary, where "best chapter on Bayesian model comparison" queries live) and the **chunk** (open texts only).
 
-Embed at three levels:
-
-- **Work:** metadata, TOC and summary.
-- **Chapter:** title plus summary. This is where "best chapter on Bayesian model comparison" queries live.
-- **Chunk:** open texts only.
-
-Store vectors at 256–512 dimensions with int8 or binary quantization plus rescoring. That cuts storage 8–32× at a modest recall loss, which you should measure rather than assume.
+Store vectors at 256–512 dimensions with int8 or binary quantization plus rescoring. Against 1024-d fp32 (4 KB per vector), 512-d int8 is 8× smaller and 256-d binary 128× smaller. R10 expects a modest recall loss with rescoring; measure it rather than assume it.
 
 ### Topic placement and shelves
 
@@ -511,11 +482,11 @@ Store vectors at 256–512 dimensions with int8 or binary quantization plus resc
 
 [HTRC Extracted Features 2.5](https://htrc.atlassian.net/wiki/spaces/COM/pages/975306753/Extracted+Features+v.2.5) gives per-page part-of-speech token counts for 18.7M HathiTrust volumes, 9.97M of them in copyright, under CC BY 4.0 (April 2025 snapshot). Header, body and footer are counted separately. From these counts you can:
 
-- rank pages for a term with TF-IDF ("pp. 211–224 are where *proper scoring rule* concentrates");
+- rank pages for a set of terms with TF-IDF ("pp. 211–224 are where *calibration*, *scoring* and *forecast* co-occur");
 - detect TOC and index pages, whose lines end in digits;
 - recover rough chapter titles from running headers.
 
-The counts are unigram bags, so phrase search is impossible. Confirm hits with [OL search-inside](https://openlibrary.org/dev/docs/api/search_inside), which returns page numbers and snippets. A test for "base rate neglect" returned 472 volumes, 469 of them in the print-disabled collection. Then route the reader to a legitimate copy. [Searching Inside Books You Don't Have](/finding/searching-inside-books/) covers this tier in depth.
+The counts are unigram bags, so phrase search is impossible. Confirm hits with [OL search-inside](https://openlibrary.org/dev/docs/api/search_inside), which returns page numbers and snippets. On 2026-10-15 a query for "base rate neglect" returned 472 volumes, 469 of them in the print-disabled collection. Then route the reader to a legitimate copy. [Searching Inside Books You Don't Have](/finding/searching-inside-books/) covers this tier in depth.
 
 ## 8. Indexes and hosting
 
@@ -525,29 +496,29 @@ The counts are unigram bags, so phrase search is impossible. Confirm hits with [
 | [sql.js-httpvfs](https://github.com/phiresky/sql.js-httpvfs) | SQLite (e.g. FTS5) over HTTP range requests | Large read-only DBs | Needs good indexes; no cache eviction, so RAM grows; "mainly written for small personal projects" | Free plus CDN egress |
 | [DuckDB-Wasm](https://duckdb.org/docs/current/clients/wasm/overview.html) | Analytical SQL in the browser over Parquet | Wasm memory capped at 4 GB; browsers may impose less | Reads only the Parquet byte ranges a query needs | Free |
 | [transformers.js](https://huggingface.co/docs/transformers.js/index) | ONNX models in the browser | Bound by model size | `feature-extraction` pipeline; WASM (q8 default) or WebGPU (experimental) | Free |
-| Orama | In-memory JS search | Bound by browser memory [I] | Full-text, vector, hybrid, BM25, facets; Apache-2.0 | Free |
+| [Orama](https://github.com/oramasearch/orama) | In-memory JS search | Bound by browser memory [I] | Full-text, vector, hybrid, BM25, facets; Apache-2.0 | Free |
 | [sqlite-vec](https://github.com/asg017/sqlite-vec) | SQLite vector extension | "Fast enough" | float, int8 and binary vectors; runs in WASM; pre-v1, "expect breaking changes" | Free |
 | [LanceDB](https://github.com/lancedb/lancedb) | Embedded columnar store on object storage | Claims billions of vectors | Vector, full-text and SQL; Apache-2.0 | Free; cloud tier |
 | [pgvector](https://github.com/pgvector/pgvector) 0.8.7 | Postgres extension | Postgres limits | HNSW/IVFFlat; index limits of 2,000 dims (vector), 4,000 (halfvec), 64,000 (bit); iterative scans fix filtered-search recall | Free plus a VPS |
 | [turbopuffer](https://turbopuffer.com/pricing) | Serverless on object storage | Large | Minimums \$16, \$256 or ≥\$4,096 a month; per-GB rates not captured | Paid |
-| Qdrant Cloud | Managed or OSS | Large | Free tier: 0.5 vCPU, 1 GB RAM, 4 GB disk | Usage-based above that |
+| [Qdrant Cloud](https://qdrant.tech/pricing/) | Managed or OSS | Large | Free tier: 0.5 vCPU, 1 GB RAM, 4 GB disk | Usage-based above that |
 
 ### A fully static design for a large catalog
 
-This design is R10's proposal. It has not been tested at 10M works [~65% that it meets interactive latency on a mid-range phone without changes].
+This design is R10's proposal. It has not been tested at 10M works [~65% that, once the model is cached, it gives interactive latency on a mid-range phone without changes].
 
-1. **Lexical search.** Use Pagefind over per-work pages up to roughly 50k works. Above that, serve an SQLite FTS5 database through sql.js-httpvfs, sharded by first letter or LCC class to cap RAM growth.
+1. **Lexical search.** Use Pagefind over per-work pages up to roughly 50k works [I]. Above that, serve an SQLite FTS5 database through sql.js-httpvfs, sharded by first letter or LCC class to cap RAM growth.
 2. **Facets and analytics.** Store Parquet partitioned by topic cluster or decade, and query it with DuckDB-Wasm.
-3. **Semantic search with an IVF index.** Load ~4,096 centroid vectors once (about 4 MB at 256-d fp32, or 1 MB at int8). Find the nearest 2–8 clusters, range-fetch their binary vector shards, then rescore the top candidates with int8 vectors. At 10M works that is ~2,400 vectors per cluster: about 78 KB per binary shard and about 625 KB per int8 shard. A query touches roughly 1–3 MB [I, arithmetic]. R10 lists this as an unbuilt idea ("Pagefind for vectors"). We have not checked whether a package now exists.
+3. **Semantic search with an IVF index.** Load ~4,096 centroid vectors once (about 4 MB at 256-d fp32, or 1 MB at int8). Find the nearest 2–8 clusters, range-fetch their binary vector shards, then rescore the top candidates with int8 vectors. At 10M works that is ~2,400 vectors per cluster: about 78 KB per binary shard and about 625 KB per int8 shard. Probing four clusters fetches ~0.3 MB of binary vectors. Fetching the same clusters' int8 shards adds ~2.5 MB, or much less if you range-fetch only the top few hundred candidates. So a query moves roughly 0.5–3 MB after the one-time centroid and model downloads [I, arithmetic]. R10 lists this as an unbuilt idea ("Pagefind for vectors"). We have not checked whether a package now exists.
 4. **Writes.** Annotations and reading queues go to IndexedDB, to a tiny server, or to Zotero or Readwise.
 
 **Decision rules:**
 
 | If you have | Do | Main obstacle |
 |---|---|---|
-| Up to ~50k works, work-level search only | Pagefind plus one vector file (≤50 MB) searched in memory | Pagefind index size; the first-query model download |
-| 50k–10M works, read-only, work and chapter level | The static IVF design above, on object storage (R2 or S3) behind a CDN. At 10M works the shards and Parquet run to several GB, more than free static hosts such as GitHub Pages are meant to carry [P] | Building and validating the shard index yourself |
-| Chunk-level semantic search over millions of full-text chunks, or multi-user writes | A server: pgvector or LanceDB on a VPS, \$40–150 a month [I] | Ops burden; this is the point where hosting stops being free |
+| Up to ~50k works, work-level search only | Pagefind plus one vector file (≤50 MB at 256-d) searched in memory | Pagefind index size; the 175–310 MB first-query model download |
+| 50k–10M works, read-only, work and chapter level | The static IVF design above, on object storage (R2 or S3) behind a CDN. At 10M works the shards and Parquet run to several GB; GitHub Pages caps a published site at 1 GB ([limits](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits), checked 2026-10-15) | Building and validating the shard index yourself |
+| Chunk-level semantic search over millions of full-text chunks, or multi-user writes | A server: pgvector or LanceDB on a VPS, \$40–150 a month (R10's estimate, unverified) | Ops burden; this is the point where hosting stops being free |
 | Papers only | SPECTER2 vectors plus OpenAlex and S2 metadata; no embedding spend | License checks on the S2 datasets |
 
 ## 9. UIs
@@ -567,16 +538,16 @@ Every UI reads the same catalog and indexes. None needs its own data model.
 Notes on the less obvious rows:
 
 - **MCP.** The cheapest reading assistant is Claude querying your own clean index rather than browsing the web [I, R10]. `which_pages` combines HTRC EF counts with search-inside, so Claude can say where in an in-copyright book a topic sits without holding the text.
-- **Shelves.** McKay, Smith & Chang (JCDL 2014) found in OhioLINK circulation data that a loan of a shelf neighbour raised a book's loan probability "at least 9-fold" ([paper](https://figshare.com/articles/conference_contribution/Lend_me_some_sugar_Borrowing_rates_of_neighbouring_books_as_evidence_for_browsing/26289658)). Instrument neighbour uptake in your shelf UI and compare against that bar.
-- **WebXR.** Inside an immersive WebXR session the DOM is not rendered. Text must be drawn into WebGL, as SDF text or canvas textures, and WebXR Layers keep it sharp where supported (R08). WebXR runs in Quest Browser and Android XR Chrome, and in visionOS Safari for VR sessions [S].
+- **Shelves.** McKay, Smith & Chang (JCDL 2014) found in OhioLINK circulation data (2007–08 loans) that a loan of a shelf neighbour raised a book's loan probability "at least 9-fold" ([paper](https://figshare.com/articles/conference_contribution/Lend_me_some_sugar_Borrowing_rates_of_neighbouring_books_as_evidence_for_browsing/26289658)). Instrument neighbour uptake in your shelf UI and compare against that bar.
+- **WebXR.** Inside an immersive WebXR session the DOM is not rendered. Text must be drawn into WebGL, as SDF text or canvas textures, and WebXR Layers keep it sharp where supported (per the [R08 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R08-spatial-computing-reading-environments.md)). WebXR runs in Quest Browser and Android XR Chrome, and in visionOS Safari for VR sessions [S].
 
 ## Build order for Claude Code
 
-R10's effort tiers assume one strong developer driving Claude Code. Hours are focused work [I]. Costs and staffing are in [Costs and Effort](/building/costs-and-effort/).
+R10's effort tiers assume one strong developer driving Claude Code. Hours are focused work, and they are estimates, not measurements [I]. Money and hours are broken down in [Costs and Effort](/building/costs-and-effort/).
 
 | Tier | Scope | Hours | Result |
 |---|---|---|---|
-| Weekend | Gutenberg CSV, OpenStax API, DOAB OAI (or the OL works dump filtered to public ebooks); DuckDB ETL to one Parquet file; Haiku 5.5 batch blurbs for ≤10k works (~\$1–5); local or voyage-4-lite embeddings; Astro plus Pagefind; client-side vector search; a UMAP map | 12–20 | A searchable "free shelf" of ~10k works with summaries and a map |
+| Weekend | Gutenberg CSV, OpenStax API, DOAB OAI (or the OL works dump filtered to public ebooks); DuckDB ETL to one Parquet file; Haiku 5.5 batch blurbs for ≤10k works (~\$1–5); EmbeddingGemma for documents and queries (or voyage-4-lite documents with voyage-4-nano queries, untested in the browser); Astro plus Pagefind; client-side vector search; a UMAP map | 12–20 | A searchable "free shelf" of ~10k works with summaries and a map |
 | Month | 8–10 adapters (add OpenAlex, Wikidata, Hathifiles, OAPEN, arXiv, S2, IA); crosswalk and clustering v1 with a 300–500-pair gold set; rights resolver; full text for 1–10k open books; chapter summaries; hybrid search; OPDS; MCP server | 80–120 | A 100k-work catalog with best-free-copy links, chapter-level search and a topic map |
 | Quarter | 10M works; incremental updates (OpenAlex quarterly plus `deleted_ids`, OL monthly, Hathifile daily, S2 weekly); blocking, learned scorer and LLM adjudication; a jurisdiction-aware rights engine; the static IVF index; several UIs; quality dashboards; a cost ledger | 300–450 | A personal "catalog of everything" with monthly refresh and measured quality |
 
@@ -594,11 +565,11 @@ Add clustering, rights and enrichment as separate stages after that, each with i
 | **Messy metadata** | Reprint dates shown as first publication; author name variants; noisy OCR'd titles; LCSH, OpenAlex and arXiv subjects that don't align; wrong language tags; malformed `lcc_sort` | `first_pub_year` from Wikidata or MARC, otherwise the minimum edition date, with a `basis` field; authority control via Wikidata, VIAF and LCNAF; per-field provenance | Distribution checks: future years, printed books dated before 1450, title-language mismatches |
 | **Rate limits, terms, bot walls** | 429s and 403s; IP blocks; contract exposure | Bulk first; identify the client; backoff; caching. Never scrape WorldCat or HathiTrust `babel` | Per-adapter 429/403 counters |
 | **Wrong rights** | `pdus` scans shown as free outside the US; PD inferred from IA flags; NC-SA content in a paid tool | Rights as data, with basis, jurisdiction and `checked_at`; a rerun every 1 January | Audit 100 random "free" links each quarter |
-| **Contaminated provenance** | Shadow-library metadata or text in the lake | An allowlist of sources; provenance on every field. The *Bartz v. Anthropic* settlement ([final approval 2026-07-20](https://www.anthropiccopyrightsettlement.com/); \$1.5B fund, about \$3,000 per work before fees and costs) shows what book-corpus provenance can cost | A provenance audit before any public release |
-| **Cost blowups** | Unchunked prompts over 100K tokens on Haiku 5.5 (5×); thinking tokens; full reruns after a prompt tweak; Gemini 3.8 Flash doubling on 2027-01-01 | A cost ledger; 200-item pilot batches; versioned prompts that regenerate only deltas | Projected vs actual cost for every batch |
+| **Contaminated provenance** | Shadow-library metadata or text in the lake | An allowlist of sources; provenance on every field. The *Bartz v. Anthropic* settlement (final approval 2026-07-20 per the [settlement site](https://www.anthropiccopyrightsettlement.com/); its court-ordered class notice gives a \$1.5B fund, about \$3,000 per work before fees and costs) shows what book-corpus provenance can cost | A provenance audit before any public release |
+| **Cost blowups** | Unchunked prompts over 100K tokens on Haiku 5.5 (5×); tokenizer inflation (~30%); thinking tokens; full reruns after a prompt tweak; scheduled price rises (Gemini 3.8 Flash doubles on 2027-01-01) | A cost ledger; 200-item pilot batches; versioned prompts that regenerate only deltas | Projected vs actual cost for every batch |
 | **Unfaithful summaries** | A metadata-only blurb read as a summary of the book; invented chapter content | A visible grounding label; evidence pointers; "AI-generated" labels | A stratified 200-item faithfulness check |
 | **Parsing failures** | GROBID run on scans (it has no OCR); Nougat `[MISSING_PAGE]`; tables, math and footnotes breaking chunks; scrambled two-column scans; printed pages that don't match scan sequence | Route by document type; keep page anchors; store printed-page offsets | A 50-page gold set per source type |
-| **Embedding lock-in** | Query and document models differ; a better model needs a full re-embed | Record model, dims and quantization per vector set; keep the input texts; match the browser model if hosting is static | Recall@10 on a fixed query set at every model change |
+| **Embedding lock-in** | Query and document models differ; a better model needs a full re-embed | Record model, dims and quantization per vector set; keep the input texts; if hosting is static, use one model for both or a shared-space family | Recall@10 on a fixed query set at every model change |
 | **Static-hosting limits** | Tabs crashing at the 4 GB DuckDB-Wasm cap; httpvfs RAM growth; Pagefind past its design range | Shard by topic and decade; keep the hot set small | A load test on a mid-range phone |
 | **Unstable maps** | Every rebuild reshuffles the map | A fixed projection fitted on a reference sample; LCC as the stable fallback | Displacement of 100 anchor works between builds |
 | **Source drift** | OpenAlex moved its layout and retired n-grams; Mistral retired three OCR generations in 12 months; Harvard StackLife's domain no longer resolves; Goodreads' API is gone; BookLore entered maintenance mode | Pin snapshot dates; contract tests in CI; prefer institutionally backed bulk sources (LoC, HathiTrust, IA/OL, Harvard) | Contract tests on every scheduled run |
@@ -614,6 +585,7 @@ Add clustering, rights and enrichment as separate stages after that, each with i
 - Do Institutional Books' OCR-quality scores predict where re-OCR with a ~1B VLM changes downstream summaries or search results?
 - What does it cost per quarter to track OpenAlex between snapshots through filtered list calls, for a corpus filtered to one field such as statistics or AI?
 - Is there a browser-sized embedding model, under ~50 MB, whose recall on book and chapter queries is close enough to EmbeddingGemma-300M to make fully static semantic search practical on phones?
+- Do queries embedded in the browser by a 4-bit ONNX export of voyage-4-nano retrieve as well against voyage-4 document vectors as queries embedded by the hosted voyage-4 API? Measure recall@10 on a fixed set of book and chapter queries.
 
 ## Related pages
 

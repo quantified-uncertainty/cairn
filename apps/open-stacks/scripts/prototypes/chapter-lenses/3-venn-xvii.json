@@ -1,0 +1,255 @@
+{
+  "id": "venn-xvii",
+  "tab": { "order": 3, "short": "Venn", "num": "XVII" },
+  "book": 57359,
+  "chapter": { "start": 14936 },
+  "why": "Venn works Laplace's urn problems as counts: 10,000 drawings, how many reports of each kind, how many of them true. That is a natural-frequency tree, so the lens leads with worked examples whose counts are recomputed and drawn. Venn then argues that the method rarely applies to real stories, so his positions get claim cards, his test cases get counterexample cards, and his citations of Hume, Laplace and others link across the library.",
+  "lenses": [
+    {
+      "type": "WorkedExample",
+      "title": "§6. Ten thousand reports about a bag with one white ball",
+      "why": "Venn's method is literally a frequency tree; counting makes the collapse from 9/10 to 9/1008 visible.",
+      "src": ["Suppose that there is a bag with 1000 balls, only one of which is white, the rest being all black. A ball is drawn at random, and our witness whose veracity is 9/10 reports that the white ball was drawn."],
+      "params": [
+        { "id": "T", "label": "Drawings", "value": "10000", "min": 1000, "max": 1000000, "scale": "log" },
+        { "id": "N", "label": "Balls in the bag (one white)", "value": "1000", "min": 2, "max": 100000, "scale": "log" },
+        { "id": "x", "label": "Veracity of the witness", "value": "9/10", "min": 0.05, "max": 0.999, "step": 0.001 }
+      ],
+      "tree": {
+        "label": "drawings", "n": "T", "stated": "10000",
+        "src": ["say 10,000; that is, suppose that 10,000 balls having been successively drawn out of this bag"],
+        "children": [
+          { "label": "white is drawn", "n": "T/N", "stated": "10",
+            "src": ["In the 10,000 drawings the white ball would come out 10 times"],
+            "children": [
+              { "label": "he says white: right", "n": "T/N*x", "stated": "9", "mark": "hit",
+                "src": ["and therefore be rightly asserted 9 times"] },
+              { "label": "he says black: wrong", "n": "T/N*(1-x)", "stated": "1",
+                "src": ["whilst on the one of these occasions on which he goes wrong he has nothing to say but 'black.'"] }
+            ] },
+          { "label": "black is drawn", "n": "T*(N-1)/N", "stated": "9990",
+            "src": ["So with the 9990 occasions on which black is drawn"],
+            "children": [
+              { "label": "he says black: right", "n": "T*(N-1)/N*x", "stated": "8991",
+                "src": ["he is right and says black on 8991 of them"] },
+              { "label": "he says white: wrong", "n": "T*(N-1)/N*(1-x)", "stated": "999", "mark": "false",
+                "src": ["and is wrong and therefore says white on 999 of them."] }
+            ] }
+        ]
+      },
+      "answer": { "label": "Share of his 'white' reports that are true", "expr": "(T/N*x)/(T/N*x + T*(N-1)/N*(1-x))", "stated": "9/1008",
+        "src": ["his special veracity, as we may term it, for cases of this description, has been reduced from 9/10 to 9/1008."] }
+    },
+    {
+      "type": "WorkedExample",
+      "title": "§7. The same witness, numbered balls",
+      "why": "The contrast case: when there are many ways to be wrong, his errors scatter and his veracity survives intact.",
+      "src": ["Suppose that the balls were all numbered, from 1 to 1,000, and the witness knows this fact. A ball is drawn, and he tells me that it was numbered 25, what are the odds that he is right?"],
+      "params": [
+        { "id": "T", "label": "Drawings", "value": "10000", "min": 1000, "max": 1000000, "scale": "log" },
+        { "id": "N", "label": "Numbered balls", "value": "1000", "min": 2, "max": 100000, "scale": "log" },
+        { "id": "x", "label": "Veracity of the witness", "value": "9/10", "min": 0.05, "max": 0.999, "step": 0.001 }
+      ],
+      "tree": {
+        "label": "drawings", "n": "T",
+        "children": [
+          { "label": "25 is drawn", "n": "T/N", "stated": "10",
+            "src": ["in 10,000 drawings this ball would be obtained 10 times, and correctly named 9 times."],
+            "children": [
+              { "label": "he names 25: right", "n": "T/N*x", "stated": "9", "mark": "hit",
+                "src": ["in 10,000 drawings this ball would be obtained 10 times, and correctly named 9 times."] }
+            ] },
+          { "label": "another ball is drawn", "n": "T*(N-1)/N", "stated": "9990",
+            "src": ["But on the 9990 occasions on which it was not drawn there would be a difference"],
+            "children": [
+              { "label": "he errs, spread over 999 wrong numbers", "n": "T*(N-1)/N*(1-x)", "stated": "999",
+                "src": ["Hence his 999 errors, instead of all leading him now back again to one spot, will be uniformly spread over as many distinct ways of going wrong."],
+                "children": [
+                  { "label": "…and the wrong number is 25", "n": "T*(N-1)/N*(1-x)/(N-1)", "stated": "1", "mark": "false",
+                    "src": ["On one only of these occasions, therefore, will he mention 25 as having been drawn."] }
+                ] }
+            ] }
+        ]
+      },
+      "answer": { "label": "Share of his '25' reports that are true", "expr": "(T/N*x)/(T/N*x + T*(N-1)/N*(1-x)/(N-1))", "stated": "9/10",
+        "src": ["It follows therefore that out of every 10 times that he names 25 he is right 9 times"] }
+    },
+    {
+      "type": "WorkedExample",
+      "title": "§19. Two witnesses who both say 'white'",
+      "why": "Combination of testimony, counted the same way: agreement helps, but only by a factor of about eight here.",
+      "src": ["Let us suppose two witnesses, the veracity of each being 9/10."],
+      "params": [
+        { "id": "T", "label": "Drawings", "value": "100000", "min": 1000, "max": 10000000, "scale": "log" },
+        { "id": "N", "label": "Balls in the bag (one white)", "value": "1000", "min": 2, "max": 100000, "scale": "log" },
+        { "id": "x", "label": "Veracity of each witness", "value": "9/10", "min": 0.05, "max": 0.999, "step": 0.001 }
+      ],
+      "tree": {
+        "label": "drawings", "n": "T", "stated": "100000",
+        "src": ["out of 100,000 drawings (the number required in order to obtain a complete cycle of all possible occurrences, as well as of all possible reports about them)"],
+        "children": [
+          { "label": "white is drawn", "n": "T/N",
+            "children": [
+              { "label": "both say white: right", "n": "T/N*x^2", "stated": "81", "mark": "hit",
+                "src": ["the two witnesses agree in a correct report of the appearance of white in 81"] },
+              { "label": "they disagree", "n": "T/N*2*x*(1-x)" },
+              { "label": "both say black", "n": "T/N*(1-x)^2" }
+            ] },
+          { "label": "black is drawn", "n": "T*(N-1)/N",
+            "children": [
+              { "label": "both say black: right", "n": "T*(N-1)/N*x^2" },
+              { "label": "they disagree", "n": "T*(N-1)/N*2*x*(1-x)" },
+              { "label": "both say white: wrong", "n": "T*(N-1)/N*(1-x)^2", "stated": "999", "mark": "false",
+                "src": ["and agree in a wrong report of it in 999."] }
+            ] }
+        ]
+      },
+      "answer": { "label": "Share of their joint 'white' reports that are true", "expr": "(T/N*x^2)/(T/N*x^2 + T*(N-1)/N*(1-x)^2)", "stated": "81/1080",
+        "src": ["The Probability therefore of the story when so attested is 81/1080"] }
+    },
+    {
+      "type": "LiveCalculation",
+      "title": "Venn's footnotes, recomputed",
+      "why": "Footnote 3 gives the general formula; three other printed results can be checked against it.",
+      "src": ["The generalized algebraical form of this result is as follows."],
+      "params": [
+        { "id": "N", "label": "Balls in the bag", "value": "1000", "min": 2, "max": 100000, "scale": "log" },
+        { "id": "x", "label": "Veracity of the witness", "value": "9/10", "min": 0.05, "max": 0.999, "step": 0.001 }
+      ],
+      "steps": [
+        { "id": "one", "label": "Fn. 3: px / (px + (1−p)(1−x)), with p = 1/N", "expr": "(1/N*x)/(1/N*x + (1-1/N)*(1-x))", "stated": "9/1008",
+          "src": ["if he asserts that the event happened, the probability that it really did happen is px/(px + (1 - p)(1 - x))"] },
+        { "id": "half", "label": "§10: a witness of veracity one-half leaves the odds unchanged", "expr": "(1/N*(1/2))/(1/N*(1/2) + (1-1/N)*(1/2))", "stated": "1/1000",
+          "src": ["we find on calculation that his testimony goes for absolutely nothing; the chances that we have got the prize are just the same as they would be if he had never opened his lips, viz. 1/1000."] },
+        { "id": "two", "label": "§19: two concurring witnesses, black and white balls", "expr": "(1/N*x^2)/(1/N*x^2 + (1-1/N)*(1-x)^2)", "stated": "81/1080",
+          "src": ["The Probability therefore of the story when so attested is 81/1080"] },
+        { "id": "nine", "label": "§19: how much likelier than with one witness", "expr": "two/one", "stated": "9", "check": "approx", "tol": 0.1,
+          "src": ["makes the report nearly 9 times as likely as when it rested upon the authority of only one of them."],
+          "note": "Computed 8.4: 'nearly 9' rounds generously." },
+        { "id": "num", "label": "§20: two concurring witnesses, numbered balls", "expr": "(1/N*x^2)/(1/N*x^2 + (1-1/N)*(1-x)^2*(1/(N-1))^2)", "stated": "80919/80920",
+          "src": ["The odds in favour of the event in fact now become 80919/80920, which are enormously greater than when there was only one witness."] },
+        { "id": "dice", "label": "Fn. 7: digits in the denominator of Laplace's hundred dice", "expr": "digits(6^99)", "stated": "77",
+          "src": ["But the chance of this occurrence is represented by a fraction whose numerator is 1, and denominator contains 77 figures"],
+          "note": "100 fair dice showing one face: 1/6^99 (any face) or 1/6^100 (a named face). Both denominators have 78 digits. Venn may have read the base-10 logarithm, about 77, as the number of figures." }
+      ],
+      "plot": { "x": "x", "y": ["one", "two"], "caption": "P(white | one witness says white) and P(white | two agree), against veracity, for a bag of N balls." }
+    },
+    {
+      "type": "ClaimCard",
+      "title": "What Venn concludes",
+      "why": "The chapter's real work is criticism: when the urn model applies, and when it does not.",
+      "cards": [
+        { "claim": "The bags-and-balls method seldom yields numbers of practical value: we cannot say how often the event fails to happen.",
+          "src": ["It appears to me therefore that numerical results of any practical value can seldom, if ever, be looked for from this method of procedure."],
+          "examples": [
+            { "label": "A trusted friend says something is to my advantage", "src": ["Suppose that a person whom I have long known, and of whose measure of veracity and judgment I may be supposed therefore to have acquired some knowledge, informs me that there is something to my advantage"] }
+          ] },
+        { "claim": "A witness's 'figure of veracity' depends on the kind of answer asked of him: yes/no or open.",
+          "src": ["the figure of veracity, or fraction representing the general truthfulness of a witness, is in a way relative, not absolute"],
+          "examples": [
+            { "label": "Yes or no: anyone can be right half the time", "src": ["In a case of _yes_ or _no_, any one can be right every other time, but it is different where truth is single and error is manifold."] }
+          ] },
+        { "claim": "Rules for a 'contest of opposite improbabilities', such as Hume's deduction, have no general philosophical value.",
+          "src": ["It does not appear to me that the slightest philosophical value can be attached to any such rules as these."],
+          "examples": [
+            { "label": "Hume: deduct one probability from the other", "src": ["Hume, for instance, speaks of our _deducting_ one probability from the other, and apportioning our belief to the remainder."], "xref": { "lens": "hume-x", "label": "Hume §98" } },
+            { "label": "Thomson: one probability supersedes the other", "src": ["Thomson, in his _Laws of Thought_, speaks of one probability as entirely superseding the other."] }
+          ] },
+        { "claim": "'Extraordinary' has two senses: rare (a matter for probability) and evidence-resisting (a matter for the wider science of evidence).",
+          "src": ["there is considerable ambiguity and consequent confusion about the use of the term 'an extraordinary story.'"],
+          "examples": [
+            { "label": "The second sense", "src": ["it is rather one which possesses, so to say, an actual evidence-resisting power."] }
+          ] },
+        { "claim": "Miracles cannot be modelled as rare draws, because their opponents deny that they ever occur.",
+          "src": ["How can any arrangement of bags and balls, or other mechanical or numerical illustrations of unlikely events, be admitted as fairly illustrative of miraculous occurrences"],
+          "examples": [] },
+        { "claim": "Without collusion, agreement on detailed accounts adds enormously; but collusion can never be calculated.",
+          "src": ["Practically our main source of error and suspicion is in the possible existence of some kind of collusion."],
+          "examples": [] },
+        { "claim": "A defensible default: trust a witness's general veracity for ordinary and extraordinary stories alike.",
+          "src": ["it really seems to me that there is something to be said in favour of the simple plan of trusting in all cases alike to the witness' general veracity."],
+          "examples": [] },
+        { "claim": "Disputes about miracles stall because the two sides differ on ultimate principles: universal causation or a superintending Providence.",
+          "src": ["a difference which reaches to ultimate principles is fatal to all argument."],
+          "examples": [
+            { "label": "Shovelling in snow to dam a river", "src": ["is like trying to make a dam, in order to stop the flow of a river, by shovelling in snow."] }
+          ] }
+      ]
+    },
+    {
+      "type": "Counterexample",
+      "title": "Venn's test cases",
+      "why": "Each case presses on a general rule about extraordinary stories.",
+      "cases": [
+        { "rule": "Extraordinary stories are less trustworthy than ordinary ones.",
+          "ruleSrc": ["That extraordinary stories are in many cases, probably in a great majority of cases, less trustworthy than others must be fully admitted."],
+          "case": "A naturalist reporting a monstrosity is believed almost as readily as when he reports something common, because he is more careful with the unusual.",
+          "src": ["Most persons, we may presume, would receive the statement of the naturalist in this latter case almost as readily as in the former"],
+          "verdict": "bends" },
+        { "rule": "A witness trusted in ordinary matters can be trusted in each particular report.",
+          "ruleSrc": ["I have a gardener whom I trust as to all ordinary matters of fact."],
+          "case": "He says the dog has gone mad. Most reports of madness are really fits, so the report deserves doubt.",
+          "src": ["He tells me however that the dog has gone mad. Surely I should accept the statement with much hesitation"],
+          "verdict": "breaks" },
+        { "rule": "A witness of veracity one-half might seem to count for something.",
+          "ruleSrc": ["This is the case of a witness whose veracity is just one-half"],
+          "case": "On a yes-or-no question he is just a guesser, and his testimony leaves the odds exactly where they were.",
+          "src": ["for this is really nothing else than the case of a person confidently answering a question about a subject-matter of which he knows nothing"],
+          "verdict": "confirms" },
+        { "rule": "The credibility of a story can be settled from the credibility of its witness.",
+          "ruleSrc": ["in which it is attempted to decide the matter simply by considerations about the validity of testimony"],
+          "case": "A sailor finds stones laid out as a cross on a remote Pacific island. Whether the island has inhabitants decides the matter, not his veracity.",
+          "src": ["A sailor reports that in some remote coral island of the Pacific, on which he had landed by himself, he had found a number of stones on the beach disposed in the exact form of a cross."],
+          "verdict": "breaks" }
+      ]
+    },
+    {
+      "type": "CastList",
+      "title": "Who Venn is answering",
+      "why": "The chapter is a reply to earlier writers, two of whom are on this shelf.",
+      "people": [
+        { "name": "David Hume", "as": "Hume", "role": "opponent", "gloss": "His rule of deducting one probability from another is quoted and rejected.",
+          "src": ["Hume, for instance, speaks of our _deducting_ one probability from the other"],
+          "xref": { "lens": "hume-x", "label": "Hume, §98" },
+          "quoteCheck": { "quoted": "\"When therefore these two kinds of experience are contrary, we have nothing to do but subtract the one from the other, and embrace an opinion, either on one side or the other, with that assurance which arises from the remainder.\"",
+            "original": { "lens": "hume-x", "book": 9662, "q": "When, therefore, these two kinds of experience are contrary, we have nothing to do but substract the one from the other, and embrace an opinion, either on one side or the other, with that assurance which arises from the remainder." } } },
+        { "name": "Pierre-Simon Laplace", "as": "Laplace", "role": "source", "gloss": "His hundred-dice example is discussed in footnote 7.",
+          "src": ["Laplace, for instance (_Essai_, ed. 1825, p. 149), says that if we saw 100 dies (known of course to be fair ones) all give the same face"],
+          "xref": { "lens": "laplace-xi", "label": "Laplace, ch. XI" } },
+        { "name": "Joseph Butler", "as": "Butler", "role": "opponent", "gloss": "Claimed a great improbability before the proof may be small after it.",
+          "src": ["we devoted some examination to an assertion by Butler"] },
+        { "name": "John Stuart Mill", "as": "Mill", "role": "opponent", "gloss": "Seemed to countenance Butler's assertion.",
+          "src": ["which seemed to be to some extent countenanced by Mill"] },
+        { "name": "William Thomson", "as": "Thomson", "role": "opponent", "gloss": "Laws of Thought: one probability supersedes the other.",
+          "src": ["Thomson, in his _Laws of Thought_, speaks of one probability as entirely superseding the other."] },
+        { "name": "Isaac Todhunter", "as": "Todhunter", "role": "source", "gloss": "His History is cited for the objection in §9.",
+          "src": ["Todhunter's _History_, p. 400."] },
+        { "name": "C. J. Monro", "as": "Mr C. J. Monro", "role": "ally", "gloss": "Suggested that a witness of veracity one-half is simply a guesser.",
+          "src": ["as Mr C. J. Monro has very ingeniously suggested"] },
+        { "name": "William Paley", "as": "Paley", "role": "opponent", "gloss": "'Once believe in a God, and miracles are not incredible.'",
+          "src": ["It is often urged, after Paley, 'Once believe in a God, and miracles are not incredible.'"] }
+      ]
+    },
+    {
+      "type": "Glossary",
+      "title": "Venn's terms",
+      "why": "Venn coins two terms that map onto modern diagnostic-test vocabulary.",
+      "terms": [
+        { "term": "veracity", "period": "The proportion of a witness's statements that are true, in the long run.", "modern": "Accuracy of a reporter.",
+          "src": ["a witness who, on the whole and in the long run, is right in what he says nine times out of ten."] },
+        { "term": "special veracity", "period": "His veracity for statements of one particular kind.", "modern": "Positive predictive value: P(true | he says so).",
+          "src": ["That is, his special veracity, as we may term it, for cases of this description, has been reduced from 9/10 to 9/1008."] },
+        { "term": "figure of veracity", "period": "The fraction representing a witness's general truthfulness.", "modern": "A reliability score, which Venn notes depends on the question format.",
+          "src": ["the figure of veracity, or fraction representing the general truthfulness of a witness"] },
+        { "term": "à priori probability", "period": "Probability before the testimony.", "modern": "Prior probability, the base rate.",
+          "src": ["Let p be the _à priori_ probability of an event"] },
+        { "term": "lusus naturæ", "period": "A 'sport' or freak of nature.", "modern": "A natural anomaly or monstrosity.",
+          "src": ["Let them now each report some extraordinary _lusus naturæ_ or monstrosity which they profess to have seen."] },
+        { "term": "collusion", "period": "Secret agreement among witnesses.", "modern": "Correlated (non-independent) errors.",
+          "src": ["provided always that there is no chance of collusion."] },
+        { "term": "dies", "period": "Plural of 'die'.", "modern": "Dice.",
+          "src": ["says that if we saw 100 dies"] }
+      ]
+    }
+  ]
+}

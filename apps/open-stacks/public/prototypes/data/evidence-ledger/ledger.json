@@ -1,0 +1,1556 @@
+{
+ "provenance": "Precomputed by Claude, October 2026 (AI-generated; spot-check before relying on it)",
+ "source": {
+  "file": "papers.json",
+  "note": "arXiv API (metadata CC0), https://info.arxiv.org/help/api/",
+  "fetched": "2026-10-15"
+ },
+ "built": "2026-10-15",
+ "proposition": {
+  "text": "LLM-based forecasting systems match human superforecaster accuracy on real-world questions.",
+  "resolution": "Resolves YES if, as of October 2026, the best LLM-based forecasting systems show no reliably measurable accuracy gap (Brier or log score) to superforecasters or equivalent elite human forecasters on real-world questions that resolve after the systems’ training cutoffs.",
+  "asOf": "2026-10-15",
+  "priorDefault": 0.4
+ },
+ "groups": {
+  "market": "Scored against prediction-market prices",
+  "metaculus": "Metaculus question sets",
+  "forecastbench": "ForecastBench questions",
+  "turtel": "Same team (Turtel et al.)",
+  "schoenegger": "Same team (Schoenegger et al.)",
+  "leakage": "Leakage audits",
+  "correlation": "Correlated-error studies"
+ },
+ "screened": {
+  "total": 235,
+  "forecastingTheme": 200,
+  "admitted": 22,
+  "setAsideListed": 28
+ },
+ "papers": [
+  {
+   "id": "2312.06941",
+   "t": "Humans vs Large Language Models: Judgmental Forecasting in an Era of Advanced AI",
+   "a": [
+    "MAhdi Abolghasemi",
+    "Odkhishig Ganbold",
+    "Kristian Rotaru"
+   ],
+   "y": "2023-12-12",
+   "c": "cs.LG",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "This study investigates the forecasting accuracy of human experts versus Large Language Models (LLMs) in the retail sector, particularly during standard and promotional sales periods. Utilizing a controlled experimental setup with 123 human forecasters and five LLMs, including ChatGPT4, ChatGPT3.5, Bard, Bing, and Llama2, we evaluated forecasting precision through Mean Absolute Percentage Error. Our analysis centered on the effect of the following factors on forecasters performance: the supporting statistical model (baseline and advanced), whether the product was on promotion, and the nature of external impact. The findings indicate that LLMs do not consistently outperform humans in forecasting accuracy and that advanced statistical forecasting models do not uniformly enhance the performance of either human forecasters or LLMs. Both human and LLM forecasters exhibited increased forecasting errors, particularly during promotional periods and under the influence of positive external impacts. Our findings call for careful consideration when integrating LLMs into practical forecasting processes.",
+   "short": "Abolghasemi et al.",
+   "type": "Controlled experiment",
+   "system": "single",
+   "group": null,
+   "self": false,
+   "lr": 1,
+   "lo": 0.8,
+   "hi": 1.1,
+   "rationale": "2023 chatbots roughly tie individual retail-sales forecasters. Old, off-domain and measured against individuals rather than elites, so about as likely whether or not today’s best systems reach parity.",
+   "claims": [
+    {
+     "metric": "MAPE, retail sales",
+     "value": "No consistent LLM advantage",
+     "baseline": "123 individual human forecasters",
+     "dataset": "Retail sales, standard and promotional periods",
+     "year": 2023,
+     "standing": "at_individual",
+     "quotes": [
+      "Utilizing a controlled experimental setup with 123 human forecasters and five LLMs",
+      "The findings indicate that LLMs do not consistently outperform humans in forecasting accuracy"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2402.07862",
+   "t": "AI-Augmented Predictions: LLM Assistants Improve Human Forecasting Accuracy",
+   "a": [
+    "Philipp Schoenegger",
+    "Peter S. Park",
+    "Ezra Karger",
+    "Sean Trott",
+    "Philip E. Tetlock"
+   ],
+   "y": "2024-02-12",
+   "c": "cs.CY",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "Large language models (LLMs) match and sometimes exceeding human performance in many domains. This study explores the potential of LLMs to augment human judgement in a forecasting task. We evaluate the effect on human forecasters of two LLM assistants: one designed to provide high-quality (\"superforecasting\") advice, and the other designed to be overconfident and base-rate neglecting, thus providing noisy forecasting advice. We compare participants using these assistants to a control group that received a less advanced model that did not provide numerical predictions or engaged in explicit discussion of predictions. Participants (N = 991) answered a set of six forecasting questions and had the option to consult their assigned LLM assistant throughout. Our preregistered analyses show that interacting with each of our frontier LLM assistants significantly enhances prediction accuracy by between 24 percent and 28 percent compared to the control group. Exploratory analyses showed a pronounced outlier effect in one forecasting item, without which we find that the superforecasting assistant increased accuracy by 41 percent, compared with 29 percent for the noisy assistant. We further examine whether LLM forecasting augmentation disproportionately benefits less skilled forecasters, degrades the wisdom-of-the-crowd by reducing prediction diversity, or varies in effectiveness with question difficulty. Our data do not consistently support these hypotheses. Our results suggest that access to a frontier LLM assistant, even a noisy one, can be a helpful decision aid in cognitively demanding tasks compared to a less powerful model that does not provide specific forecasting advice. However, the effects of outliers suggest that further research into the robustness of this pattern is needed.",
+   "short": "Schoenegger et al. (assistants)",
+   "type": "Preregistered experiment",
+   "system": "human+AI",
+   "group": "schoenegger",
+   "self": false,
+   "lr": 1,
+   "lo": 0.9,
+   "hi": 1.25,
+   "rationale": "LLM advice makes people 24–28% more accurate on six questions. That shows real signal in the models, but it measures augmentation, not a model matching superforecasters on its own.",
+   "claims": [
+    {
+     "metric": "Human accuracy with an LLM assistant",
+     "value": "+24% to +28% vs control",
+     "baseline": "Humans given a weaker, non-forecasting model",
+     "dataset": "6 questions, N = 991",
+     "year": 2024,
+     "standing": "none",
+     "quotes": [
+      "Participants (N = 991) answered a set of six forecasting questions",
+      "significantly enhances prediction accuracy by between 24 percent and 28 percent compared to the control group"
+     ]
+    },
+    {
+     "metric": "Same, outlier item removed (exploratory)",
+     "value": "+41% vs +29%",
+     "baseline": "Control group",
+     "dataset": "6 questions, N = 991",
+     "year": 2024,
+     "standing": "none",
+     "quotes": [
+      "the superforecasting assistant increased accuracy by 41 percent, compared with 29 percent for the noisy assistant"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2402.19379",
+   "t": "Wisdom of the Silicon Crowd: LLM Ensemble Prediction Capabilities Rival Human Crowd Accuracy",
+   "a": [
+    "Philipp Schoenegger",
+    "Indre Tuminauskaite",
+    "Peter S. Park",
+    "Philip E. Tetlock"
+   ],
+   "y": "2024-02-29",
+   "c": "cs.CY",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "Human forecasting accuracy in practice relies on the 'wisdom of the crowd' effect, in which predictions about future events are significantly improved by aggregating across a crowd of individual forecasters. Past work on the forecasting ability of large language models (LLMs) suggests that frontier LLMs, as individual forecasters, underperform compared to the gold standard of a human crowd forecasting tournament aggregate. In Study 1, we expand this research by using an LLM ensemble approach consisting of a crowd of twelve LLMs. We compare the aggregated LLM predictions on 31 binary questions to that of a crowd of 925 human forecasters from a three-month forecasting tournament. Our preregistered main analysis shows that the LLM crowd outperforms a simple no-information benchmark and is not statistically different from the human crowd. In exploratory analyses, we find that these two approaches are equivalent with respect to medium-effect-size equivalence bounds. We also observe an acquiescence effect, with mean model predictions being significantly above 50%, despite an almost even split of positive and negative resolutions. Moreover, in Study 2, we test whether LLM predictions (of GPT-4 and Claude 2) can be improved by drawing on human cognitive output. We find that both models' forecasting accuracy benefits from exposure to the median human prediction as information, improving accuracy by between 17% and 28%: though this leads to less accurate predictions than simply averaging human and machine forecasts. Our results suggest that LLMs can achieve forecasting accuracy rivaling that of human crowd forecasting tournaments: via the simple, practically applicable method of forecast aggregation. This replicates the 'wisdom of the crowd' effect for LLMs, and opens up their use for a variety of applications throughout society.",
+   "short": "Wisdom of the Silicon Crowd",
+   "type": "Preregistered experiment",
+   "system": "ensemble",
+   "group": "schoenegger",
+   "self": false,
+   "lr": 1.1,
+   "lo": 1,
+   "hi": 1.5,
+   "rationale": "A twelve-model ensemble ties a 925-person tournament crowd. Matching the crowd is a precondition for parity, but 31 questions is a small test, the crowd is not elite, and these are early-2024 models.",
+   "claims": [
+    {
+     "metric": "Brier score, aggregate",
+     "value": "Not statistically different",
+     "baseline": "Crowd of 925 tournament forecasters",
+     "dataset": "31 binary tournament questions",
+     "year": 2024,
+     "standing": "at_crowd",
+     "quotes": [
+      "We compare the aggregated LLM predictions on 31 binary questions to that of a crowd of 925 human forecasters from a three-month forecasting tournament",
+      "the LLM crowd outperforms a simple no-information benchmark and is not statistically different from the human crowd"
+     ]
+    },
+    {
+     "metric": "Accuracy gain from seeing the human median",
+     "value": "+17% to +28%",
+     "baseline": "Same models without the human median",
+     "dataset": "GPT-4 and Claude 2",
+     "year": 2024,
+     "standing": "none",
+     "quotes": [
+      "improving accuracy by between 17% and 28%"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2505.17989",
+   "t": "Outcome-based Reinforcement Learning to Predict the Future",
+   "a": [
+    "Benjamin Turtel",
+    "Danny Franklin",
+    "Kris Skotheim",
+    "Luke Hewitt",
+    "Philipp Schoenegger"
+   ],
+   "y": "2025-05-23",
+   "c": "cs.LG",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "Reinforcement Learning with Verifiable Rewards (RLVR) has been an effective approach for improving Large Language Models' reasoning in domains such as coding and mathematics. Here, we apply RLVR methods towards forecasting future real-world events - a challenging task for RL due to the very noisy (and delayed) outcomes involved. Using a novel dataset of recent questions from a prediction market, and accompanying relevant news headlines, we show that a compact (14B) reasoning model can be trained to match or surpass the predictive accuracy of frontier models like o1, while greatly improving probabilistic calibration. The model's performance is also practically meaningful: in a Polymarket trading simulation, we estimate that its bets would have yielded a return on investment of over 10% across all questions in the test set. We detail and compare approaches used in training our model, including augmenting our training-data with synthetic prediction questions, guardrails for learning stability, and median prediction sampling at inference-time.",
+   "short": "Outcome-based RL",
+   "type": "System report",
+   "system": "trained",
+   "group": "turtel",
+   "self": true,
+   "lr": 1.25,
+   "lo": 1,
+   "hi": 1.5,
+   "rationale": "Simulated bets against Polymarket prices returned over 10%, a hint of an edge over a strong human aggregate. But it is the builders’ own simulation, and betting profit need not mean better accuracy.",
+   "claims": [
+    {
+     "metric": "Simulated trading ROI vs market price",
+     "value": "Over 10% ROI",
+     "baseline": "Polymarket prices",
+     "dataset": "Prediction-market test set",
+     "year": 2025,
+     "standing": "above_crowd",
+     "quotes": [
+      "in a Polymarket trading simulation, we estimate that its bets would have yielded a return on investment of over 10% across all questions in the test set"
+     ]
+    },
+    {
+     "metric": "Accuracy vs a frontier model",
+     "value": "14B model matches or beats o1",
+     "baseline": "o1 (no human baseline)",
+     "dataset": "Prediction-market questions with news",
+     "year": 2025,
+     "standing": "none",
+     "quotes": [
+      "a compact (14B) reasoning model can be trained to match or surpass the predictive accuracy of frontier models like o1"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2507.04562",
+   "t": "Evaluating LLMs on Real-World Forecasting Against Expert Forecasters",
+   "a": [
+    "Janna Lu"
+   ],
+   "y": "2025-07-06",
+   "c": "cs.LG",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "Large language models (LLMs) have demonstrated remarkable capabilities across diverse tasks, but their ability to forecast future events remains understudied. A year ago, large language models struggle to come close to the accuracy of a human crowd. I evaluate state-of-the-art LLMs on 464 forecasting questions from Metaculus, comparing their performance against top forecasters. Frontier models achieve Brier scores that ostensibly surpass the human crowd but still significantly underperform a group of experts.",
+   "short": "Lu (Metaculus vs experts)",
+   "type": "Benchmark result",
+   "system": "single",
+   "group": "metaculus",
+   "self": false,
+   "lr": 0.67,
+   "lo": 0.4,
+   "hi": 0.9,
+   "rationale": "The cleanest elite comparison in the set: on 464 Metaculus questions, frontier models significantly trail expert forecasters. These are mid-2025 models without heavy scaffolding, so it bears on today only partly.",
+   "claims": [
+    {
+     "metric": "Brier score",
+     "value": "Above crowd (“ostensibly”), significantly below experts",
+     "baseline": "Metaculus crowd; group of expert forecasters",
+     "dataset": "464 Metaculus questions",
+     "year": 2025,
+     "standing": "between",
+     "quotes": [
+      "I evaluate state-of-the-art LLMs on 464 forecasting questions from Metaculus, comparing their performance against top forecasters",
+      "Frontier models achieve Brier scores that ostensibly surpass the human crowd but still significantly underperform a group of experts"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2510.03349",
+   "t": "AgentCaster: Reasoning-Guided Tornado Forecasting",
+   "a": [
+    "Michael Chen"
+   ],
+   "y": "2025-10-02",
+   "c": "cs.LG",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "There is a growing need to evaluate Large Language Models (LLMs) on complex, high-impact, real-world tasks to assess their true readiness as reasoning agents. To address this gap, we introduce AgentCaster, a contamination-free framework employing multimodal LLMs end-to-end for the challenging, long-horizon task of tornado forecasting. Within AgentCaster, models interpret heterogeneous spatiotemporal data from a high-resolution convection-allowing forecast archive. We assess model performance over a 40-day period featuring diverse historical data, spanning several major tornado outbreaks and including over 500 tornado reports. Each day, models query interactively from a pool of 3,625 forecast maps and 40,125 forecast soundings for a forecast horizon of 12-36 hours. Probabilistic tornado-risk polygon predictions are verified against ground truths derived from geometric comparisons across disjoint risk bands in projected coordinate space. To quantify accuracy, we propose domain-specific TornadoBench and TornadoHallucination metrics, with TornadoBench highly challenging for both LLMs and domain expert human forecasters. Notably, human experts significantly outperform state-of-the-art models, which demonstrate a strong tendency to hallucinate and overpredict risk intensity, struggle with precise geographic placement, and exhibit poor spatiotemporal reasoning in complex, dynamically evolving systems. AgentCaster aims to advance research on improving LLM agents for challenging reasoning tasks in critical domains.",
+   "short": "AgentCaster (tornadoes)",
+   "type": "Benchmark result",
+   "system": "agentic",
+   "group": null,
+   "self": false,
+   "lr": 0.8,
+   "lo": 0.67,
+   "hi": 1,
+   "rationale": "Expert meteorologists clearly beat LLM agents at tornado outlooks. A real-world forecast, but drawing risk polygons from forecast maps is far from typical forecasting questions.",
+   "claims": [
+    {
+     "metric": "TornadoBench",
+     "value": "Experts significantly better",
+     "baseline": "Domain-expert human forecasters",
+     "dataset": "40 days, 500+ tornado reports",
+     "year": 2025,
+     "standing": "below_elite",
+     "quotes": [
+      "including over 500 tornado reports",
+      "Notably, human experts significantly outperform state-of-the-art models"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2511.02458",
+   "t": "Prompting for Policy: Forecasting Macroeconomic Scenarios with Synthetic LLM Personas",
+   "a": [
+    "Giulia Iadisernia",
+    "Carolina Camassa"
+   ],
+   "y": "2025-11-04",
+   "c": "cs.CL",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "We evaluate whether persona-based prompting improves Large Language Model (LLM) performance on macroeconomic forecasting tasks. Using 2,368 economics-related personas from the PersonaHub corpus, we prompt GPT-4o to replicate the ECB Survey of Professional Forecasters across 50 quarterly rounds (2013-2025). We compare the persona-prompted forecasts against the human experts panel, across four target variables (HICP, core HICP, GDP growth, unemployment) and four forecast horizons. We also compare the results against 100 baseline forecasts without persona descriptions to isolate its effect. We report two main findings. Firstly, GPT-4o and human forecasters achieve remarkably similar accuracy levels, with differences that are statistically significant yet practically modest. Our out-of-sample evaluation on 2024-2025 data demonstrates that GPT-4o can maintain competitive forecasting performance on unseen events, though with notable differences compared to the in-sample period. Secondly, our ablation experiment reveals no measurable forecasting advantage from persona descriptions, suggesting these prompt components can be omitted to reduce computational costs without sacrificing accuracy. Our results provide evidence that GPT-4o can achieve competitive forecasting accuracy even on out-of-sample macroeconomic events, if provided with relevant context data, while revealing that diverse prompts produce remarkably homogeneous forecasts compared to human panels.",
+   "short": "SPF personas (ECB)",
+   "type": "Experiment",
+   "system": "single",
+   "group": null,
+   "self": false,
+   "lr": 1.1,
+   "lo": 0.9,
+   "hi": 1.25,
+   "rationale": "GPT-4o roughly matches professional macro forecasters, but most of the 50 rounds fall inside its training data, and the panel is economists, not superforecasters.",
+   "claims": [
+    {
+     "metric": "Point-forecast accuracy (inflation, GDP, unemployment)",
+     "value": "Similar; gaps significant but modest",
+     "baseline": "ECB Survey of Professional Forecasters",
+     "dataset": "50 quarterly rounds, 2013–2025",
+     "year": 2025,
+     "standing": "at_crowd",
+     "quotes": [
+      "we prompt GPT-4o to replicate the ECB Survey of Professional Forecasters across 50 quarterly rounds (2013-2025)",
+      "GPT-4o and human forecasters achieve remarkably similar accuracy levels, with differences that are statistically significant yet practically modest"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2511.07678",
+   "t": "AIA Forecaster: Technical Report",
+   "a": [
+    "Rohan Alur",
+    "Bradly C. Stadie",
+    "Daniel Kang",
+    "Ryan Chen",
+    "Matt McManus",
+    "Michael Rickert"
+   ],
+   "y": "2025-11-10",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "This technical report describes the AIA Forecaster, a Large Language Model (LLM)-based system for judgmental forecasting using unstructured data. The AIA Forecaster approach combines three core elements: agentic search over high-quality news sources, a supervisor agent that reconciles disparate forecasts for the same event, and a set of statistical calibration techniques to counter behavioral biases in large language models. On the ForecastBench benchmark (Karger et al., 2024), the AIA Forecaster achieves performance equal to human superforecasters, surpassing prior LLM baselines. In addition to reporting on ForecastBench, we also introduce a more challenging forecasting benchmark sourced from liquid prediction markets. While the AIA Forecaster underperforms market consensus on this benchmark, an ensemble combining AIA Forecaster with market consensus outperforms consensus alone, demonstrating that our forecaster provides additive information. Our work establishes a new state of the art in AI forecasting and provides practical, transferable recommendations for future research. To the best of our knowledge, this is the first work that verifiably achieves expert-level forecasting at scale.",
+   "short": "AIA Forecaster",
+   "type": "System report",
+   "system": "agentic",
+   "group": "forecastbench",
+   "self": true,
+   "lr": 2.5,
+   "lo": 1.5,
+   "hi": 4,
+   "rationale": "The only direct parity claim: equal to superforecasters on ForecastBench, a benchmark built to resist leakage. Discounted because it is self-reported, gives no figure in the abstract, and the same system trails liquid markets.",
+   "claims": [
+    {
+     "metric": "ForecastBench score",
+     "value": "Equal to superforecasters (no figure given)",
+     "baseline": "Human superforecasters",
+     "dataset": "ForecastBench",
+     "year": 2025,
+     "standing": "at_elite",
+     "quotes": [
+      "On the ForecastBench benchmark (Karger et al., 2024), the AIA Forecaster achieves performance equal to human superforecasters, surpassing prior LLM baselines"
+     ]
+    },
+    {
+     "metric": "Accuracy on a market-sourced benchmark",
+     "value": "Below market consensus",
+     "baseline": "Liquid prediction-market consensus",
+     "dataset": "New benchmark from liquid markets",
+     "year": 2025,
+     "standing": "below_crowd",
+     "quotes": [
+      "While the AIA Forecaster underperforms market consensus on this benchmark, an ensemble combining AIA Forecaster with market consensus outperforms consensus alone"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2512.22625",
+   "t": "The Wisdom of Deliberating AI Crowds: Does Deliberation Improve LLM-Based Forecasting?",
+   "a": [
+    "Paul Schneider",
+    "Amalie Schramm"
+   ],
+   "y": "2025-12-27",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "Structured deliberation has been found to improve the performance of human forecasters. This study investigates whether a similar intervention, i.e. allowing LLMs to review each other's forecasts before updating, can improve accuracy in large language models (GPT-5, Claude Sonnet 4.5, Gemini Pro 2.5). Using 202 resolved binary questions from the Metaculus Q2 2025 AI Forecasting Tournament, accuracy was assessed across four scenarios: (1) diverse models with distributed information, (2) diverse models with shared information, (3) homogeneous models with distributed information, and (4) homogeneous models with shared information. Results show that the intervention significantly improves accuracy in scenario (2), reducing Log Loss by 0.020 or about 4 percent in relative terms (p = 0.017). However, when homogeneous groups (three instances of the same model) engaged in the same process, no benefit was observed. Unexpectedly, providing LLMs with additional contextual information did not improve forecast accuracy, limiting our ability to study information pooling as a mechanism. Our findings suggest that deliberation may be a viable strategy for improving LLM forecasting.",
+   "short": "Deliberating AI crowds",
+   "type": "Experiment",
+   "system": "ensemble",
+   "group": "metaculus",
+   "self": false,
+   "lr": 1,
+   "lo": 0.9,
+   "hi": 1.1,
+   "rationale": "Cross-model deliberation cuts log loss by about 4%. Useful headroom, but there is no human comparison, so it barely bears on parity.",
+   "claims": [
+    {
+     "metric": "Log loss",
+     "value": "−0.020 (about 4%)",
+     "baseline": "Same models without deliberation",
+     "dataset": "202 Metaculus AI-tournament questions, Q2 2025",
+     "year": 2025,
+     "standing": "none",
+     "quotes": [
+      "Using 202 resolved binary questions from the Metaculus Q2 2025 AI Forecasting Tournament",
+      "reducing Log Loss by 0.020 or about 4 percent in relative terms (p = 0.017)"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2601.06336",
+   "t": "Future-as-Label: Scalable Supervision from Real-World Outcomes",
+   "a": [
+    "Benjamin Turtel",
+    "Paul Wilczewski",
+    "Danny Franklin",
+    "Kris Skothiem"
+   ],
+   "y": "2026-01-09",
+   "c": "cs.LG",
+   "th": [
+    "scoring-rules"
+   ],
+   "ab": "Time creates free supervision: forecasts about real-world events resolve to verifiable outcomes. The passage of time provides labels that require no annotation. To exploit this structure, we extend reinforcement learning with verifiable rewards to real-world prediction over time. We train language models to make probabilistic forecasts from causally masked information, using proper scoring rules as the reward function once events resolve. Learning is driven entirely by realized outcomes, enabling scalable outcome-based supervision in open-world prediction. On real-world forecasting benchmarks, Qwen3-32B trained using Foresight Learning improves Brier score by 27% and halves calibration error relative to its pretrained baseline, and outperforms Qwen3-235B on both constructed future-event prediction tasks and the Metaculus benchmark despite a 7x parameter disadvantage.",
+   "short": "Future-as-Label",
+   "type": "System report",
+   "system": "trained",
+   "group": "turtel",
+   "self": true,
+   "lr": 1.1,
+   "lo": 1,
+   "hi": 1.25,
+   "rationale": "Training on resolved outcomes buys a 27% Brier gain for a mid-size open model. Evidence that method can close gaps, but not a comparison with humans.",
+   "claims": [
+    {
+     "metric": "Brier score",
+     "value": "−27%; calibration error halved",
+     "baseline": "Pretrained Qwen3-32B (no human baseline)",
+     "dataset": "Real-world forecasting benchmarks incl. Metaculus",
+     "year": 2026,
+     "standing": "none",
+     "quotes": [
+      "Qwen3-32B trained using Foresight Learning improves Brier score by 27% and halves calibration error relative to its pretrained baseline"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2601.07992",
+   "t": "Fake Date Tests: Can We Trust In-sample Accuracy of LLMs in Macroeconomic Forecasting?",
+   "a": [
+    "Alexander Eliseev",
+    "Sergei Seleznev"
+   ],
+   "y": "2026-01-12",
+   "c": "econ.EM",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "Large language models (LLMs) are a type of machine learning tool that economists have started to apply in their empirical research. One such application is macroeconomic forecasting with backtesting of LLMs, even though they are trained on the same data that is used to estimate their forecasting performance. Can these in-sample accuracy results be extrapolated to the model's out-of-sample performance? To answer this question, we developed a family of prompt sensitivity tests and two members of this family, which we call the fake date tests. These tests aim to detect two types of biases in LLMs' in-sample forecasts: lookahead bias and context bias. According to the empirical results, none of the modern LLMs tested in this study passed our first test, signaling the presence of lookahead bias in their in-sample forecasts.",
+   "short": "Fake date tests",
+   "type": "Measurement audit",
+   "system": "single",
+   "group": "leakage",
+   "self": false,
+   "lr": 0.9,
+   "lo": 0.8,
+   "hi": 1,
+   "rationale": "Every model tested shows lookahead bias in-sample, so parity claims built on backtests are inflated. A small discount on the literature’s strongest claims.",
+   "claims": [
+    {
+     "metric": "Fake-date test pass rate",
+     "value": "None of the models pass",
+     "baseline": "None",
+     "dataset": "Macroeconomic backtests",
+     "year": 2026,
+     "standing": "none",
+     "quotes": [
+      "none of the modern LLMs tested in this study passed our first test, signaling the presence of lookahead bias in their in-sample forecasts"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2604.04220",
+   "t": "TimeSeek: Temporal Reliability of Agentic Forecasters",
+   "a": [
+    "Hamza Mostafa",
+    "Om Shastri",
+    "Dennis Lee"
+   ],
+   "y": "2026-04-05",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "We introduce TimeSeek, a benchmark for studying how the reliability of agentic LLM forecasters changes over a prediction market's lifecycle. We evaluate 10 frontier models on 150 CFTC-regulated Kalshi binary markets at five temporal checkpoints, with and without web search, for 15,000 forecasts total. Models are most competitive early in a market's life and on high-uncertainty markets, but much less competitive near resolution and on strong-consensus markets. Web search improves pooled Brier Skill Score (BSS) for every model overall, yet hurts in 12% of model-checkpoint pairs, indicating that retrieval is helpful on average but not uniformly so. Simple two-model ensembles reduce error without surpassing the market overall. These descriptive results motivate time-aware evaluation and selective-deference policies rather than a single market snapshot or a uniform tool-use setting.",
+   "short": "TimeSeek (Kalshi)",
+   "type": "Benchmark result",
+   "system": "agentic",
+   "group": "market",
+   "self": false,
+   "lr": 0.8,
+   "lo": 0.67,
+   "hi": 1,
+   "rationale": "Frontier models, alone or in pairs, don’t beat Kalshi prices. Liquid markets are a bar that superforecasters don’t always clear either, so this counts only mildly against.",
+   "claims": [
+    {
+     "metric": "Brier skill score vs market",
+     "value": "Below market overall",
+     "baseline": "Kalshi market prices",
+     "dataset": "150 Kalshi markets × 5 checkpoints, 15,000 forecasts",
+     "year": 2026,
+     "standing": "below_crowd",
+     "quotes": [
+      "We evaluate 10 frontier models on 150 CFTC-regulated Kalshi binary markets at five temporal checkpoints, with and without web search, for 15,000 forecasts total",
+      "Simple two-model ensembles reduce error without surpassing the market overall"
+     ]
+    },
+    {
+     "metric": "Effect of web search",
+     "value": "Helps overall; hurts in 12% of pairs",
+     "baseline": "Same model without search",
+     "dataset": "Model–checkpoint pairs",
+     "year": 2026,
+     "standing": "none",
+     "quotes": [
+      "Web search improves pooled Brier Skill Score (BSS) for every model overall, yet hurts in 12% of model-checkpoint pairs"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2605.00844",
+   "t": "The Oracle's Fingerprint: Correlated AI Forecasting Errors and the Limits of Bias Transmission",
+   "a": [
+    "Theodor Spiro"
+   ],
+   "y": "2026-04-07",
+   "c": "cs.CY",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "When large language models (LLMs) are consulted as forecasting tools, the independence of individual errors -- the foundation of collective intelligence -- may collapse. We test three conditions necessary for this \"epistemic monoculture\" to emerge. In Study 1, we show that GPT-4o, Claude, and Gemini exhibit highly correlated forecasting errors on 568 resolved binary prediction questions (mean pairwise error correlation r = 0.77, p < 0.001; r = 0.78 excluding likely-leaked questions), despite being developed independently by different organizations. In Study 2, we test whether this correlated bias has propagated into human crowd forecasts, using a within-question design that tracks community prediction shifts across the ChatGPT launch boundary (November 2022). We find that community forecasts move in the direction predicted by LLMs (r = 0.20, p = 0.007), but this shift is fully explained by rational updating toward ground truth. In Study 3, we examine whether the category-level pattern of human forecasting errors increasingly resembles the LLM bias fingerprint. We find the opposite: pre-ChatGPT human biases already strongly resembled the LLM pattern (r = 0.87), while post-ChatGPT the resemblance weakened (r = -0.28). Together, these findings reveal an epistemic monoculture that is built but not yet activated: three nominally independent AI systems share the same failure modes, amplifying precisely the biases humans already hold.",
+   "short": "The Oracle’s Fingerprint",
+   "type": "Measurement audit",
+   "system": "single",
+   "group": "correlation",
+   "self": false,
+   "lr": 0.9,
+   "lo": 0.8,
+   "hi": 1,
+   "rationale": "Models from three labs share failure modes (r = 0.77), which caps what multi-model ensembles can gain: weak evidence against near-term parity.",
+   "claims": [
+    {
+     "metric": "Pairwise forecast-error correlation",
+     "value": "r = 0.77",
+     "baseline": "None",
+     "dataset": "568 resolved binary questions",
+     "year": 2026,
+     "standing": "none",
+     "quotes": [
+      "GPT-4o, Claude, and Gemini exhibit highly correlated forecasting errors on 568 resolved binary prediction questions (mean pairwise error correlation r = 0.77, p < 0.001; r = 0.78 excluding likely-leaked questions)"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2605.03762",
+   "t": "OracleProto: A Reproducible Framework for Benchmarking LLM Forecasting via Knowledge Cutoffs and Temporal Masking",
+   "a": [
+    "Yiding Ma",
+    "Chengyun Ruan",
+    "Kaibo Huang",
+    "Jin Tan",
+    "Zhongliang Yang",
+    "Linna Zhou"
+   ],
+   "y": "2026-05-05",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "Forecasting is a composite capability encompassing information gathering, evidence integration, situational assessment, and decision-making. Large language models (LLMs) combine reasoning and tool use, offering new avenues for automated forecasting and decision support. Yet LLM forecasting evaluation faces a structural challenge: live benchmarks support prospective assessment, but limited question reuse and changing information conditions make results difficult to reproduce and compare; retrospective benchmarks offer reproducibility but risk information leakage. We introduce OracleProto, a reproducible framework for evaluating LLM forecasting in a controlled, temporally masked environment. Through model knowledge cutoff constraints and temporal masking, OracleProto constructs a temporal sandbox for real-world web retrieval, audits information boundaries through leakage detection, and reconstructs resolved events as forecasting instances. Discrete answer normalization and hierarchical scoring enable unified evaluation. We evaluate 27 model-configuration pairs on 300 FutureX-Past-derived questions over 24,300 prediction trials, assessing forecasting quality, sampling stability, and cost efficiency under controlled information boundaries. An audit finds only 1.37% residual leakage in retrieval results after temporal masking and leakage filtering. OracleProto retains resolved forecasting tasks as reusable evaluation resources under explicit temporal boundaries, supporting continual accumulation of forecasting datasets and systematic evaluation of forecasting capabilities. Code is available at https://anonymous.4open.science/r/OracleProto-2E3A/.",
+   "short": "OracleProto",
+   "type": "Measurement audit",
+   "system": "agentic",
+   "group": "leakage",
+   "self": false,
+   "lr": 1,
+   "lo": 0.9,
+   "hi": 1.1,
+   "rationale": "A measurement tool: shows leakage can be held near 1%, which makes later parity tests more trustworthy, but it measures no gap itself.",
+   "claims": [
+    {
+     "metric": "Residual leakage after temporal masking",
+     "value": "1.37%",
+     "baseline": "None",
+     "dataset": "300 questions, 24,300 trials",
+     "year": 2026,
+     "standing": "none",
+     "quotes": [
+      "We evaluate 27 model-configuration pairs on 300 FutureX-Past-derived questions over 24,300 prediction trials",
+      "An audit finds only 1.37% residual leakage in retrieval results after temporal masking and leakage filtering"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2605.16358",
+   "t": "LEAF: A Living Benchmark for Event-Augmented Forecasting",
+   "a": [
+    "Mingtian Tan",
+    "Mihir Parmar",
+    "Palash Goyal",
+    "Chun-Liang Li",
+    "Nanyun Peng",
+    "Thomas Hartvigsen"
+   ],
+   "y": "2026-05-09",
+   "c": "cs.LG",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "Large Language Models (LLMs) are increasingly applied to real-world forecasting tasks, yet evaluating their true predictive capability remains compromised by pre-training data contamination and look-ahead leakage in automated search. Existing benchmarks either rely on static contexts, restrict evaluations to narrow environments, or fail to audit auxiliary textual events for future information leakage. To establish a rigorous evaluation paradigm, we propose LEAF, the first living benchmark for event-augmented forecasting tasks, including trend, event, and time series forecasting. LEAF couples a recursive retrieval agent system with dual-agent cross-validation to gather comprehensive, relevant, and temporally aligned auxiliary context. A comprehensive audit across 500 tasks by 47 domain specialists demonstrates that our pipeline suppresses future information leakage from 8.6% to 1.6%. Across extensive evaluations of 16 frontier proprietary and open-weight models on our benchmark, we show that LLMs effectively extract signals from verified events to boost trend and event forecasting.",
+   "short": "LEAF",
+   "type": "Measurement audit",
+   "system": "agentic",
+   "group": "leakage",
+   "self": false,
+   "lr": 0.9,
+   "lo": 0.8,
+   "hi": 1,
+   "rationale": "8.6% of naively retrieved context leaked the future, so unaudited retrieval-based results may overstate skill.",
+   "claims": [
+    {
+     "metric": "Future-information leakage in context",
+     "value": "8.6% → 1.6%",
+     "baseline": "None",
+     "dataset": "500 audited tasks",
+     "year": 2026,
+     "standing": "none",
+     "quotes": [
+      "A comprehensive audit across 500 tasks by 47 domain specialists demonstrates that our pipeline suppresses future information leakage from 8.6% to 1.6%"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2607.18269",
+   "t": "Wisdom of LLM Crowds: Aggregation and Contamination in Language Model Ensembles",
+   "a": [
+    "Igor Douven"
+   ],
+   "y": "2026-05-26",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "The wisdom of crowds -- the finding that aggregating judgments across individuals often outperforms the best individual -- has been extensively studied with human forecasters. Whether the same phenomenon emerges when the ``crowd'' consists of large language models (LLMs) is an open question with both theoretical and practical implications. We elicited probability estimates from 15 LLMs on 254 binary prediction market questions and evaluated classical and learned aggregation methods. Learned aggregators -- a multilayer perceptron and a logistic regression -- outperformed all individual models and classical methods. The logistic regression was found to match the neural network, suggesting that the benefit of learned aggregation derives from learning a linear combination of diverse model outputs rather than from nonlinear interactions. Symbolic regression applied to the neural network's learned mapping recovered a pure model-disagreement signal as the lowest-complexity useful formula on the Pareto frontier, further supporting this interpretation. Training cutoff contamination proved a pervasive confound: the apparent capability gap between frontier cloud models and smaller local models collapsed from 35.8% to 8.9% on a clean subset of questions resolving after all models' training cutoffs, and individual model rankings showed only moderate stability. Even when the prediction market is evaluated at each model's training cutoff, LLMs remained substantially less accurate, indicating a genuine gap in collective information aggregation. These findings suggest that LLM crowds can exhibit wisdom-of-crowds effects, but that contamination-free evaluation is essential for reliable assessment.",
+   "short": "Wisdom of LLM Crowds",
+   "type": "Benchmark result",
+   "system": "ensemble",
+   "group": "market",
+   "self": false,
+   "lr": 0.67,
+   "lo": 0.5,
+   "hi": 0.9,
+   "rationale": "Even with the market frozen at each model’s training cutoff, 15 LLMs and learned aggregates stay well behind it, and contamination had inflated apparent gains about fourfold.",
+   "claims": [
+    {
+     "metric": "Accuracy vs market at model cutoff",
+     "value": "Substantially less accurate",
+     "baseline": "Prediction-market prices",
+     "dataset": "254 binary market questions, 15 LLMs",
+     "year": 2026,
+     "standing": "below_crowd",
+     "quotes": [
+      "We elicited probability estimates from 15 LLMs on 254 binary prediction market questions",
+      "Even when the prediction market is evaluated at each model's training cutoff, LLMs remained substantially less accurate"
+     ]
+    },
+    {
+     "metric": "Frontier vs local gap, contaminated vs clean",
+     "value": "35.8% → 8.9%",
+     "baseline": "None",
+     "dataset": "Questions resolving after all cutoffs",
+     "year": 2026,
+     "standing": "none",
+     "quotes": [
+      "the apparent capability gap between frontier cloud models and smaller local models collapsed from 35.8% to 8.9% on a clean subset of questions"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2606.26583",
+   "t": "Preference Optimization Drives Monoculture in LLM Prediction Markets",
+   "a": [
+    "James Begin",
+    "Brendan Gho",
+    "Suman Muppavarapu",
+    "Tyson Tsay",
+    "Atharva Mohan",
+    "Afnan Shaik"
+   ],
+   "y": "2026-06-25",
+   "c": "cs.CE",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "Prediction markets rest on the independence of participant errors. As LLM agents become active traders on platforms like Kalshi and Polymarket, we ask: does this independence hold when the crowd is composed of LLMs? We find it does not. LLM agents fine-tuned with Direct Preference Optimization (DPO) share a convergent output distribution, producing pairwise error correlations of $ρ= 0.70$ and reducing ten agents to the effective forecasting power of ${\\approx}1.4$ independent forecasters $N_{\\text{eff}}$. This is not a scaling problem: $N_{\\text{eff}}$ remains flat from $N=5$ to $N=40$, and the 10-agent market (67.6%) fails to match a single standalone agent (70.2%). Two controlled ablations isolate preference optimization as the causal driver, replicated across labs and scales ($Δρ= +0.24$ to $+0.46$ on identical-SFT controls at 8B and 70B). Among mitigations tested, cross-model diversity achieves the largest correlation reduction ($ρ$ from 0.68 to 0.40). As LLMs become more aligned, markets built from them become more monocultural.",
+   "short": "DPO monoculture",
+   "type": "Experiment",
+   "system": "trained",
+   "group": "correlation",
+   "self": false,
+   "lr": 0.9,
+   "lo": 0.8,
+   "hi": 1,
+   "rationale": "Preference-tuned agents converge, so a ten-agent LLM market does worse than one agent. Crowds of similar models miss the wisdom-of-crowds boost that superforecaster teams rely on.",
+   "claims": [
+    {
+     "metric": "Accuracy, LLM market vs one agent",
+     "value": "67.6% vs 70.2%",
+     "baseline": "None",
+     "dataset": "LLM-agent prediction markets",
+     "year": 2026,
+     "standing": "none",
+     "quotes": [
+      "the 10-agent market (67.6%) fails to match a single standalone agent (70.2%)"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2607.09921",
+   "t": "Global Merger-Arbitrage Forecasting with Language Models",
+   "a": [
+    "Hinal Jajal",
+    "Michal Mucha",
+    "Charles Sweat",
+    "Chris Pulman",
+    "Charlie Flanagan",
+    "Peter Anderson"
+   ],
+   "y": "2026-07-10",
+   "c": "cs.CL",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "We present a language-model forecasting system for merger arbitrage, a specialized high-stakes financial setting in which the task is to predict the outcome of announced M\\&A deals. Unlike prior work on judgmental forecasting with LLMs, which has focused on broad mixed-topic benchmarks and short context such as news snippets, we study a setting that requires long-context reasoning over hundreds of pages of technical documents. Our system combines expert-guided context engineering with finetuning on hindsight-guided reasoning traces derived from historical deals. Given an announced deal, it outputs a probability distribution over three mutually exclusive outcomes: closing at announced terms, a higher bid, or deal termination. On an out-of-sample set of more than 400 large deals spanning 42 countries, our finetuned system achieves the best performance of any method we evaluate, reducing class-balanced Brier score to 0.151. This is 24\\% below calibrated market-implied probabilities, 19\\% below XGBoost, and 25-42\\% below frontier language models. These results, together with ablation studies, show that LLM-based forecasting can succeed in specialized, long-context financial workflows, with hindsight-based supervision and expert-designed context playing a critical role.",
+   "short": "Merger-arb forecaster",
+   "type": "System report",
+   "system": "trained",
+   "group": null,
+   "self": true,
+   "lr": 1.25,
+   "lo": 1,
+   "hi": 2,
+   "rationale": "A fine-tuned system beats calibrated market-implied odds by 24% on 400+ out-of-sample deals. An LLM system beating a strong human aggregate, but in one narrow, document-heavy domain, and self-reported.",
+   "claims": [
+    {
+     "metric": "Class-balanced Brier score",
+     "value": "0.151; 24% below market-implied",
+     "baseline": "Calibrated market-implied probabilities",
+     "dataset": "400+ M&A deals, 42 countries",
+     "year": 2026,
+     "standing": "above_crowd",
+     "quotes": [
+      "On an out-of-sample set of more than 400 large deals spanning 42 countries, our finetuned system achieves the best performance of any method we evaluate, reducing class-balanced Brier score to 0.151",
+      "This is 24\\% below calibrated market-implied probabilities"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2607.24573",
+   "t": "LLM-SoccerArena: Benchmarking LLMs on Real-World Predictions in Sports",
+   "a": [
+    "Jonas Schröder",
+    "Jonas Schweisthal",
+    "Oliver Müller",
+    "Markus Weinmann",
+    "Stefan Feuerriegel"
+   ],
+   "y": "2026-07-27",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "Large language models (LLMs) increasingly support decisions about uncertain future events, yet evaluating their ability to forecast real-world outcomes remains difficult. In particular, existing benchmarks are typically static and retrospective, and therefore cannot test how information is synthesized by LLMs to predict future events under uncertainty. We introduce LLM-SoccerArena (https://llm-soccerarena.com), a prospective live benchmark that evaluates how well LLMs forecast real-world sports events before the outcomes are known. LLM-SoccerArena provides (1) a prospective live benchmark protocol, (2) a public open-source platform, and (3) a factorial benchmark design together with tournament-related questions (e.g., which team will win). LLM-SoccerArena automatically records timestamped, schema-validated forecasts of unresolved events, together with prompts, model versions, tool traces, and costs. The factorial design varies along four dimensions: (1) model version (e.g., GPT-5.5, Claude Opus 4.8); (2) information access; (3) prompting strategy, and (4) forecast horizon. We demonstrate LLM-SoccerArena through a large-scale evaluation of the 2026 FIFA World Cup, in which seven LLMs generated forecasts for all 104 matches and 15 tournament-related questions. We provide a detailed analysis of model performance across information access, prompting strategy, and forecast horizon. As a result, LLM-SoccerArena provides new evidence about the forecasting performance of state-of-the-art LLMs. For example, LLMs with web access outperform those without, but only by a small margin (i.e., a 0.023 improvement in Brier score). Overall, LLM-SoccerArena provides a flexible, open-source platform for prospective benchmarking of unresolved events. LLM-SoccerArena will be continuously updated, and can be directly applied to future national and international tournaments and league competitions.",
+   "short": "LLM-SoccerArena",
+   "type": "Benchmark result",
+   "system": "agentic",
+   "group": null,
+   "self": false,
+   "lr": 1,
+   "lo": 0.9,
+   "hi": 1.1,
+   "rationale": "A prospective, leak-proof test, but the abstract reports no human or bookmaker comparison, so it says nothing about parity.",
+   "claims": [
+    {
+     "metric": "Brier score, web vs no web",
+     "value": "−0.023",
+     "baseline": "Same LLMs without web access",
+     "dataset": "2026 World Cup: 104 matches + 15 questions",
+     "year": 2026,
+     "standing": "none",
+     "quotes": [
+      "seven LLMs generated forecasts for all 104 matches and 15 tournament-related questions",
+      "LLMs with web access outperform those without, but only by a small margin (i.e., a 0.023 improvement in Brier score)"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2609.22246",
+   "t": "The Corroboration Illusion: When More News Makes LLM Forecasts Less True",
+   "a": [
+    "Yuan Lu",
+    "Yukuan Zhang"
+   ],
+   "y": "2026-09-05",
+   "c": "cs.CL",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "Large language models (LLMs) are increasingly used to forecast real-world events by retrieving and reasoning over news. We show that this dependence on an open, crawlable news corpus creates a new attack surface: an adversary who can merely publish articles--without access to the retriever, the model, or the user's queries--can systematically move the forecaster's output probabilities. We formalize news-corpus poisoning of probabilistic forecasters, a threat model distinct from prior RAG poisoning, which targets factual answers or opinion polarity rather than calibrated probabilities. We evaluate the attack on 500 resolved ForecastBench questions against a 17.4M-article Common Crawl News corpus with a strict crawl-date cutoff, using three retrieval-augmented forecasters built on open 7-8B models. A single LLM-written article per question flips 56% of forecasts across the 0.5 boundary; five articles flip 69-73% and shift probabilities by +0.13 to +0.22 net of a neutral-article placebo, degrading the Brier score from 0.18 to 0.37. The effect is monotone in the number, retrieval rank, query similarity, and context share of injected articles, transfers across model families, and is unaffected by the claimed publisher. We then evaluate three natural defenses--source allow-lists, isolate-then-aggregate forecasting, and perplexity filtering--and show that each has a cheap bypass: spoofed publishers, majority poisoning, and higher-temperature generation, respectively. Our results indicate that probabilistic LLM judgments inherit the full fragility of the information supply chain they consume.",
+   "short": "The Corroboration Illusion",
+   "type": "Experiment",
+   "system": "agentic",
+   "group": "forecastbench",
+   "self": false,
+   "lr": 0.9,
+   "lo": 0.8,
+   "hi": 1,
+   "rationale": "Planted articles push retrieval forecasters from Brier 0.18 to 0.37. That tests robustness rather than ordinary accuracy, so it earns only a small discount.",
+   "claims": [
+    {
+     "metric": "Brier score under news poisoning",
+     "value": "0.18 → 0.37",
+     "baseline": "Same forecaster, clean corpus",
+     "dataset": "500 ForecastBench questions",
+     "year": 2026,
+     "standing": "none",
+     "quotes": [
+      "We evaluate the attack on 500 resolved ForecastBench questions",
+      "A single LLM-written article per question flips 56% of forecasts across the 0.5 boundary",
+      "degrading the Brier score from 0.18 to 0.37"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2609.28876",
+   "t": "Forecast-Dojo: Replayable Environments for Benchmarking and Training LLM Forecasting Agents",
+   "a": [
+    "Liqin Ye",
+    "Haorui Wang",
+    "Fardin Ahmed",
+    "Rongzhi Zhang",
+    "Yuan He",
+    "Ziyuan Lin"
+   ],
+   "y": "2026-09-24",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "We introduce Forecast-Dojo, a replayable environment for benchmarking and training LLM forecasting agents. It combines resolved prediction-market questions with dated news, allowing agents to research an event and revisit their predictions at successive historical dates. The same tasks and tools support repeated evaluation, collection of training interactions, and feedback from recorded outcomes without waiting for new events to resolve. Forecast-Dojo contains 1,568 Polymarket events, split by time into training and evaluation periods, and 18.8M dated news articles. In an evaluation of 12 models, research tools lower Brier score for all 12. Forecasts also improve as events unfold, with the largest gains at steps where more newly dated evidence is recorded. Every model still trails historical market forecasts in both Brier score and accuracy. A belief notebook carried between dates lowers research cost but does not consistently improve forecast quality. Beyond evaluation, Forecast-Dojo provides interaction trajectories and outcome feedback for agent learning, with supervised fine-tuning as a proof of concept.",
+   "short": "Forecast-Dojo",
+   "type": "Benchmark result",
+   "system": "agentic",
+   "group": "market",
+   "self": false,
+   "lr": 0.67,
+   "lo": 0.5,
+   "hi": 0.9,
+   "rationale": "With research tools and dated news, all 12 models still trail Polymarket’s historical prices on 1,568 events: recent, leak-controlled, and against a strong human aggregate.",
+   "claims": [
+    {
+     "metric": "Brier score and accuracy vs market",
+     "value": "All 12 models trail the market",
+     "baseline": "Historical Polymarket forecasts",
+     "dataset": "1,568 Polymarket events",
+     "year": 2026,
+     "standing": "below_crowd",
+     "quotes": [
+      "Forecast-Dojo contains 1,568 Polymarket events",
+      "Every model still trails historical market forecasts in both Brier score and accuracy"
+     ]
+    },
+    {
+     "metric": "Effect of research tools",
+     "value": "Lower Brier for 12 of 12 models",
+     "baseline": "Same models without tools",
+     "dataset": "Forecast-Dojo",
+     "year": 2026,
+     "standing": "none",
+     "quotes": [
+      "In an evaluation of 12 models, research tools lower Brier score for all 12"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2609.33257",
+   "t": "Two Heads Are Better Than One: Aggregating Weaker LLMs for Better Forecasts",
+   "a": [
+    "Cheng Peng",
+    "Ruixi Luo",
+    "Zhi Chen",
+    "Wei Tang"
+   ],
+   "y": "2026-09-27",
+   "c": "cs.LG",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "Large language models (LLMs) are increasingly used to forecast real-world events, but access to the strongest individual forecaster may be costly or otherwise constrained. We study weak-to-strong forecast aggregation: can individually weaker LLM forecasters be aggregated to outperform a stronger forecaster? Using ForecastBench (Karger et al., 2025), we evaluate 70 LLM forecasters across 16 comparison groups, each with more than 1,000 shared subquestions, yielding 1,121 weaker-model pairs. Within each group, we identify the strongest individual by test Brier score and evaluate aggregates composed exclusively of weaker forecasters, with aggregation weights learned on separate training data. We find substantial evidence of weak-to-strong improvement. Learned linear pooling identifies a weaker pair that matches or outperforms the strongest individual in 11 of 16 groups and comes within 5% of its Brier score in all 16 groups. We also find that these improvements do not rely on having a near-best constituent and are generally accompanied by good calibration. Additional analyses show that adding more models does not consistently improve performance, and competitive weaker-model aggregates also remain available under practical constraints.",
+   "short": "Two Heads (weak-to-strong)",
+   "type": "Benchmark result",
+   "system": "ensemble",
+   "group": "forecastbench",
+   "self": false,
+   "lr": 1.1,
+   "lo": 1,
+   "hi": 1.25,
+   "rationale": "Pairs of weaker models match the best single model in 11 of 16 groups. Aggregation is a cheap lever, but there is no comparison with humans.",
+   "claims": [
+    {
+     "metric": "Brier score, weak pair vs strongest single model",
+     "value": "Match or beat in 11 of 16 groups",
+     "baseline": "Strongest individual LLM",
+     "dataset": "ForecastBench, 70 LLM forecasters",
+     "year": 2026,
+     "standing": "none",
+     "quotes": [
+      "we evaluate 70 LLM forecasters across 16 comparison groups",
+      "Learned linear pooling identifies a weaker pair that matches or outperforms the strongest individual in 11 of 16 groups and comes within 5% of its Brier score in all 16 groups"
+     ]
+    }
+   ]
+  }
+ ],
+ "setAside": [
+  {
+   "id": "2506.00723",
+   "t": "Pitfalls in Evaluating Language Model Forecasters",
+   "a": [
+    "Daniel Paleka",
+    "Shashwat Goel",
+    "Jonas Geiping",
+    "Florian Tramèr"
+   ],
+   "y": "2025-05-31",
+   "c": "cs.LG",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "no-figure",
+   "reason": "Methodological critique: argues parity claims are fragile because of temporal leakage, but gives no figure to enter.",
+   "quote": "with some works claiming these systems match or exceed human performance"
+  },
+  {
+   "id": "2606.29661",
+   "t": "Diversity is the Strength of the AI Crowd",
+   "a": [
+    "Matthew Aitchison",
+    "Scott Jeen",
+    "Toby Shevlane",
+    "Ben Day"
+   ],
+   "y": "2026-06-29",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "no-figure",
+   "reason": "Background framing rather than a measured result in this paper.",
+   "quote": "Top AI forecasting systems are approaching superforecaster-level accuracy on future world events"
+  },
+  {
+   "id": "2412.18544",
+   "t": "Consistency Checks for Language Model Forecasters",
+   "a": [
+    "Daniel Paleka",
+    "Abhimanyu Pallavi Sudhir",
+    "Alejandro Alvarez",
+    "Vineeth Bhat",
+    "Adam Shen",
+    "Evan Wang"
+   ],
+   "y": "2024-12-24",
+   "c": "cs.LG",
+   "th": [
+    "scoring-rules"
+   ],
+   "kind": "no-figure",
+   "reason": "Background framing; the paper’s own figures are about consistency metrics, not human comparisons.",
+   "quote": "Recent work showing LLM forecasters rapidly approaching human-level performance"
+  },
+  {
+   "id": "2510.17638",
+   "t": "LLM-as-a-Prophet: Understanding Predictive Intelligence with Prophet Arena",
+   "a": [
+    "Qingchuan Yang",
+    "Simon Mahns",
+    "Sida Li",
+    "Anri Gu",
+    "Jibang Wu",
+    "Haifeng Xu"
+   ],
+   "y": "2025-10-20",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "no-figure",
+   "reason": "Prophet Arena: qualitative findings only in the abstract (calibration, market returns, slower aggregation than markets).",
+   "quote": "slower information aggregation compared to markets when resolution nears"
+  },
+  {
+   "id": "2607.14051",
+   "t": "Hindcast: Replaying Prediction Markets to Evaluate LLM Forecasters",
+   "a": [
+    "Xiao Ye",
+    "Jacob Dineen",
+    "Evan Zhu",
+    "Shijie Lu",
+    "Kevin Song",
+    "Ben Zhou"
+   ],
+   "y": "2026-07-15",
+   "c": "cs.CL",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "no-figure",
+   "reason": "Hindcast: a leak-closing evaluation method; the abstract reports no scores."
+  },
+  {
+   "id": "2602.21229",
+   "t": "Forecasting Future Language: Context Design for Mention Markets",
+   "a": [
+    "Sumin Kim",
+    "Jihoon Kwon",
+    "Yoon Kim",
+    "Nicole Kagan",
+    "Raffi Khatchadourian",
+    "Wonbin Ahn"
+   ],
+   "y": "2026-02-04",
+   "c": "q-fin.GN",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "no-figure",
+   "reason": "Mention markets: an LLM-plus-market mixture beats the market, but no figures, and the winning mixture contains the market price.",
+   "quote": "a mixture of the market probability and MCP (MixMCP) outperforms the market baseline"
+  },
+  {
+   "id": "2609.22497",
+   "t": "The Wisdom of Artificial Deliberative Crowds",
+   "a": [
+    "Federico Barrera-Lemarchand",
+    "Mariano Sigman",
+    "Joaquin Navajas"
+   ],
+   "y": "2026-09-18",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "no-figure",
+   "reason": "Study 4 tests sports forecasting against a real prediction market, but the abstract gives no figures."
+  },
+  {
+   "id": "2511.18394",
+   "t": "Future Is Unevenly Distributed: Forecasting Ability of LLMs Depends on What We're Asking",
+   "a": [
+    "Chinmay Karkar",
+    "Paras Chopra"
+   ],
+   "y": "2025-11-23",
+   "c": "cs.LG",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "no-figure",
+   "reason": "Forecasting ability varies by domain and framing; no figures in the abstract."
+  },
+  {
+   "id": "2512.23847",
+   "t": "Detecting Lookahead Bias in LLM Forecasts",
+   "a": [
+    "Zhenyu Gao",
+    "Wenxi Jiang",
+    "Yutong Yan"
+   ],
+   "y": "2025-12-29",
+   "c": "q-fin.GN",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "no-figure",
+   "reason": "Lookahead-bias test for stock forecasts; qualitative result only.",
+   "quote": "collapses essentially to zero right after the training-data cutoff"
+  },
+  {
+   "id": "2608.23058",
+   "t": "LLM-based Agents for Forecasting and Prediction: Methods, Training, Evaluation, and Applications",
+   "a": [
+    "Xiaogang Xu",
+    "Jiaqi Tang",
+    "Jianmin Chen",
+    "Yingying Yan",
+    "Zhenchao Tang",
+    "Xiangxin Zhou"
+   ],
+   "y": "2026-08-24",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "no-figure",
+   "reason": "Survey; concludes measurement is the central limitation. No figures.",
+   "quote": "The evidence indicates that measurement is a central limitation."
+  },
+  {
+   "id": "2608.28482",
+   "t": "How Proper Scoring Rules Shape LLM Forecasting",
+   "a": [
+    "Benjamin Turtel",
+    "Paul Wilczewski",
+    "Kris Skotheim",
+    "Ville A. Satopää",
+    "Philip E. Tetlock"
+   ],
+   "y": "2026-08-28",
+   "c": "cs.LG",
+   "th": [
+    "scoring-rules"
+   ],
+   "kind": "no-figure",
+   "reason": "Compares scoring rules as training objectives; no figures and no human baseline."
+  },
+  {
+   "id": "2501.06496",
+   "t": "Analyzing the Role of Context in Forecasting with Large Language Models",
+   "a": [
+    "Gerrit Mutschlechner",
+    "Adam Jatowt"
+   ],
+   "y": "2025-01-11",
+   "c": "cs.CL",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "no-figure",
+   "reason": "600+ binary questions; news context helps. No result figures and no human baseline."
+  },
+  {
+   "id": "2507.23163",
+   "t": "Argumentatively Coherent Judgmental Forecasting",
+   "a": [
+    "Deniz Gorur",
+    "Antonio Rago",
+    "Francesca Toni"
+   ],
+   "y": "2025-07-30",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "no-figure",
+   "reason": "Argumentative coherence filter improves human and LLM forecasts; no figures."
+  },
+  {
+   "id": "2409.11540",
+   "t": "What Does ChatGPT Make of Historical Stock Returns? Extrapolation and Miscalibration in LLM Stock Return Forecasts",
+   "a": [
+    "Shuaiyu Chen",
+    "T. Clifton Green",
+    "Huseyin Gulen",
+    "Dexin Zhou"
+   ],
+   "y": "2024-09-17",
+   "c": "q-fin.GN",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "adjacent",
+   "reason": "Stock-return expectations: better-calibrated intervals than surveys, but human-like extrapolation bias and no accuracy figure."
+  },
+  {
+   "id": "2607.06166",
+   "t": "When do prophets profit in prediction markets?",
+   "a": [
+    "Anri Gu",
+    "Nicole Kagan",
+    "Alec Sun",
+    "Jibang Wu",
+    "Haifeng Xu"
+   ],
+   "y": "2026-07-07",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "adjacent",
+   "reason": "Theory of when forecasts become trading profit; no accuracy figure."
+  },
+  {
+   "id": "2607.03015",
+   "t": "Beyond Forecasting: The Belief-to-Trade Layer in Prediction-Market Agents",
+   "a": [
+    "Yishu Wang",
+    "Yuxuan Wang",
+    "Jiaqi Deng",
+    "Hanyang Tang"
+   ],
+   "y": "2026-07-03",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "adjacent",
+   "reason": "Trading agent for prediction markets; reports returns, not forecast accuracy."
+  },
+  {
+   "id": "2403.03230",
+   "t": "Large language models surpass human experts in predicting neuroscience results",
+   "a": [
+    "Xiaoliang Luo",
+    "Akilles Rechardt",
+    "Guangzhi Sun",
+    "Kevin K. Nejad",
+    "Felipe Yáñez",
+    "Bati Yilmaz"
+   ],
+   "y": "2024-03-04",
+   "c": "q-bio.NC",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "other-question",
+   "reason": "Predicting the results of published neuroscience studies, not future world events; no figures in the abstract."
+  },
+  {
+   "id": "2405.07828",
+   "t": "Can LLMs Help Predict Elections? (Counter)Evidence from the World's Largest Democracy",
+   "a": [
+    "Pratik Gujral",
+    "Kshitij Awaldhi",
+    "Navya Jain",
+    "Bhavuk Bhandula",
+    "Abhijnan Chakraborty"
+   ],
+   "y": "2024-05-13",
+   "c": "cs.SI",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "other-question",
+   "reason": "Tweet-sentiment election pipeline compared with polls; no figures."
+  },
+  {
+   "id": "2412.09385",
+   "t": "AI Predicts AGI: Leveraging AGI Forecasting and Peer Review to Explore LLMs' Complex Reasoning Capabilities",
+   "a": [
+    "Fabrizio Davide",
+    "Pietro Torre",
+    "Leonardo Ercolani",
+    "Andrea Gaggioli"
+   ],
+   "y": "2024-12-12",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "other-question",
+   "reason": "AGI-by-2030 estimates from 16 LLMs: the question is unresolved, so no accuracy can be scored."
+  },
+  {
+   "id": "2512.05998",
+   "t": "Going All-In on LLM Accuracy: Fake Prediction Markets, Real Confidence Signals",
+   "a": [
+    "Michael Todasco"
+   ],
+   "y": "2025-12-01",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "other-question",
+   "reason": "Predicting whether other models answer math questions correctly, not real-world events."
+  },
+  {
+   "id": "2605.30802",
+   "t": "Design and Evaluation of Multi-Agent AI Oracle Systems for Prediction Market Resolution",
+   "a": [
+    "Tarun Kota"
+   ],
+   "y": "2026-05-29",
+   "c": "cs.MA",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "other-question",
+   "reason": "Resolving prediction-market questions after the fact, not forecasting them."
+  },
+  {
+   "id": "2604.15674",
+   "t": "Can LLMs Help Decentralized Dispute Arbitration? A Case Study of UMA-Resolved Markets on Polymarket",
+   "a": [
+    "Junhao Wen",
+    "Juncen Zhou",
+    "Junjie Huang"
+   ],
+   "y": "2026-04-17",
+   "c": "cs.CY",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "other-question",
+   "reason": "Arbitrating disputed market resolutions, not forecasting."
+  },
+  {
+   "id": "2606.30987",
+   "t": "Measuring Judgment Quality in Natural-Language Explanations: Evidence from Forecasting Tournaments",
+   "a": [
+    "Christopher W. Karvetski",
+    "Sheldon S. Huang",
+    "Simas Kučinskas",
+    "Nadja Flechner",
+    "Jingyu Hu",
+    "Philip Tetlock"
+   ],
+   "y": "2026-06-29",
+   "c": "cs.CL",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "other-question",
+   "reason": "LLMs score the quality of human forecasters’ rationales; not LLM forecasting accuracy."
+  },
+  {
+   "id": "2605.11220",
+   "t": "Prediction Markets Underperform Simple Baselines For Infectious Disease Forecasting",
+   "a": [
+    "Carson Dudley",
+    "Reiden Magdaleno"
+   ],
+   "y": "2026-05-11",
+   "c": "stat.AP",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "human-only",
+   "reason": "About the human baseline: prediction markets underperform simple baselines for disease forecasting. No LLMs."
+  },
+  {
+   "id": "2102.00517",
+   "t": "Predicting replicability -- analysis of survey and prediction market data from large-scale forecasting projects",
+   "a": [
+    "Michael Gordon",
+    "Domenico Viganola",
+    "Anna Dreber",
+    "Magnus Johannesson",
+    "Thomas Pfeiffer"
+   ],
+   "y": "2021-01-31",
+   "c": "stat.AP",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "human-only",
+   "reason": "Human prediction markets and surveys forecasting replications. No LLMs."
+  },
+  {
+   "id": "2008.13005",
+   "t": "Wisdom of the crowds forecasting the 2018 FIFA Men's World Cup",
+   "a": [
+    "Marco Henrique de Almeida Inácio",
+    "Rafael Izbicki",
+    "Danilo Lourenço Lopes",
+    "Luis Ernesto Salasar",
+    "João Poloniato",
+    "Marcio Alves Diniz"
+   ],
+   "y": "2020-08-29",
+   "c": "stat.AP",
+   "th": [
+    "scoring-rules"
+   ],
+   "kind": "human-only",
+   "reason": "Human crowd forecasts of the 2018 World Cup. No LLMs."
+  },
+  {
+   "id": "2407.01231",
+   "t": "MIRAI: Evaluating LLM Agents for Event Forecasting",
+   "a": [
+    "Chenchen Ye",
+    "Ziniu Hu",
+    "Yihe Deng",
+    "Zijie Huang",
+    "Mingyu Derek Ma",
+    "Yanqiao Zhu"
+   ],
+   "y": "2024-07-01",
+   "c": "cs.CL",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "other-question",
+   "reason": "MIRAI: relational event prediction from GDELT, no human baseline and no figures."
+  },
+  {
+   "id": "2406.16964",
+   "t": "Are Language Models Actually Useful for Time Series Forecasting?",
+   "a": [
+    "Mingtian Tan",
+    "Mike A. Merrill",
+    "Vinayak Gupta",
+    "Tim Althoff",
+    "Thomas Hartvigsen"
+   ],
+   "y": "2024-06-22",
+   "c": "cs.LG",
+   "th": [
+    "forecasting"
+   ],
+   "kind": "other-question",
+   "reason": "Numeric time-series forecasting, not judgmental forecasting of events (stands for roughly a hundred similar papers in the theme)."
+  }
+ ],
+ "liveExamples": [
+  {
+   "id": "2606.29661",
+   "t": "Diversity is the Strength of the AI Crowd",
+   "a": [
+    "Matthew Aitchison",
+    "Scott Jeen",
+    "Toby Shevlane",
+    "Ben Day"
+   ],
+   "y": "2026-06-29",
+   "c": "cs.AI",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "Top AI forecasting systems are approaching superforecaster-level accuracy on future world events, but still rely primarily on off-the-shelf LLMs combined with forecasting-specific context gathering and scaffolding. We study how to improve this recipe through ensembling: given a fixed number of samples, which off-the-shelf model forecasts should be combined to maximize accuracy? On binary questions from the Metaculus AI Benchmark, we find that individual accuracy is not enough: many frontier LLMs make highly correlated predictions, limiting the value of additional forecasts from the same or similar models. Instead, the strongest ensembles combine accurate but diverse forecasters, with models such as \\model{Grok 4} contributing disproportionately because their predictions are less correlated with other frontier LLMs. These results suggest that the strength of the AI crowd comes not from sampling more forecasts indiscriminately, but from combining forecasts across models with complementary errors, motivating forecasting systems that explicitly optimize for both model quality and diversity.",
+   "result": {
+    "relevant": true,
+    "reason": "States where top AI forecasting systems stand relative to superforecasters, on Metaculus AI Benchmark questions.",
+    "evidence_type": "Background statement in a benchmark study",
+    "self_reported": false,
+    "claims": [
+     {
+      "metric": "Accuracy on future world events",
+      "value": "“approaching” superforecaster level",
+      "baseline": "Superforecasters",
+      "dataset": "Field-level statement (Metaculus AI Benchmark context)",
+      "year": 2026,
+      "standing": "below_elite",
+      "system": "ensemble",
+      "quote": "Top AI forecasting systems are approaching superforecaster-level accuracy on future world events"
+     }
+    ],
+    "lr": 0.8,
+    "lr_quote": "Top AI forecasting systems are approaching superforecaster-level accuracy on future world events",
+    "rationale": "Builders of top systems describe them as “approaching” superforecaster level in mid-2026: an admitted gap, though background framing rather than a measurement."
+   }
+  },
+  {
+   "id": "2409.11540",
+   "t": "What Does ChatGPT Make of Historical Stock Returns? Extrapolation and Miscalibration in LLM Stock Return Forecasts",
+   "a": [
+    "Shuaiyu Chen",
+    "T. Clifton Green",
+    "Huseyin Gulen",
+    "Dexin Zhou"
+   ],
+   "y": "2024-09-17",
+   "c": "q-fin.GN",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "We examine how large language models (LLMs) interpret historical stock returns and compare their forecasts with estimates from a crowd-sourced platform for ranking stocks. While stock returns exhibit short-term reversals, LLM forecasts over-extrapolate, placing excessive weight on recent performance similar to humans. LLM forecasts appear optimistic relative to historical and future realized returns. When prompted for 80% confidence interval predictions, LLM responses are better calibrated than survey evidence but are pessimistic about outliers, leading to skewed forecast distributions. The findings suggest LLMs manifest common behavioral biases when forecasting expected returns but are better at gauging risks than humans.",
+   "result": {
+    "relevant": true,
+    "reason": "Compares LLM stock-return forecasts with a human crowd platform and surveys, but scores biases and calibration rather than accuracy on resolved questions.",
+    "evidence_type": "Empirical study",
+    "self_reported": false,
+    "claims": [
+     {
+      "metric": "Calibration of 80% intervals",
+      "value": "Better calibrated than surveys",
+      "baseline": "Survey evidence (human)",
+      "dataset": "Historical stock returns",
+      "year": 2024,
+      "standing": "none",
+      "system": "single",
+      "quote": "When prompted for 80% confidence interval predictions, LLM responses are better calibrated than survey evidence but are pessimistic about outliers"
+     }
+    ],
+    "lr": 1,
+    "lr_quote": "LLM forecasts over-extrapolate, placing excessive weight on recent performance similar to humans",
+    "rationale": "Mixed and adjacent: human-like extrapolation bias alongside better-calibrated intervals, on stock returns rather than forecasting questions. Not diagnostic."
+   }
+  },
+  {
+   "id": "2605.30802",
+   "t": "Design and Evaluation of Multi-Agent AI Oracle Systems for Prediction Market Resolution",
+   "a": [
+    "Tarun Kota"
+   ],
+   "y": "2026-05-29",
+   "c": "cs.MA",
+   "th": [
+    "forecasting"
+   ],
+   "ab": "Prediction markets aggregate collective intelligence to forecast uncertain events, but their utility depends on reliable outcome resolution. Existing oracle systems tradeoff fast but brittle automation against accurate but costly human arbitration. Single-LLM oracles achieve meaningful accuracy but inherit all failure modes of their underlying model with no self-correction mechanism. We evaluate whether multi-agent LLM architectures can improve oracle resolution accuracy over single-model baselines. We compare independent aggregation and deliberative consensus against single-LLM baselines (GPT-5 Nano, DeepSeek V3, and Llama-3.3-70B) on 1,189 resolved prediction market questions from KalshiBench. All agents share a common evidence layer through Exa, with retrieval filtered by publication date to isolate reasoning from retrieval quality. Independent aggregation with confidence-weighted voting achieves the highest accuracy at 83.43 percent, outperforming the best individual model by 1.01 percentage points. Deliberative consensus degrades accuracy to approximately 76 percent, below every single-model baseline, attributed to error propagation during debate where confidently wrong models flip correct ones. Error correlations across models (0.529-0.689) explain why aggregation gains fall short of the theoretical Condorcet ceiling, placing a fundamental limit on ensemble approaches. Many questions resist correction by any multi-agent architecture, motivating escalation to human arbitration. We propose routing criteria for hybrid AI-human oracle systems: auto-resolving only unanimous, high-confidence questions yields 97.87 percent accuracy on 47 percent of the dataset, with inter-agent disagreement flagging the remainder for human review.",
+   "result": {
+    "relevant": false,
+    "reason": "Not this question: it measures how well LLM agents resolve prediction-market questions after the fact, not how well they forecast them.",
+    "evidence_type": "Experiment",
+    "self_reported": false,
+    "claims": [
+     {
+      "metric": "Resolution accuracy",
+      "value": "83.43%",
+      "baseline": "Single-LLM oracles",
+      "dataset": "1,189 KalshiBench questions",
+      "year": 2026,
+      "standing": "none",
+      "system": "ensemble",
+      "quote": "Independent aggregation with confidence-weighted voting achieves the highest accuracy at 83.43 percent"
+     }
+    ],
+    "lr": null,
+    "lr_quote": null,
+    "rationale": "No likelihood ratio: resolution accuracy says nothing about forecasting skill."
+   }
+  }
+ ]
+}
