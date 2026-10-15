@@ -327,7 +327,11 @@ export default async function (app) {
     if ('dirs' in b) {
       if (b.dirs == null) delete next.dirs;
       else {
-        const list = L.parseDirs(b.dirs);
+        // One per line (a folder named "Books/2024" in Finder has a ':' in its path); full paths only, not ones relative to this server's folder.
+        const raw = (Array.isArray(b.dirs) ? b.dirs : String(b.dirs).split(/\r?\n/)).map((d) => String(d).trim().replace(/^["']|["']$/g, '')).filter(Boolean);
+        const rel = raw.find((d) => !/^(\/|~(\/|$))/.test(d));
+        if (rel) return json(res, { error: `${rel}: a full path, please (starting with / or ~)` }, 400);
+        const list = L.parseDirs(raw);
         const bad = list.find((d) => d === '/' || d === homedir() || d === resolve(homedir(), '..'));
         if (bad) return json(res, { error: `${bad} is too broad: pick a folder inside it` }, 400);
         if (list.length > 20) return json(res, { error: 'at most 20 folders' }, 400);
