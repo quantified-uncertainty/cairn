@@ -1,0 +1,2029 @@
+<title>The Bindery</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&family=Courier+Prime:wght@400;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap');
+
+@property --t { syntax: '<length>'; inherits: true; initial-value: 40px; }
+
+:root {
+  color-scheme: light;
+  --bench: #d8dbd2;
+  --bench-2: #cbcfc4;
+  --bench-ink: #4c5249;
+  --paper: #f7f6f1;
+  --paper-2: #efeee6;
+  --paper-3: #e5e3d8;
+  --ink: #1b1d1a;
+  --ink-2: #444841;
+  --ink-3: #6a6f65;
+  --rule: #cfd0c5;
+  --rule-2: #a9ada0;
+  --gold: #a8812f;
+  --gold-hi: #e2c77d;
+  --gold-lo: #6c5016;
+  --gold-ink: #7c5d17;
+  --open: #2b6a4c;
+  --open-bg: #e3efe7;
+  --loan: #7f6014;
+  --loan-bg: #f3ecd8;
+  --buy: #8e2d38;
+  --buy-bg: #f5e3e3;
+  --ai: #5b4a86;
+  --ai-bg: #ebe7f4;
+  --focus: #0a5bb5;
+  --shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 18px 40px -24px rgba(30,35,28,.45);
+  --g-paper: #4f6f96;
+  --g-textbook: #3f7a5c;
+  --g-book: #a8572a;
+  --g-classic: #5e5470;
+  --g-paper-bg: #e3e9f1;
+  --g-textbook-bg: #e2eee6;
+  --g-book-bg: #f4e4d8;
+  --g-classic-bg: #e9e5ef;
+  --route-bg: #fbf0d2;
+  --cloth-oxblood: #6b1e2a;
+  --cloth-green: #1e4a3c;
+  --cloth-navy: #22335a;
+  --cloth-tan: #6c5a43;
+  --cloth-grey: #555b61;
+  --accent: var(--cloth-oxblood);
+  --accent-ink: #6b1e2a;
+  --serif: 'Libre Caslon Text', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --display: 'Bodoni Moda', 'Didot', 'Bodoni 72', 'Times New Roman', serif;
+  --mono: 'Courier Prime', 'Courier New', ui-monospace, monospace;
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bench: #141816; --bench-2: #1a1f1c; --bench-ink: #9aa196;
+    --paper: #1e2320; --paper-2: #252b27; --paper-3: #2d342f;
+    --ink: #ebe8dc; --ink-2: #c5c2b5; --ink-3: #979b90;
+    --rule: #343b36; --rule-2: #4b544d;
+    --gold: #c9a24f; --gold-hi: #f0d68e; --gold-lo: #8a6a26; --gold-ink: #d9b765;
+    --open: #6cc095; --open-bg: #1f3329; --loan: #dcb456; --loan-bg: #352d18; --buy: #ec8790; --buy-bg: #3a2124;
+    --ai: #b3a3e6; --ai-bg: #2a2538; --focus: #79b2ff;
+    --shadow: 0 1px 0 rgba(255,255,255,.03) inset, 0 18px 40px -20px rgba(0,0,0,.7);
+    --g-paper: #8fb0d8; --g-textbook: #86c4a1; --g-book: #e39a6c; --g-classic: #b9aed4;
+    --g-paper-bg: #22303f; --g-textbook-bg: #1f3329; --g-book-bg: #3a2a20; --g-classic-bg: #2c2836; --route-bg: #3b3420;
+    --accent-ink: #e39aa4;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bench: #141816; --bench-2: #1a1f1c; --bench-ink: #9aa196;
+  --paper: #1e2320; --paper-2: #252b27; --paper-3: #2d342f;
+  --ink: #ebe8dc; --ink-2: #c5c2b5; --ink-3: #979b90;
+  --rule: #343b36; --rule-2: #4b544d;
+  --gold: #c9a24f; --gold-hi: #f0d68e; --gold-lo: #8a6a26; --gold-ink: #d9b765;
+  --open: #6cc095; --open-bg: #1f3329; --loan: #dcb456; --loan-bg: #352d18; --buy: #ec8790; --buy-bg: #3a2124;
+  --ai: #b3a3e6; --ai-bg: #2a2538; --focus: #79b2ff;
+  --shadow: 0 1px 0 rgba(255,255,255,.03) inset, 0 18px 40px -20px rgba(0,0,0,.7);
+  --g-paper: #8fb0d8; --g-textbook: #86c4a1; --g-book: #e39a6c; --g-classic: #b9aed4;
+  --g-paper-bg: #22303f; --g-textbook-bg: #1f3329; --g-book-bg: #3a2a20; --g-classic-bg: #2c2836; --route-bg: #3b3420;
+  --accent-ink: #e39aa4;
+}
+
+* { box-sizing: border-box; }
+html, body { background: var(--bench); }
+body {
+  margin: 0; color: var(--ink); font: 15px/1.5 var(--serif);
+  background:
+    var(--grain),
+    radial-gradient(1200px 600px at 20% -10%, rgba(255,255,255,.18), transparent 60%),
+    var(--bench);
+  background-blend-mode: soft-light, normal, normal;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.smallcaps { font-family: var(--mono); text-transform: uppercase; letter-spacing: .12em; font-size: 11px; }
+.muted { color: var(--ink-3); }
+
+.app {
+  max-width: 1440px; margin: 0 auto;
+  padding: 0 max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, env(safe-area-inset-left, 0px));
+}
+
+/* ------------------------------------------------ masthead */
+.mast { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0 12px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.brand svg { flex: none; }
+.wordmark { font-family: var(--display); font-weight: 600; font-size: 25px; letter-spacing: .2em; text-transform: uppercase; line-height: 1; font-variation-settings: 'opsz' 40; }
+.tagline { font-style: italic; color: var(--ink-2); font-size: 14px; margin-top: 4px; }
+.mastnav { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; border-radius: 3px; cursor: pointer;
+  border: 1px solid var(--rule-2); background: var(--paper); padding: 7px 12px; font-size: 14px;
+  box-shadow: 0 1px 0 rgba(0,0,0,.04);
+}
+.btn:hover { border-color: var(--ink-3); }
+.btn-ink { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn-ink:hover { background: var(--ink-2); }
+.btn-accent { background: var(--accent); color: #f4ecd8; border-color: rgba(0,0,0,.25); }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+.btn-quiet { background: transparent; }
+.headband {
+  height: 6px; border-radius: 3px 3px 0 0; margin-bottom: 4px;
+  background: repeating-linear-gradient(90deg, #9e2430 0 4px, #efe5cc 4px 8px, #2c4a3e 8px 12px, #efe5cc 12px 16px);
+  opacity: .9;
+}
+
+/* ------------------------------------------------ shelf */
+.shelf { position: relative; margin-top: 10px; display: grid; grid-template-columns: minmax(0, auto) minmax(0, 1fr); gap: 0 40px; align-items: end; }
+.shelf-left { min-width: 0; }
+.explain { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; padding-bottom: 22px; }
+.explain div { border-top: 1px solid var(--rule-2); padding-top: 10px; min-width: 0; }
+.explain .n { font: 500 28px/1 var(--display); color: var(--accent-ink); }
+.explain h4 { margin: 6px 0 4px; font: 700 11px/1.2 var(--mono); text-transform: uppercase; letter-spacing: .14em; }
+.explain p { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+@media (max-width: 1080px) { .shelf { grid-template-columns: minmax(0, 1fr); } .explain { padding: 14px 0 0; } }
+@media (max-width: 760px) { .explain { grid-template-columns: minmax(0, 1fr); gap: 0; } .explain div { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 0 8px; padding: 8px 0; } .explain .n { grid-row: span 2; font-size: 22px; } .explain h4 { margin: 0 0 2px; } .explain p { font-size: 13px; } }
+.shelf-head { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; margin: 8px 0 6px; }
+.shelf-head .smallcaps { color: var(--bench-ink); }
+.shelf-head .muted { font-style: italic; font-size: 13px; }
+.shelf-row {
+  display: flex; align-items: flex-end; gap: 4px; min-height: 232px; padding: 12px 4px 0;
+  overflow-x: auto; overflow-y: hidden; scrollbar-width: thin;
+}
+.shelf-board {
+  height: 14px; border-radius: 2px;
+  background: linear-gradient(#8b7653, #6e5c3f 60%, #4f412c);
+  box-shadow: 0 6px 12px -6px rgba(0,0,0,.5);
+}
+:root[data-theme="dark"] .shelf-board { background: linear-gradient(#5a4c36, #463b29 60%, #2c251a); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .shelf-board { background: linear-gradient(#5a4c36, #463b29 60%, #2c251a); } }
+.spine {
+  --c: var(--cloth-oxblood);
+  position: relative; flex: none; width: 46px; height: 150px; border: 0; padding: 0; cursor: pointer;
+  border-radius: 3px 3px 1px 1px; color: var(--gold-hi);
+  background-color: var(--c);
+  background-image:
+    linear-gradient(90deg, rgba(0,0,0,.35), rgba(255,255,255,.10) 18%, rgba(255,255,255,0) 40%, rgba(0,0,0,.18) 82%, rgba(0,0,0,.42)),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, transparent 1px 3px),
+    var(--grain);
+  box-shadow: 0 -1px 0 rgba(255,255,255,.12) inset, 2px 0 3px rgba(0,0,0,.18);
+  transition: width .5s cubic-bezier(.3,.7,.2,1), transform .3s, box-shadow .3s;
+}
+.spine::before { /* headband */
+  content: ''; position: absolute; left: 3px; right: 3px; top: -3px; height: 5px; border-radius: 3px 3px 0 0;
+  background: repeating-linear-gradient(90deg, #a1262f 0 3px, #efe5cc 3px 6px);
+}
+.spine .bands { position: absolute; inset: 9px 0 auto; height: 7px; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); opacity: .7; }
+.spine .bands.b { inset: auto 0 34px; }
+.spine .sp-num { position: absolute; top: 21px; left: 0; right: 0; text-align: center; font: 600 10px/1 var(--display); letter-spacing: .1em; color: var(--gold-hi); }
+.spine .sp-title {
+  position: absolute; top: 36px; bottom: 46px; left: 0; right: 0; display: flex; align-items: center; justify-content: center;
+  writing-mode: vertical-rl; font: 600 12px/1.1 var(--display); letter-spacing: .08em; text-transform: uppercase;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 2px;
+}
+.spine .sp-title span { background: linear-gradient(180deg, var(--gold-hi), var(--gold) 55%, var(--gold-lo)); -webkit-background-clip: text; background-clip: text; color: transparent; overflow: hidden; text-overflow: ellipsis; }
+.spine .sp-label {
+  position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); background: #efe8d6; color: #2a2a26;
+  font: 700 7.5px/1.15 var(--mono); padding: 2px 2px; border-radius: 1px; text-align: center; width: calc(100% - 8px); max-width: 40px;
+  overflow: hidden;
+}
+.spine[aria-pressed="true"] { transform: translateY(-10px); box-shadow: 0 -1px 0 rgba(255,255,255,.12) inset, 0 10px 14px -6px rgba(0,0,0,.5); }
+.spine:hover { transform: translateY(-5px); }
+.spine[aria-pressed="true"]:hover { transform: translateY(-10px); }
+.spine.new { animation: shelve .9s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes shelve { from { transform: translateY(-60px) rotate(-6deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.spine-blank {
+  flex: none; width: 54px; height: 190px; border: 1.5px dashed var(--rule-2); border-radius: 3px; background: transparent;
+  color: var(--ink-3); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  font: 11px/1.2 var(--mono); text-transform: uppercase; letter-spacing: .08em;
+}
+.spine-blank b { font: 300 28px/1 var(--display); }
+.spine-blank span { writing-mode: vertical-rl; }
+.spine-blank:hover { color: var(--ink); border-color: var(--ink-3); }
+.shelf-gap { flex: none; width: 18px; }
+
+/* ------------------------------------------------ bench layout */
+.bench { display: grid; grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 28px; margin-top: 22px; align-items: start; }
+.binding { position: sticky; top: 12px; min-width: 0; }
+.volume { min-width: 0; }
+
+/* the bound volume (3D) */
+.stage {
+  position: relative; height: 352px; perspective: 1500px; perspective-origin: 50% 35%;
+  display: grid; place-items: center; touch-action: pan-y;
+}
+.stage::after { content: ''; position: absolute; left: 14%; right: 14%; bottom: 16px; height: 26px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.35), transparent); filter: blur(2px); }
+.book {
+  --w: 206px; --h: 284px; --t: 40px; --c: var(--cloth-oxblood);
+  position: relative; width: var(--w); height: var(--h); transform-style: preserve-3d; z-index: 1;
+  transform: rotateX(-7deg) rotateY(34deg); transition: transform .9s cubic-bezier(.2,.7,.2,1), --t .7s cubic-bezier(.3,.7,.2,1);
+  cursor: pointer;
+}
+.book.is-open { transform: translateX(86px) scale(.84) rotateX(-4deg) rotateY(10deg); }
+.book > div, .cover > div { position: absolute; }
+.face-cloth {
+  background-color: var(--c);
+  background-image:
+    radial-gradient(130% 90% at 25% 15%, rgba(255,255,255,.13), transparent 55%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.06) 0 1px, transparent 1px 3px),
+    var(--grain);
+}
+.cover { left: 0; top: 0; width: var(--w); height: var(--h); transform-origin: 0 50%; transform-style: preserve-3d;
+  transform: translateZ(calc(var(--t) / 2)); transition: transform 1s cubic-bezier(.3,.7,.2,1); }
+.book.is-open .cover { transform: translateZ(calc(var(--t) / 2)) rotateY(-162deg); }
+.cover .outside, .cover .inside { inset: 0; backface-visibility: hidden; border-radius: 1px 4px 4px 1px; }
+.cover .outside { box-shadow: inset 6px 0 8px -4px rgba(0,0,0,.45), inset -1px 0 0 rgba(255,255,255,.08); }
+.cover .inside { transform: rotateY(180deg); background: #e9e2cf center/cover; box-shadow: inset 0 0 0 8px rgba(0,0,0,.0), inset -6px 0 10px -4px rgba(0,0,0,.4); border-radius: 4px 1px 1px 4px; }
+.cover .frame { position: absolute; inset: 12px; border: 1px solid rgba(0,0,0,.28); box-shadow: inset 0 0 0 4px transparent, inset 0 0 0 5px rgba(0,0,0,.22), 0 1px 0 rgba(255,255,255,.08); border-radius: 2px; }
+.cover .c-title { position: absolute; left: 20px; right: 20px; top: 50px; text-align: center; }
+.gilt {
+  background: linear-gradient(100deg, var(--gold-lo) 0%, var(--gold-hi) 24%, #c79a3d 46%, var(--gold-hi) 64%, var(--gold-lo) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,.45));
+}
+:root { --gold-hi-fixed: #e8cf88; }
+.cover .c-title .t { font: 600 var(--fs, 20px)/1.12 var(--display); letter-spacing: .1em; text-transform: uppercase; font-variation-settings: 'opsz' 30; overflow-wrap: anywhere; }
+.cover .c-title .s { font: italic 400 13px/1.25 var(--display); margin-top: 10px; letter-spacing: .02em; }
+.cover .orn { position: absolute; left: 50%; bottom: 46px; transform: translateX(-50%); color: #d2b46a; opacity: .9; }
+.cover .imprint { position: absolute; left: 0; right: 0; bottom: 22px; text-align: center; font: 600 8.5px/1 var(--display); letter-spacing: .32em; color: #d8bd77; opacity: .85; text-transform: uppercase; }
+.back { left: 0; top: 0; width: var(--w); height: var(--h); transform: rotateY(180deg) translateZ(calc(var(--t) / 2)); border-radius: 4px 1px 1px 4px; }
+.spine3d {
+  top: 0; height: var(--h); width: var(--t); left: calc((var(--w) - var(--t)) / 2);
+  transform: rotateY(-90deg) translateZ(calc(var(--w) / 2)); border-radius: 3px;
+  box-shadow: inset 0 0 12px rgba(0,0,0,.35);
+  display: flex; flex-direction: column; align-items: center;
+}
+.spine3d::before { content: ''; position: absolute; top: 0; left: 3px; right: 3px; height: 6px; background: repeating-linear-gradient(90deg, #a1262f 0 3px, #efe5cc 3px 6px); border-radius: 0 0 2px 2px; opacity: .95; }
+.spine3d .band { position: absolute; left: 0; right: 0; height: 7px; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); opacity: .75; }
+.spine3d .st { position: absolute; top: 58px; bottom: 64px; left: 0; right: 0; display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; overflow: hidden; }
+.spine3d .st span { font: 600 12px/1 var(--display); letter-spacing: .16em; text-transform: uppercase; white-space: nowrap; }
+.spine3d .snum { position: absolute; top: 34px; font: 600 11px/1 var(--display); color: #dcc27e; letter-spacing: .1em; }
+.spine3d .slabel { position: absolute; bottom: 10px; left: 4px; right: 4px; background: #efe8d6; color: #2a2a26; font: 700 7px/1.15 var(--mono); text-align: center; padding: 2px 1px; border-radius: 1px; overflow: hidden; max-height: 30px; }
+.edge {
+  top: 4px; height: calc(var(--h) - 8px); width: calc(var(--t) - 6px); left: calc((var(--w) - var(--t)) / 2 + 3px);
+  transform: rotateY(90deg) translateZ(calc(var(--w) / 2 - 4px));
+  background: repeating-linear-gradient(90deg, #f3eee1 0 1px, #d7cfba 1px 2px);
+}
+.topedge {
+  left: 4px; width: calc(var(--w) - 8px); height: calc(var(--t) - 6px); top: calc((var(--h) - var(--t)) / 2 + 3px);
+  transform: rotateX(90deg) translateZ(calc(var(--h) / 2 - 4px));
+  background: repeating-linear-gradient(0deg, #f3eee1 0 1px, #d9d1bd 1px 2px);
+}
+.titlepage {
+  left: 4px; top: 4px; width: calc(var(--w) - 8px); height: calc(var(--h) - 8px); transform: translateZ(calc(var(--t) / 2 - 2px));
+  background: #f6f2e6; color: #2b2a25; padding: 24px 16px; text-align: center; display: flex; flex-direction: column; align-items: center;
+  box-shadow: inset 8px 0 12px -10px rgba(0,0,0,.4);
+}
+.titlepage .tp-vol { font: 10px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: #6b665a; }
+.titlepage .tp-t { font: 500 20px/1.1 var(--display); margin-top: 22px; }
+.titlepage .tp-s { font: italic 12px/1.3 var(--serif); margin-top: 8px; color: #4b483f; }
+.titlepage .tp-rule { width: 40px; border-top: 1px solid #9c917a; margin: 18px 0; }
+.titlepage .tp-h { font: 11px/1.4 var(--serif); color: #4b483f; }
+.titlepage .tp-imp { margin-top: auto; font: 600 8px/1 var(--display); letter-spacing: .3em; text-transform: uppercase; color: #6b665a; }
+.book-hint { text-align: center; margin-top: -6px; }
+.book-hint button { background: none; border: 0; padding: 4px 8px; cursor: pointer; color: var(--ink-3); font: 12px/1 var(--mono); text-transform: uppercase; letter-spacing: .1em; text-decoration: underline; text-underline-offset: 3px; }
+
+/* controls */
+.panel { background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; box-shadow: var(--shadow); }
+.controls { padding: 14px 16px 12px; margin-top: 10px; }
+.ctl-label { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.ctl-label .smallcaps { color: var(--ink-3); }
+.hours-read { font: 600 26px/1 var(--display); font-variation-settings: 'opsz' 60; }
+.hours-read small { font: italic 14px var(--serif); color: var(--ink-3); margin-left: 6px; }
+.seg { display: inline-flex; border: 1px solid var(--rule-2); border-radius: 3px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 5px 10px; cursor: pointer; font: 13px/1.2 var(--mono); border-left: 1px solid var(--rule-2); white-space: nowrap; }
+.seg button:first-child { border-left: 0; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.slider { width: 100%; margin: 10px 0 2px; accent-color: var(--accent); }
+.ticks { position: relative; height: 16px; font: 10px/1 var(--mono); color: var(--ink-3); }
+.ticks span { position: absolute; transform: translateX(-50%); }
+.ctl-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.ctl-note { font-size: 12.5px; color: var(--ink-3); margin-top: 6px; font-style: italic; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 14px 0 0; border-top: 1px solid var(--rule); }
+.stats div { padding: 10px 0 0; }
+.stats dt { font: 10.5px/1 var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--ink-3); }
+.stats dd { margin: 4px 0 0; font: 600 20px/1.1 var(--display); font-variant-numeric: lining-nums tabular-nums; }
+.stats dd small { font: 12px var(--mono); color: var(--ink-3); font-weight: 400; }
+.mix { margin-top: 12px; }
+.mixbar { display: flex; height: 8px; border-radius: 2px; overflow: hidden; background: var(--paper-3); }
+.mixbar i { display: block; height: 100%; transition: width .4s; }
+.mixleg { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; font: 12px/1.3 var(--mono); color: var(--ink-2); }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: 0; }
+
+/* tabs and sheet */
+.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; padding-left: 10px; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: none; border: 1px solid var(--rule); border-bottom: 0; background: var(--paper-2); color: var(--ink-2);
+  padding: 8px 14px 7px; border-radius: 4px 4px 0 0; cursor: pointer; font: 13px/1 var(--mono); text-transform: uppercase; letter-spacing: .08em;
+  position: relative; top: 1px;
+}
+.tab[aria-selected="true"] { background: var(--paper); color: var(--ink); z-index: 1; box-shadow: inset 0 3px 0 var(--accent); }
+.tab .cnt { color: var(--ink-3); margin-left: 6px; }
+.sheet { background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; box-shadow: var(--shadow); min-height: 600px; overflow: hidden; }
+.marble-strip { height: 20px; background: var(--paper-3) 50% 30% / 100% auto; border-bottom: 1px solid var(--rule-2); box-shadow: inset 0 -3px 4px -2px rgba(0,0,0,.25); }
+.pane { padding: 28px clamp(16px, 4vw, 48px) 40px; }
+.pane[hidden] { display: none; }
+
+/* contents */
+.vmeta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font: 11px/1.4 var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--ink-3); }
+.badge { display: inline-flex; align-items: center; gap: 5px; border-radius: 2px; padding: 2px 6px; font: 700 10.5px/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.badge-ai { background: var(--ai-bg); color: var(--ai); }
+.badge-pre { background: var(--paper-3); color: var(--ink-2); }
+.badge-live { background: #1d5d3f; color: #eaf6ee; }
+.vtitle { font: 500 clamp(34px, 5vw, 56px)/1.02 var(--display); margin: 12px 0 4px; font-variation-settings: 'opsz' 96; letter-spacing: -.005em; }
+.vsub { font: italic 400 clamp(18px, 2.2vw, 23px)/1.3 var(--serif); color: var(--ink-2); margin: 0; }
+.preface { font-size: 17px; line-height: 1.6; margin: 18px 0 0; max-width: 68ch; }
+.ticket { margin-top: 18px; border: 1px dashed var(--rule-2); border-radius: 3px; padding: 10px 12px; font: 13px/1.5 var(--mono); color: var(--ink-2); max-width: 78ch; background: var(--paper-2); }
+.ticket b { color: var(--ink); text-transform: uppercase; letter-spacing: .1em; font-size: 11px; margin-right: 6px; }
+.summary { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 16px; font: 13px/1.4 var(--mono); color: var(--ink-2); }
+.summary b { color: var(--ink); font-weight: 700; }
+.credit { margin-top: 10px; font-size: 13px; color: var(--ink-3); font-style: italic; }
+.part { margin-top: 38px; }
+.part-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--ink); padding-bottom: 6px; flex-wrap: wrap; }
+.part-head h3 { margin: 0; font: 500 26px/1.15 var(--display); font-variation-settings: 'opsz' 48; }
+.part-head h3 .pn { display: block; font: 11px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--accent-ink); margin-bottom: 6px; }
+.part-head .pmeta { font: 12px/1 var(--mono); color: var(--ink-3); }
+.bridge { margin: 16px 0 6px; padding: 2px 0 2px 18px; border-left: 3px solid var(--accent); max-width: 74ch; }
+.bridge .lab { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+.bridge .lab .smallcaps { color: var(--ink-3); font-size: 10.5px; }
+.bridge p { margin: 0; font-style: italic; font-size: 16px; line-height: 1.62; color: var(--ink-2); }
+.bridge q { font-style: normal; color: var(--ink); quotes: '“' '”'; }
+.bridge q::after { content: '”'; }
+.bridge q::before { content: '“'; }
+.bridge .vq, .bridge-box .vq { font: 9px/1 var(--mono); vertical-align: super; color: var(--open); margin: 0 4px 0 2px; text-decoration: none; letter-spacing: .04em; white-space: nowrap; }
+.bridge.none p { font-style: normal; color: var(--ink-3); font-size: 14px; }
+.tracks { list-style: none; margin: 10px 0 0; padding: 0; }
+.track {
+  display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; gap: 4px 14px; padding: 13px 0 12px; border-bottom: 1px solid var(--rule);
+  transition: opacity .3s, background .3s;
+}
+.track .tn { font: 13px/1.6 var(--mono); color: var(--ink-3); }
+.track .tmain { min-width: 0; }
+.track .tt { font-size: 16.5px; line-height: 1.35; }
+.track .tt .lbl { font: 12px var(--mono); color: var(--ink-3); margin-right: 6px; white-space: nowrap; }
+.track .tt a { text-decoration: none; }
+.track .tt a:hover { text-decoration: underline; }
+.track .tw { font-size: 13.5px; color: var(--ink-2); margin-top: 1px; }
+.track .tw i { color: var(--ink-3); }
+.track .why { font-size: 13.5px; color: var(--ink-3); margin-top: 3px; font-style: italic; }
+.track .tside { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right; }
+.depth { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; vertical-align: -2px; margin-right: 6px; }
+.depth i { width: 4px; background: var(--rule-2); border-radius: 1px; }
+.depth i:nth-child(1) { height: 5px; } .depth i:nth-child(2) { height: 8px; } .depth i:nth-child(3) { height: 11px; } .depth i:nth-child(4) { height: 14px; }
+.depth i.on { background: var(--accent); }
+:root[data-theme="dark"] .depth i.on { background: var(--gold); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .depth i.on { background: var(--gold); } }
+.dlabel { font: 12.5px/1.2 var(--mono); color: var(--ink-2); white-space: nowrap; }
+.dlabel b { color: var(--ink); }
+.chip { display: inline-flex; align-items: center; gap: 5px; border-radius: 2px; padding: 3px 7px; font: 11.5px/1.25 var(--mono); text-decoration: none; white-space: nowrap; border: 1px solid transparent; }
+.chip.open { background: var(--open-bg); color: var(--open); }
+.chip.loan { background: var(--loan-bg); color: var(--loan); }
+.chip.buy { background: var(--buy-bg); color: var(--buy); }
+a.chip:hover { border-color: currentColor; }
+.tactions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.linkbtn { border: 1px solid var(--rule-2); background: var(--paper); border-radius: 2px; padding: 3px 8px; font: 12px/1.25 var(--mono); cursor: pointer; white-space: nowrap; }
+.linkbtn:hover { border-color: var(--ink); }
+.linkbtn.primary { background: var(--accent); border-color: var(--accent); color: #f6eedb; }
+.track.folded { opacity: .55; }
+.track.folded .tt { font-size: 15px; }
+.fold-note { font: 11.5px/1.3 var(--mono); color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; }
+.swap { margin-top: 6px; font-size: 13px; color: var(--ink-2); background: var(--paper-2); border-left: 2px solid var(--loan); padding: 5px 9px; }
+.swap b { font: 700 10.5px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--loan); margin-right: 4px; }
+.track.dropped { opacity: .6; }
+.track.dropped .tt { text-decoration: line-through; text-decoration-color: var(--rule-2); }
+.track.flash { background: linear-gradient(90deg, transparent, rgba(201,162,79,.16), transparent); }
+.endnote { margin-top: 34px; text-align: center; font: italic 14px var(--serif); color: var(--ink-3); }
+.fleuron { display: block; margin: 0 auto 8px; color: var(--gold-ink); }
+
+/* route */
+.route-top { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
+.route-top h3 { margin: 0; font: 500 28px/1.15 var(--display); }
+.route-top p { margin: 6px 0 0; color: var(--ink-2); max-width: 70ch; }
+.routes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+.rcard { text-align: left; border: 1px solid var(--rule); border-radius: 4px; background: var(--paper-2); padding: 12px 14px; cursor: pointer; min-width: 0; }
+.rcard[aria-pressed="true"] { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); background: var(--paper); }
+.rcard h4 { margin: 0; font: 13px/1.2 var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--ink-2); display: flex; justify-content: space-between; gap: 8px; }
+.rcard .big { font: 600 26px/1.1 var(--display); margin-top: 6px; font-variant-numeric: lining-nums; }
+.rcard .big small { font: 13px var(--mono); color: var(--ink-3); font-weight: 400; margin-left: 4px; }
+.rcard ol { margin: 8px 0 0; padding-left: 18px; font-size: 13px; color: var(--ink-2); }
+.rcard ol li { margin: 2px 0; }
+.rcard .gap { color: var(--buy); font-size: 13px; margin-top: 6px; }
+.coreview { margin-top: 18px; overflow-x: auto; border: 1px solid var(--rule); border-radius: 4px; background: var(--paper-2); }
+.coreview svg { display: block; min-width: 820px; width: 100%; height: auto; }
+.coreview .node { cursor: pointer; }
+.coreview .node:focus { outline: none; }
+.coreview .node:focus-visible rect.box { stroke: var(--focus); stroke-width: 2.5; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; font: 12px/1.3 var(--mono); color: var(--ink-2); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 5px; vertical-align: -2px; border: 1.5px solid; }
+.ncard { margin-top: 14px; border: 1px solid var(--rule); border-left: 3px solid var(--gold); border-radius: 3px; padding: 12px 14px; background: var(--paper); }
+.ncard h4 { margin: 0; font: 500 19px/1.25 var(--display); }
+.ncard .m { font: 12.5px/1.4 var(--mono); color: var(--ink-3); margin-top: 4px; }
+.ncard p { margin: 8px 0 0; font-size: 15px; }
+.ncard .acts { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.route-foot { margin-top: 14px; font: 13px/1.5 var(--mono); color: var(--ink-2); border-top: 1px solid var(--rule); padding-top: 10px; }
+
+/* colophon */
+.colophon { text-align: center; max-width: 560px; margin: 8px auto 0; }
+.colophon .smallcaps { color: var(--ink-3); }
+.colophon p { font-size: 15.5px; line-height: 1.75; margin: 12px 0; font-variant: small-caps; letter-spacing: .03em; }
+.colophon p.plain { font-variant: normal; letter-spacing: 0; color: var(--ink-2); font-size: 14px; }
+.sect { margin-top: 36px; }
+.sect h4 { margin: 0 0 4px; font: 500 21px/1.2 var(--display); }
+.sect .lede { margin: 0 0 12px; color: var(--ink-2); font-size: 14.5px; max-width: 70ch; }
+.tbl-wrap { overflow-x: auto; }
+table.t { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 520px; }
+table.t th { text-align: left; font: 10.5px/1.2 var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--ink-3); border-bottom: 1px solid var(--ink); padding: 6px 8px 6px 0; }
+table.t td { border-bottom: 1px solid var(--rule); padding: 8px 8px 8px 0; vertical-align: top; }
+table.t td.n { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+table.t th.n { text-align: right; }
+.minishelf { display: flex; align-items: flex-end; gap: 3px; overflow-x: auto; padding: 18px 4px 0; border-bottom: 10px solid #6e5c3f; }
+.ms-spine { flex: none; width: 50px; height: 150px; border-radius: 2px 2px 0 0; position: relative; color: #e8dcc0; text-decoration: none;
+  background-image: linear-gradient(90deg, rgba(0,0,0,.3), rgba(255,255,255,.08) 25%, rgba(0,0,0,.25)), var(--grain); }
+.ms-spine .v { position: absolute; top: 10px; bottom: 40px; left: 0; right: 0; writing-mode: vertical-rl; display: flex; align-items: center; justify-content: center; font: 11px/1.1 var(--serif); overflow: hidden; padding: 2px; text-align: center; }
+.ms-spine .cl { position: absolute; bottom: 6px; left: 4px; right: 4px; background: #efe8d6; color: #2a2a26; font: 700 7px/1.15 var(--mono); padding: 2px 1px; text-align: center; border-radius: 1px; }
+.ms-spine.phantom { outline: 2px dashed var(--gold); outline-offset: 3px; }
+.ms-cap { display: flex; gap: 3px; padding: 6px 4px 0; overflow-x: auto; font: 10.5px/1.3 var(--mono); color: var(--ink-3); }
+.sched { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+.week { border: 1px solid var(--rule); border-radius: 3px; padding: 8px 10px; background: var(--paper-2); font-size: 13px; }
+.week h5 { margin: 0 0 4px; font: 700 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--ink-3); display: flex; justify-content: space-between; }
+.week ul { margin: 0; padding: 0; list-style: none; }
+.week li { margin: 3px 0; line-height: 1.3; }
+.week li.rev { color: var(--ink-3); font-style: italic; }
+.rejects { list-style: none; padding: 0; margin: 0; }
+.rejects li { border-bottom: 1px solid var(--rule); padding: 8px 0; font-size: 14px; }
+.rejects li b { font-weight: 400; }
+.rejects .why { color: var(--ink-3); font-size: 13px; display: block; margin-top: 2px; }
+
+/* bench log */
+.log { font: 12.5px/1.55 var(--mono); margin: 12px 0 0; padding: 0; list-style: none; }
+.log li { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 10px; padding: 3px 0; border-bottom: 1px dotted var(--rule); }
+.log li .k { text-transform: uppercase; letter-spacing: .06em; font-size: 10.5px; color: var(--ink-3); padding-top: 2px; }
+.log li.bad .k { color: var(--buy); }
+.log li.tool .k { color: var(--ai); }
+.log li .x { min-width: 0; overflow-wrap: anywhere; color: var(--ink-2); }
+.gatebox { display: flex; gap: 22px; flex-wrap: wrap; border: 1px solid var(--rule); background: var(--paper-2); border-radius: 3px; padding: 10px 14px; font: 13px/1.4 var(--mono); }
+.gatebox b { font: 600 22px/1 var(--display); display: block; }
+
+/* dialogs */
+dialog { border: 0; padding: 0; background: transparent; color: var(--ink); max-width: none; max-height: none; }
+dialog::backdrop { background: rgba(20, 22, 19, .45); backdrop-filter: blur(2px); }
+.sheet-dlg { position: fixed; inset: 0 0 0 auto; margin: 0; height: 100%; width: min(760px, 100%); }
+.sheet-dlg[open] { animation: slidein .35s cubic-bezier(.2,.8,.2,1); }
+@keyframes slidein { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.dlg-in { height: 100%; overflow-y: auto; background: var(--paper); border-left: 1px solid var(--rule-2); box-shadow: -20px 0 50px -20px rgba(0,0,0,.4); padding: 0 0 40px; }
+.dlg-bar { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px clamp(16px, 4vw, 36px); background: var(--paper); border-bottom: 1px solid var(--rule); }
+.dlg-body { padding: 18px clamp(16px, 4vw, 36px) 0; }
+.xbtn { border: 1px solid var(--rule-2); background: var(--paper); border-radius: 3px; width: 34px; height: 34px; cursor: pointer; font: 18px/1 var(--mono); }
+
+/* reader */
+.reader-head h2 { margin: 6px 0 2px; font: 500 30px/1.12 var(--display); }
+.reader-head .m { font: 13px/1.4 var(--mono); color: var(--ink-3); }
+.reader-text { font-size: 17.5px; line-height: 1.68; max-width: 64ch; margin: 18px 0 0; hyphens: auto; }
+.reader-text p { margin: 0 0 .9em; text-indent: 1.4em; }
+.reader-text p.first, .reader-text p.c { text-indent: 0; }
+.reader-text p.c { text-align: center; font-variant: small-caps; letter-spacing: .05em; margin-top: 1.2em; }
+.reader-text .pg { font: 10px/1 var(--mono); color: var(--ink-3); margin: 0 4px; vertical-align: 2px; }
+.reader-text sup { font: 10px var(--mono); color: var(--ink-3); }
+.reader-text blockquote { margin: 0 0 1em 1.4em; font-size: 15.5px; }
+.reader-text pre { white-space: pre-wrap; font: 13px/1.45 var(--mono); }
+.bridge-box { margin: 16px 0; padding: 12px 16px; background: var(--paper-2); border-left: 3px solid var(--accent); border-radius: 0 3px 3px 0; }
+.bridge-box .smallcaps { color: var(--ink-3); font-size: 10.5px; }
+.bridge-box p { margin: 6px 0 0; font-style: italic; color: var(--ink-2); font-size: 15px; line-height: 1.6; }
+.reader-card { margin-top: 18px; border: 1px solid var(--rule); border-radius: 3px; padding: 14px 16px; background: var(--paper-2); }
+.reader-card h5 { margin: 0 0 6px; font: 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--ink-3); }
+.toclist { margin: 6px 0 0; padding: 0; list-style: none; font-size: 14px; }
+.toclist li { display: flex; justify-content: space-between; gap: 10px; padding: 3px 0; border-bottom: 1px dotted var(--rule); }
+.toclist li.hit { font-weight: 700; color: var(--accent-ink); }
+.toclist li span:last-child { font-family: var(--mono); color: var(--ink-3); white-space: nowrap; }
+
+/* commission */
+.jobticket { border: 1px solid var(--rule-2); border-radius: 3px; background: var(--paper-2); padding: 16px; position: relative; }
+.jobticket::before { content: ''; position: absolute; left: -1px; right: -1px; top: -1px; height: 5px; background: repeating-linear-gradient(90deg, var(--accent) 0 10px, transparent 10px 14px); }
+.jt-head { display: flex; justify-content: space-between; gap: 8px; font: 12px/1.3 var(--mono); text-transform: uppercase; letter-spacing: .12em; color: var(--ink-3); flex-wrap: wrap; }
+.jobticket label { display: block; margin-top: 14px; font: 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .12em; color: var(--ink-3); }
+.jobticket textarea { width: 100%; min-height: 110px; margin-top: 6px; border: 1px solid var(--rule-2); border-radius: 2px; background: var(--paper); padding: 10px 12px; font: 16px/1.5 var(--serif); resize: vertical; }
+.examples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.examples button { border: 1px solid var(--rule-2); background: var(--paper); border-radius: 12px; padding: 3px 10px; font: 13px/1.3 var(--serif); cursor: pointer; text-align: left; }
+.examples button:hover { border-color: var(--ink-3); }
+.jt-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 6px; align-items: center; }
+.jt-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.livenote { font-size: 13px; color: var(--ink-3); margin-top: 8px; font-style: italic; }
+.progress { margin-top: 18px; }
+.progress .stream { font: italic 15px/1.55 var(--serif); color: var(--ink-2); border-left: 3px solid var(--ai); padding: 6px 12px; margin-top: 10px; white-space: pre-wrap; min-height: 2em; }
+.progress .status { font: 13px/1.4 var(--mono); color: var(--ink-2); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.spinner { width: 14px; height: 14px; border: 2px solid var(--rule-2); border-top-color: var(--ai); border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.err { color: var(--buy); font: 13.5px/1.5 var(--serif); margin-top: 10px; }
+
+/* about */
+.about h2 { font: 500 30px/1.15 var(--display); margin: 4px 0 8px; }
+.about h3 { font: 600 13px/1.3 var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--ink-3); margin: 22px 0 6px; }
+.about p, .about li { font-size: 15px; line-height: 1.6; }
+.about ul { padding-left: 20px; margin: 6px 0; }
+
+.loading { padding: 80px 20px; text-align: center; font: italic 16px var(--serif); color: var(--ink-3); }
+footer.foot { margin-top: 28px; font: 12px/1.6 var(--mono); color: var(--bench-ink); display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
+
+@media (max-width: 1080px) {
+  .bench { grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 20px; }
+  .book { --w: 170px; --h: 236px; }
+  .stage { height: 300px; }
+}
+@media (max-width: 760px) {
+  .bench { grid-template-columns: minmax(0, 1fr); }
+  .binding { position: static; }
+  .stage { height: 270px; }
+  .book { --w: 156px; --h: 216px; }
+  .cover .c-title { top: 40px; left: 16px; right: 16px; }
+  .cover .c-title .s { font-size: 11px; }
+  .wordmark { font-size: 20px; }
+  .tagline { font-size: 13px; }
+  .track { grid-template-columns: 30px minmax(0, 1fr); }
+  .track .tside { grid-column: 2; align-items: flex-start; text-align: left; flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .tactions { justify-content: flex-start; }
+  .routes { grid-template-columns: minmax(0, 1fr); }
+  .log li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .shelf-row { min-height: 196px; }
+  .spine { height: 178px !important; }
+  .spine-blank { height: 160px; }
+  .mastnav .btn { padding: 6px 10px; font-size: 13px; }
+  .sheet { min-height: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+</style>
+
+<div class="app">
+  <header class="mast">
+    <div class="brand">
+      <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+        <rect x="5" y="8" width="8" height="28" rx="1" fill="#6b1e2a"/><rect x="5" y="7" width="8" height="2" fill="#efe5cc"/>
+        <rect x="14" y="4" width="10" height="32" rx="1" fill="#1e4a3c"/><rect x="14" y="3" width="10" height="2" fill="#efe5cc"/>
+        <rect x="25" y="10" width="9" height="26" rx="1" fill="#22335a" transform="rotate(8 29 23)"/>
+        <line x1="14" y1="10" x2="24" y2="10" stroke="#c9a24f" stroke-width="1"/><line x1="14" y1="30" x2="24" y2="30" stroke="#c9a24f" stroke-width="1"/>
+        <rect x="2" y="36" width="36" height="2" fill="currentColor" opacity=".5"/>
+      </svg>
+      <div style="min-width:0">
+        <div class="wordmark">The Bindery</div>
+        <div class="tagline">Describe the book you wish existed. Get a bound volume of real chapters, papers and textbook sections.</div>
+      </div>
+    </div>
+    <nav class="mastnav" aria-label="Main">
+      <button class="btn btn-ink" id="btn-commission" type="button">Commission a volume</button>
+      <button class="btn btn-quiet" id="btn-about" type="button">About this prototype</button>
+    </nav>
+  </header>
+  <div class="headband" aria-hidden="true"></div>
+
+  <section class="shelf" aria-labelledby="shelf-h">
+    <div class="shelf-left">
+      <div class="shelf-head"><span class="smallcaps" id="shelf-h">The shelf</span><span class="muted">books that don’t exist, bound from records that do</span></div>
+      <div class="shelf-row" id="shelf" role="group" aria-label="Volumes"></div>
+      <div class="shelf-board" aria-hidden="true"></div>
+    </div>
+    <div class="explain" id="explain">
+      <div><span class="n">I</span><h4>Commission</h4><p>Write a brief and say how many hours you have. Claude, as series editor, searches the catalogue, arXiv papers, public-domain chapters and open textbooks with page tools.</p></div>
+      <div><span class="n">II</span><h4>Bind</h4><p>Only pieces that resolve to a real record are bound, with a note between parts. The hours set how deep each is read, from gist to study, and the spine follows the pages.</p></div>
+      <div><span class="n">III</span><h4>Route</h4><p>Drill from the newest paper down to the oldest work it rests on, then take the cheapest path back up: free, or fast.</p></div>
+    </div>
+  </section>
+
+  <main class="bench" id="bench">
+    <aside class="binding" aria-label="The bound volume">
+      <div class="stage" id="stage">
+        <div class="book" id="book" role="img" aria-label="">
+          <div class="back face-cloth"></div>
+          <div class="topedge"></div>
+          <div class="edge"></div>
+          <div class="titlepage" id="titlepage"></div>
+          <div class="spine3d face-cloth" id="spine3d"></div>
+          <div class="cover" id="cover">
+            <div class="outside face-cloth" id="cover-out"></div>
+            <div class="inside" id="cover-in"></div>
+          </div>
+        </div>
+      </div>
+      <div class="book-hint"><button type="button" id="btn-cover">Open the cover</button></div>
+      <div class="panel controls">
+        <div class="ctl-label"><span class="smallcaps" id="hours-lab">Time you have</span><span class="hours-read" id="hours-read">20 h</span></div>
+        <div class="ctl-row" style="margin-top:8px">
+          <div class="seg" role="group" aria-label="Presets" id="hour-presets">
+            <button type="button" data-h="5">5 h</button><button type="button" data-h="20">20 h</button><button type="button" data-h="60">60 h</button>
+          </div>
+          <span class="muted" id="hours-word" style="font-style:italic;font-size:13.5px"></span>
+        </div>
+        <input class="slider" id="hours" type="range" min="0" max="1000" step="1" aria-labelledby="hours-lab" aria-valuetext="20 hours">
+        <div class="ticks" id="ticks" aria-hidden="true"></div>
+        <div class="ctl-label" style="margin-top:14px"><span class="smallcaps" id="keys-lab">Access keys</span></div>
+        <div class="ctl-row" style="margin-top:6px">
+          <div class="seg" role="group" aria-labelledby="keys-lab" id="keys">
+            <button type="button" data-k="open">Open only</button><button type="button" data-k="loan">+ Loans</button><button type="button" data-k="any">+ Buy</button>
+          </div>
+        </div>
+        <div class="ctl-note" id="keys-note"></div>
+        <dl class="stats" id="stats"></dl>
+        <div class="mix" id="mix"></div>
+      </div>
+    </aside>
+
+    <section class="volume" aria-label="Volume">
+      <div class="tabs" role="tablist" aria-label="Views" id="tabs">
+        <button class="tab" role="tab" id="tab-contents" aria-controls="pane-contents" aria-selected="true" type="button">Contents</button>
+        <button class="tab" role="tab" id="tab-route" aria-controls="pane-route" aria-selected="false" type="button" tabindex="-1">Route</button>
+        <button class="tab" role="tab" id="tab-colophon" aria-controls="pane-colophon" aria-selected="false" type="button" tabindex="-1">Colophon</button>
+        <button class="tab" role="tab" id="tab-bench" aria-controls="pane-bench" aria-selected="false" type="button" tabindex="-1">Bench log</button>
+      </div>
+      <div class="sheet">
+        <div class="marble-strip" id="marble-strip" aria-hidden="true"></div>
+        <div class="pane" id="pane-contents" role="tabpanel" aria-labelledby="tab-contents"><div class="loading">Opening the bindery…</div></div>
+        <div class="pane" id="pane-route" role="tabpanel" aria-labelledby="tab-route" hidden></div>
+        <div class="pane" id="pane-colophon" role="tabpanel" aria-labelledby="tab-colophon" hidden></div>
+        <div class="pane" id="pane-bench" role="tabpanel" aria-labelledby="tab-bench" hidden></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>The Bindery · an Open Stacks prototype · data: Open Library (CC0), arXiv (CC0), Project Gutenberg, OpenStax</span>
+    <span id="foot-mode"></span>
+  </footer>
+</div>
+
+<dialog class="sheet-dlg" id="dlg-reader" aria-labelledby="reader-title">
+  <div class="dlg-in">
+    <div class="dlg-bar"><span class="smallcaps muted" id="reader-kicker">Riffle</span><button class="xbtn" type="button" data-close aria-label="Close">×</button></div>
+    <div class="dlg-body" id="reader-body"></div>
+  </div>
+</dialog>
+
+<dialog class="sheet-dlg" id="dlg-commission" aria-labelledby="commission-title">
+  <div class="dlg-in">
+    <div class="dlg-bar"><span class="smallcaps muted">Commission a volume</span><button class="xbtn" type="button" data-close aria-label="Close">×</button></div>
+    <div class="dlg-body">
+      <div class="jobticket">
+        <div class="jt-head"><span id="job-no">Job ticket No. 0004</span><span>The Bindery</span></div>
+        <h2 id="commission-title" style="font:500 28px/1.15 var(--display);margin:12px 0 0">Describe the book you wish existed</h2>
+        <label for="brief">The brief</label>
+        <textarea id="brief" placeholder="Topic, level, purpose. For example: Judging forecasts, from Laplace to proper scoring rules; technical."></textarea>
+        <div class="examples" id="examples"></div>
+        <label id="c-hours-lab">Hours you have</label>
+        <div class="jt-row">
+          <div class="seg" role="group" aria-labelledby="c-hours-lab" id="c-hours">
+            <button type="button" data-h="5">5 h</button><button type="button" data-h="20" aria-pressed="true">20 h</button><button type="button" data-h="60">60 h</button>
+          </div>
+        </div>
+        <label id="c-keys-lab">Access keys</label>
+        <div class="jt-row">
+          <div class="seg" role="group" aria-labelledby="c-keys-lab" id="c-keys">
+            <button type="button" data-k="open">Open only</button><button type="button" data-k="loan">+ Loans</button><button type="button" data-k="any" aria-pressed="true">+ Buy</button>
+          </div>
+        </div>
+        <div class="jt-actions">
+          <button class="btn btn-accent" type="button" id="btn-bind-claude">Bind with Claude as editor</button>
+          <button class="btn" type="button" id="btn-bind-algo">Bind from the catalogue (no editor)</button>
+          <button class="btn btn-quiet" type="button" id="btn-stop" hidden>Stop</button>
+        </div>
+        <div class="livenote" id="livenote">Checking whether Claude is available…</div>
+      </div>
+      <div class="progress" id="progress" hidden>
+        <div class="status" id="prog-status"></div>
+        <div class="stream" id="prog-stream" aria-live="polite"></div>
+        <ol class="log" id="prog-log"></ol>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="sheet-dlg" id="dlg-about" aria-labelledby="about-title">
+  <div class="dlg-in">
+    <div class="dlg-bar"><span class="smallcaps muted">About this prototype</span><button class="xbtn" type="button" data-close aria-label="Close">×</button></div>
+    <div class="dlg-body about">
+      <h2 id="about-title">The Bindery</h2>
+      <p>A deep mockup of a tool that turns a one-line brief into a <em>bound volume</em>: a sequence of real chapters, papers and textbook sections, with an editor’s note before each part, sized to the hours you have. Its second view, <em>Route</em>, drills from a recent paper down through the textbooks and classics it rests on, then solves for the cheapest path back up.</p>
+      <h3>What it demonstrates</h3>
+      <ul>
+        <li><b>Transclusion, not generation.</b> Every piece is a record: a chapter of a public-domain text (readable here), an arXiv paper, an OpenStax section, a free textbook named in the R01 dossier, or an Open Library work with a chapter chosen from a fetched table of contents.</li>
+        <li><b>Hours as a budget.</b> The slider runs a deterministic allocator in the page: each piece can be bound as a gist, skimmed, read or studied, and the allocator buys depth by value per minute. The spine thickens and thins with the pages bound.</li>
+        <li><b>Honest access routes.</b> Access keys (open only, plus library loans, plus purchases) swap unreachable pieces for free substitutes and say what each swap loses. “Borrowable” is checked against the language of the actual lendable scan.</li>
+        <li><b>A resolver gate.</b> The bench log shows every check: ids resolved, page ranges read from editions, quotations verified verbatim, and candidates rejected because they are not in the corpus.</li>
+      </ul>
+      <h3>Real data</h3>
+      <ul>
+        <li>Open Library catalog (7,127 works, CC0), arXiv metadata (1,457 papers, CC0), OpenStax book list and section archive, Project Gutenberg catalog and nine full texts, all fetched 15 October 2026.</li>
+        <li>Tables of contents and page ranges from Open Library editions; Internet Archive scan languages; arXiv page counts; OpenStax section word counts; three further Gutenberg excerpts (Pascal, Clifford, FitzRoy). Fetched and checked by <code>scripts/prototypes/bindery.mjs</code>.</li>
+        <li>Free textbook URLs (FPP3, Jaynes, MacKay, Hardt &amp; Recht, Grinstead &amp; Snell) from <code>research/R01-open-books.md</code>, re-checked on 15 October 2026.</li>
+      </ul>
+      <h3>AI-generated (precomputed)</h3>
+      <p>The three volumes’ titles, editor’s notes, one-line reasons, substitution notes, route concepts and “what this layer adds” lines were written by Claude in October 2026 and are labelled in the page. They are grounded in titles, tables of contents and abstracts; spot-check them before relying on them. Quotations inside notes are verified verbatim by the build script.</p>
+      <h3>Live, when opened in Claude</h3>
+      <p>“Bind with Claude as editor” asks Claude (through the artifact’s <code>sample</code> capability) to search the catalog, papers, chapters and textbooks with page tools and return a volume; any id that does not resolve is rejected and listed. Without Claude, “Bind from the catalogue” builds an unedited volume by keyword match, with no notes.</p>
+      <h3>Mocked or simplified</h3>
+      <ul>
+        <li>Reading times are estimates from word or page counts; arXiv papers without a stated length are assumed to be 14 pages.</li>
+        <li>No prices: “buy” means buy or use a physical library; nothing is checked against a bookshop.</li>
+        <li>The drawn-path gesture over a map of knowledge, schedule export and lecture segments from the panel spec are not built.</li>
+        <li>Route prerequisite links are editorial judgements (“conceptual ancestor in this corpus”), not citations.</li>
+      </ul>
+      <h3>Links</h3>
+      <ul>
+        <li><a href="https://open-stacks.quantifieduncertainty.org/building/prototype-gallery/" target="_blank" rel="noopener">Prototype gallery</a></li>
+        <li><a href="https://open-stacks.quantifieduncertainty.org/interfaces/generative-interfaces/" target="_blank" rel="noopener">Chapter: Generative interfaces</a></li>
+        <li><a href="https://open-stacks.quantifieduncertainty.org/access/access-ladder/" target="_blank" rel="noopener">Chapter: The access ladder</a></li>
+      </ul>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(() => {
+'use strict';
+
+// ----------------------------------------------------------------- utilities
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('bindery:' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('bindery:' + k, JSON.stringify(v)); } catch {} },
+};
+const fmtMin = (m) => {
+  m = Math.round(m);
+  if (m < 60) return `${m} min`;
+  const h = Math.floor(m / 60), r = m % 60;
+  return r ? `${h} h ${String(r).padStart(2, '0')}` : `${h} h`;
+};
+const fmtH = (m) => (m / 60 >= 10 ? (m / 60).toFixed(0) : (m / 60).toFixed(1)) + ' h';
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
+const NUMWORD = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty', 'twenty-one', 'twenty-two', 'twenty-three', 'twenty-four', 'twenty-five'];
+function mulberry32(a) { return () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+const hash = (s) => { let h = 2166136261; for (const c of String(s)) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+
+const CLOTH = { oxblood: '#6b1e2a', green: '#1e4a3c', navy: '#22335a', tan: '#6c5a43', grey: '#555b61' };
+const CLOTH_INK = { oxblood: '--cloth-oxblood', green: '--cloth-green', navy: '--cloth-navy', tan: '--cloth-tan', grey: '--cloth-grey' };
+const MARBLE = {
+  oxblood: ['#ece3cf', '#6b1e2a', '#c8a24e', '#2f3d4f', '#ece3cf', '#8a4b2a', '#9e2f3c', '#e2d3b0'],
+  green: ['#e9e3d0', '#1e4a3c', '#c79b4a', '#3b2e2a', '#e9e3d0', '#6f8f7a', '#2f6a55', '#d8c79e'],
+  navy: ['#e6dfcc', '#22335a', '#c9a24f', '#7a2b33', '#e6dfcc', '#5a7aa8', '#2c4570', '#d9c99c'],
+  tan: ['#ece4d0', '#6c5a43', '#b98d3e', '#2f3d4f', '#ece4d0', '#8f7a5b', '#4a3b2c', '#dccaa1'],
+  grey: ['#e7e5df', '#555b61', '#a9a091', '#2f3438', '#e7e5df', '#7c848b', '#3f4549', '#cfcab9'],
+};
+
+// ----------------------------------------------------------------- estimators & allocator
+const WPM = { old: 190, popular: 250, standard: 210, technical: 125 };
+const DEPTHS = ['folded', 'gist', 'skim', 'read', 'study'];
+const DV = [0, 0.16, 0.45, 0.85, 1];
+const OVERHEAD = 4; // minutes to pick up and put down a piece
+function costs(rec, diff) {
+  const w = rec.words || (rec.pages || 20) * 350;
+  const p = rec.pages || Math.max(2, Math.round(w / 350));
+  const read = Math.max(6, w / (WPM[diff] || 210));
+  return [
+    { min: 0, pp: 0 },
+    { min: 7, pp: 1 },
+    { min: clamp(w / 700 + 4, 5, read * 0.6), pp: Math.max(2, Math.round(p * 0.35)) },
+    { min: read + 2, pp: p },
+    { min: read * 1.8 + 20, pp: Math.round(p * 1.1) + 2 },
+  ];
+}
+function allocate(items, budget) {
+  const lv = items.map((it) => (it.core ? 1 : 0));
+  let used = items.reduce((s, it, i) => s + (lv[i] ? it.c[lv[i]].min + OVERHEAD : 0), 0);
+  for (let guard = 0; guard < 400; guard++) {
+    let best = -1, bestL = 0, bestR = 0, bestDm = 0;
+    items.forEach((it, i) => {
+      for (let L = lv[i] + 1; L <= 4; L++) {
+        const dm = it.c[L].min - it.c[lv[i]].min + (lv[i] === 0 ? OVERHEAD : 0);
+        if (used + dm > budget) continue;
+        const r = (it.imp * (DV[L] - DV[lv[i]])) / Math.max(dm, 0.5);
+        if (r > bestR) { bestR = r; best = i; bestL = L; bestDm = dm; }
+      }
+    });
+    if (best < 0) break;
+    lv[best] = bestL; used += bestDm;
+  }
+  return { lv, used };
+}
+const DIFF_BY_KIND = { pd: 'old', arxiv: 'standard', ol: 'popular', ox: 'standard', ft: 'technical' };
+
+// ----------------------------------------------------------------- state
+let DB = null;
+const REC = {};
+const VOLS = [];
+const S = {
+  vid: store.get('vid', 'calibration'),
+  hours: store.get('hours', {}),
+  key: store.get('key', 'any'),
+  tab: 'contents',
+  route: 'free',
+  read: new Set(store.get('read', [])),
+  weekly: 3,
+  sel: null,
+  open: false,
+};
+const textCache = new Map();
+const marbleCache = new Map();
+const thresholdCache = new Map();
+let sample = null, sampleChecked = false;
+
+const vol = () => VOLS.find((v) => v.id === S.vid) || VOLS[0];
+const hoursOf = (v) => S.hours[v.id] ?? v.nominalHours;
+const tierOk = (tier, key) => tier === 'open' || (tier === 'loan' && key !== 'open') || (tier === 'buy' && key === 'any');
+
+// effective tracks under the current access key
+function effective(v, key) {
+  const present = new Set();
+  for (const p of v.parts) for (const t of p.tracks) present.add(t.ref);
+  const out = [];
+  v.parts.forEach((p, pi) => p.tracks.forEach((t, ti) => {
+    const r = REC[t.ref];
+    const base = { part: pi, idx: ti, track: t, orig: r, imp: t.imp, core: t.core, diff: t.diff || DIFF_BY_KIND[r.kind] || 'standard' };
+    if (tierOk(r.access.tier, key)) { out.push({ ...base, rec: r, mode: 'as-is' }); return; }
+    const sub = t.sub;
+    if (sub?.ref && REC[sub.ref] && tierOk(REC[sub.ref].access.tier, key) && !present.has(sub.ref)) {
+      present.add(sub.ref);
+      const sr = REC[sub.ref];
+      out.push({ ...base, rec: sr, mode: 'swapped', loses: sub.loses, diff: DIFF_BY_KIND[sr.kind] || 'standard', core: t.core });
+      return;
+    }
+    out.push({ ...base, rec: r, mode: sub?.covered ? 'covered' : 'dropped', loses: sub?.loses || 'No free equivalent was found in this corpus.', covered: sub?.covered || null });
+  }));
+  out.forEach((it) => { it.c = costs(it.rec, it.diff); });
+  return out;
+}
+
+function compute(v) {
+  const key = S.key;
+  const items = effective(v, key);
+  const active = items.filter((it) => it.mode === 'as-is' || it.mode === 'swapped');
+  const budget = hoursOf(v) * 60;
+  const { lv, used } = allocate(active, budget);
+  active.forEach((it, i) => { it.level = lv[i]; });
+  items.forEach((it) => { if (it.level == null) it.level = 0; });
+  // thresholds: smallest budget at which each active piece is bound
+  const tk = `${v.id}|${key}`;
+  if (!thresholdCache.has(tk)) {
+    // the budget from which a piece stays bound (the greedy allocator is not perfectly monotone)
+    const lastFolded = new Array(active.length).fill(null);
+    for (let h = 1; h <= 60; h += 0.5) {
+      const r = allocate(active, h * 60);
+      r.lv.forEach((L, i) => { if (L === 0) lastFolded[i] = h; });
+    }
+    thresholdCache.set(tk, lastFolded.map((x) => (x == null ? 1 : x >= 60 ? null : x + 0.5)));
+  }
+  const th = thresholdCache.get(tk);
+  active.forEach((it, i) => { it.joins = th[i]; });
+  const bound = active.filter((it) => it.level > 0);
+  const pages = 12 + v.parts.length * 2 + bound.reduce((s, it) => s + it.c[it.level].pp, 0);
+  const mix = { open: 0, loan: 0, buy: 0 };
+  const mixMin = { open: 0, loan: 0, buy: 0 };
+  for (const it of bound) { mix[it.rec.access.tier]++; mixMin[it.rec.access.tier] += it.c[it.level].min; }
+  const maxMin = active.reduce((s, it) => s + it.c[4].min + OVERHEAD, 0);
+  return { items, active, bound, used, budget, pages, mix, mixMin, maxMin };
+}
+
+// ----------------------------------------------------------------- marbling (Jaffer's mathematical marbling)
+function marble(seed, palette, w = 300, h = 420, N = 52) {
+  const ck = `${seed}|${w}x${h}`;
+  if (marbleCache.has(ck)) return marbleCache.get(ck);
+  const rnd = mulberry32(seed);
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  const ctx = cv.getContext('2d');
+  const drops = [];
+  const resample = (pts, maxSeg) => {
+    const out = [];
+    const n = pts.length / 2;
+    for (let i = 0; i < n; i++) {
+      const x0 = pts[2 * i], y0 = pts[2 * i + 1], j = (i + 1) % n, x1 = pts[2 * j], y1 = pts[2 * j + 1];
+      out.push(x0, y0);
+      const d = Math.hypot(x1 - x0, y1 - y0);
+      if (d > maxSeg && out.length < 3000) { const k = Math.min(6, Math.ceil(d / maxSeg)); for (let s = 1; s < k; s++) out.push(x0 + (x1 - x0) * s / k, y0 + (y1 - y0) * s / k); }
+    }
+    return out;
+  };
+  for (let k = 0; k < N; k++) {
+    const cx = rnd() * w, cy = rnd() * h, r = 10 + rnd() * rnd() * 64, r2 = r * r;
+    for (const d of drops) {
+      const p = d.pts;
+      for (let i = 0; i < p.length; i += 2) {
+        const dx = p[i] - cx, dy = p[i + 1] - cy, d2 = dx * dx + dy * dy || 1e-6;
+        const f = Math.sqrt(1 + r2 / d2);
+        p[i] = cx + dx * f; p[i + 1] = cy + dy * f;
+      }
+      d.pts = resample(p, 7);
+    }
+    const m = 64, pts = [];
+    for (let i = 0; i < m; i++) { const a = (i / m) * Math.PI * 2; pts.push(cx + Math.cos(a) * r, cy + Math.sin(a) * r); }
+    drops.push({ pts, color: palette[(k * 3 + 1) % palette.length] });
+  }
+  // combing: vertical tines alternating direction, then a finer horizontal comb
+  const comb = (vertical, spacing, alpha, lambda, off) => {
+    for (const d of drops) {
+      const p = d.pts;
+      for (let i = 0; i < p.length; i += 2) {
+        const c = vertical ? p[i] : p[i + 1];
+        const u = (c - off) / spacing, k = Math.round(u), dd = Math.abs(u - k) * spacing;
+        const sgn = k % 2 ? 1 : -1;
+        const disp = sgn * alpha * lambda / (dd + lambda);
+        if (vertical) p[i + 1] += disp; else p[i] += disp;
+      }
+      d.pts = resample(p, 6);
+    }
+  };
+  comb(true, 48 + rnd() * 20, 60, 8, rnd() * 40);
+  comb(false, 22 + rnd() * 8, 14, 5, rnd() * 20);
+  ctx.fillStyle = palette[0];
+  ctx.fillRect(0, 0, w, h);
+  for (const d of drops) {
+    ctx.beginPath();
+    const p = d.pts;
+    ctx.moveTo(p[0], p[1]);
+    for (let i = 2; i < p.length; i += 2) ctx.lineTo(p[i], p[i + 1]);
+    ctx.closePath();
+    ctx.fillStyle = d.color;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(30,20,10,.22)';
+    ctx.lineWidth = 0.6;
+    ctx.stroke();
+  }
+  const url = cv.toDataURL('image/jpeg', 0.86);
+  marbleCache.set(ck, url);
+  return url;
+}
+
+// ----------------------------------------------------------------- rendering: shelf & book
+const clothOf = (v) => CLOTH[v.cloth] || CLOTH.tan;
+function spineWidth(pages) { return clamp(18 + pages * 0.045, 28, 86); }
+function renderShelf() {
+  const el = $('#shelf');
+  const cur = vol();
+  const html = VOLS.map((v) => {
+    const r = v._stats || compute(v);
+    const w = spineWidth(r.pages);
+    const hgt = 196 + (hash(v.id) % 18);
+    return `<button class="spine${v._new ? ' new' : ''}" type="button" data-vid="${esc(v.id)}" aria-pressed="${v.id === cur.id}" style="--c:${clothOf(v)};width:${w}px;height:${hgt}px" aria-label="Volume ${esc(v.numeral)}: ${esc(v.title)}, ${r.pages} pages at ${hoursOf(v)} hours">
+      <span class="bands"></span><span class="sp-num">${esc(v.numeral)}</span>
+      <span class="sp-title"><span>${esc(v.short || v.title)}</span></span>
+      <span class="bands b"></span><span class="sp-label">${esc(v.call.split(' ')[0])}</span></button>`;
+  }).join('');
+  el.innerHTML = html + `<span class="shelf-gap"></span><button class="spine-blank" type="button" id="blank-spine" aria-label="Commission a new volume"><b>+</b><span>Commission</span></button>`;
+  VOLS.forEach((v) => { v._new = false; });
+}
+function renderBook(stats) {
+  const v = vol();
+  const book = $('#book');
+  const t = clamp(10 + stats.pages * 0.07, 14, 150);
+  book.style.setProperty('--t', `${t}px`);
+  book.style.setProperty('--c', clothOf(v));
+  document.documentElement.style.setProperty('--accent', clothOf(v));
+  book.setAttribute('aria-label', `${v.title}: ${v.subtitle}. Bound volume, ${stats.pages} pages, spine about ${Math.round(stats.pages * 0.065 + 5)} millimetres.`);
+  const pal = MARBLE[v.cloth] || MARBLE.tan;
+  const url = marble(hash(v.id + v.title), pal);
+  $('#cover-in').style.backgroundImage = `url(${url})`;
+  $('#marble-strip').style.backgroundImage = `url(${marble(hash(v.id + v.title) ^ 0x5bd1e995, pal, 960, 110, 44)})`;
+  if (book.dataset.vid !== v.id) {
+    book.dataset.vid = v.id;
+    $('#cover-out').innerHTML = `<div class="frame"></div>
+      <div class="c-title"><div class="t gilt">${esc(v.title)}</div><div class="s gilt">${esc(v.subtitle)}</div></div>
+      <svg class="orn" width="34" height="14" viewBox="0 0 34 14" aria-hidden="true"><path d="M1 7h11M22 7h11" stroke="currentColor" stroke-width=".8"/><path d="M17 1l5 6-5 6-5-6z" fill="none" stroke="currentColor" stroke-width=".9"/><circle cx="17" cy="7" r="1.4" fill="currentColor"/></svg>
+      <div class="imprint">The Bindery · MMXXVI</div>`;
+    const bands = [26, 46, 210, 230].map((y) => `<span class="band" style="top:${y * 0.0035 * 100}%"></span>`).join('');
+    $('#spine3d').innerHTML = `${bands}<span class="snum">${esc(v.numeral)}</span><span class="st"><span class="gilt">${esc(v.short || v.title)}</span></span><span class="slabel">${esc(v.call.replace(/ (\d{4})$/, '\n$1'))}</span>`;
+    $('#titlepage').innerHTML = `<div class="tp-vol">Volume ${esc(v.numeral)}</div><div class="tp-t">${esc(v.title)}</div><div class="tp-s">${esc(v.subtitle)}</div><div class="tp-rule"></div><div class="tp-h" id="tp-h"></div><div class="tp-imp">The Bindery</div>`;
+  }
+  fitCoverTitle();
+  const tph = $('#tp-h');
+  if (tph) tph.innerHTML = `Bound for ${hoursOf(v)} hours<br>${stats.bound.length} pieces · ${stats.pages} pages`;
+}
+
+function fitCoverTitle() {
+  const box = $('#cover-out .c-title');
+  const t = $('#cover-out .c-title .t');
+  if (!box || !t) return;
+  const cover = $('#cover-out');
+  const maxH = cover.offsetHeight * 0.48;
+  let fs = 21;
+  box.style.setProperty('--fs', fs + 'px');
+  for (let i = 0; i < 14; i++) {
+    const tooWide = t.scrollWidth > t.clientWidth + 1;
+    if (!tooWide && box.offsetHeight <= maxH) break;
+    fs -= 1; box.style.setProperty('--fs', fs + 'px');
+    if (fs <= 10) break;
+  }
+}
+function renderControls(stats) {
+  const v = vol();
+  const h = hoursOf(v);
+  $('#hours-read').innerHTML = `${h} h`;
+  $('#hours-word').textContent = h < 4 ? 'an afternoon' : h < 9 ? 'an evening or two' : h < 16 ? 'a week of evenings' : h < 32 ? 'a month of evenings' : h < 46 ? 'a short course' : 'a semester';
+  const sl = $('#hours');
+  sl.value = String(Math.round(1000 * Math.log(h / 2) / Math.log(30)));
+  sl.setAttribute('aria-valuetext', `${h} hours`);
+  $$('#hour-presets button').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.h) === h)));
+  $$('#keys button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.k === S.key)));
+  const nSwap = stats.items.filter((i) => i.mode === 'swapped').length;
+  const nDrop = stats.items.filter((i) => i.mode === 'dropped' || i.mode === 'covered').length;
+  $('#keys-note').textContent = S.key === 'any'
+    ? 'Everything is reachable if you will buy or use a library. Tighten the keys to see what free substitutes cost you.'
+    : `${S.key === 'open' ? 'Free and open, no account.' : 'Free, with an Open Library account for loans.'} ${nSwap} swapped for free substitutes, ${nDrop} dropped.`;
+  const over = stats.used > stats.budget + 1;
+  const spineMm = Math.round(stats.pages * 0.065 + 5);
+  $('#stats').innerHTML = `
+    <div><dt>Bound</dt><dd>${fmtH(stats.used)}${over ? ' <small>over</small>' : ''}</dd></div>
+    <div><dt>Pages</dt><dd>${stats.pages} <small>pp</small></dd></div>
+    <div><dt>Spine</dt><dd>${spineMm} <small>mm</small></dd></div>
+    <div><dt>Pieces</dt><dd>${stats.bound.length}<small>/${stats.active.length}</small></dd></div>
+    <div><dt>Slack</dt><dd>${fmtH(Math.max(0, stats.budget - stats.used))}</dd></div>
+    <div><dt>Full depth</dt><dd>${fmtH(stats.maxMin)}</dd></div>`;
+  const tot = stats.bound.length || 1;
+  $('#mix').innerHTML = `<div class="mixbar" role="img" aria-label="${stats.mix.open} open, ${stats.mix.loan} on loan, ${stats.mix.buy} to buy or borrow from a library">
+      <i style="width:${(100 * stats.mix.open) / tot}%;background:var(--open)"></i><i style="width:${(100 * stats.mix.loan) / tot}%;background:var(--loan)"></i><i style="width:${(100 * stats.mix.buy) / tot}%;background:var(--buy)"></i></div>
+    <div class="mixleg"><span><span class="dot" style="background:var(--open)"></span>${stats.mix.open} open tonight</span><span><span class="dot" style="background:var(--loan)"></span>${stats.mix.loan} on loan</span><span><span class="dot" style="background:var(--buy)"></span>${stats.mix.buy} buy / library</span></div>`;
+}
+function renderTicks() {
+  const pos = (h) => (100 * Math.log(h / 2)) / Math.log(30);
+  $('#ticks').innerHTML = [2, 5, 10, 20, 40, 60].map((h) => `<span style="left:calc(${pos(h)}% + ${(0.5 - pos(h) / 100) * 16}px)">${h}</span>`).join('');
+}
+
+// ----------------------------------------------------------------- rendering: contents
+const accessChip = (r) => `<a class="chip ${r.access.tier}" href="${esc(r.access.url)}" target="_blank" rel="noopener" title="${esc(r.access.note || '')}">${esc(r.access.label)}</a>`;
+const depthMeter = (L) => `<span class="depth" aria-hidden="true">${[1, 2, 3, 4].map((k) => `<i class="${k <= L ? 'on' : ''}"></i>`).join('')}</span>`;
+function noteHTML(note) {
+  if (!note || !note.length) return '';
+  return note.map((seg) => (typeof seg === 'string' ? esc(seg) : `<q>${esc(seg.q)}</q><a class="vq" href="#pane-bench" data-goto="bench" title="Verified verbatim in ${esc(seg.src)}">✓ verbatim</a>`)).join('');
+}
+function pieceTitle(r) {
+  return `${r.label ? `<span class="lbl">${esc(r.label)}</span>` : ''}${esc(r.piece)}`;
+}
+function workLine(r) {
+  const work = r.kind === 'arxiv' ? `<i>arXiv ${esc(r.ref.slice(6))}</i>` : r.wholeBook ? '<i>whole book</i>' : `<i>${esc(r.work)}</i>`;
+  const range = r.range ? ` · pp. ${r.range[0]}–${r.range[1]}` : '';
+  return `${esc(r.by)}${r.by ? ', ' : ''}${work}, ${esc(r.year)}${range}`;
+}
+function trackRow(v, it, num) {
+  const r = it.rec;
+  const cls = ['track'];
+  if (it.mode === 'dropped' || it.mode === 'covered') cls.push('dropped');
+  else if (it.level === 0) cls.push('folded');
+  let side = '';
+  if (it.mode === 'dropped' || it.mode === 'covered') {
+    side = `<span class="fold-note">${it.mode === 'covered' ? 'covered elsewhere' : 'unreachable'}</span>${accessChip(it.orig)}`;
+  } else if (it.level === 0) {
+    side = `<span class="fold-note">folded · ${it.joins ? `joins at ${it.joins} h` : 'joins beyond 60 h'}</span>${accessChip(r)}`;
+  } else {
+    const c = it.c[it.level];
+    side = `<span class="dlabel">${depthMeter(it.level)}<b>${DEPTHS[it.level]}</b> · ${fmtMin(c.min)} · ${c.pp} pp</span>${accessChip(r)}`;
+  }
+  const canRead = r.inline && (r.inline.file || r.inline.abstract || r.inline.headings || r.kind === 'ol' || r.kind === 'ft');
+  const actions = `<span class="tactions">${canRead && it.mode !== 'dropped' && it.mode !== 'covered' ? `<button class="linkbtn${r.inline?.file ? ' primary' : ''}" type="button" data-read="${esc(r.ref)}" data-part="${it.part}">${r.inline?.file ? 'Read here' : r.kind === 'arxiv' ? 'Abstract' : 'Details'}</button>` : ''}</span>`;
+  let swap = '';
+  if (it.mode === 'swapped') swap = `<div class="swap"><b>Swapped in</b>for “${esc(it.orig.piece)}” (${esc(it.orig.by.split(',')[0])}, <i>${esc(it.orig.work)}</i>), which needs ${it.orig.access.tier === 'buy' ? 'a purchase or a library' : 'a loan'}. <b style="color:var(--buy)">Loses</b>${esc(it.loses)}</div>`;
+  if (it.mode === 'dropped' || it.mode === 'covered') swap = `<div class="swap"><b>${it.mode === 'covered' ? 'Covered by ' + esc(REC[it.covered]?.piece.slice(0, 50) || '') : 'Dropped'}</b>${it.mode === 'covered' ? '' : 'No free substitute. '}<b style="color:var(--buy)">Loses</b>${esc(it.loses)}</div>`;
+  return `<li class="${cls.join(' ')}" data-ref="${esc(r.ref)}">
+    <span class="tn">${num}</span>
+    <div class="tmain">
+      <div class="tt">${pieceTitle(r)}</div>
+      <div class="tw">${workLine(r)}${it.core ? ' · <span class="smallcaps" style="font-size:10px;color:var(--accent-ink)">core</span>' : ''}</div>
+      ${it.track.why ? `<div class="why">${esc(it.track.why)}</div>` : ''}
+      ${swap}
+    </div>
+    <div class="tside">${side}${actions}</div>
+  </li>`;
+}
+function renderContents(stats) {
+  const v = vol();
+  const pane = $('#pane-contents');
+  const byPart = v.parts.map((p, pi) => stats.items.filter((it) => it.part === pi));
+  const live = v.origin === 'claude', algo = v.origin === 'algorithmic';
+  const kinds = countKinds(v);
+  let html = `<div class="vmeta"><span>Volume ${esc(v.numeral)}</span><span>·</span>
+      ${live ? '<span class="badge badge-live">Bound live by Claude</span>' : algo ? '<span class="badge badge-pre">Unedited · keyword match</span>' : '<span class="badge badge-pre">Precomputed example</span>'}
+      <span>·</span><span>${esc(v.call)}</span></div>
+    <h2 class="vtitle">${esc(v.title)}</h2>
+    <p class="vsub">${esc(v.subtitle)}</p>
+    ${v.preface ? v.preface.map((p) => `<p class="preface">${esc(p)}</p>`).join('') : ''}
+    <div class="ticket"><b>Brief</b>${esc(v.brief)}</div>
+    <div class="summary">
+      <span><b>${stats.bound.length}</b> of ${stats.active.length} pieces bound</span>
+      <span><b>${fmtH(stats.used)}</b> of ${hoursOf(v)} h</span>
+      <span><b>${stats.pages}</b> pp</span>
+      <span>${kinds}</span>
+    </div>
+    <div class="credit">${algo ? 'No editor: pieces were chosen by keyword match against the catalogue, papers and chapters, then ordered by era. Commission it with Claude to get notes.' : `Editor’s notes and one-line reasons are AI-generated (Claude${live ? ', live' : ', precomputed October 2026'}); every piece resolves to a real record, checked in the bench log.`}</div>`;
+  let n = 0;
+  v.parts.forEach((p, pi) => {
+    const its = byPart[pi];
+    const boundIts = its.filter((it) => it.level > 0);
+    const pm = boundIts.reduce((s, it) => s + it.c[it.level].min, 0);
+    html += `<section class="part" aria-labelledby="part-${pi}">
+      <div class="part-head"><h3 id="part-${pi}"><span class="pn">Part ${ROMAN[pi] || pi + 1}</span>${esc(p.title)}</h3><span class="pmeta">${boundIts.length}/${its.length} pieces · ${fmtMin(pm)}</span></div>
+      ${p.note && p.note.length ? `<div class="bridge"><div class="lab"><span class="smallcaps">Editor’s note</span><span class="badge badge-ai" title="Written by Claude">AI</span></div><p>${noteHTML(p.note)}</p></div>` : `<div class="bridge none"><p>No editor’s note: this volume was bound without an editor.</p></div>`}
+      <ol class="tracks">${its.map((it) => { n++; return trackRow(v, it, `${pi + 1}.${it.idx + 1}`); }).join('')}</ol>
+    </section>`;
+  });
+  html += `<div class="endnote"><svg class="fleuron" width="40" height="14" viewBox="0 0 40 14" aria-hidden="true"><path d="M2 7h13M25 7h13" stroke="currentColor" stroke-width=".8"/><path d="M20 1l5 6-5 6-5-6z" fill="none" stroke="currentColor"/><circle cx="20" cy="7" r="1.5" fill="currentColor"/></svg>Explicit. The colophon has the access summary, the substitutions and what could not be verified.</div>`;
+  pane.innerHTML = html;
+}
+function countKinds(v) {
+  const c = { pd: 0, ox: 0, ft: 0, arxiv: 0, ol: 0 };
+  for (const p of v.parts) for (const t of p.tracks) c[REC[t.ref].kind]++;
+  const bits = [];
+  if (c.pd) bits.push(`${c.pd} public-domain chapter${c.pd > 1 ? 's' : ''}`);
+  if (c.ox + c.ft) bits.push(`${c.ox + c.ft} open textbook section${c.ox + c.ft > 1 ? 's' : ''}`);
+  if (c.arxiv) bits.push(`${c.arxiv} arXiv paper${c.arxiv > 1 ? 's' : ''}`);
+  if (c.ol) bits.push(`${c.ol} catalogued book${c.ol > 1 ? 's or chapters' : ''}`);
+  return bits.join(' · ');
+}
+
+// ----------------------------------------------------------------- route (core sample)
+const GENRE = {
+  paper: { name: 'Preprint / paper', c: 'var(--g-paper)', bg: 'var(--g-paper-bg)' },
+  textbook: { name: 'Textbook', c: 'var(--g-textbook)', bg: 'var(--g-textbook-bg)' },
+  book: { name: 'Book or synthesis', c: 'var(--g-book)', bg: 'var(--g-book-bg)' },
+  classic: { name: 'Classic (public domain)', c: 'var(--g-classic)', bg: 'var(--g-classic-bg)' },
+};
+function nodeMinutes(v, ref) {
+  const r = REC[ref];
+  let diff = DIFF_BY_KIND[r.kind] || 'standard';
+  for (const p of v.parts) for (const t of p.tracks) if (t.ref === ref && t.diff) diff = t.diff;
+  return costs(r, diff)[3].min;
+}
+function solveRoute(v, allowed) {
+  const R = v.route;
+  if (!R) return null;
+  const C = R.concepts;
+  const keyIdx = Object.fromEntries(C.map((c, i) => [c.key, i]));
+  const opts = C.map((c) => c.nodes.map((n) => n));
+  let best = null;
+  const total = opts.reduce((s, o) => s * Math.max(1, o.length), 1);
+  const choice = new Array(C.length).fill(0);
+  for (let combo = 0; combo < Math.min(total, 200000); combo++) {
+    let x = combo;
+    for (let i = 0; i < C.length; i++) { const n = Math.max(1, opts[i].length); choice[i] = x % n; x = Math.floor(x / n); }
+    // closure of required concepts
+    const req = new Set(C.map((c, i) => i)); // the target needs every concept
+    const queue = [...req];
+    let ok = true;
+    while (queue.length) {
+      const i = queue.pop();
+      const node = opts[i][choice[i]];
+      if (!node) { ok = false; break; }
+      if (S.read.has(node.ref)) continue;
+      if (!allowed(REC[node.ref].access.tier)) { ok = false; break; }
+      for (const k of node.needs || []) { const j = keyIdx[k]; if (!req.has(j)) { req.add(j); queue.push(j); } }
+    }
+    if (!ok) continue;
+    const refs = new Set();
+    for (const i of req) refs.add(opts[i][choice[i]].ref);
+    let min = 0, buy = 0, loan = 0;
+    for (const ref of refs) { if (S.read.has(ref)) continue; min += nodeMinutes(v, ref); const t = REC[ref].access.tier; if (t === 'buy') buy++; if (t === 'loan') loan++; }
+    const cost = min + buy * 90; // a purchase or library trip is worth about 1.5 h of reading
+    if (!best || cost < best.cost - 1e-9) best = { cost, min, buy, loan, refs: [...refs], picks: Object.fromEntries([...req].map((i) => [C[i].key, opts[i][choice[i]].ref])) };
+  }
+  if (best) return best;
+  // no complete route: report the concepts with no reachable layer
+  const gaps = C.filter((c) => !c.nodes.some((n) => S.read.has(n.ref) || allowed(REC[n.ref].access.tier))).map((c) => c.name);
+  return { gaps };
+}
+function renderRoute() {
+  const v = vol();
+  const pane = $('#pane-route');
+  if (!v.route) {
+    pane.innerHTML = `<div class="route-top"><div><h3>Route</h3><p>A route drills from one recent paper down through the textbooks and classics it rests on, then finds the cheapest path back up. Routes are precomputed for the three volumes on the shelf.</p></div></div>
+      ${sample ? `<p style="margin-top:16px"><button class="btn btn-accent" type="button" id="btn-drill">Drill this volume’s capstone with Claude</button></p><div class="err" id="drill-err"></div>` : `<p class="credit" style="margin-top:16px">Live drilling needs Claude; open this page as a Claude artifact.</p>`}`;
+    return;
+  }
+  const R = v.route;
+  const target = REC[R.target];
+  const free = solveRoute(v, (t) => t !== 'buy');
+  const fast = solveRoute(v, () => true);
+  const show = S.route === 'fast' ? fast : free;
+  const card = (id, name, sol) => {
+    if (!sol || sol.gaps) return `<button class="rcard" type="button" data-route="${id}" aria-pressed="${S.route === id}"><h4><span>${name}</span></h4><div class="gap">No complete route: nothing reachable for ${esc((sol?.gaps || []).join(', '))}. Mark a layer as read, or allow purchases.</div></button>`;
+    const items = sol.refs.map((r) => REC[r]).sort((a, b) => a.year - b.year);
+    const nFree = sol.refs.filter((r) => REC[r].access.tier !== 'buy' || S.read.has(r)).length;
+    return `<button class="rcard" type="button" data-route="${id}" aria-pressed="${S.route === id}">
+      <h4><span>${name}</span><span>${nFree} of ${sol.refs.length} free</span></h4>
+      <div class="big">${fmtH(sol.min)}<small>${sol.buy ? `${sol.buy} purchase${sol.buy > 1 ? 's' : ''}` : '$0'}${sol.loan ? ` · ${sol.loan} loan${sol.loan > 1 ? 's' : ''}` : ''}</small></div>
+      <ol>${items.map((r) => `<li>${S.read.has(r.ref) ? '<span title="already read">★</span> ' : ''}${esc(r.piece.slice(0, 64))}${r.piece.length > 64 ? '…' : ''} <span class="muted num">(${r.year})</span></li>`).join('')}</ol>
+    </button>`;
+  };
+  const same = free && fast && !free.gaps && !fast.gaps && [...free.refs].sort().join() === [...fast.refs].sort().join();
+  pane.innerHTML = `<div class="route-top"><div>
+      <div class="vmeta"><span>Route · core sample</span><span>·</span><span class="badge badge-pre">Precomputed</span><span class="badge badge-ai">AI-chosen links</span></div>
+      <h3 style="margin-top:8px">From ${esc(target.piece)}</h3>
+      <p>The drill starts at a ${esc(target.date ? target.date.slice(0, 7) : target.year)} paper and goes down, concept by concept, through papers, textbooks and books to the oldest work in this corpus. Depth is time (log scale). Click a layer to see why it is there, or to mark it as already read: read layers cost nothing and need no prerequisites.</p>
+    </div></div>
+    <div class="routes">${card('free', 'Free route', free)}${same ? `<div class="rcard" style="cursor:default"><h4><span>Fastest route</span></h4><p style="margin:10px 0 0;font-size:14px;color:var(--ink-2)">Same as the free route: no purchase would make this climb shorter. Mark layers you have already read to see the route change.</p></div>` : card('fast', 'Fastest route', fast)}</div>
+    <div class="coreview" id="coreview">${coreSVG(v, show)}</div>
+    <div class="legend">${Object.values(GENRE).map((g) => `<span><i style="background:${g.bg};border-color:${g.c}"></i>${g.name}</span>`).join('')}<span><i style="background:var(--route-bg);border-color:var(--gold)"></i>On the chosen route</span><span><i style="background:transparent;border-color:var(--ink-3);border-style:dashed"></i>Uncharted (not in corpus)</span><span><svg width="26" height="10" aria-hidden="true" style="vertical-align:-1px;margin-right:5px"><path d="M1 5h24" stroke="var(--gold)" stroke-width="2" stroke-dasharray="5 3"/></svg>Seam: one work under two concepts</span><span><svg width="26" height="10" aria-hidden="true" style="vertical-align:-1px;margin-right:5px"><path d="M1 5h24" stroke="var(--gold)" stroke-width="1.6" stroke-dasharray="1 4" stroke-linecap="round"/></svg>Needs first</span><span><i style="background:var(--gold-hi);border-color:var(--gold)"></i>Already read</span></div>
+    <div id="ncard"></div>
+    <div class="route-foot" id="route-foot"></div>`;
+  renderNodeCard();
+  const sol = show && !show.gaps ? show : null;
+  $('#route-foot').innerHTML = sol
+    ? `Route up: about ${fmtH(sol.min)}, ${sol.refs.filter((r) => REC[r].access.tier !== 'buy').length} of ${sol.refs.length} free${S.read.size ? `, ${[...S.read].filter((r) => sol.refs.includes(r)).length} already read` : ''}. Links are conceptual ancestors in this corpus, not citations.`
+    : 'No complete route with these keys.';
+}
+function genreOf(r) {
+  if (r.kind === 'arxiv') return 'paper';
+  if (r.kind === 'pd') return 'classic';
+  if (r.kind === 'ox' || r.kind === 'ft') return 'textbook';
+  if (r.year && r.year < 1950) return 'classic';
+  return 'book';
+}
+function wrap2(text, maxc) {
+  const words = String(text).split(/\s+/);
+  let a = '', k = 0;
+  while (k < words.length && (a + ' ' + words[k]).trim().length <= maxc) { a = (a + ' ' + words[k]).trim(); k++; }
+  if (!a) { a = words[0].slice(0, maxc - 1) + '‐'; words[0] = words[0].slice(maxc - 1); k = 0; }
+  let b = words.slice(k).join(' ');
+  if (b.length > maxc - 5) b = b.slice(0, maxc - 6).replace(/\s+\S*$/, '') + '…';
+  return [a, b];
+}
+function coreSVG(v, sol) {
+  const R = v.route, C = R.concepts, n = C.length;
+  const W = Math.max(860, 176 * n + 100), axisX = 76, colW = (W - axisX - 20) / n;
+  const yTop = 150, yBot = 640;
+  const minYear = Math.min(...C.flatMap((c) => c.nodes.map((nd) => REC[nd.ref].year)));
+  const span = Math.log(2027 - Math.min(minYear, 1700) + 30);
+  const yOf = (yr) => yTop + (Math.log(Math.max(1, 2027 - yr)) / span) * (yBot - yTop);
+  const picks = sol && !sol.gaps ? sol.picks : {};
+  const target = REC[R.target];
+  const NH = 34, GAP = 40;
+  // layout first, so the height can follow the deepest core
+  const cols = C.map((c, ci) => {
+    const x0 = axisX + ci * colW, cx = x0 + colW / 2, bw = colW - 16;
+    const ns = c.nodes.map((nd) => ({ nd, r: REC[nd.ref] })).sort((a, b) => b.r.year - a.r.year);
+    let lastY = -1e9;
+    ns.forEach((o) => { o.ty = yOf(o.r.year); o.y = Math.max(o.ty, lastY + GAP); lastY = o.y; });
+    return { c, ci, cx, bw, ns, bottom: (ns.length ? ns[ns.length - 1].y : yTop) + NH / 2 + 10 };
+  });
+  const deepestBottom = Math.max(yBot, ...cols.map((k) => k.bottom));
+  const unchartedTop = deepestBottom + 54;
+  const maxUn = Math.max(0, ...C.map((c) => (c.uncharted || []).length));
+  const H = unchartedTop + (maxUn ? maxUn * 40 + 16 : 0) + 10;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="group" aria-label="Core sample from ${esc(target.piece)}" font-family="Courier Prime, monospace">`;
+  s += `<defs><pattern id="strata" width="8" height="6" patternUnits="userSpaceOnUse"><path d="M0 5.5h8" stroke="var(--rule-2)" stroke-width=".6" opacity=".55"/></pattern>
+    <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0v6" stroke="var(--ink-3)" stroke-width="1"/></pattern></defs>`;
+  const bands = [[2026, 2020, 'preprints'], [2019, 1950, 'textbooks & syntheses'], [1949, 1640, 'classics']];
+  bands.forEach(([a, b, name], i) => {
+    const y1 = i === 0 ? yTop - 14 : yOf(a + 0.5), y2 = i === 2 ? deepestBottom + 6 : yOf(b - 0.5);
+    s += `<rect x="${axisX}" y="${y1}" width="${W - axisX - 8}" height="${y2 - y1}" fill="${i % 2 ? 'var(--paper-3)' : 'var(--paper)'}" opacity=".7"/>`;
+    s += `<text x="${W - 12}" y="${y1 + 13}" text-anchor="end" font-size="9.5" fill="var(--ink-3)" letter-spacing="1.2">${name.toUpperCase()}</text>`;
+  });
+  [2026, 2020, 2010, 2000, 1975, 1950, 1900, 1850, 1800, 1750, 1700].filter((y) => y >= Math.min(minYear, 1750) - 30).forEach((yr) => {
+    const y = yOf(yr);
+    s += `<line x1="${axisX - 6}" x2="${axisX}" y1="${y}" y2="${y}" stroke="var(--ink-3)"/><text x="${axisX - 10}" y="${y + 3.5}" text-anchor="end" font-size="11" fill="var(--ink-3)">${yr}</text>`;
+  });
+  s += `<line x1="${axisX}" x2="${axisX}" y1="${yTop - 14}" y2="${deepestBottom + 6}" stroke="var(--ink-3)"/>`;
+  s += `<text x="16" y="${(yTop + yBot) / 2}" font-size="10" fill="var(--ink-3)" transform="rotate(-90 16 ${(yTop + yBot) / 2})" text-anchor="middle" letter-spacing="1.5">YEARS DOWN (LOG SCALE)</text>`;
+  const tTitle = target.piece.length > 100 ? target.piece.slice(0, 98) + '…' : target.piece;
+  s += `<g class="node" tabindex="0" role="button" data-node="${esc(R.target)}" aria-label="Target: ${esc(target.piece)}"><rect class="box" x="${axisX}" y="12" width="${W - axisX - 8}" height="46" rx="3" fill="var(--ink)"/>
+    <text x="${axisX + 14}" y="30" font-size="10" fill="var(--paper)" letter-spacing="1.4">TARGET · ARXIV ${esc(R.target.slice(6))} · ${esc(target.date || target.year)}</text>
+    <text x="${axisX + 14}" y="48" font-size="15" fill="var(--paper)" font-family="Libre Caslon Text, Georgia, serif">${esc(tTitle)}</text></g>`;
+  const pos = {};
+  let deepest = null;
+  // prerequisite edges between picked nodes (drawn under the nodes)
+  let edges = '';
+  cols.forEach(({ c, cx, bw, ns, bottom }) => {
+    const words = c.name.split(' ');
+    const lines = []; let cur = '';
+    for (const w of words) { if ((cur + ' ' + w).trim().length > Math.floor(colW / 7.6)) { lines.push(cur.trim()); cur = w; } else cur += ' ' + w; }
+    lines.push(cur.trim());
+    s += `<line x1="${cx}" x2="${cx}" y1="58" y2="76" stroke="var(--ink-3)" stroke-dasharray="2 3"/>`;
+    lines.slice(0, 2).forEach((ln, li) => { s += `<text x="${cx}" y="${92 + li * 14}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">${esc(ln)}</text>`; });
+    s += `<rect x="${cx - bw / 2 - 4}" y="${yTop - 8}" width="${bw + 8}" height="${bottom - yTop + 8}" rx="12" fill="url(#strata)" stroke="var(--rule-2)"/>`;
+    s += `<rect x="${cx - bw / 2 - 4}" y="${bottom - 6}" width="${bw + 8}" height="10" fill="url(#hatch)" opacity=".5"/>`;
+    const pick = picks[c.key];
+    if (pick) {
+      const p = ns.find((o) => o.nd.ref === pick);
+      if (p) s += `<path d="M${cx} 120 V ${yTop - 22} H ${cx - bw / 2 - 1} V ${p.y}" fill="none" stroke="var(--gold)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+      if (p) for (const k of p.nd.needs || []) {
+        const kc = cols.find((x) => x.c.key === k);
+        const kp = kc && kc.ns.find((o) => o.nd.ref === picks[k]);
+        if (kp) edges += `<path d="M${kc.cx} ${kp.y - NH / 2} C ${kc.cx} ${kp.y - 60}, ${cx} ${p.y + 60}, ${cx} ${p.y + NH / 2}" fill="none" stroke="var(--gold)" stroke-width="1.4" stroke-dasharray="1 4" stroke-linecap="round" opacity=".9"/>`;
+      }
+    }
+  });
+  s += edges;
+  cols.forEach(({ c, cx, bw, ns }) => {
+    const pick = picks[c.key];
+    const maxc = Math.floor((bw - 18) / 5.9);
+    ns.forEach((o) => {
+      const g = GENRE[genreOf(o.r)];
+      const on = pick === o.nd.ref, rd = S.read.has(o.nd.ref), sel = S.sel === o.nd.ref;
+      const [l1, l2] = wrap2(o.r.piece, maxc);
+      if (Math.abs(o.y - o.ty) > 2) s += `<path d="M${cx + bw / 2 + 4} ${o.ty} h4 V ${o.y}" fill="none" stroke="var(--ink-3)" stroke-width=".8"/>`;
+      const fill = rd ? 'var(--gold-hi)' : on ? 'var(--route-bg)' : g.bg;
+      s += `<g class="node" tabindex="0" role="button" data-node="${esc(o.nd.ref)}" aria-label="${esc(o.r.piece)}, ${o.r.year}, ${esc(g.name)}${on ? ', on the chosen route' : ''}${rd ? ', already read' : ''}">
+        <rect class="box" x="${cx - bw / 2}" y="${o.y - NH / 2}" width="${bw}" height="${NH}" rx="3" fill="${fill}" stroke="${on || rd ? 'var(--gold)' : g.c}" stroke-width="${on || sel ? 2.4 : 1.1}"/>
+        <rect x="${cx - bw / 2}" y="${o.y - NH / 2}" width="5" height="${NH}" rx="1.5" fill="${g.c}"/>
+        <text font-size="11" fill="${rd ? '#2a2412' : 'var(--ink)'}" font-family="Libre Caslon Text, Georgia, serif"><tspan x="${cx - bw / 2 + 11}" y="${o.y - 3}">${esc(l1)}</tspan><tspan x="${cx - bw / 2 + 11}" y="${o.y + 11}">${esc(l2)}</tspan></text>
+        <text x="${cx + bw / 2 - 5}" y="${o.y - 3}" font-size="10" text-anchor="end" fill="${rd ? '#2a2412' : 'var(--ink-3)'}">${rd ? '★' : o.r.year}</text>
+        ${on && !rd ? `<circle cx="${cx + bw / 2 - 8}" cy="${o.y + 8}" r="3.2" fill="var(--gold)"/>` : ''}</g>`;
+      (pos[o.nd.ref] ||= []).push({ x: cx, y: o.y, l: cx - bw / 2, r: cx + bw / 2 });
+      if (!deepest || o.r.year < deepest.r.year) deepest = { ...o, cx, bw };
+    });
+    (c.uncharted || []).forEach((u, ui) => {
+      const y = unchartedTop + 20 + ui * 40;
+      const [u1, u2] = wrap2(u.title, Math.floor((bw - 12) / 5.6));
+      s += `<a href="${esc(u.search)}" target="_blank" rel="noopener"><title>${esc(u.title)}: ${esc(u.note)} Opens a search outside this corpus.</title><rect x="${cx - bw / 2}" y="${y - NH / 2}" width="${bw}" height="${NH}" rx="3" fill="none" stroke="var(--ink-3)" stroke-dasharray="4 3"/><text font-size="10.5" fill="var(--ink-3)" font-family="Libre Caslon Text, Georgia, serif"><tspan x="${cx - bw / 2 + 7}" y="${y - 3}">${esc(u1)}</tspan><tspan x="${cx - bw / 2 + 7}" y="${y + 11}">${esc(u2)} ↗</tspan></text></a>`;
+    });
+  });
+  for (const ps of Object.values(pos)) {
+    if (ps.length < 2) continue;
+    const sorted = ps.sort((a, b) => a.x - b.x);
+    for (let i = 0; i + 1 < sorted.length; i++) {
+      const a = sorted[i], b = sorted[i + 1];
+      s += `<path d="M${a.r} ${a.y} C ${(a.r + b.l) / 2} ${a.y}, ${(a.r + b.l) / 2} ${b.y}, ${b.l} ${b.y}" fill="none" stroke="var(--gold)" stroke-width="2" stroke-dasharray="5 3"/>`;
+    }
+  }
+  if (deepest) {
+    const yrs = 2026 - deepest.r.year;
+    const label = `BEDROCK IN THIS CORPUS · ${yrs} YEARS DOWN`;
+    const half = label.length * 3.1;
+    const x = clamp(deepest.cx, axisX + half + 4, W - half - 10);
+    s += `<text x="${x}" y="${deepest.y + NH / 2 + 26}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink-2)" letter-spacing=".8">${label}</text>`;
+  }
+  if (maxUn) s += `<text x="${axisX + 4}" y="${unchartedTop - 4}" font-size="10" fill="var(--ink-3)" letter-spacing="1.2">UNCHARTED · NAMED BY THE EDITOR, NOT IN THIS CORPUS (LINKS SEARCH OUTSIDE)</text>`;
+  s += '</svg>';
+  return s;
+}
+function renderNodeCard() {
+  const box = $('#ncard');
+  if (!box) return;
+  const v = vol();
+  if (!S.sel || !REC[S.sel]) { box.innerHTML = ''; return; }
+  const r = REC[S.sel];
+  const R = v.route;
+  const occ = R.concepts.filter((c) => c.nodes.some((n) => n.ref === S.sel));
+  const isTarget = S.sel === R.target;
+  const rd = S.read.has(S.sel);
+  const inVol = v.parts.some((p) => p.tracks.some((t) => t.ref === S.sel));
+  box.innerHTML = `<div class="ncard" role="region" aria-label="Layer details">
+    <h4>${r.label ? esc(r.label) + ' · ' : ''}${esc(r.piece)}</h4>
+    <div class="m">${esc(r.by)}, ${esc(r.kind === 'arxiv' ? 'arXiv ' + r.ref.slice(6) : r.work)}, ${r.year} · ${esc(GENRE[genreOf(r)].name)} · read in about ${fmtMin(nodeMinutes(v, S.sel))} · ${accessChip(r)}</div>
+    ${isTarget ? '<p>The target paper: the place the drill starts.</p>' : occ.map((c) => { const nd = c.nodes.find((n) => n.ref === S.sel); return `<p><b>${esc(c.name)}.</b> Needed because: ${esc(c.needed)} <br><span class="muted">What this layer adds:</span> ${esc(nd.adds)}${nd.needs?.length ? ` <span class="muted">Needs first: ${nd.needs.map((k) => esc(R.concepts.find((cc) => cc.key === k)?.name)).join(', ')}.</span>` : ''} <span class="badge badge-ai">AI</span></p>`; }).join('')}
+    <div class="acts">${isTarget ? '' : `<button class="linkbtn${rd ? '' : ' primary'}" type="button" data-toggle-read="${esc(S.sel)}">${rd ? 'Unmark: not read yet' : 'I’ve already read this'}</button>`}
+      <button class="linkbtn" type="button" data-read="${esc(S.sel)}">${r.inline?.file ? 'Read here' : 'Details'}</button>
+      ${inVol ? `<button class="linkbtn" type="button" data-show-track="${esc(S.sel)}">Show in contents</button>` : '<span class="muted" style="font-size:13px;align-self:center">Not in the volume itself; the route reaches further.</span>'}</div>
+  </div>`;
+}
+
+// ----------------------------------------------------------------- colophon
+function renderColophon(stats) {
+  const v = vol();
+  const pane = $('#pane-colophon');
+  const all = v.parts.flatMap((p) => p.tracks);
+  const nPieces = all.length;
+  const keyStats = (key) => {
+    const its = effective(v, key);
+    return { swapped: its.filter((i) => i.mode === 'swapped'), dropped: its.filter((i) => i.mode === 'dropped' || i.mode === 'covered') };
+  };
+  const ko = keyStats('open'), kl = keyStats('loan');
+  const tiers = ['open', 'loan', 'buy'];
+  const tierName = { open: 'Open tonight (public domain, arXiv, open textbooks, free scans)', loan: 'Open Library loan (free account, waitlists)', buy: 'Buy or use a library' };
+  const tierRows = tiers.map((t) => {
+    const its = stats.bound.filter((it) => it.rec.access.tier === t);
+    return `<tr><td><span class="dot" style="background:var(--${t})"></span>${tierName[t]}</td><td class="n">${its.length}</td><td class="n">${fmtMin(its.reduce((s, it) => s + it.c[it.level].min, 0))}</td><td class="n">${its.reduce((s, it) => s + it.c[it.level].pp, 0)}</td></tr>`;
+  }).join('');
+  const subRows = (list) => list.map((it) => `<tr><td>${esc(it.orig.piece)}<div class="muted" style="font-size:12.5px">${esc(it.orig.work)} · ${esc(it.orig.access.label)}</div></td><td>${it.mode === 'swapped' ? esc(it.rec.piece) + `<div class="muted" style="font-size:12.5px">${esc(it.rec.work)}</div>` : it.mode === 'covered' ? `<i>covered by ${esc(REC[it.covered]?.piece || '')}</i>` : '<i>dropped</i>'}</td><td>${esc(it.loses)}</td></tr>`).join('');
+  const neighbours = v.neighbours || [];
+  const nb = neighbours.map((nbx) => {
+    if (nbx.phantom) return `<span class="ms-spine phantom" style="background-color:${clothOf(v)};color:var(--gold-hi-fixed)"><span class="v" style="font-family:var(--display);text-transform:uppercase;letter-spacing:.1em;font-size:10px">${esc(v.short || v.title)}</span><span class="cl">${esc(v.call)}</span></span>`;
+    const col = ['#5d5a52', '#4f5a55', '#6a5747', '#47505c', '#5c4d4f', '#59604c'][hash(nbx.id) % 6];
+    return `<a class="ms-spine" style="background-color:${col}" href="https://openlibrary.org/works/${esc(nbx.id)}" target="_blank" rel="noopener" title="${esc(nbx.t)} (${esc(nbx.a)}, ${esc(nbx.y)}) · ${esc(nbx.acc)}"><span class="v">${esc(nbx.t.length > 40 ? nbx.t.slice(0, 38) + '…' : nbx.t)}</span><span class="cl">${esc(nbx.call)}</span></a>`;
+  }).join('');
+  pane.innerHTML = `<div class="colophon">
+      <div class="smallcaps">Colophon</div>
+      <svg class="fleuron" width="40" height="14" viewBox="0 0 40 14" aria-hidden="true" style="margin-top:10px"><path d="M2 7h13M25 7h13" stroke="currentColor" stroke-width=".8"/><path d="M20 1l5 6-5 6-5-6z" fill="none" stroke="currentColor"/><circle cx="20" cy="7" r="1.5" fill="currentColor"/></svg>
+      <p>${esc(v.title)}: ${esc(v.subtitle)} was bound to order on ${esc(v.boundOn || '15 October 2026')} from ${NUMWORD[nPieces] || nPieces} pieces held in the open stacks: ${esc(countKinds(v))}.</p>
+      <p>At ${hoursOf(v)} hours it runs to ${stats.pages} pages in ${NUMWORD[stats.bound.length] || stats.bound.length} pieces, about ${fmtH(stats.used)} of reading: ${stats.mix.open} open tonight, ${stats.mix.loan} on loan, ${stats.mix.buy} to buy or find in a library.</p>
+      <p>${v.origin === 'algorithmic' ? 'Bound without an editor, by keyword match.' : 'Editor’s notes by Claude, an AI; quotations checked verbatim against their sources.'} Set in Bodoni Moda and Libre Caslon. Shelved at ${esc(v.call)}.</p>
+      <p class="plain">No prices are quoted: “buy” means a bookshop or a physical library, and nothing here was checked against either.</p>
+    </div>
+    <div class="sect"><h4>Access at this budget</h4><p class="lede">Pieces bound at ${hoursOf(v)} hours with the current keys (${S.key === 'any' ? 'everything allowed' : S.key === 'loan' ? 'open plus loans' : 'open only'}).</p>
+      <div class="tbl-wrap"><table class="t"><thead><tr><th>Route</th><th class="n">Pieces</th><th class="n">Reading</th><th class="n">Pages</th></tr></thead><tbody>${tierRows}</tbody></table></div></div>
+    <div class="sect"><h4>Free only: what the substitutes lose</h4><p class="lede">With the “open only” key, ${ko.swapped.length} piece${ko.swapped.length === 1 ? '' : 's'} swap for free equivalents and ${ko.dropped.length} drop out. With loans allowed: ${kl.swapped.length} swap, ${kl.dropped.length} drop.</p>
+      ${ko.swapped.length + ko.dropped.length ? `<div class="tbl-wrap"><table class="t"><thead><tr><th>In place of</th><th>Free substitute</th><th>What it loses (AI-written)</th></tr></thead><tbody>${subRows([...ko.swapped, ...ko.dropped])}</tbody></table></div>` : '<p class="credit">Every piece is already open.</p>'}</div>
+    <div class="sect"><h4>Could not verify</h4><p class="lede">Candidates the editor wanted and the resolver gate could not bind. Absence claims are checked against catalog.json, papers.json and gutenberg.json at build time.</p>
+      <ul class="rejects">${(v.rejected || []).map((rj) => `<li><b>${esc(rj.title)}</b>${rj.id ? ` <span class="muted num">${esc(rj.id)}</span>` : ''}<span class="why">${esc(rj.reason)}</span></li>`).join('') || '<li class="muted">Nothing rejected.</li>'}</ul></div>
+    ${neighbours.length ? `<div class="sect"><h4>Shelved among real neighbours</h4><p class="lede">The volume’s call number (${esc(v.call)}, assigned by the editor) placed in call-number order among the works in catalog.json. The dashed spine is the phantom.</p>
+      <div class="minishelf">${nb}</div></div>` : ''}
+    <div class="sect"><h4>A reading schedule</h4><p class="lede">The bound pieces in order, at <span class="seg" role="group" aria-label="Hours per week" id="weekly">${[2, 3, 5, 8].map((h) => `<button type="button" data-w="${h}" aria-pressed="${S.weekly === h}">${h} h</button>`).join('')}</span> a week, with a ten-minute revisit two weeks after each core piece read in full.</p>
+      <div class="sched">${schedule(stats)}</div></div>`;
+}
+function schedule(stats) {
+  const cap = S.weekly * 60;
+  const weeks = [];
+  let wk = { items: [], min: 0 };
+  const revisits = {};
+  const order = stats.bound.slice().sort((a, b) => a.part - b.part || a.idx - b.idx);
+  order.forEach((it) => {
+    let m = it.c[it.level].min;
+    while (m > 0) {
+      const room = cap - wk.min;
+      if (room <= 5) { weeks.push(wk); wk = { items: [], min: 0 }; continue; }
+      const take = Math.min(room, m);
+      wk.items.push({ t: it.rec.piece, m: take, d: DEPTHS[it.level], cont: m > take || wk.items.some((x) => x.t === it.rec.piece) });
+      wk.min += take; m -= take;
+      if (m <= 0 && it.level >= 3 && (it.core || it.imp >= 4)) {
+        (revisits[weeks.length + 2] ||= []).push(it.rec.piece);
+      }
+    }
+  });
+  if (wk.items.length) weeks.push(wk);
+  return weeks.slice(0, 40).map((w, i) => `<div class="week"><h5><span>Week ${i + 1}</span><span>${fmtMin(w.min + (revisits[i]?.length || 0) * 10)}</span></h5><ul>${w.items.map((x) => `<li>${esc(x.t.length > 58 ? x.t.slice(0, 56) + '…' : x.t)} <span class="muted num" style="font-size:11px">${x.d}, ${fmtMin(x.m)}</span></li>`).join('')}${(revisits[i] || []).map((t) => `<li class="rev">revisit: ${esc(t.length > 46 ? t.slice(0, 44) + '…' : t)}</li>`).join('')}</ul></div>`).join('') + (weeks.length > 40 ? `<div class="week"><h5>…</h5><ul><li>${weeks.length - 40} more weeks</li></ul></div>` : '');
+}
+
+// ----------------------------------------------------------------- bench log
+function renderBench() {
+  const v = vol();
+  const pane = $('#pane-bench');
+  const lines = v.bench || [];
+  const nRes = lines.filter((l) => l.kind === 'resolve').length;
+  const nRej = (v.rejected || []).length;
+  const nQ = lines.filter((l) => l.kind === 'quote').length;
+  const nTool = lines.filter((l) => l.kind === 'tool').length;
+  pane.innerHTML = `<div class="vmeta"><span>Bench log</span><span>·</span><span>${v.origin === 'claude' ? 'live session' : v.origin === 'algorithmic' ? 'keyword binder' : 'build of 15 October 2026 (scripts/prototypes/bindery.mjs)'}</span></div>
+    <h3 style="font:500 28px/1.15 var(--display);margin:8px 0 6px">The resolver gate</h3>
+    <p style="margin:0 0 14px;color:var(--ink-2);max-width:70ch">Nothing reaches the volume unless it resolves to a record. ${v.origin === 'claude' ? 'Below: each tool call Claude made, then each id it proposed, checked against the data.' : 'Below: every check the build made, in order: the record each piece resolved to, the edition and page range, the language of the lendable scan, verbatim quotations and the candidates that were rejected.'}</p>
+    <div class="gatebox"><span><b>${nRes}</b>pieces resolved</span><span><b>${nRej}</b>could not verify</span>${nQ ? `<span><b>${nQ}</b>quotations verbatim</span>` : ''}${nTool ? `<span><b>${nTool}</b>tool calls</span>` : ''}<span><b>0</b>invented ids bound</span></div>
+    <ol class="log">${lines.map((l) => `<li class="${l.ok === false ? 'bad' : ''} ${l.kind === 'tool' ? 'tool' : ''}"><span class="k">${esc(l.kind)}</span><span class="x">${esc(l.text)}</span></li>`).join('')}</ol>`;
+}
+
+// ----------------------------------------------------------------- reader (riffle)
+async function getText(file) {
+  if (textCache.has(file)) return textCache.get(file);
+  const res = await fetch('data/' + file);
+  if (!res.ok) throw new Error('text not found');
+  const t = await res.text();
+  textCache.set(file, t);
+  return t;
+}
+function typeset(raw) {
+  const lines = raw.replace(/\r/g, '').split('\n');
+  const paras = [];
+  let buf = [];
+  const flush = () => { if (buf.length) { paras.push(buf); buf = []; } };
+  for (const l of lines) { if (!l.trim()) flush(); else buf.push(l); }
+  flush();
+  return paras.map((p, i) => {
+    const joined = p.map((x) => x.trim()).join(' ');
+    let h = esc(joined)
+      .replace(/_([^_]+)_/g, '<em>$1</em>')
+      .replace(/\{(\d+)\}|\[Pg (\d+)\]/g, (m, a, b) => `<span class="pg">p.${a || b}</span>`)
+      .replace(/\[(\d+)\]/g, '<sup>$1</sup>');
+    const isHead = joined.length < 90 && joined === joined.toUpperCase() && /[A-Z]{3}/.test(joined);
+    const indented = p.every((x) => /^\s{2,}/.test(x));
+    if (isHead) return `<p class="c">${h.toLowerCase()}</p>`;
+    if (indented && p.length > 1) return `<blockquote>${p.map((x) => esc(x.trim())).join('<br>')}</blockquote>`;
+    return `<p class="${i === 1 ? 'first' : ''}">${h}</p>`;
+  }).join('');
+}
+async function openReader(ref, partIdx) {
+  const v = vol();
+  const r = REC[ref];
+  if (!r) return;
+  const dlg = $('#dlg-reader');
+  const body = $('#reader-body');
+  let pi = partIdx;
+  if (pi == null) v.parts.forEach((p, i) => { if (p.tracks.some((t) => t.ref === ref)) pi = i; });
+  const before = pi != null ? v.parts[pi]?.note : null;
+  const after = pi != null ? v.parts[pi + 1]?.note : null;
+  $('#reader-kicker').textContent = r.inline?.file ? 'Riffle · reading the real text' : 'Riffle · record and access route';
+  const head = `<div class="reader-head"><div class="vmeta"><span>${esc(v.title)}</span>${pi != null ? `<span>·</span><span>Part ${ROMAN[pi]}</span>` : ''}</div>
+    <h2 id="reader-title">${r.label ? `<span class="muted" style="font-size:.6em;display:block;font-family:var(--mono)">${esc(r.label)}</span>` : ''}${esc(r.piece)}</h2>
+    <div class="m">${esc(r.by)} · ${esc(r.kind === 'arxiv' ? 'arXiv ' + ref.slice(6) : r.workFull || r.work)} · ${r.year}${r.range ? ` · pp. ${r.range[0]}–${r.range[1]}` : ''} · ${r.words ? `${r.words.toLocaleString('en')} words` : ''} ${accessChip(r)}</div></div>`;
+  const bridgeIn = before?.length ? `<div class="bridge-box"><span class="smallcaps">Editor’s note before this part · AI</span><p>${noteHTML(before)}</p></div>` : '';
+  const bridgeOut = after?.length ? `<div class="bridge-box"><span class="smallcaps">Next: Part ${ROMAN[pi + 1]} · ${esc(v.parts[pi + 1].title)} · AI</span><p>${noteHTML(after)}</p></div>` : '';
+  body.innerHTML = head + bridgeIn + `<div id="reader-main"><p class="muted">Loading…</p></div>` + bridgeOut;
+  if (!dlg.open) dlg.showModal();
+  body.parentElement.scrollTop = 0;
+  const main = $('#reader-main');
+  try {
+    if (r.inline?.file) {
+      const t = await getText(r.inline.file);
+      const slice = t.slice(r.inline.start, r.inline.end);
+      main.innerHTML = `<div class="reader-text">${typeset(slice)}</div><p class="credit">Text: Project Gutenberg (public domain in the US). <a href="${esc(r.access.url)}" target="_blank" rel="noopener">Gutenberg record</a></p>`;
+    } else if (r.kind === 'arxiv') {
+      main.innerHTML = `<div class="reader-card"><h5>Abstract (arXiv metadata, CC0)</h5><p style="font-size:16px;line-height:1.6;margin:0">${esc(r.inline.abstract)}</p></div>
+        <p style="margin-top:14px"><a class="linkbtn primary" href="${esc(r.access.url)}" target="_blank" rel="noopener">Open on arXiv</a> <span class="muted" style="font-size:13px">${esc(r.access.note)}</span></p>`;
+    } else if (r.kind === 'ox') {
+      main.innerHTML = `<div class="reader-card"><h5>Opening of the section (OpenStax)</h5><p style="margin:0;font-size:15.5px;line-height:1.6">${esc(r.inline.lead)}…</p>
+        ${r.inline.headings?.length ? `<h5 style="margin-top:12px">Inside</h5><ul class="toclist">${r.inline.headings.map((x) => `<li><span>${esc(x)}</span></li>`).join('')}</ul>` : ''}</div>
+        <p style="margin-top:14px"><a class="linkbtn primary" href="${esc(r.access.url)}" target="_blank" rel="noopener">Read on OpenStax</a></p>`;
+    } else if (r.kind === 'ft') {
+      main.innerHTML = `<div class="reader-card"><h5>Free from the author or publisher</h5><p style="margin:0">${esc(r.work)} (${r.year}). ${esc(r.inline.terms)}.</p><p class="muted" style="font-size:13px;margin:8px 0 0">Named in the Open Stacks R01 dossier of free, legal textbooks; link re-checked 15 October 2026.</p></div>
+        <p style="margin-top:14px"><a class="linkbtn primary" href="${esc(r.access.url)}" target="_blank" rel="noopener">Open the free edition</a></p>`;
+    } else if (r.kind === 'ol') {
+      const toc = DB.tocs[r.olid];
+      main.innerHTML = `<div class="reader-card"><h5>Access route</h5><p style="margin:0">${esc(r.access.note)}</p>
+        ${r.ia ? `<p class="muted" style="font-size:13px;margin:6px 0 0">Internet Archive item <span class="num">${esc(r.ia)}</span>${r.iaLang ? `, language ${esc(r.iaLang)}` : ''}.</p>` : ''}
+        ${r.inline.firstSentence ? `<h5 style="margin-top:12px">First sentence (Open Library)</h5><p style="margin:0;font-style:italic">${esc(r.inline.firstSentence)}</p>` : ''}
+        ${r.inline.subjects?.length ? `<h5 style="margin-top:12px">Subjects</h5><p style="margin:0;font-size:14px">${r.inline.subjects.map(esc).join(' · ')}</p>` : ''}</div>
+        ${toc ? `<div class="reader-card"><h5>Contents · Open Library edition ${esc(toc.edition)}</h5><ul class="toclist">${toc.toc.filter((e) => e[1] || e[0]).slice(0, 60).map((e) => `<li class="${r.edition && (e[1] === r.piece || e[1].toLowerCase() === String(r.piece).toLowerCase()) ? 'hit' : ''}"><span>${e[0] ? esc(e[0]) + '. ' : ''}${esc(e[1])}</span><span>${e[2] ?? ''}</span></li>`).join('')}</ul></div>` : `<p class="credit">${r.wholeBook ? 'No table of contents is recorded for any English edition, so the whole book is bound; a chapter can only be suggested from the title.' : ''}</p>`}
+        <p style="margin-top:14px"><a class="linkbtn primary" href="${esc(r.access.url)}" target="_blank" rel="noopener">Open Library record</a></p>`;
+    }
+  } catch (e) {
+    main.innerHTML = `<p class="err">Could not load the text (${esc(e.message)}).</p>`;
+  }
+}
+
+// ----------------------------------------------------------------- orchestration
+let raf = 0;
+function update(full = true) {
+  cancelAnimationFrame(raf);
+  raf = requestAnimationFrame(() => {
+    const v = vol();
+    const stats = compute(v);
+    v._stats = stats;
+    for (const o of VOLS) if (o !== v) o._stats = compute(o);
+    renderBook(stats);
+    renderControls(stats);
+    renderShelf();
+    if (S.tab === 'contents') renderContents(stats);
+    if (S.tab === 'route' && full) renderRoute();
+    if (S.tab === 'colophon') renderColophon(stats);
+    if (S.tab === 'bench' && full) renderBench();
+    $('#tab-route').innerHTML = `Route`;
+    store.set('vid', S.vid); store.set('hours', S.hours); store.set('key', S.key); store.set('read', [...S.read]);
+  });
+}
+function setTab(t) {
+  S.tab = t;
+  $$('.tab').forEach((b) => { const on = b.id === 'tab-' + t; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
+  $$('.pane').forEach((p) => { p.hidden = p.id !== 'pane-' + t; });
+  update();
+}
+function selectVolume(id) {
+  if (!VOLS.some((v) => v.id === id)) return;
+  S.vid = id; S.sel = null;
+  if (S.open) toggleCover(false);
+  update();
+}
+function toggleCover(force) {
+  S.open = force ?? !S.open;
+  $('#book').classList.toggle('is-open', S.open);
+  $('#btn-cover').textContent = S.open ? 'Close the cover' : 'Open the cover';
+}
+
+function wire() {
+  $('#shelf').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-vid]');
+    if (b) selectVolume(b.dataset.vid);
+    if (e.target.closest('#blank-spine')) openCommission();
+  });
+  $('#hours').addEventListener('input', (e) => {
+    const h = Math.round(2 * Math.pow(30, Number(e.target.value) / 1000) * 2) / 2;
+    S.hours[vol().id] = h;
+    update(false);
+  });
+  $('#hours').addEventListener('change', () => update());
+  $('#hour-presets').addEventListener('click', (e) => { const b = e.target.closest('[data-h]'); if (!b) return; S.hours[vol().id] = Number(b.dataset.h); update(); });
+  $('#keys').addEventListener('click', (e) => { const b = e.target.closest('[data-k]'); if (!b) return; S.key = b.dataset.k; update(); });
+  $('#tabs').addEventListener('click', (e) => { const b = e.target.closest('.tab'); if (b) setTab(b.id.slice(4)); });
+  $('#tabs').addEventListener('keydown', (e) => {
+    const tabs = $$('.tab'); const i = tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true');
+    let j = null;
+    if (e.key === 'ArrowRight') j = (i + 1) % tabs.length; if (e.key === 'ArrowLeft') j = (i - 1 + tabs.length) % tabs.length;
+    if (j != null) { e.preventDefault(); setTab(tabs[j].id.slice(4)); tabs[j].focus(); }
+  });
+  $('#book').addEventListener('click', () => toggleCover());
+  $('#btn-cover').addEventListener('click', () => toggleCover());
+  $('#btn-about').addEventListener('click', () => $('#dlg-about').showModal());
+  $('#btn-commission').addEventListener('click', openCommission);
+  $$('dialog').forEach((d) => {
+    d.addEventListener('click', (e) => { if (e.target === d || e.target.closest('[data-close]')) d.close(); });
+  });
+  document.addEventListener('click', (e) => {
+    const rd = e.target.closest('[data-read]');
+    if (rd) { e.preventDefault(); openReader(rd.dataset.read, rd.dataset.part != null ? Number(rd.dataset.part) : null); return; }
+    const g = e.target.closest('[data-goto]');
+    if (g) { e.preventDefault(); setTab(g.dataset.goto); return; }
+    const rc = e.target.closest('[data-route]');
+    if (rc) { S.route = rc.dataset.route; renderRoute(); return; }
+    const nd = e.target.closest('#coreview [data-node]');
+    if (nd) { S.sel = nd.dataset.node; renderRoute(); $('#ncard')?.scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' }); return; }
+    const tr = e.target.closest('[data-toggle-read]');
+    if (tr) { const r = tr.dataset.toggleRead; S.read.has(r) ? S.read.delete(r) : S.read.add(r); store.set('read', [...S.read]); renderRoute(); return; }
+    const st = e.target.closest('[data-show-track]');
+    if (st) { const ref = st.dataset.showTrack; setTab('contents'); requestAnimationFrame(() => requestAnimationFrame(() => { const row = $(`.track[data-ref="${CSS.escape(ref)}"]`); if (row) { row.scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' }); row.classList.add('flash'); setTimeout(() => row.classList.remove('flash'), 1600); } })); return; }
+    const wkb = e.target.closest('#weekly [data-w]');
+    if (wkb) { S.weekly = Number(wkb.dataset.w); update(); return; }
+    if (e.target.closest('#btn-drill')) { drillLive(); }
+  });
+  document.addEventListener('keydown', (e) => {
+    const nd = e.target.closest?.('#coreview [data-node]');
+    if (nd && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); S.sel = nd.dataset.node; renderRoute(); const again = $(`#coreview [data-node="${CSS.escape(S.sel)}"]`); again?.focus(); }
+  });
+}
+
+// ----------------------------------------------------------------- commission: corpus, search, live binding
+let CORPUS = null;
+const STOP = new Set('a an and are as at be by for from has have in into is it its of on or that the their this to was were will with what which who how why when we you your our about between toward towards using via vs'.split(' '));
+const stem = (w) => (w.length > 5 && w.endsWith('ies') ? w.slice(0, -3) + 'y' : w.length > 4 && w.endsWith('s') && !w.endsWith('ss') ? w.slice(0, -1) : w);
+const toks = (s) => (String(s).toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').match(/[a-z0-9]+/g) || []).filter((w) => !STOP.has(w) && w.length > 1).map(stem);
+async function loadCorpus(status) {
+  if (CORPUS) return CORPUS;
+  status('Loading the catalogue (7,127 works) and papers (1,457)…');
+  const [cat, pap] = await Promise.all([fetch('data/catalog.json').then((r) => r.json()), fetch('data/papers.json').then((r) => r.json())]);
+  const docs = [];
+  for (const w of cat.works) docs.push({ id: 'ol:' + w.id, kind: 'book', title: w.t + (w.st ? ': ' + w.st : ''), by: (w.a || []).slice(0, 2).join(', '), year: w.y, f: [w.t + ' ' + (w.st || ''), (w.s || []).join(' '), (w.a || []).join(' ')], pop: Math.log10(1 + (w.rl || 0)), acc: w.acc, w });
+  for (const p of pap.papers) docs.push({ id: 'arxiv:' + p.id, kind: 'paper', title: p.t, by: p.a.slice(0, 3).join(', '), year: Number(p.y.slice(0, 4)), f: [p.t, (p.th || []).join(' '), p.ab], pop: 0.4 + (Number(p.y.slice(0, 4)) >= 2025 ? 0.3 : 0), p });
+  for (const c of DB.chapters) docs.push({ id: c.id, kind: 'classic', title: `${c.title} (${c.label}, ${c.work})`, by: Array.isArray(c.by) ? c.by.join(', ') : c.by, year: c.year, f: [c.title, c.work, c.lead], pop: 0.6, c });
+  for (const s of DB.openstax) docs.push({ id: s.id, kind: 'textbook', title: `${s.t} (${s.book}, OpenStax)`, by: 'OpenStax', year: s.y, f: [s.t, s.ch + ' ' + s.book, ''], pop: 0.5, s });
+  for (const f of DB.freeTexts) docs.push({ id: f.id, kind: 'textbook', title: `${f.piece} (${f.work})`, by: f.by, year: f.year, f: [f.piece, f.work, f.terms], pop: 0.8, ft: f });
+  for (const [wid, t] of Object.entries(DB.tocs)) {
+    const w = cat.works.find((x) => x.id === wid);
+    if (!w) continue;
+    t.toc.forEach((e) => { if (e[1] && e[0] && e[2]) docs.push({ id: `ol:${wid}#${e[0]}`, kind: 'book', title: `${e[1]} (ch. ${e[0]} of ${w.t})`, by: (w.a || [])[0], year: w.y, f: [e[1], w.t, (w.s || []).join(' ')], pop: 0.5 + Math.log10(1 + (w.rl || 0)), acc: w.acc, w, toc: e }); });
+  }
+  const df = new Map();
+  for (const d of docs) {
+    d.tf = [new Map(), new Map(), new Map()];
+    d.f.forEach((txt, k) => { for (const t of toks(txt)) d.tf[k].set(t, (d.tf[k].get(t) || 0) + 1); });
+    for (const t of new Set([...d.tf[0].keys(), ...d.tf[1].keys(), ...d.tf[2].keys()])) df.set(t, (df.get(t) || 0) + 1);
+  }
+  CORPUS = { docs, df, N: docs.length, cat, pap, byId: new Map(docs.map((d) => [d.id, d])), catById: new Map(cat.works.map((w) => [w.id, w])), papById: new Map(pap.papers.map((p) => [p.id, p])) };
+  return CORPUS;
+}
+function search(q, kind = 'any', limit = 8) {
+  const qt = [...new Set(toks(q))];
+  if (!qt.length) return [];
+  const W = [3, 1.6, 0.7];
+  const scored = [];
+  for (const d of CORPUS.docs) {
+    if (kind !== 'any' && d.kind !== kind) continue;
+    let s = 0, hit = 0;
+    for (const t of qt) {
+      const idf = Math.log(1 + CORPUS.N / (CORPUS.df.get(t) || 1));
+      let m = 0;
+      for (let k = 0; k < 3; k++) { const c = d.tf[k].get(t); if (c) m += W[k] * Math.min(3, c) / (k === 2 ? 2 : 1); }
+      if (m) { s += idf * m; hit++; }
+    }
+    if (!hit) continue;
+    s *= hit / qt.length;
+    s += d.pop * 0.6;
+    scored.push([s, d]);
+  }
+  scored.sort((a, b) => b[0] - a[0]);
+  return scored.slice(0, limit).map(([, d]) => d);
+}
+function accessTierOfDoc(d) {
+  if (d.kind === 'paper' || d.kind === 'classic' || d.kind === 'textbook') return 'open';
+  const a = d.acc || d.w?.acc;
+  return a === 'public' ? 'open' : a === 'borrowable' ? 'loan' : 'buy';
+}
+function brief(d) {
+  return { id: d.id, kind: d.kind, title: d.title.slice(0, 160), by: d.by || '', year: d.year || null, access: accessTierOfDoc(d), ...(d.kind === 'book' && !d.toc && DB.tocs[d.id.slice(3)] ? { has_contents: true } : {}), ...(d.c ? { words: d.c.words } : {}) };
+}
+// build a record (same shape as the build script's) for a ref, or null
+function recordFor(ref) {
+  if (REC[ref]) return REC[ref];
+  const kind = ref.slice(0, ref.indexOf(':'));
+  if (kind === 'pg' || kind === 'pgx') {
+    const c = DB.chapters.find((x) => x.id === ref);
+    if (!c) return null;
+    return { ref, kind: 'pd', piece: c.title, label: c.label, work: c.work, by: Array.isArray(c.by) ? c.by.join(', ') : c.by, year: c.year, words: c.words, pages: Math.max(2, Math.round(c.words / 330)), access: { tier: 'open', label: 'Public domain · read here', url: `https://www.gutenberg.org/ebooks/${c.book}`, note: 'Full text in this prototype (Project Gutenberg).' }, inline: { file: c.file, start: c.start, end: c.end } };
+  }
+  if (kind === 'arxiv') {
+    const p = CORPUS?.papById.get(ref.slice(6));
+    if (!p) return null;
+    return { ref, kind: 'arxiv', piece: p.t, work: 'arXiv ' + p.id, by: p.a.slice(0, 3).join(', ') + (p.a.length > 3 ? ' et al.' : ''), year: Number(p.y.slice(0, 4)), date: p.y, pages: 14, words: 7280, access: { tier: 'open', label: 'arXiv', url: `https://arxiv.org/abs/${p.id}`, note: 'Length not stated; 14 pages assumed.' }, inline: { abstract: p.ab } };
+  }
+  if (kind === 'ol') {
+    const [wid, ch] = ref.slice(3).split('#');
+    const w = CORPUS?.catById.get(wid);
+    if (!w) return null;
+    const acc = w.acc === 'public' ? { tier: 'open', label: 'Free scan · Internet Archive', url: w.ia ? `https://archive.org/details/${w.ia}` : `https://openlibrary.org/works/${wid}`, note: 'Public scan (language not checked in live mode).' }
+      : w.acc === 'borrowable' ? { tier: 'loan', label: 'Borrow · Open Library', url: `https://openlibrary.org/works/${wid}`, note: 'Controlled digital lending; the language of the lendable copy is not checked in live mode.' }
+      : { tier: 'buy', label: 'Buy or library', url: `https://openlibrary.org/works/${wid}`, note: w.acc === 'printdisabled' ? 'Scan restricted to print-disabled readers.' : 'No ebook in Open Library.' };
+    let piece = w.t.split(':')[0], label = null, pages = w.pp || 300, range = null, edition = null;
+    if (ch) {
+      const t = DB.tocs[wid];
+      const i = t ? t.toc.findIndex((e) => String(e[0]).toLowerCase() === ch.toLowerCase()) : -1;
+      if (i < 0) return null;
+      const e = t.toc[i];
+      const nx = t.toc.slice(i + 1).find((x) => x[2]);
+      piece = e[1]; label = `Ch. ${e[0]}`; edition = t.edition;
+      if (e[2] && nx?.[2]) { range = [e[2], nx[2] - 1]; pages = nx[2] - e[2]; } else pages = 20;
+    }
+    return { ref, kind: 'ol', piece, label, work: w.t.split(':')[0], workFull: w.t, by: (w.a || []).slice(0, 2).join(', '), year: w.y, pages, range, edition, wholeBook: !ch, words: pages * 340, call: w.call, olid: wid, ia: w.ia || null, acc: w.acc, access: acc, inline: { firstSentence: w.fs || null, subjects: (w.s || []).slice(0, 6) } };
+  }
+  if (kind === 'ox') {
+    const s = DB.openstax.find((x) => x.id === ref);
+    if (!s) return null;
+    const [slug, sec] = ref.slice(3).split('/');
+    return { ref, kind: 'ox', piece: s.t.replace(/^\d+\.\d+ /, ''), label: '§' + s.t.split(' ')[0], work: `${s.book} (OpenStax)`, by: 'OpenStax', year: s.y, words: 2200, pages: 5, access: { tier: 'open', label: 'OpenStax · free online', url: `https://openstax.org/books/${slug}/pages/${sec}`, note: 'Open textbook; length estimated.' }, inline: { headings: [], lead: `${s.t}, in the chapter “${s.ch}” of ${s.book}.` } };
+  }
+  if (kind === 'ft') {
+    const f = DB.freeTexts.find((x) => x.id === ref);
+    if (!f) return null;
+    return { ref, kind: 'ft', piece: f.piece.replace(/^(Ch\. [\d–]+|§[\d.]+) /, ''), label: (f.piece.match(/^(Ch\. [\d–]+|§[\d.]+)/) || [])[1] || null, work: f.work, by: f.by, year: f.year, words: f.words || (f.pages || 20) * 450, pages: f.pages || 20, range: f.range, access: { tier: 'open', label: 'Free from the author', url: f.url, note: f.terms }, inline: { terms: f.terms } };
+  }
+  return null;
+}
+
+function openCommission() {
+  const dlg = $('#dlg-commission');
+  if (!dlg.open) dlg.showModal();
+  $('#job-no').textContent = `Job ticket No. ${String(VOLS.length + 1).padStart(4, '0')}`;
+  updateLiveNote();
+}
+function updateLiveNote() {
+  const b = $('#btn-bind-claude');
+  if (!sampleChecked) { $('#livenote').textContent = 'Checking whether Claude is available…'; b.disabled = true; return; }
+  b.disabled = !sample;
+  $('#livenote').innerHTML = sample
+    ? 'Claude edits live: it searches the catalogue, papers, public-domain chapters and open textbooks with page tools, picks pieces, and writes the notes. Ids that do not resolve are rejected. This uses your Claude account.'
+    : 'Live editing needs Claude: open this page as a Claude artifact. <b>Bind from the catalogue</b> works everywhere: it matches your brief against 7,127 catalogue works, 1,457 papers, 166 public-domain chapters and the open textbook sections, with no editor’s notes.';
+}
+const EXAMPLES = [
+  'Judging forecasts, from Laplace to proper scoring rules; technical',
+  'The philosophy of induction for a working statistician',
+  'Causal inference for someone who knows regression',
+  'How economists think about risk and insurance',
+  'A first look at information theory and entropy',
+  'Alignment and the problem of specifying what we want',
+];
+let binding = null;
+function seg(el, attr) { return $(`#${el} [aria-pressed="true"]`)?.dataset[attr]; }
+function progress(show) { $('#progress').hidden = !show; }
+function pstatus(html, spin = true) { $('#prog-status').innerHTML = `${spin ? '<span class="spinner" aria-hidden="true"></span>' : ''}<span>${html}</span>`; }
+function plog(kind, text, ok = true) { const li = document.createElement('li'); li.className = `${ok ? '' : 'bad'} ${kind === 'tool' ? 'tool' : ''}`; li.innerHTML = `<span class="k">${esc(kind)}</span><span class="x">${esc(text)}</span>`; $('#prog-log').append(li); return { kind, text, ok }; }
+
+function makeVolume(spec, origin, benchLines, rejected, briefText, hours, key) {
+  const n = VOLS.length + 1;
+  const parts = spec.parts.map((p) => ({ title: p.title, note: p.note ? [p.note] : [], tracks: p.tracks }));
+  for (const p of parts) for (const t of p.tracks) REC[t.ref] ||= recordFor(t.ref);
+  const callClass = (() => {
+    const cc = {};
+    for (const p of parts) for (const t of p.tracks) { const r = REC[t.ref]; if (r.call) { const k = r.call.split(' ')[0]; cc[k] = (cc[k] || 0) + 1; } }
+    return Object.entries(cc).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Z1039';
+  })();
+  const title = spec.title || 'Untitled';
+  const v = {
+    id: `v${Date.now().toString(36)}`, numeral: ROMAN[n - 1] || String(n), title, short: title.length > 26 ? title.split(/[:,—–-]/)[0].trim().slice(0, 26) : title,
+    subtitle: spec.subtitle || '', cloth: origin === 'claude' ? 'tan' : 'grey', nominalHours: hours,
+    call: (spec.call && /^[A-Z]{1,3}\d/.test(spec.call) ? spec.call : `${callClass} .${title.replace(/[^A-Za-z]/g, '').slice(0, 1).toUpperCase() || 'X'}${(hash(title) % 90) + 10} 2026`).slice(0, 26),
+    brief: briefText, preface: spec.preface ? [spec.preface] : null, parts, rejected, route: null, neighbours: null, bench: benchLines, origin,
+    boundOn: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }), _new: true,
+  };
+  VOLS.push(v);
+  S.hours[v.id] = hours;
+  S.key = key;
+  thresholdCache.clear();
+  return v;
+}
+
+async function bindAlgorithmic() {
+  const text = $('#brief').value.trim();
+  if (!text) { $('#brief').focus(); return; }
+  const hours = Number(seg('c-hours', 'h') || 20), key = seg('c-keys', 'k') || 'any';
+  progress(true); $('#prog-log').innerHTML = ''; $('#prog-stream').textContent = '';
+  const bench = [];
+  try {
+    await loadCorpus((m) => pstatus(m));
+    pstatus('Matching the brief…');
+    bench.push(plog('brief', text));
+    const allowed = (d) => tierOk(accessTierOfDoc(d), key);
+    const pick = (kind, n) => search(text, kind, 40).filter(allowed).slice(0, n);
+    const classics = pick('classic', 3), texts = pick('textbook', 3), books = pick('book', 3), papers = pick('paper', 4);
+    for (const [k, list] of [['classic', classics], ['textbook', texts], ['book', books], ['paper', papers]]) bench.push(plog('search', `${k}: ${list.length} hits → ${list.map((d) => d.id).join(', ') || '—'}`));
+    const mk = (list, coreN) => list.map((d, i) => ({ ref: d.id, imp: Math.max(2, 5 - i), core: i < coreN, diff: d.kind === 'classic' ? 'old' : d.kind === 'paper' ? 'standard' : d.kind === 'textbook' ? 'technical' : 'popular', why: '' }));
+    const parts = [];
+    if (classics.length) parts.push({ title: 'Foundations', tracks: mk(classics.sort((a, b) => a.year - b.year), 1) });
+    if (texts.length + books.length) parts.push({ title: 'Textbooks and syntheses', tracks: mk([...texts, ...books].sort((a, b) => (a.year || 0) - (b.year || 0)), 1) });
+    if (papers.length) parts.push({ title: 'Current research', tracks: mk(papers.sort((a, b) => a.year - b.year), 1) });
+    const rejected = [];
+    for (const p of parts) p.tracks = p.tracks.filter((t) => { const r = recordFor(t.ref); if (!r) { rejected.push({ title: t.ref, reason: 'Did not resolve.' }); return false; } bench.push({ kind: 'resolve', text: `${t.ref} → “${r.piece}”`, ok: true }); return true; });
+    if (!parts.some((p) => p.tracks.length)) throw new Error('Nothing in the catalogue matched the brief. Try different words.');
+    const SMALLW = new Set(['a', 'an', 'and', 'as', 'at', 'by', 'for', 'from', 'in', 'of', 'on', 'or', 'the', 'to', 'who', 'with']);
+    const words = text.replace(/[;.:].*$/, '').split(/\s+/).slice(0, 6).map((w, i) => (i && SMALLW.has(w.toLowerCase()) ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1))).join(' ');
+    const v = makeVolume({ title: words, subtitle: 'bound by keyword match, without an editor', parts: parts.filter((p) => p.tracks.length) }, 'algorithmic', bench, rejected, text, hours, key);
+    pstatus(`Bound: ${v.parts.reduce((s, p) => s + p.tracks.length, 0)} pieces. It is on the shelf.`, false);
+    selectVolume(v.id);
+    setTimeout(() => $('#dlg-commission').close(), reduced ? 0 : 700);
+  } catch (e) {
+    pstatus('Not bound.', false);
+    $('#prog-stream').innerHTML = `<span class="err">${esc(e.message || e)}</span>`;
+  }
+}
+
+const SAMPLE_ERR = {
+  not_granted: 'Claude was not allowed for this page, so live binding is off for this view.',
+  sampling_disabled: 'Claude is not available for this account.',
+  rate_limited: 'Too many requests just now. Wait a little and try again.',
+  session_expired: 'Your Claude session expired; sign in again.',
+  refused: 'Claude declined this brief. Try rephrasing it.',
+  empty_completion: 'Claude returned nothing. Try a shorter brief.',
+  invalid_json: 'The editor’s reply could not be read as a volume. Try again.',
+  prompt_too_large: 'The request grew too large. Try a narrower brief.',
+  tools_unavailable: 'This view cannot run the search tools Claude needs.',
+};
+function bindTools(bench, onEvent) {
+  return [
+    {
+      name: 'search_library',
+      description: 'Search the Bindery corpus: Open Library catalogue works and book chapters ("book"), arXiv papers ("paper"), public-domain chapters readable in the page ("classic"), and OpenStax or author-hosted open textbook sections ("textbook"). Returns up to `limit` hits with ids you may use as tracks, plus access: open | loan | buy.',
+      inputSchema: { type: 'object', properties: { query: { type: 'string', description: 'keywords' }, kind: { type: 'string', enum: ['any', 'book', 'paper', 'classic', 'textbook'] }, limit: { type: 'integer', minimum: 1, maximum: 12 } }, required: ['query'] },
+      execute(input) {
+        const q = String(input.query || '').slice(0, 200), kind = ['any', 'book', 'paper', 'classic', 'textbook'].includes(input.kind) ? input.kind : 'any';
+        const hits = search(q, kind, clamp(Number(input.limit) || 8, 1, 12));
+        bench.push(onEvent('tool', `search_library("${q}", ${kind}) → ${hits.length} hits`));
+        return hits.map(brief);
+      },
+    },
+    {
+      name: 'get_contents',
+      description: 'Look inside one item by id. For a catalogue work (ol:OL…W) returns its chapters with chapter ids and page ranges when a table of contents is known; for a public-domain book id (pg:58881) returns its chapters; for a paper returns the abstract; for a chapter returns its opening lines.',
+      inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] },
+      execute(input) {
+        const id = String(input.id || '').trim();
+        bench.push(onEvent('tool', `get_contents("${id}")`));
+        if (id.startsWith('ol:')) {
+          const wid = id.slice(3).split('#')[0];
+          const t = DB.tocs[wid];
+          if (!t) return { id, note: 'No table of contents known; only the whole book (ol:' + wid + ') can be bound.' };
+          return { id: 'ol:' + wid, chapters: t.toc.filter((e) => e[0] && e[1]).map((e, i, a) => ({ id: `ol:${wid}#${e[0]}`, title: e[1], pages: e[2] ? `${e[2]}–${(a[i + 1]?.[2] || e[2] + 20) - 1}` : null })) };
+        }
+        if (/^pgx?:\d+$/.test(id)) {
+          const book = Number(id.split(':')[1]);
+          return { id, chapters: DB.chapters.filter((c) => c.book === book).map((c) => ({ id: c.id, label: c.label, title: c.title, words: c.words })) };
+        }
+        if (/^pgx?:/.test(id)) { const c = DB.chapters.find((x) => x.id === id); return c ? { id, title: c.title, work: c.work, opening: c.lead, words: c.words } : { error: 'unknown id' }; }
+        if (id.startsWith('arxiv:')) { const p = CORPUS.papById.get(id.slice(6)); return p ? { id, title: p.t, date: p.y, abstract: p.ab.slice(0, 900) } : { error: 'unknown id' }; }
+        if (id.startsWith('ox:')) { const s = DB.openstax.find((x) => x.id === id); return s ? { id, title: s.t, chapter: s.ch, book: s.book } : { error: 'unknown id' }; }
+        return { error: 'unknown id format' };
+      },
+    },
+  ];
+}
+let ctl = null;
+async function bindWithClaude() {
+  const text = $('#brief').value.trim();
+  if (!text) { $('#brief').focus(); return; }
+  if (!sample) return;
+  const hours = Number(seg('c-hours', 'h') || 20), key = seg('c-keys', 'k') || 'any';
+  progress(true); $('#prog-log').innerHTML = ''; $('#prog-stream').textContent = '';
+  const bench = [];
+  const btns = ['#btn-bind-claude', '#btn-bind-algo'];
+  btns.forEach((b) => { $(b).disabled = true; });
+  $('#btn-stop').hidden = false;
+  try {
+    await loadCorpus((m) => pstatus(m));
+    bench.push(plog('brief', text));
+    pstatus('Thinking… the editor is searching the stacks');
+    ctl = new AbortController();
+    const keyText = key === 'open' ? 'Open only: use only items whose access is "open".' : key === 'loan' ? 'Open or library loans: avoid items whose access is "buy".' : 'Anything, including books to buy, but prefer open items when quality is close.';
+    const prompt = `You are the series editor at The Bindery, which binds anthologies from real, existing material. A reader commissioned this volume.
+
+BRIEF: ${text}
+TIME AVAILABLE: about ${hours} hours of reading.
+ACCESS: ${keyText}
+
+Use the tools to find real pieces. Rules:
+- Every track id MUST be an id returned by a tool (formats like pg:58881#XIII, pgx:18269#233, ol:OL123W, ol:OL123W#3, arxiv:2401.01234, ox:book-slug/section-slug, ft:key). Never invent ids or titles.
+- Prefer chapter-level pieces (public-domain chapters, OpenStax sections, book chapters from get_contents) over whole books.
+- Mix eras: some classic foundations, some textbooks or syntheses, some recent papers, ordered so each part prepares the next.
+- 3 or 4 parts and 7 to 12 tracks in all. Mark one or two tracks per part as core.
+- For each part write an editor's note of 60 to 110 words: why these pieces come now and what to look for. Ground every claim in the titles, abstracts and contents the tools returned; do not describe chapters you have not seen. Do not use quotation marks for quotations.
+- Suggest a Library of Congress call number for the volume.
+
+Reply with only JSON:
+{"title": "short title", "subtitle": "subtitle", "call": "e.g. QA273 .X55 2026", "parts": [{"title": "part title", "note": "editor's note", "tracks": [{"id": "an id from a tool", "importance": 3, "core": false, "why": "under 15 words"}]}]}`;
+    const tools = bindTools(bench, (k, t) => { const l = plog(k, t); pstatus('Thinking… ' + esc(t)); return l; });
+    const spec = await sample.json(prompt, {
+      tools, signal: ctl.signal,
+      onText: ({ text: t }) => {
+        const notes = [...t.matchAll(/"note"\s*:\s*"((?:[^"\\]|\\.)*)/g)];
+        const last = notes[notes.length - 1];
+        if (last) { $('#prog-stream').textContent = last[1].replace(/\\n/g, ' ').replace(/\\"/g, '"'); pstatus('Writing the editor’s notes…'); }
+      },
+    });
+    // resolver gate
+    const rejected = [];
+    const parts = [];
+    const seen = new Set();
+    for (const p of Array.isArray(spec?.parts) ? spec.parts.slice(0, 5) : []) {
+      const tracks = [];
+      for (const t of Array.isArray(p?.tracks) ? p.tracks.slice(0, 8) : []) {
+        const id = String(t?.id || '').trim();
+        const r = id && !seen.has(id) ? recordFor(id) : null;
+        if (!r) { rejected.push({ title: id || '(no id)', reason: seen.has(id) ? 'Duplicate.' : 'Does not resolve to any record in the corpus; rejected by the gate.' }); bench.push(plog('reject', `${id || '(no id)'}: does not resolve`, false)); continue; }
+        seen.add(id);
+        REC[id] ||= r;
+        bench.push(plog('resolve', `${id} → “${r.piece}”`));
+        if (!tierOk(r.access.tier, key)) bench.push(plog('access', `${id}: needs ${r.access.tier}, outside the chosen keys`, false));
+        tracks.push({ ref: id, imp: clamp(Math.round(Number(t.importance) || 3), 1, 5), core: !!t.core, diff: DIFF_BY_KIND[r.kind], why: String(t.why || '').slice(0, 140) });
+      }
+      if (tracks.length) parts.push({ title: String(p.title || 'Part').slice(0, 80), note: String(p.note || '').slice(0, 1200), tracks });
+    }
+    if (!parts.length) throw { code: 'no_tracks' };
+    const v = makeVolume({ title: String(spec.title || 'Untitled').slice(0, 70), subtitle: String(spec.subtitle || '').slice(0, 120), call: String(spec.call || ''), parts }, 'claude', bench, rejected, text, hours, key);
+    pstatus(`Bound: ${parts.reduce((s, p) => s + p.tracks.length, 0)} pieces resolved, ${rejected.length} rejected. It is on the shelf.`, false);
+    selectVolume(v.id);
+    setTimeout(() => $('#dlg-commission').close(), reduced ? 0 : 900);
+  } catch (e) {
+    const code = e?.code;
+    pstatus(code === 'cancelled' ? 'Stopped.' : 'Not bound.', false);
+    if (code === 'no_tracks') $('#prog-stream').innerHTML = '<span class="err">The editor returned no pieces that resolve to real records, so nothing was bound.</span>';
+    else if (code !== 'cancelled') $('#prog-stream').innerHTML = `<span class="err">${esc(SAMPLE_ERR[code] || 'Something went wrong while binding. Try again in a moment.')}</span>`;
+    if (code === 'not_granted' || code === 'sampling_disabled' || code === 'tools_unavailable') { sample = null; updateLiveNote(); }
+  } finally {
+    btns.forEach((b) => { $(b).disabled = false; });
+    if (!sample) $('#btn-bind-claude').disabled = true;
+    $('#btn-stop').hidden = true;
+    ctl = null;
+  }
+}
+
+async function drillLive() {
+  const v = vol();
+  const err = $('#drill-err');
+  if (!sample || !err) return;
+  const papers = v.parts.flatMap((p) => p.tracks).map((t) => REC[t.ref]).filter((r) => r.kind === 'arxiv').sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  if (!papers.length) { err.textContent = 'This volume has no arXiv paper to drill from.'; return; }
+  const target = papers[0];
+  const btn = $('#btn-drill');
+  btn.disabled = true; btn.textContent = 'Thinking… drilling';
+  try {
+    await loadCorpus(() => {});
+    const bench = v.bench;
+    const tools = bindTools(bench, (k, t) => { btn.textContent = 'Thinking… ' + t.slice(0, 60); return { kind: k, text: t, ok: true }; });
+    const spec = await sample.json(`You are drilling a "core sample" under a recent paper: find the concepts it rests on and, for each, real works in this corpus that teach it, from recent papers down to the oldest available classic.
+
+TARGET: ${target.ref} — ${target.piece}
+ABSTRACT: ${target.inline?.abstract?.slice(0, 1200) || ''}
+
+Use the tools. Every node id MUST come from a tool result. 3 to 5 concepts, 2 to 4 nodes each, spanning eras where the corpus allows.
+Reply with only JSON: {"concepts": [{"name": "short concept name", "needed": "one sentence: why the target needs it", "nodes": [{"id": "tool id", "adds": "under 14 words"}]}]}`, { tools });
+    const concepts = [];
+    for (const c of Array.isArray(spec?.concepts) ? spec.concepts.slice(0, 5) : []) {
+      const nodes = [];
+      for (const n of Array.isArray(c?.nodes) ? c.nodes.slice(0, 5) : []) {
+        const r = recordFor(String(n?.id || ''));
+        if (!r) { bench.push({ kind: 'reject', text: `route node ${n?.id}: does not resolve`, ok: false }); continue; }
+        REC[r.ref] ||= r;
+        nodes.push({ ref: r.ref, adds: String(n.adds || '').slice(0, 120), needs: [] });
+      }
+      if (nodes.length) concepts.push({ key: 'c' + concepts.length, name: String(c.name || 'Concept').slice(0, 40), needed: String(c.needed || '').slice(0, 200), nodes, uncharted: [] });
+    }
+    if (!concepts.length) throw { code: 'no_tracks' };
+    v.route = { target: target.ref, concepts };
+    renderRoute();
+  } catch (e) {
+    btn.disabled = false; btn.textContent = 'Drill this volume’s capstone with Claude';
+    err.textContent = e?.code === 'no_tracks' ? 'No node resolved to a real record; nothing was drawn.' : (SAMPLE_ERR[e?.code] || 'The drill failed. Try again.');
+  }
+}
+
+function wireCommission() {
+  $('#examples').innerHTML = EXAMPLES.map((x) => `<button type="button">${esc(x)}</button>`).join('');
+  $('#examples').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { $('#brief').value = b.textContent; $('#brief').focus(); } });
+  for (const id of ['c-hours', 'c-keys']) $(`#${id}`).addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; $$(`#${id} button`).forEach((x) => x.setAttribute('aria-pressed', String(x === b))); });
+  $('#btn-bind-algo').addEventListener('click', bindAlgorithmic);
+  $('#btn-bind-claude').addEventListener('click', bindWithClaude);
+  $('#btn-stop').addEventListener('click', () => ctl?.abort());
+}
+
+// ----------------------------------------------------------------- boot
+async function boot() {
+  wire();
+  wireCommission();
+  renderTicks();
+  try {
+    const res = await fetch('data/bindery/bindery.json');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    DB = await res.json();
+  } catch (e) {
+    $('#pane-contents').innerHTML = `<div class="loading">The volumes could not be loaded (${esc(e.message)}).</div>`;
+    return;
+  }
+  Object.assign(REC, DB.records);
+  for (const v of DB.volumes) VOLS.push({ ...v, short: v.id === 'decision' ? 'Decision Theory' : v.title, origin: 'precomputed' });
+  if (!VOLS.some((v) => v.id === S.vid)) S.vid = VOLS[0].id;
+  if (!['open', 'loan', 'any'].includes(S.key)) S.key = 'any';
+  update();
+  $('#foot-mode').textContent = 'Precomputed volumes · live binding when opened in Claude';
+  // live capability: never block first paint
+  (async () => {
+    try {
+      const use = window.claude?.use;
+      sample = use ? await use.call(window.claude, 'sample') : null;
+    } catch { sample = null; }
+    sampleChecked = true;
+    if (sample) $('#foot-mode').textContent = 'Claude is available: commission a volume to bind one live';
+    updateLiveNote();
+    if (S.tab === 'route') renderRoute();
+  })();
+}
+boot();
+})();
+</script>

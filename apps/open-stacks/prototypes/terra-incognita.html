@@ -173,6 +173,11 @@ a { color: var(--accent-ink); text-underline-offset: 2px; text-decoration-thickn
 }
 .ladder .zbtn + .zbtn { border-top: 0; }
 .ladder .stops { margin: 10px 0 0 15px; border-left: 1px solid var(--rule-strong); padding: 2px 0; }
+.ladder .fogctl { margin-top: 10px; display: flex; flex-direction: column; border: 1px solid var(--rule-strong); background: var(--sheet); width: 64px; }
+.ladder .fogctl .fl { font: 500 11px/1 var(--f-sc); letter-spacing: .08em; color: var(--ink-3); padding: 5px 0 4px; text-align: center; border-bottom: 1px solid var(--rule); }
+.ladder .fogctl button { border: 0; background: none; padding: 4px 0; cursor: pointer; font: 500 12px/1.2 var(--f-sc); letter-spacing: .04em; color: var(--ink-2); }
+.ladder .fogctl button + button { border-top: 1px solid var(--rule); }
+.ladder .fogctl button[aria-pressed="true"] { background: var(--ink); color: var(--sheet); }
 .ladder .stop {
   display: flex; align-items: center; gap: 7px; padding: 5px 0 5px 0; background: none; border: 0; cursor: pointer;
   font: 500 12px/1 var(--f-sc); letter-spacing: .06em; color: var(--ink-3); position: relative; text-align: left;
@@ -183,7 +188,7 @@ a { color: var(--accent-ink); text-underline-offset: 2px; text-decoration-thickn
 .ladder .stop span { background: color-mix(in srgb, var(--paper) 78%, transparent); padding: 1px 3px; }
 
 .legend {
-  position: absolute; left: max(16px, env(safe-area-inset-left, 0px)); bottom: 16px; width: min(452px, calc(100% - 32px));
+  position: absolute; right: 16px; bottom: 16px; width: min(440px, calc(100% - 32px));
   background: var(--sheet); border: 1px solid var(--rule-strong); box-shadow: var(--card-shadow);
   font-size: 12.5px; color: var(--ink-2);
 }
@@ -298,6 +303,9 @@ a { color: var(--accent-ink); text-underline-offset: 2px; text-decoration-thickn
 .kpi .l { font-size: 12px; color: var(--ink-3); line-height: 1.25; margin-top: 3px; }
 .kpi.accent .v { color: var(--accent-ink); }
 
+.keyline { margin: 10px 0 0; font-size: 12.5px; color: var(--ink-3); line-height: 1.9; }
+.keyline .glyph { margin-right: 2px; }
+.keyline .kd { display: inline-block; width: 9px; height: 9px; border: 1px dashed; border-radius: 50%; vertical-align: -1px; margin-right: 2px; }
 .conts { display: grid; gap: 1px; margin: 0; padding: 0; list-style: none; }
 .cont { display: grid; grid-template-columns: 26px minmax(0, 1fr) 46px; gap: 8px; align-items: center; padding: 3px 0; cursor: pointer; background: none; border: 0; text-align: left; width: 100%; }
 .cont:hover .nm { color: var(--accent-ink); }
@@ -426,9 +434,12 @@ textarea { width: 100%; min-height: 150px; border: 1px solid var(--rule-strong);
   .cartouche .meta { display: none; }
   .ladder { top: 10px; transform: none; left: auto; right: max(12px, env(safe-area-inset-right, 0px)); }
   .ladder .stops { display: none; }
-  .legend { width: auto; max-width: calc(100% - 24px); left: max(12px, env(safe-area-inset-left, 0px)); bottom: 10px; }
+  .ladder .fogctl { width: 32px; }
+  .ladder .fogctl .fl { font-size: 9px; }
+  .ladder .fogctl button { font-size: 10px; padding: 3px 0; }
+  .legend { width: auto; max-width: calc(100% - 24px); right: auto; left: max(12px, env(safe-area-inset-left, 0px)); bottom: 10px; }
   .legend .lg { max-height: 150px; overflow: auto; grid-template-columns: 22px minmax(0, 1fr); }
-  #card { top: auto; bottom: 8px; left: 8px; right: 8px; width: auto; max-height: calc(100% - 16px); }
+  #card { top: auto; bottom: 8px; left: 8px; right: 8px; width: auto; max-height: 80%; }
   #card .spines { height: 70px; }
   .explorer .tools .btn { padding: 4px 8px; }
   .mobile-only { display: initial; }
@@ -455,6 +466,7 @@ textarea { width: 100%; min-height: 150px; border: 1px solid var(--rule-strong);
       <button class="zbtn" id="z-in" type="button" aria-label="Zoom in">+</button>
       <button class="zbtn" id="z-out" type="button" aria-label="Zoom out">−</button>
       <button class="zbtn" id="z-fit" type="button" aria-label="Show the whole world" title="Whole world">◎</button>
+      <div class="fogctl" id="fogctl" role="group" aria-label="Fog"></div>
       <div class="stops" id="stops">
         <button class="stop" type="button" data-z="1"><span>Continents</span></button>
         <button class="stop" type="button" data-z="2.6"><span>Provinces</span></button>
@@ -463,7 +475,7 @@ textarea { width: 100%; min-height: 150px; border: 1px solid var(--rule-strong);
       </div>
     </nav>
 
-    <details class="legend" id="legend" open>
+    <details class="legend" id="legend">
       <summary>Key to the chart</summary>
       <div class="lg" id="lg"></div>
     </details>
@@ -599,6 +611,7 @@ function accessLinks(w) {
   out.push(`<a href="https://openlibrary.org/works/${encodeURIComponent(w.id)}" target="_blank" rel="noopener">Open Library ↗</a>`);
   return out.join(' · ');
 }
+function flagSVG() { return '<svg class="glyph" viewBox="0 -3 11 14" aria-hidden="true"><path d="M2 11V0" stroke="var(--ink)" stroke-width="1.1"/><path d="M2 0 9 2.6 2 5.2Z" fill="var(--accent)"/></svg>'; }
 function glyphSVG(acc, read) {
   const c = { free: 'var(--free)', borrow: 'var(--borrow)', pd: 'var(--pd)', none: 'var(--none)' }[acc];
   let g;
@@ -733,6 +746,14 @@ function buildModel(world, cat, guides) {
   // towns
   const towns = world.towns.map((t, ti) => ({ ...t, ti, sub: subByCode.get(t.c)?.si ?? -1 }));
   towns.forEach((t) => { if (t.sub >= 0) subs[t.sub].towns.push(t.ti); });
+  // each work's level-1 town ("region"), used to measure how settled its neighbourhood is
+  const lv1ByCode = new Map();
+  towns.forEach((t) => { if (t.lv === 1) { let a = lv1ByCode.get(t.c); if (!a) lv1ByCode.set(t.c, (a = [])); a.push(t); } });
+  works.forEach((w) => {
+    let best = null;
+    for (const t of lv1ByCode.get(w.code) || []) if (w.num >= t.lo && w.num <= t.hi && (!best || t.hi - t.lo < best.hi - best.lo)) best = t;
+    w.t1 = best ? 't' + best.ti : w.sub >= 0 ? 's' + w.sub : 'i' + (w.isle ?? -1);
+  });
   // isles
   const isles = world.isles.map((isle, k) => ({ ...isle, k, works: works.filter((w) => w.isle === k).map((w) => w.i) }));
 
@@ -781,8 +802,8 @@ function buildModel(world, cat, guides) {
 
   // wind roses in open water (portolan hubs)
   const roses = [
-    { x: mainBB[2] - (mainBB[2] - mainBB[0]) * 0.05, y: mainBB[3] - (mainBB[3] - mainBB[1]) * 0.06, r: 36, main: true },
-    { x: mainBB[0] + (mainBB[2] - mainBB[0]) * 0.05, y: mainBB[1] + (mainBB[3] - mainBB[1]) * 0.07, r: 20, main: false },
+    { x: mainBB[0] + (mainBB[2] - mainBB[0]) * 0.07, y: mainBB[3] - (mainBB[3] - mainBB[1]) * 0.07, r: 36, main: true },
+    { x: mainBB[2] - (mainBB[2] - mainBB[0]) * 0.1, y: mainBB[3] - (mainBB[3] - mainBB[1]) * 0.04, r: 18, main: false },
   ];
 
   return {
@@ -848,6 +869,8 @@ function deriveReader(reader, upto = 1) {
   const ring1 = [];
   for (const h of seeds) for (const j of nb[h]) if (state[j] === 2) { state[j] = 0; ring1.push(j); }
   for (const h of ring1) for (const j of nb[h]) if (state[j] === 2) state[j] = 1;
+  const readByT1 = new Map();
+  for (const r of readNow) { const k = works[r.i].t1; readByT1.set(k, (readByT1.get(k) || 0) + 1); }
   // frontier value
   const frontier = [];
   let vmax = 0;
@@ -855,7 +878,7 @@ function deriveReader(reader, upto = 1) {
   for (let h = 0; h < HN; h++) {
     if (state[h] !== 1) continue;
     let v = 0;
-    for (const wi of M.hexWorks[h]) if (!readSet.has(wi)) v += pop(works[wi]) * accBonus(works[wi]);
+    for (const wi of M.hexWorks[h]) if (!readSet.has(wi)) v += pop(works[wi]) * accBonus(works[wi]) * (1 + Math.sqrt(readByT1.get(works[wi].t1) || 0));
     v += 0.15 * M.hexGut[h];
     value[h] = v; vmax = Math.max(vmax, v); frontier.push(h);
   }
@@ -868,7 +891,7 @@ function deriveReader(reader, upto = 1) {
   readNow.forEach((r) => { const w = works[r.i]; if (w.sub >= 0) subRead[w.sub]++; });
   const subClear = M.subs.map(() => 0);
   for (let h = 0; h < N; h++) if (state[h] === 0) subClear[M.hsub[h]]++;
-  return { reader, readSet, readDate, readNow, state, frontier, value, clear, clsClear, subRead, subClear };
+  return { reader, readSet, readDate, readNow, state, frontier, value, clear, clsClear, subRead, subClear, readByT1 };
 }
 
 // Encounters: what the app would have shown this reader. Shelf walks, subject cross-references, searches.
@@ -1127,7 +1150,7 @@ function drawTrees(c, v, p) {
 
 function drawMountains(c, v) {
   const Z = z();
-  const thr = Z < 1.6 ? 70 : Z < 3 ? 35 : Z < 6 ? 16 : 8;
+  const thr = Z < 1.6 ? 70 : Z < 3 ? 40 : Z < 6 ? 25 : 14;
   screenTf(c);
   c.lineJoin = 'round';
   for (let i = 0; i < M.HN; i++) {
@@ -1135,7 +1158,7 @@ function drawMountains(c, v) {
     const w = M.works[wi], e = w.ed || 0; if (e < thr) continue;
     if (!ptVisible(M.hx[i], M.hy[i], v, M.S)) continue;
     const [sx, sy] = toScreen(M.hx[i] + M.R * 0.15, M.hy[i] + M.R * 0.2);
-    const s = clamp((2.2 + Math.log2(e) * 1.05) * clamp(Math.sqrt(T.k / 1.4), 0.5, 2.1), 3, 22);
+    const s = clamp((2.2 + Math.log2(e) * 1.05) * clamp(Math.sqrt(T.k / 1.4), 0.5, 1.6), 3, 16);
     c.beginPath();
     c.moveTo(sx - s, sy);
     c.bezierCurveTo(sx - s * 0.55, sy - s * 0.35, sx - s * 0.25, sy - s * 1.25, sx + s * 0.05, sy - s * 1.25);
@@ -1290,7 +1313,7 @@ function drawGlow() {
   worldTf(c);
   c.fillStyle = C.glow;
   const Z = z();
-  const base = Z > 6 ? 0.35 : 0.55;
+  const base = Z > 6 ? 0.22 : Z > 3.5 ? 0.32 : 0.55;
   // bucket by intensity to limit fill calls
   const buckets = [[], [], [], [], []];
   for (const h of D.frontier) { if (!ptVisible(M.hx[h], M.hy[h], v, M.S * 2)) continue; buckets[Math.min(4, Math.floor(D.value[h] * 5))].push(h); }
@@ -1467,9 +1490,10 @@ function drawLabels(c, v, Z) {
   const fogOn = D && st.fog === 'full';
   // continents
   const contAlpha = Z < 2.6 ? 1 : Z < 5 ? 1 - (Z - 2.6) / 3.2 : 0.22;
-  for (const cl of M.classes) {
+  for (const cl of M.classes.slice().sort((a, b) => b.nh - a.nh)) {
     const sizeW = clamp(3.6 + Math.sqrt(cl.nh) * 0.9, 5.5, 21);
-    const px = clamp(sizeW * T.k * 0.9, 10, 38);
+    for (const shrink of [1, 0.72]) {
+    const px = clamp(sizeW * T.k * 0.9 * shrink, 10, 38);
     const [x, y] = toScreen(cl.lx, cl.ly);
     if (x < -200 || x > W + 200 || y < -60 || y > H + 60) continue;
     const lines = CLASS_LINES[cl.c] || [cl.n];
@@ -1478,8 +1502,15 @@ function drawLabels(c, v, Z) {
     const lineH = px * 1.02;
     const y0 = y - ((lines.length - 1) * lineH) / 2;
     let ok = true;
-    lines.forEach((ln, k) => { ok = label(c, ln.toUpperCase(), x, y0 + k * lineH, { font, spacing: px * (small ? 0.08 : 0.22), color: C.ink, alpha: contAlpha, haloW: 4, force: k > 0 && ok }) && ok; });
+    // measure every line first so a label is placed whole or not at all
+    c.font = font;
+    const sp = px * (small ? 0.08 : 0.22);
+    const boxes = lines.map((ln, k) => { const t = ln.toUpperCase(); const wdt = [...t].reduce((a, ch) => a + c.measureText(ch).width, 0) + sp * ([...t].length - 1); const yy = y0 + k * lineH; return [x - wdt / 2 - 2, yy - px / 2 - 2, x + wdt / 2 + 2, yy + px / 2 + 2]; });
+    if (boxes.some((b) => b[0] < 4 || b[2] > W - 4 || b[1] < 2 || b[3] > H - 2 || collide(...b))) continue;
+    lines.forEach((ln, k) => label(c, ln.toUpperCase(), x, y0 + k * lineH, { font, spacing: sp, color: C.ink, alpha: contAlpha, haloW: 4, force: true }));
     if (Z < 3.5) label(c, '— ' + cl.c + ' —', x, y0 + lines.length * lineH + 2, { font: `italic ${Math.round(clamp(px * 0.45, 10, 15))}px "IM Fell English", Georgia, serif`, color: C.ink2, alpha: contAlpha });
+    break;
+    }
   }
   // archipelago
   if (M.isles.length) {
@@ -1699,7 +1730,7 @@ function renderCard() {
   const srcs = st.metSrc && st.metSrc.get(w.i);
   const status = isRead
     ? `<span class="flag">⚑</span> Read by the ${esc(st.reader.kind === 'example' ? 'example reader' : 'explorer')}, ${esc(ym(D.readDate.get(w.i)))}`
-    : metN ? `Met ${metN}× (${esc(srcs ? [...srcs].join(', ') : '')}) but not read` : 'Not yet met: in the fog';
+    : metN ? `Met ${metN}× (${esc(srcs ? [...srcs].join(', ') : '')}) but not read` : D && w.hex >= 0 && D.state[w.hex] < 2 ? 'Not yet met, though its shelf is in sight' : 'Not yet met: in the fog';
   const a = accOf(w);
   card.innerHTML = `
     <button class="x" type="button" data-close-card aria-label="Close card">×</button>
@@ -1710,7 +1741,7 @@ function renderCard() {
       ${w.st ? `<div class="stt">${esc(w.st)}</div>` : ''}
       <div class="by">${esc((w.a || []).slice(0, 3).join(', ') || 'Unknown author')}${w.y ? ' · first published ' + w.y : ''}</div>
       <div class="by num small">${w.pp ? fmt(w.pp) + ' pp · ' : ''}${fmt(w.ed || 0)} editions · ${fmt(w.rl || 0)} on reading logs${town ? ' · ' + esc(rangeStr(town.lo, town.hi) + ' ' + town.n) : ''}</div>
-      ${w.fs ? `<blockquote class="fs">“${esc(w.fs.length > 260 ? w.fs.slice(0, 257) + '…' : w.fs)}”<cite>First sentence, as recorded by Open Library</cite></blockquote>` : ''}
+      ${w.fs ? `<blockquote class="fs">“${esc((() => { const f = w.fs.replace(/^[\s"“”'‘’]+|[\s"“”'‘’]+$/g, ''); return f.length > 260 ? f.slice(0, 257) + '…' : f; })())}”<cite>First sentence, as recorded by Open Library</cite></blockquote>` : ''}
       <div class="acc"><span class="badge ${a.cls}">${glyphSVG(a.cls)} ${esc(a.label)}</span><span class="small">${esc(a.long)}</span></div>
       <div class="acc small">${accessLinks(w)}</div>
       <div class="status">${status}</div>
@@ -1724,7 +1755,7 @@ function renderCard() {
 }
 
 /* =============================== tabs =============================== */
-function setTab(tab) {
+function setTab(tab, opts = {}) {
   st.tab = tab;
   $$('.tab').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
   $$('.pb').forEach((p) => (p.hidden = p.id !== 'pb-' + tab));
@@ -1733,20 +1764,27 @@ function setTab(tab) {
   if (tab === 'exp') { if (!st.route) planRoute(); renderExpedition(); }
   if (tab === 'unseen') renderUnseen();
   if (tab === 'guide') renderGuide();
+  if (opts.fly !== false && M) {
+    if (tab === 'exp' && st.expRegion) { closeCard(); flyTo(regionBBox(st.expRegion), 12); }
+    if (tab === 'unseen' && st.unRegion) { closeCard(); flyTo(regionBBox(st.unRegion), 12); }
+    if (tab === 'guide' && st.guide.sc) { const s = M.subByCode.get(st.guide.sc); if (s) flyTo(s.bb, 8); }
+  }
   requestRender();
 }
+function closeCard() { if (st.work != null) { st.work = null; card.hidden = true; } }
 
 /* ---------- Atlas ---------- */
 function computeLandfalls() {
   const D = st.derived; if (!D) return [];
   const cands = [];
-  const aff = interestProfile();
+  const qprof = queryProfile();
   for (const h of D.frontier) for (const wi of M.hexWorks[h]) {
     if (D.readSet.has(wi)) continue;
     const w = M.works[wi];
-    const a = affinity(w, aff);
-    if (a < 0.2 || !/^[\x20-\x7E\u00C0-\u024F\u2018-\u201D\u2013\u2014]+$/.test(w.t)) continue;
-    cands.push({ i: wi, h, s: pop(w) * accBonus(w) * a });
+    const d = D.readByT1.get(w.t1) || 0;
+    if (d < 2 || (w.ed || 0) < 2 || !LATIN.test(w.t)) continue;
+    let qa = 0; for (const q of w.q || []) qa = Math.max(qa, qprof.get(q) || 0);
+    cands.push({ i: wi, h, s: Math.pow(d, 0.7) * (0.6 + 0.4 * qa) * (1 + Math.log1p(w.ed || 0)) * (1 + 0.3 * Math.log1p(w.rl || 0)) * accBonus(w) });
   }
   cands.sort((a, b) => b.s - a.s);
   const out = [], seenSub = new Map();
@@ -1758,15 +1796,26 @@ function computeLandfalls() {
   }
   return out;
 }
-// what the explorer reads about: share of read works returned by each subject search
+// what the explorer reads about: subject headings that recur among the works read (and are specific enough to mean something)
+let profCache = null;
 function interestProfile() {
-  const D = st.derived; const m = new Map(); if (!D) return m;
-  for (const r of D.readNow) for (const q of M.works[r.i].q || []) m.set(q, (m.get(q) || 0) + 1);
-  const mx = Math.max(1, ...m.values());
-  m.forEach((v, k) => m.set(k, v / mx));
+  const D = st.derived; if (!D) return new Map();
+  if (profCache && profCache.D === D) return profCache.m;
+  const m = new Map();
+  for (const r of D.readNow) for (const s of (M.works[r.i].s || []).slice(0, 12)) { const k = s.toLowerCase(); m.set(k, (m.get(k) || 0) + 1); }
+  for (const [k, v] of [...m]) { const n = M.subjIndex.get(k)?.length || 0; if (v < 2 || n > 260) m.delete(k); else m.set(k, Math.min(1, v / 6)); }
+  profCache = { D, m };
   return m;
 }
-function affinity(w, prof) { let a = 0; for (const q of w.q || []) a = Math.max(a, prof.get(q) || 0); return a; }
+const LATIN = /^[\x20-\x7E\u00C0-\u024F\u2018-\u201D\u2013\u2014]+$/;
+function queryProfile() {
+  const D = st.derived; const m = new Map(); if (!D) return m;
+  for (const r of D.readNow) for (const q of M.works[r.i].q || []) m.set(q, (m.get(q) || 0) + 1);
+  const mx = Math.max(1, ...m.values()); m.forEach((v, k) => m.set(k, v / mx));
+  return m;
+}
+function affinitySum(w, prof) { let a = 0; for (const s of (w.s || []).slice(0, 12)) a += prof.get(s.toLowerCase()) || 0; return a; }
+function affinity(w, prof) { return Math.min(1, affinitySum(w, prof)); }
 function blindSpots() {
   const D = st.derived; if (!D || !D.readNow.length) return [];
   const out = [];
@@ -1798,9 +1847,10 @@ function renderAtlas() {
       <div class="kpi"><div class="v">${entered}<small> / ${M.subs.length}</small></div><div class="l">provinces entered</div></div>
       <div class="kpi"><div class="v">${fmt(D.frontier.length)}</div><div class="l">frontier hexes glowing</div></div>
     </div>
+    <p class="keyline">${flagSVG()} read · <span class="kd" style="border-color:var(--ink-2)"></span> rumoured · ${glyphSVG('free')} free now · ${glyphSVG('borrow')} borrowable · ${glyphSVG('pd')} print-disabled · ${glyphSVG('none')} no ebook · <button class="linkish" type="button" data-act="key">full key</button></p>
     ${nRead ? `<div class="row" style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn" type="button" data-act="replay">Replay the settlement</button><button class="btn" type="button" data-act="fit">Whole world</button></div>` : ''}
     ${st.landfalls.length ? `<h3>Best landfalls on the frontier</h3>
-    <p class="small" style="margin-top:-2px">Unread works in glowing hexes that match the explorer's subjects, ranked by readers × editions × access. Numbered on the map.</p>
+    <p class="small" style="margin-top:-2px">Unread works in glowing hexes, ranked by how many flags share their outline range, then by editions, readers and access. Numbered on the map.</p>
     <ol class="list">${st.landfalls.map((lf, k) => { const w = M.works[lf.i]; const a = accOf(w); return `<li class="li"><span class="n">${k + 1}</span><div><button class="tt" type="button" data-work="${w.i}">${esc(shortTitle(w.t, 60))}</button><div class="mt">${esc(firstAuthor(w))}${w.y ? ' · ' + w.y : ''} · <span class="mono">${esc(w.call)}</span></div></div><div class="rt"><span class="badge ${a.cls}">${esc(a.label)}</span></div></li>`; }).join('')}</ol>` : ''}
     ${(() => { const b = blindSpots(); return b.length ? `<h3>Blind spots on your border</h3><p class="small" style="margin-top:-2px">Provinces you border but have never entered.</p><ul class="list">${b.map(({ s, nbr }) => `<li class="li"><span class="n" style="font-size:14px">${esc(s.c)}</span><div><button class="tt" type="button" data-prov="${s.si}">${esc(s.n)}</button><div class="mt">${fmt(s.cat)} works, none read · borders ${esc(M.subs[nbr].c)} (${D.subRead[nbr]} read)</div></div><span></span></li>`).join('')}</ul>` : ''; })()}
     <h3>Continents</h3>
@@ -1882,12 +1932,14 @@ function planRoute() {
     return { i, s };
   }).sort((a, b) => b.s - a.s);
   const picks = [], perTown = new Map(), titles = new Set();
+  const nTowns = new Set(ids.map((i) => M.works[i].town)).size;
+  const cap = rg.type === 'sub' ? Math.max(2, Math.ceil(st.expLegs / Math.max(1, nTowns))) : 3;
   for (const c of scored) {
     const w = M.works[c.i];
     const key = norm(w.t);
     if (titles.has(key)) continue;
     const tk = rg.type === 'sub' ? w.town : Math.floor(w.num || 0);
-    if ((perTown.get(tk) || 0) >= (rg.type === 'sub' ? 2 : 3)) continue;
+    if ((perTown.get(tk) || 0) >= cap) continue;
     perTown.set(tk, (perTown.get(tk) || 0) + 1); titles.add(key);
     picks.push({ i: c.i, s: c.s, level: levelOf(w) });
     if (picks.length >= st.expLegs) break;
@@ -1917,8 +1969,26 @@ function planRoute() {
   st.route = { legs, base, region: rg };
 }
 function defaultRegion(kind) {
-  const t = M.towns.find((t) => t.c === (kind === 'exp' ? 'HB' : 'QA') && (kind === 'exp' ? t.lo === 615 : t.lo === 273 && t.hi === 280));
-  if (t) return { type: 'town', ti: t.ti };
+  const D = st.derived;
+  if (kind === 'exp' && D && D.readNow.length) {
+    if (st.reader.kind === 'example') {
+      const t = M.towns.find((t) => t.c === 'Q' && t.lo === 1 && t.hi === 295);
+      if (t) return { type: 'town', ti: t.ti };
+    }
+    // a partly settled outline range with the most notable unread works
+    let best = null, bs = -1;
+    for (const t of M.towns) {
+      if (t.lv !== 1 || t.k < 25) continue;
+      const f = D.readByT1.get('t' + t.ti) || 0; if (f < 2) continue;
+      let sum = 0;
+      for (const wi of regionWorks({ type: 'town', ti: t.ti })) if (!D.readSet.has(wi)) { const w = M.works[wi]; sum += (1 + Math.log1p(w.ed || 0)) * (1 + 0.3 * Math.log1p(w.rl || 0)); }
+      const sc = (sum * f) / (f + t.k * 0.15) / (1 + f / 8);
+      if (sc > bs) { bs = sc; best = t; }
+    }
+    if (best) return { type: 'town', ti: best.ti };
+  }
+  const t = M.towns.find((t) => t.c === 'QA' && t.lo === 273 && t.hi === 280);
+  if (t && kind !== 'exp') return { type: 'town', ti: t.ti };
   return { type: 'sub', si: M.subByCode.get('QA').si };
 }
 function regionOptions(cur) {
@@ -1929,7 +1999,10 @@ function regionOptions(cur) {
   const rest = M.subs.filter((s) => !(D && D.subRead[s.si] > 0) && s.cat >= 5);
   const val = (rg) => JSON.stringify(rg);
   const sel = (rg) => (sameRegion(rg, cur) ? ' selected' : '');
-  let html = '<optgroup label="Provinces you have entered">';
+  let html = '';
+  const all = [...entered.map((s) => ({ type: 'sub', si: s.si })), ...M.towns.filter((t) => t.k >= 12 && t.lv <= 2 && t.sub >= 0).map((t) => ({ type: 'town', ti: t.ti })), ...rest.map((s) => ({ type: 'sub', si: s.si })), ...M.isles.map((i) => ({ type: 'isle', k: i.k }))];
+  if (cur && !all.some((r) => sameRegion(r, cur))) html += `<option value='${val(cur)}' selected>${esc(regionName(cur))}</option>`;
+  html += '<optgroup label="Provinces you have entered">';
   for (const s of entered) { const rg = { type: 'sub', si: s.si }; html += `<option value='${val(rg)}'${sel(rg)}>${esc(s.c + ' · ' + shortTitle(s.n, 40))}</option>`; }
   html += '</optgroup><optgroup label="Towns with 12+ works">';
   for (const t of M.towns.filter((t) => t.k >= 12 && t.lv <= 2 && t.sub >= 0)) { const rg = { type: 'town', ti: t.ti }; html += `<option value='${val(rg)}'${sel(rg)}>${esc(t.c + ' ' + rangeStr(t.lo, t.hi) + ' · ' + shortTitle(t.n, 36))} (${t.k})</option>`; }
@@ -2015,7 +2088,8 @@ function renderUnseen() {
   const pc = st.unZ === 0.95 ? '95%' : '80%';
   const unseenEst = Math.max(0, c.est - c.S), unLo = Math.max(0, c.lo - c.S), unHi = Math.max(0, c.hi - c.S);
   const stop = stopAfter(c, st.unThr);
-  const perWalk = Math.max(1, bySrc.shelf / Math.max(1, (st.reader.read || []).filter((r) => M.works[r.i].sub >= 0).length));
+  const readHere = Math.max(1, bySrc.read);
+  const perBook = Math.max(1, c.n / readHere);
   const truthGap = truth - c.S;
   const within = truth >= c.lo && truth <= c.hi;
   el.innerHTML = `
@@ -2035,7 +2109,7 @@ function renderUnseen() {
     <div id="un-chart"></div>
     <div class="rule-box"><b>Stopping rule</b>${c.pNew <= st.unThr
       ? `The chance that your next encounter here is a new work is ${fmt1(100 * c.pNew)}%, already below your ${fmt(100 * st.unThr)}% threshold. <b style="display:inline;font:inherit;color:inherit;letter-spacing:0">Stop foraging here</b>; the rest of this region is better found by a different route (another search vocabulary, a neighbouring shelf).`
-      : `Right now ${fmt1(100 * c.pNew)}% of encounters here would be new works (Good–Turing, from the ${c.f1} singletons). Keep foraging until that falls below ${fmt(100 * st.unThr)}%: about <span class="num">${Number.isFinite(stop) ? fmt(stop) : 'many'}</span> more encounters${Number.isFinite(stop) ? `, roughly ${fmt(Math.ceil(stop / perWalk))} more books read here with their shelf walks` : ''}.`}
+      : `Right now ${fmt1(100 * c.pNew)}% of encounters here would be new works (Good–Turing, from the ${c.f1} singletons). Keep foraging until that falls below ${fmt(100 * st.unThr)}%: about <span class="num">${Number.isFinite(stop) ? fmt(stop) : 'many'}</span> more encounters${Number.isFinite(stop) && bySrc.read ? `: at the current ${fmt1(perBook)} encounters per book read here, roughly ${fmt(Math.ceil(stop / perBook))} more books` : ''}.`}
       <div style="margin-top:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><label for="un-thr" class="small">Threshold</label><select class="sel" id="un-thr">${[0.1, 0.05, 0.02, 0.01].map((t) => `<option value="${t}"${st.unThr === t ? ' selected' : ''}>${fmt(100 * t)}% new</option>`).join('')}</select></div>
     </div>
     <h3>Check against the catalog</h3>
@@ -2084,7 +2158,7 @@ function drawUnseenChart(host, U) {
   lab(Wc - m.r, y(c.est) - 5, `Chao1 ≈ ${Math.round(c.est)}`, 'var(--accent-ink)');
   const ty = Math.abs(y(truth) - y(c.est)) < 13 ? (truth > c.est ? y(truth) - 5 : y(truth) + 13) : y(truth) - 5;
   lab(Wc - m.r, ty, `catalog holds ${truth}`, 'var(--sepia)');
-  lab(x(c.n) - 4, m.t + 10, 'today', 'var(--ink-3)');
+  lab(x(c.n) + 4, Hc - m.b - 6, 'today', 'var(--ink-3)', 'start');
   lab(Wc - m.r, Hc - 4, 'encounters →', 'var(--ink-3)');
   lab(m.l - 32, m.t - 3, 'works met', 'var(--ink-3)', 'start');
 }
@@ -2263,7 +2337,7 @@ function afterReader() {
   const rd = st.reader;
   $('#who').innerHTML = `<b>${esc(rd.label)}</b><span class="ex">${esc(rd.note)}</span> · <span class="num">${fmt(rd.read.length)}</span> flags`;
   $('#cart-meta').innerHTML = `<b>${fmt(M.works.filter((w) => w.sub >= 0).length)}</b> call-numbered works · <b>${fmt(M.subs.reduce((a, s) => a + s.gut, 0))}</b> Gutenberg titles<br>Surveyed October 2026 · explored by <span class="who">${esc(rd.kind === 'example' ? 'an example reader (synthetic)' : rd.kind === 'blank' ? 'nobody yet' : 'your reading list')}</span>`;
-  setTab(st.tab);
+  setTab(st.tab, { fly: false });
   if (st.work != null) renderCard();
 }
 
@@ -2346,6 +2420,7 @@ function bind() {
     else if (act === 'unseen-prov') { st.unRegion = { type: 'sub', si: st.prov }; setTab('unseen'); flyTo(M.subs[st.prov].bb, 8); }
     else if (act === 'guide-prov') { st.guide.sc = M.subs[st.prov].c; resetGuide(); setTab('guide'); }
     else if (act === 'more') { st.provMore += 60; renderProvince(); }
+    else if (act === 'key') { const lg = $('#legend'); lg.open = true; lg.querySelector('summary').focus(); }
     else if (act === 'center-work') { const w = M.works[st.work]; const r = M.S * 2.2; flyTo([w.px - r, w.py - r, w.px + r, w.py + r], 14); }
     else if (act === 'exp-from-work') {
       const w = M.works[st.work];
@@ -2417,7 +2492,8 @@ function renderLegend() {
     ${sw('<rect x="-9" y="-6" width="18" height="12" fill="url(#stp)" stroke="var(--rule)"/><defs><pattern id="stp" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r=".8" fill="var(--sepia)"/></pattern></defs>')}<span>Forest: Gutenberg titles</span>
     ${sw('<path d="M-8 0H8" stroke="var(--accent)" stroke-width="6" opacity=".45" style="filter:blur(1.5px)"/>')}<span>Frontier glow (brighter = more within reach)</span>
     ${sw('<path d="M-6 -5 0 -6.5 6 -5 6 5 0 6.5 -6 5Z" fill="none" stroke="var(--ink-3)" stroke-width="1"/>')}<span>One hex ≈ ${fmt((M.works.filter((w) => w.sub >= 0).length + M.subs.reduce((a, s) => a + s.gut, 0)) / M.N)} titles</span>
-    <div class="fogctl"><span class="small">Fog</span><div class="seg" role="group" aria-label="Fog">${[['full', 'Full'], ['thin', 'Thin'], ['off', 'Lifted']].map(([k, l]) => `<button type="button" data-fog="${k}" aria-pressed="${st.fog === k}">${l}</button>`).join('')}</div></div>`;
+`;
+  $('#fogctl').innerHTML = `<span class="fl">Fog</span>${[['full', 'Full'], ['thin', 'Thin'], ['off', 'Lifted']].map(([k, l]) => `<button type="button" data-fog="${k}" aria-pressed="${st.fog === k}">${l}</button>`).join('')}`;
 }
 
 /* =============================== boot =============================== */

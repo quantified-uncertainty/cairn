@@ -27,7 +27,7 @@
   --amber:#E6AA45; --amber-wash:rgba(230,170,69,.15);
   --land:#28323E; --sea:#111720; --sel-ink:#0C1016;
   --shadow:0 1px 0 rgba(0,0,0,.3),0 12px 28px -18px rgba(0,0,0,.8);
-  --case-fill:#E5E8EC; --case-on:#0C1016;
+  --case-fill:#C3CCD6; --case-on:#0C1016;
   color-scheme:dark;
 }}
 :root[data-theme="dark"]{
@@ -40,7 +40,7 @@
   --amber:#E6AA45; --amber-wash:rgba(230,170,69,.15);
   --land:#28323E; --sea:#111720; --sel-ink:#0C1016;
   --shadow:0 1px 0 rgba(0,0,0,.3),0 12px 28px -18px rgba(0,0,0,.8);
-  --case-fill:#E5E8EC; --case-on:#0C1016;
+  --case-fill:#C3CCD6; --case-on:#0C1016;
   color-scheme:dark;
 }
 html,body{height:100%}
@@ -61,6 +61,7 @@ button{font:inherit;color:inherit}
 .brand p{margin:3px 0 0;font-size:11.5px;color:var(--ink-3);max-width:230px;line-height:1.25}
 .tabs{display:flex;align-items:stretch;gap:2px;overflow-x:auto;scrollbar-width:none;min-width:0;flex:1}
 .tabs::-webkit-scrollbar{display:none}
+@media (max-width:819px){.tabs{-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}}
 .tab{border:0;background:none;padding:8px 14px 7px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;cursor:pointer;border-bottom:3px solid transparent;color:var(--ink-3);flex:none;position:relative}
 .tab .a{font-size:10px;font-weight:650;font-stretch:118%;letter-spacing:.1em;text-transform:uppercase}
 .tab .n{font-family:"Libre Caslon Display",Georgia,serif;font-size:24px;line-height:1;color:var(--ink-2)}
@@ -81,7 +82,7 @@ button{font:inherit;color:inherit}
 .btn .k{font-family:"IBM Plex Mono";font-size:11px;opacity:.7}
 .icon-btn{width:34px;height:34px;justify-content:center;padding:0}
 
-.work{display:grid;grid-template-columns:212px minmax(0,1fr) minmax(400px,37%);min-height:0}
+.work{display:grid;grid-template-columns:196px minmax(0,1fr) minmax(400px,37%);min-height:0}
 .case{overflow:auto;padding:18px 16px 24px 0;border-right:1px solid var(--rule);min-width:0}
 .board{overflow:auto;min-width:0;container-type:inline-size;
   background-color:var(--paper);
@@ -93,22 +94,21 @@ button{font:inherit;color:inherit}
 /* ---------- type case ---------- */
 .case h2{margin:0 0 3px;font-size:10.5px}
 .case .sub{margin:0 0 12px;font-size:11.5px;color:var(--ink-3);line-height:1.35}
-.tcase{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:46px;gap:3px;padding:3px;border:2px solid var(--ink);background:var(--rule);border-radius:2px}
+.tcase{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:50px;grid-template-areas:"calc calc work" "calc calc arg" "claim count cast" "time map map" "gloss gloss branch";gap:3px;padding:3px;border:2px solid var(--ink);background:var(--rule);border-radius:2px}
 .sort{position:relative;border:0;background:var(--sheet);display:flex;flex-direction:column;justify-content:space-between;padding:5px 6px 4px;cursor:default;text-align:left;min-width:0;overflow:hidden}
 .sort .g{font-family:"Libre Caslon Text",Georgia,serif;font-size:19px;line-height:1;color:var(--ink-4)}
-.sort .nm{font-size:8.6px;font-weight:650;font-stretch:90%;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sort .nm{font-size:8.4px;line-height:1.08;font-weight:650;font-stretch:88%;letter-spacing:.03em;text-transform:uppercase;color:var(--ink-4);hyphens:manual}
 .sort .ct{position:absolute;top:4px;right:5px;font:500 10px "IBM Plex Mono";color:var(--case-on);opacity:.85}
 .sort.on{background:var(--case-fill);cursor:pointer}
 .sort.on .g,.sort.on .nm{color:var(--case-on)}
 .sort.on:hover{outline:2px solid var(--blue);outline-offset:-2px}
-.sort.w2{grid-column:span 2}.sort.h2{grid-row:span 2}
-.sort.h2 .g{font-size:34px}
+.sort.big .g{font-size:40px}
 .case .note{font-size:11.5px;color:var(--ink-2);margin:10px 0 18px;line-height:1.4}
 .stamp{border:1.5px solid var(--blue);color:var(--blue-ink);padding:9px 10px 10px;border-radius:3px;position:relative;background:var(--sheet)}
 .stamp.bad{border-color:var(--red);color:var(--red)}
 .stamp .big{font:600 22px/1 "IBM Plex Mono";margin:4px 0 2px}
-.stamp .ln{font-size:11.5px;color:var(--ink-2)}
-.stamp .ln b{color:var(--ink);font-weight:650}
+.stamp .sl{font-size:11.5px;color:var(--ink-2);line-height:1.4}
+.stamp .sl b{color:var(--ink);font-weight:650}
 .legend{margin-top:16px;display:grid;gap:7px;font-size:11.5px;color:var(--ink-2)}
 .legend div{display:flex;gap:8px;align-items:center}
 .legend .sw{width:28px;height:14px;border-radius:2px;flex:none}
@@ -165,6 +165,9 @@ button{font:inherit;color:inherit}
 .el.sel{background:var(--blue-wash)!important;box-shadow:0 0 0 2px var(--blue)!important}
 .el.cited{animation:cite 1.6s ease-out 1}
 @keyframes cite{0%{box-shadow:0 0 0 3px var(--blue)}100%{box-shadow:0 0 0 0 transparent}}
+tr.el.sel td{background:var(--blue-wash)!important}
+tr.el.sel td:first-child{box-shadow:inset 3px 0 0 var(--blue)}
+tr.el.unv td{background-image:repeating-linear-gradient(135deg,var(--red-wash) 0 4px,transparent 4px 9px)}
 .el.unv{background-image:repeating-linear-gradient(135deg,var(--red-wash) 0 4px,transparent 4px 9px);box-shadow:inset 0 0 0 1px var(--red)}
 .src{font:500 10.5px/1 "IBM Plex Mono";color:var(--blue-ink);background:transparent;border:1px solid var(--blue-wash-2);padding:3px 5px;border-radius:2px;cursor:pointer;white-space:nowrap;display:inline-flex;gap:4px;align-items:center}
 .src:hover{background:var(--blue-wash)}
@@ -276,6 +279,8 @@ button{font:inherit;color:inherit}
 .tbl .term{font:italic 15px "Libre Caslon Text",serif}
 .tbl .gl{color:var(--ink-2);line-height:1.4}
 .tbl .srcs{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.tbl.cast,.tbl.gloss{table-layout:fixed}
+.tbl .xref{white-space:normal;text-align:left;line-height:1.3}
 .qc{margin-top:7px;font-size:12px;color:var(--ink-2);border-top:1px dashed var(--rule);padding-top:6px;line-height:1.55}
 .qc del{color:var(--red);text-decoration:line-through}
 .qc ins{color:var(--blue-ink);text-decoration:underline;text-decoration-thickness:1.5px}
@@ -326,20 +331,28 @@ button{font:inherit;color:inherit}
 .outside.on{display:block}
 .outside .q{font-family:"Libre Caslon Text",serif}
 .outside mark{background:var(--blue-wash-2);color:inherit}
-.text{overflow:auto;padding:14px 12px 120px 0;font:14px/1.62 "Libre Caslon Text",Georgia,serif;color:var(--ink);position:relative;overscroll-behavior:contain}
-.ln{display:grid;grid-template-columns:52px 8px minmax(0,1fr);min-height:1.62em;cursor:default}
-.ln .no{font:400 10px/2.25 "IBM Plex Mono";color:var(--ink-4);text-align:right;padding-right:6px;user-select:none}
-.ln .rl{position:relative}
-.ln.has .rl::after{content:"";position:absolute;left:3px;top:0;bottom:0;width:2px;background:var(--blue-wash-2)}
+.text{overflow:auto;padding:16px 0 140px;position:relative;overscroll-behavior:contain}
+.text-in{position:relative;font:14.5px/1.68 "Libre Caslon Text",Georgia,serif;color:var(--ink)}
+.para{position:relative;margin:0 0 .72em;padding:0 18px 0 62px}
+.para.note{font-size:13px;line-height:1.6;padding-left:80px;color:var(--ink-2)}
+.para.pre{white-space:pre-wrap;font-size:12.5px;line-height:1.5;overflow-wrap:anywhere}
+.para.pre .ln{display:block}
+.para.head{text-align:center;font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:.6em 0 1em;color:var(--ink-2)}
+.para.head .lno{display:none}
+.ln{cursor:default}
+.ln .lno{position:absolute;left:0;width:44px;text-align:right;font:400 9.5px/2.5 "IBM Plex Mono";color:var(--ink-4);user-select:none;visibility:hidden}
+.ln.l5 .lno{visibility:visible}
+.ln .tk{position:absolute;left:50px;width:2px;height:1.45em;margin-top:.12em;background:transparent}
 .ln.has{cursor:pointer}
-.ln.has:hover .no{color:var(--blue-ink)}
-.ln.on .rl::after{background:var(--blue);width:3px;left:2px}
-.ln.on .no{color:var(--blue-ink);font-weight:500}
-.ln .tx{white-space:pre-wrap;word-break:break-word;padding-left:6px;padding-right:10px}
+.ln.has .tk{background:var(--blue-wash-2)}
+.ln.has:hover .tx{text-decoration:underline dotted var(--blue);text-underline-offset:3px}
+.ln.on .lno{visibility:visible;color:var(--blue-ink);font-weight:500}
+.ln.on .tk{background:var(--blue);width:3px;left:49px}
 .ln mark{background:var(--blue-wash-2);color:inherit;border-radius:1px;box-shadow:0 1.5px 0 var(--blue)}
 .ln mark.x{background:var(--red-wash-2);box-shadow:0 1.5px 0 var(--red)}
 .ln mark.ref{background:var(--amber-wash);box-shadow:0 1.5px 0 var(--amber)}
-.ln.hd .tx{font-weight:700}
+.bracket{position:absolute;left:54px;width:6px;border:1.5px solid var(--blue);border-right:0;pointer-events:none;display:none}
+.bracket.on{display:block}
 .pop{position:absolute;z-index:5;background:var(--sheet);border:1px solid var(--ink);box-shadow:0 12px 30px -10px rgba(0,0,0,.35);padding:8px;min-width:230px;max-width:320px;font-family:"Archivo",sans-serif;font-size:12.5px}
 .pop .ph{font-size:9.5px;color:var(--ink-3);margin:0 2px 6px}
 .pop button{display:flex;gap:8px;width:100%;text-align:left;border:0;background:none;padding:6px 6px;cursor:pointer;border-radius:2px;align-items:center}
@@ -423,7 +436,10 @@ button{font:inherit;color:inherit}
   .prm.hs .pv{grid-column:1;grid-row:1;justify-self:end;margin-right:4px}
   .steps thead{display:none}
   .steps tr.st{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:2px 8px;padding:8px 0;border-bottom:1px solid var(--rule-2)}
-  .steps tr.st td{border:0;padding:2px 4px;display:block}
+  .steps tr.st td{border:0;padding:2px 4px;display:block;background:transparent!important}
+  .steps tr.st.misprint,.steps tr.st.differs{background:var(--red-wash)}
+  .steps tr.st.approx{background:var(--amber-wash)}
+  .steps tr.st.el.sel{background:var(--blue-wash)}
   .steps tr.st td.lb{grid-column:2/4}
   .steps tr.st td.cv{grid-column:2;text-align:left}
   .steps tr.st td.pv2{grid-column:3;text-align:right}
@@ -437,7 +453,9 @@ button{font:inherit;color:inherit}
   .case-row{grid-template-columns:minmax(0,1fr)}
   .vstamp{border:0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:6px}
   .places{columns:1}
-  .tl-svg{display:none}.tl-list{display:block}
+  .figure .tl-svg{display:none}.tl-list{display:block}
+  .figure.scroll{overflow-x:auto;overscroll-behavior-x:contain}
+  .figure.scroll svg{min-width:600px}
   .tbl.cast thead{display:none}
   .tbl.cast tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;padding:7px 0;border-bottom:1px solid var(--rule-2)}
   .tbl.cast td{display:block;border:0;padding:1px 4px}
@@ -485,6 +503,7 @@ button{font:inherit;color:inherit}
   .mswitch button[aria-pressed="true"]{background:var(--sheet);color:var(--ink)}
   .slip.on{display:block;position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(66px + env(safe-area-inset-bottom,0px));z-index:14;background:var(--sheet);border:1px solid var(--ink);box-shadow:0 14px 34px -14px rgba(0,0,0,.5);padding:10px 12px 10px;max-height:40vh;overflow:auto}
   .slip .q{font:13.5px/1.5 "Libre Caslon Text",serif;margin:4px 0 8px}
+  .slip mark{background:var(--blue-wash-2);color:inherit;box-shadow:0 1.5px 0 var(--blue)}
   .slip .row{display:flex;gap:8px;align-items:center;justify-content:space-between}
   .cbody{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
   .blist{display:flex;overflow-x:auto;border-right:0;border-bottom:1px solid var(--rule);padding:6px}
@@ -492,8 +511,13 @@ button{font:inherit;color:inherit}
   .chr{grid-template-columns:60px minmax(0,1fr) 58px;font-size:12.5px}
   .chr .has{display:none}
   .sheet{width:calc(100% - 16px);max-height:calc(100% - 16px)}
-  .text{font-size:14.5px}
-  .ln{grid-template-columns:40px 8px minmax(0,1fr)}
+  .text-in{font-size:15px}
+  .para{padding:0 6px 0 46px}
+  .para.note{padding-left:58px}
+  .ln .lno{width:32px}
+  .ln .tk{left:37px}
+  .ln.on .tk{left:36px}
+  .bracket{left:41px}
   .chd{padding-left:4px}
   .lhead{gap:2px 14px}
 }
@@ -689,7 +713,7 @@ function fmtDec(v) {
   if (!isFinite(v)) return '—';
   const a = Math.abs(v);
   if (a === 0) return '0';
-  if (a >= 1e6) { const e = Math.floor(Math.log10(a)); return `${(v / 10 ** e).toFixed(2)}×10${sup(e)}`; }
+  if (a >= 1e7) { const e = Math.floor(Math.log10(a)); return `${(v / 10 ** e).toFixed(2)}×10${sup(e)}`; }
   if (a >= 100) return v.toLocaleString('en-US', { maximumFractionDigits: 1 });
   if (a >= 0.001) return String(+v.toPrecision(4));
   const e = Math.floor(Math.log10(a)); return `${(v / 10 ** e).toFixed(2)}×10${sup(e)}`;
@@ -697,6 +721,8 @@ function fmtDec(v) {
 const groupInt = (b) => { const s0 = babs(b).toString(); return (b < 0n ? '−' : '') + (s0.length > 4 ? s0.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : s0); };
 function fracEl(x, opts = {}) {
   if (!x) return h('span', { class: 'stv' }, '—');
+  if (opts.like && x.d !== 1n && opts.like.d % x.d === 0n && opts.like.d !== x.d) { const k = opts.like.d / x.d; x = { n: x.n * k, d: opts.like.d }; }
+  if (x.d !== 1n && Math.abs(toNum(x)) >= 1 && !opts.keep) return h('span', { class: 'stv num' }, fmtDec(toNum(x)));
   if (x.d === 1n) return h('span', { class: 'stv num' }, babs(x.n).toString().length > 24 ? fmtDec(toNum(x)) : groupInt(x.n));
   const ns = babs(x.n).toString(), ds = x.d.toString();
   if (ns.length + ds.length > (opts.max || 18)) return h('span', { class: 'stv num' }, fmtDec(toNum(x)));
@@ -704,7 +730,14 @@ function fracEl(x, opts = {}) {
   if (opts.bare) return f;
   return h('span', { class: 'stv num' }, f, opts.dec === false ? null : h('span', { class: 'd' }, '≈ ' + fmtDec(toNum(x))));
 }
+function printedEl(str) {
+  const m = String(str).match(/^\s*(\d[\d,]*)\s*\/\s*(\d[\d,]*)\s*$/);
+  if (m) return h('span', { class: 'frac' }, h('span', {}, m[1]), h('span', {}, m[2]));
+  const n = String(str).trim();
+  return h('span', {}, /^\d{5,}$/.test(n) ? groupInt(BigInt(n)) : n);
+}
 const fracText = (x) => (x.d === 1n ? groupInt(x.n) : `${x.n}/${x.d}`);
+const fracLike = (x, like) => (like && like.d % x.d === 0n && like.d !== x.d ? `${x.n * (like.d / x.d)}/${like.d}` : fracText(x));
 const prettyExpr = (e) => String(e).replace(/\*/g, ' × ').replace(/(\w|\))\s*\/\s*(\w|\()/g, '$1/$2').replace(/-/g, ' − ').replace(/\s+/g, ' ').replace(/\( /g, '(').replace(/ \)/g, ')').trim();
 
 // ================================================================ texts and anchors
@@ -760,34 +793,34 @@ function locate(sc, q, lenient) {
 
 // ================================================================ the kit (closed catalog)
 const KIT = {
-  LiveCalculation: { glyph: '½', name: 'Live calculation', area: 'h2', leaves: 'steps',
+  LiveCalculation: { ga: 'calc', short: 'Live calculation', glyph: '½', name: 'Live calculation', area: 'h2', leaves: 'steps',
     use: 'A numerical argument the page can recompute. Parameters become sliders; each printed result is checked against exact arithmetic.',
     sig: '{ params: [{id, label, value, min, max, step?, scale?: "log", src?}],\n  steps: [{id, label, expr, stated?, printed?, check?: "exact"|"min"|"max"|"approx", note?, src}],\n  plot?: {x: paramId, y: [stepId], caption} }' },
-  WorkedExample: { glyph: '÷', name: 'Worked example', leaves: 'tree',
+  WorkedExample: { ga: 'work', short: 'Worked example', glyph: '÷', name: 'Worked example', leaves: 'tree',
     use: 'A natural-frequency walk-through: a population split into counts, with the author\'s printed counts checked.',
     sig: '{ params: [...as above],\n  tree: {label, n: expr, stated?, mark?: "hit"|"false", src?, children?: [...]},\n  answer: {label, expr, stated?, src} }' },
-  ArgumentTree: { glyph: '∴', name: 'Argument tree', area: 'w2', leaves: 'nodes',
+  ArgumentTree: { ga: 'arg', short: 'Argument tree', glyph: '∴', name: 'Argument tree', area: 'w2', leaves: 'nodes',
     use: 'The chapter\'s thesis with its supports, objections, replies, examples and limits.',
     sig: '{ nodes: [{kind: "thesis"|"claim"|"support"|"objection"|"reply"|"example"|"limit", text, src, children?}] }' },
-  ClaimCard: { glyph: '¶', name: 'Claim cards', leaves: 'cards',
+  ClaimCard: { ga: 'claim', short: 'Claims', glyph: '¶', name: 'Claim cards', leaves: 'cards',
     use: 'Claims, each with the instances the author offers for it.',
     sig: '{ cards: [{claim, src, examples: [{label, src}]}] }' },
-  Counterexample: { glyph: '≠', name: 'Counterexample', leaves: 'cases',
+  Counterexample: { ga: 'count', short: 'Counter­example', glyph: '≠', name: 'Counterexample', leaves: 'cases',
     use: 'A general rule set against a case that breaks it, bends it, marks its limit, or confirms it.',
     sig: '{ cases: [{rule, ruleSrc, case, src, verdict: "breaks"|"bends"|"limit"|"confirms", note?}] }' },
-  CastList: { glyph: '&', name: 'Cast list', leaves: 'people',
+  CastList: { ga: 'cast', short: 'Cast', glyph: '&', name: 'Cast list', leaves: 'people',
     use: 'The people the chapter cites: how they are named, their role in the argument, where they appear.',
     sig: '{ people: [{name, as, role, gloss, src}] }' },
-  Timeline: { glyph: '↦', name: 'Timeline', leaves: 'events',
+  Timeline: { ga: 'time', short: 'Timeline', glyph: '↦', name: 'Timeline', leaves: 'events',
     use: 'Dated events. Dates not printed in the text must be marked as annotator-supplied.',
     sig: '{ events: [{date: year (negative = BCE), dateFrom: "text"|"annotator", label, hypothetical?, src}] }' },
-  MapOfPlaces: { glyph: '⊕', name: 'Map of places', area: 'w2', leaves: 'places',
+  MapOfPlaces: { ga: 'map', short: 'Map of places', glyph: '⊕', name: 'Map of places', area: 'w2', leaves: 'places',
     use: 'Places the text names. Coordinates come from a modern gazetteer and are marked as such.',
     sig: '{ view?: [west, north, east, south], places: [{name, lat, lon, note, src}],\n  rings?: [{center: [lat, lon], miles, label, src}] }' },
-  Glossary: { glyph: 'Aa', name: 'Glossary', area: 'w2', leaves: 'terms',
+  Glossary: { ga: 'gloss', short: 'Glossary', glyph: 'Aa', name: 'Glossary', area: 'w2', leaves: 'terms',
     use: 'Period terms with their sense in the text and a modern gloss.',
     sig: '{ terms: [{term, period, modern, src}] }' },
-  BranchingDiagram: { glyph: 'Y', name: 'Branching diagram', leaves: 'nodes',
+  BranchingDiagram: { ga: 'branch', short: 'Branch­ing', glyph: 'Y', name: 'Branching diagram', leaves: 'nodes',
     use: 'A branching figure rebuilt from the prose: generations, lineages, extinctions. Links the text does not state are drawn as inferred.',
     sig: '{ nodes: [{id, label, level, x, parent?, edge?: "stated"|"inferred", extinct?, stub?, src}],\n  scales?: [{per, label, src}] }' },
 };
@@ -808,7 +841,7 @@ function validate(spec, ctx) {
 
   const anchorsOf = (arr, where, label, scopeKind) => {
     const res = { ok: true, spans: [], fails: [] };
-    if (!Array.isArray(arr) || !arr.length) { res.ok = false; res.why = 'no pointer to the text'; return res; }
+    if (!Array.isArray(arr) || !arr.length) { res.ok = false; res.why = 'no pointer to the text'; rep.list.push({ where, label, q: '', ok: false, why: 'element has no "src" pointer' }); return res; }
     for (const a of arr.slice(0, 6)) {
       const q = typeof a === 'string' ? a : a && a.q;
       const sc = (a && a.scope === 'book') || scopeKind === 'book' ? ctx.bookScope() : ctx.chScope;
@@ -924,6 +957,13 @@ function bindEl(dom, key, obj, label) {
   ent.doms.push(dom); REG.set(key, ent);
   return dom;
 }
+function lineLabel(L) {
+  const [a, b] = L; if (a === b) return `L${a}`;
+  const sa = String(a), sb = String(b);
+  if (sa.length !== sb.length) return `L${a}–${b}`;
+  let i = 0; while (i < sa.length && sa[i] === sb[i]) i++;
+  return `L${a}–${sb.slice(sb.length - Math.max(2, sb.length - i))}`;
+}
 function chip(obj, key) {
   const r = V.get(obj);
   if (!r) return null;
@@ -931,7 +971,7 @@ function chip(obj, key) {
   const sp = r.spans.filter((x) => !x.outside);
   const first = sp[0] || r.spans[0];
   if (!first) return null;
-  const lab = first.L[0] === first.L[1] ? `L${first.L[0]}` : `L${first.L[0]}–${String(first.L[1]).slice(-Math.max(2, String(first.L[1]).length - String(first.L[0]).length + (String(first.L[1]).slice(0, -2) === String(first.L[0]).slice(0, -2) ? 0 : 2)))}`;
+  const lab = lineLabel(first.L);
   const more = r.spans.length > 1 ? ` +${r.spans.length - 1}` : '';
   return h('button', { class: 'src' + (r.spans.some((x) => x.mode === 'folded') ? ' fold' : ''), 'data-key': key, title: 'Show the source passage' + (r.spans.some((x) => x.mode === 'folded') ? ' (matched after folding quotes)' : '') }, h('span', { 'aria-hidden': 'true' }, '¶'), lab + more);
 }
@@ -956,7 +996,7 @@ function blockShell(b, bi, body) {
 }
 
 // ---------------------------------------------------------------- LiveCalculation
-function paramControl(p, cur, onChange) {
+function paramControl(p, cur, onChange, key) {
   const def = (() => { try { return ev(p.value, {}); } catch { return null; } })();
   const min = Number(p.min), max = Number(p.max);
   const log = p.scale === 'log' && min > 0;
@@ -973,7 +1013,8 @@ function paramControl(p, cur, onChange) {
     const r = log ? R(BigInt(Math.round(v))) : fromDec(v.toFixed(dp));
     show(r); onChange(p.id, r);
   });
-  const row = h('div', { class: 'prm' + (p.src ? ' hs' : '') }, h('label', { for: id }, p.label || p.id), input, pv, h('span', { class: 'srcw' }, p.src ? chip(p, null) : null));
+  const row = h('div', { class: 'prm' + (p.src ? ' hs' : '') }, h('label', { for: id }, p.label || p.id), input, pv, h('span', { class: 'srcw' }, p.src ? chip(p, key) : null));
+  if (p.src && V.get(p)) bindEl(row, key, p, p.label || p.id);
   return { row, set: (val) => { input.value = toPos(toNum(val)); show(val); }, def };
 }
 function evalChain(b, vals) {
@@ -988,7 +1029,7 @@ function renderLiveCalc(b, bi) {
   const controls = {};
   const chg = h('div', { class: 'chgbar' }, h('span', {}, 'Values changed. The checks still refer to the author\'s values.'), h('button', { class: 'btn', style: 'padding:3px 8px;margin-left:auto', onclick: () => { vals = { ...defs }; for (const p of params) controls[p.id].set(defs[p.id]); update(); } }, 'Reset'));
   const prms = h('div', { class: 'params' });
-  for (const p of params) { const c = paramControl(p, defs[p.id], (id, v) => { vals[id] = v; update(); }); controls[p.id] = c; prms.append(c.row); }
+  params.forEach((p, pi) => { const c = paramControl(p, defs[p.id], (id, v) => { vals[id] = v; update(); }, `lenses.${bi}.params.${(b.params || []).indexOf(p)}`); controls[p.id] = c; prms.append(c.row); });
   const tbody = h('tbody');
   const cells = {};
   b.steps.forEach((st, i) => {
@@ -999,7 +1040,7 @@ function renderLiveCalc(b, bi) {
     cells[st.id || i] = cv;
     const ckTxt = { ok: '✓ agrees', misprint: '✕ misprint', differs: '✕ differs', approx: '≈ close', computed: '·', error: '✕ rejected' }[j.status] || '';
     const ckTitle = { ok: 'The recomputed value agrees with the number printed in the text', misprint: 'The printed operands do not give the printed result; the recomputation does', differs: 'The recomputation disagrees with the printed number', approx: 'The text gives a rounded figure; the recomputation is within 10%', computed: 'No number printed in the text to compare', error: 'The formula was rejected' }[j.status] || '';
-    const printed = st.stated != null && st.stated !== '' ? (() => { try { const x = ev(st.stated, {}); const c = st.check && st.check !== 'exact' ? { min: '≥ ', max: '≤ ', approx: '≈ ' }[st.check] : ''; return h('span', { class: 'prt num' }, c, fracEl(x, { bare: true, max: 22 })); } catch { return h('span', { class: 'prt' }, String(st.stated)); } })() : h('span', { class: 'prt off' }, '—');
+    const printed = st.stated != null && st.stated !== '' ? (() => { const c = st.check && st.check !== 'exact' ? { min: '≥ ', max: '≤ ', approx: '≈ ' }[st.check] || '' : ''; return h('span', { class: 'prt num' }, c, printedEl(st.stated)); })() : h('span', { class: 'prt off' }, '—');
     const tr = h('tr', { class: 'st ' + (j.status || '') },
       h('td', {}, String(i + 1)),
       h('td', { class: 'lb' }, h('div', { class: 'lab' }, st.label || st.id), h('div', { class: 'ex' }, '= ' + prettyExpr(st.expr || ''), st.printed ? h('span', {}, `   printed: ${prettyExpr(st.printed)}`) : null)),
@@ -1010,8 +1051,8 @@ function renderLiveCalc(b, bi) {
     bindEl(tr, key, st, st.label);
     tbody.append(tr);
     const noteBits = [];
-    if (j.status === 'misprint' && j.pv) noteBits.push(h('span', {}, `As printed, ${prettyExpr(st.printed)} = ${fracText(j.pv)}, not ${fracText(j.st)}. `));
-    if (j.status === 'differs' && j.val && j.st) noteBits.push(h('span', {}, `Recomputed ${fracText(j.val)}; the text prints ${fracText(j.st)}. `));
+    if (j.status === 'misprint' && j.pv) noteBits.push(h('b', {}, `As printed, ${prettyExpr(st.printed)} = ${fracLike(j.pv, j.st)}, not ${fracText(j.st)}. `));
+    if (j.status === 'differs' && j.val && j.st) noteBits.push(h('b', {}, `Recomputed ${fracLike(j.val, j.st)}; the text prints ${fracText(j.st)}. `));
     if (j.status === 'error') noteBits.push(h('span', {}, `Rejected: ${j.msg}. `));
     if (st.note) noteBits.push(h('span', { class: 'ai-p' }, st.note));
     if (st.erratum && V.get(st.erratum)) {
@@ -1079,7 +1120,7 @@ function renderLiveCalc(b, bi) {
           if (defOut[yid]) g.append(s('circle', { cx: dx, cy: yAt(Math.min(hi, Math.max(lo, toNum(defOut[yid])))), r: 5.5, fill: 'none', stroke: 'var(--ink)', 'stroke-width': 1.4 }));
           if (curOut[yid]) g.append(s('circle', { cx, cy: yAt(Math.min(hi, Math.max(lo, toNum(curOut[yid])))), r: 3.6, fill: cols[yi % 3] }));
         });
-        g.append(s('text', { x: Math.min(X1 - 4, dx + 8), y: Y0 + 10, 'font-size': 10, fill: 'var(--ink-3)', 'text-anchor': dx > X1 - 120 ? 'end' : 'start' }, '○ author\'s values'));
+        g.append(s('text', { x: X0, y: Y1 + 28, 'font-size': 10.5, fill: 'var(--ink-3)' }, '○ the author\'s values   ● current values (drag on the plot to change)'));
         svg.append(g);
       };
       let drag = false;
@@ -1097,7 +1138,7 @@ function renderLiveCalc(b, bi) {
   }
   function update() {
     const out = evalChain(b, vals);
-    for (const st of b.steps) { if (!st) continue; const c = cells[st.id]; if (!c) continue; c.textContent = ''; c.append(out[st.id] ? fracEl(out[st.id]) : h('span', { class: 'stv' }, '—')); }
+    for (const st of b.steps) { if (!st) continue; const c = cells[st.id]; if (!c) continue; c.textContent = ''; let like = null; try { if (st.stated) like = ev(st.stated, {}); } catch {} c.append(out[st.id] ? fracEl(out[st.id], { like }) : h('span', { class: 'stv' }, '—')); }
     chg.classList.toggle('on', params.some((p) => defs[p.id] && vals[p.id] && !eqR(defs[p.id], vals[p.id])));
     drawPlot();
   }
@@ -1113,7 +1154,7 @@ function renderWorked(b, bi) {
   const controls = {};
   const prms = h('div', { class: 'params' });
   const chg = h('div', { class: 'chgbar' }, h('span', {}, 'Values changed. Printed counts refer to the author\'s values.'), h('button', { class: 'btn', style: 'padding:3px 8px;margin-left:auto', onclick: () => { vals = { ...defs }; for (const p of params) controls[p.id].set(defs[p.id]); update(); } }, 'Reset'));
-  for (const p of params) { const c = paramControl(p, defs[p.id], (id, v) => { vals[id] = v; update(); }); controls[p.id] = c; prms.append(c.row); }
+  params.forEach((p) => { const c = paramControl(p, defs[p.id], (id, v) => { vals[id] = v; update(); }, `lenses.${bi}.params.${(b.params || []).indexOf(p)}`); controls[p.id] = c; prms.append(c.row); });
   const rows = [];
   const tree = h('div', { class: 'ftree' });
   const walk = (n, path, depth) => {
@@ -1122,7 +1163,7 @@ function renderWorked(b, bi) {
     const cnt = h('span', { class: 'cnt num' });
     const bar = h('i');
     const j = n._j;
-    const pr = n.stated != null ? h('span', { class: 'pr' }, `text: ${n.stated}`, ' ', h('span', { class: 'ck ' + (j ? j.status : ''), title: j && j.status === 'ok' ? 'Agrees with the printed count' : 'Differs from the printed count' }, j ? (j.status === 'ok' ? '✓' : j.status === 'approx' ? '≈' : '✕') : '')) : h('span', { class: 'pr' }, n.src ? '' : 'computed');
+    const pr = n.stated != null ? h('span', { class: 'pr' }, `text ${/^\d{5,}$/.test(String(n.stated)) ? groupInt(BigInt(n.stated)) : n.stated}`, ' ', h('span', { class: 'ck ' + (j ? j.status : ''), title: j && j.status === 'ok' ? 'Agrees with the printed count' : 'Differs from the printed count' }, j ? (j.status === 'ok' ? '✓' : j.status === 'approx' ? '≈' : '✕') : '')) : h('span', { class: 'pr' }, n.src ? '' : 'computed');
     const lb = h('span', { class: 'lb' }, n.mark ? h('span', { class: 'mk', 'aria-hidden': 'true' }) : null, n.label || '', !n.src && depth > 0 ? h('span', { class: 'derived' }, 'not in text') : null);
     const row = h('div', { class: 'fr ' + (n.mark || ''), style: `--ind:${depth * 18}px` }, h('span', { class: 'tw' }, depth ? h('span', { 'aria-hidden': 'true', style: 'position:absolute;right:2px;top:-2px;color:var(--ink-4)' }, '└') : null), cnt, lb, h('span', { class: 'bar' }, bar), pr, h('span', { class: 'sc3' }, n.src ? chip(n, key) : null));
     if (n.src) bindEl(row, key, n, n.label);
@@ -1138,7 +1179,7 @@ function renderWorked(b, bi) {
   if (ans) {
     const j = ans._j || {};
     answerEl = h('div', { class: 'answer' }, h('span', { class: 'lbl' }, ans.label), ansBig, ansDec,
-      ans.stated != null ? h('span', { class: 'pr', style: 'font:500 12px IBM Plex Mono' }, 'text: ' + ans.stated + ' ', h('span', { class: 'ck ' + (j.status || '') }, j.status === 'ok' ? '✓ agrees' : j.status === 'approx' ? '≈' : '✕ differs')) : null,
+      ans.stated != null ? h('span', { class: 'pr', style: 'font:500 12px IBM Plex Mono' }, 'in the text: ' + ans.stated + ' ', h('span', { class: 'ck ' + (j.status || '') }, j.status === 'ok' ? '✓ agrees' : j.status === 'approx' ? '≈' : '✕ differs')) : null,
       h('span', { style: 'margin-left:auto' }, chip(ans, `lenses.${bi}.answer`)));
     bindEl(answerEl, `lenses.${bi}.answer`, ans, ans.label);
   }
@@ -1156,7 +1197,7 @@ function renderWorked(b, bi) {
       if (r.n.mark === 'hit' && v) hit += toNum(v);
       if (r.n.mark === 'false' && v) fal += toNum(v);
     }
-    if (ans) { try { const a = ev(ans.expr, env); ansBig.textContent = ''; ansBig.append(fracEl(a, { bare: true, max: 22 })); ansDec.textContent = '≈ ' + fmtDec(toNum(a) * 100) + '%'; } catch { ansBig.textContent = '—'; } }
+    if (ans) { try { const a = ev(ans.expr, env); let like = null; try { if (ans.stated) like = ev(ans.stated, {}); } catch {} ansBig.textContent = ''; ansBig.append(fracEl(a, { bare: true, max: 22, like, keep: true })); ansDec.textContent = '≈ ' + fmtDec(toNum(a) * 100) + '%'; } catch { ansBig.textContent = '—'; } }
     chg.classList.toggle('on', params.some((p) => defs[p.id] && vals[p.id] && !eqR(defs[p.id], vals[p.id])));
     // icon array of the reports that matter: true ones vs false ones
     iconSvg.textContent = '';
@@ -1247,15 +1288,16 @@ function renderCast(b, bi) {
       const { out, diffs } = quoteDiff(qd, p.quoteCheck.original.q);
       qc = h('div', { class: 'qc' }, h('b', {}, 'Quotation check. '), `The quotation differs from this edition of the original in ${diffs} word${diffs === 1 ? '' : 's'} (`, h('del', {}, 'original'), ' → ', h('ins', {}, 'as quoted'), '): ', h('span', { style: 'font-family:Libre Caslon Text,serif' }, out));
     }
+    const xb = xrefBtn(p.xref);
     const tr = h('tr', {},
-      h('td', {}, h('span', { class: 'nm' }, p.name || ''), p.as ? h('span', { class: 'as' }, '“' + p.as + '”') : null),
+      h('td', { class: 'pc' }, h('span', { class: 'nm' }, p.name || ''), p.as ? h('span', { class: 'as' }, '“' + p.as + '”') : null),
       h('td', { class: 'rc' }, h('span', { class: 'role' }, p.role || '')),
-      h('td', { class: 'gl' }, p.gloss || '', qc),
-      h('td', { class: 'srcs-td' }, h('div', { class: 'srcs' }, chip(p, key), xrefBtn(p.xref))));
+      h('td', { class: 'gl' }, p.gloss || '', xb ? h('div', { style: 'margin-top:5px' }, xb) : null, qc),
+      h('td', { class: 'srcs-td' }, h('div', { class: 'srcs' }, chip(p, key))));
     bindEl(tr, key, p, p.name);
     return tr;
   });
-  return blockShell(b, bi, h('table', { class: 'tbl cast' }, h('thead', {}, h('tr', {}, h('th', {}, 'Person'), h('th', {}, 'Role'), h('th', {}, 'In the chapter'), h('th', { style: 'text-align:right' }, 'Source'))), h('tbody', {}, rows)));
+  return blockShell(b, bi, h('table', { class: 'tbl cast' }, h('colgroup', {}, h('col', { style: 'width:30%' }), h('col', { style: 'width:13%' }), h('col', {}), h('col', { style: 'width:90px' })), h('thead', {}, h('tr', {}, h('th', {}, 'Person'), h('th', {}, 'Role'), h('th', {}, 'In the chapter'), h('th', { style: 'text-align:right' }, 'Source'))), h('tbody', {}, rows)));
 }
 
 // ---------------------------------------------------------------- Glossary
@@ -1267,7 +1309,7 @@ function renderGloss(b, bi) {
     bindEl(tr, key, t, t.term);
     return tr;
   });
-  return blockShell(b, bi, h('table', { class: 'tbl gloss' }, h('thead', {}, h('tr', {}, h('th', {}, 'Term'), h('th', {}, 'In the text'), h('th', {}, 'Modern gloss'), h('th', { style: 'text-align:right' }, 'Source'))), h('tbody', {}, rows)));
+  return blockShell(b, bi, h('table', { class: 'tbl gloss' }, h('colgroup', {}, h('col', { style: 'width:21%' }), h('col', {}), h('col', {}), h('col', { style: 'width:90px' })), h('thead', {}, h('tr', {}, h('th', {}, 'Term'), h('th', {}, 'In the text'), h('th', {}, 'Modern gloss'), h('th', { style: 'text-align:right' }, 'Source'))), h('tbody', {}, rows)));
 }
 
 // ---------------------------------------------------------------- Timeline
@@ -1283,35 +1325,34 @@ function renderTimeline(b, bi) {
   let x = X0; segs.forEach((g) => { g.w = avail * Math.max(g.span, 60) / tot; g.x = x; x += g.w + gap; });
   const xOf = (y) => { const g = segs.find((q) => y >= q.lo && y <= q.hi) || segs[0]; return g.x + g.w * (y - g.lo) / (g.span || 1); };
   const yr = (y) => (y < 0 ? `${-y} BCE` : y < 1000 ? `${y} CE` : String(y));
-  const AX = 120;
-  const svg = s('svg', { viewBox: `0 0 ${W} 250`, class: 'tl-svg', role: 'img', 'aria-label': 'Timeline' });
+  const AX = 40, ROW = 21, H = AX + 34 + evs.length * ROW + 8;
+  const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, class: 'tl-svg', role: 'img', 'aria-label': 'Timeline' });
   segs.forEach((g, gi) => {
     svg.append(s('line', { x1: g.x, x2: g.x + g.w, y1: AX, y2: AX, stroke: 'var(--ink)', 'stroke-width': 1.5 }));
+    const yrs = evs.map((e) => e.y).filter((y) => y >= g.lo && y <= g.hi);
+    if (yrs.length) svg.append(s('text', { x: g.x + g.w / 2, y: AX - 10, 'text-anchor': 'middle', 'font-size': 9.5, fill: 'var(--ink-3)', 'font-family': 'IBM Plex Mono' }, yrs.length > 1 ? `${yr(Math.min(...yrs))} – ${yr(Math.max(...yrs))}` : yr(yrs[0])));
     if (gi) svg.append(s('text', { x: g.x - gap / 2, y: AX + 4, 'text-anchor': 'middle', 'font-size': 13, fill: 'var(--ink-3)' }, '//'));
   });
-  const lanes = [[], [], [], []];
+  const leaders = s('g', {}), labels = s('g', {});
   evs.forEach(({ e, i, y }, k) => {
     const key = `lenses.${bi}.events.${i}`;
-    const cx = xOf(y);
-    const up = k % 2 === 0;
-    const txt = `${yr(y)} · ${e.label || ''}`;
-    const wEst = Math.min(250, txt.length * 5.6);
-    let lane = 0; const pool = up ? [0, 1] : [2, 3];
-    for (lane of pool) { if (!lanes[lane].some(([a, c]) => !(cx + wEst < a || cx > c))) break; }
-    lanes[lane].push([cx, cx + wEst]);
-    const ly = up ? (lane === 0 ? AX - 30 : AX - 62) : (lane === 2 ? AX + 38 : AX + 70);
+    const cx = xOf(y), ry = AX + 34 + k * ROW;
     const ann = e.dateFrom !== 'text';
+    const txt = (e.label || '').slice(0, 64) + ((e.label || '').length > 64 ? '…' : '');
+    const wEst = (yr(y).length + 1) * 6.4 + txt.length * 5.5 + 12;
+    const right = cx + 6 + wEst <= W - 4;
+    leaders.append(s('line', { x1: cx, x2: cx, y1: AX, y2: ry - 4, stroke: 'var(--ink-4)', 'stroke-width': 0.9, 'stroke-dasharray': e.hypothetical ? '2 2' : null }));
     const g = s('g', { class: 'dg-node', 'data-key': key });
-    g.append(s('line', { x1: cx, x2: cx, y1: AX, y2: ly + (up ? 4 : -12), stroke: 'var(--ink-4)', 'stroke-width': 0.8, 'stroke-dasharray': e.hypothetical ? '2 2' : null }));
     g.append(s('circle', { cx, cy: AX, r: 4.5, fill: ann ? 'var(--sheet)' : 'var(--ink)', stroke: 'var(--ink)', 'stroke-width': 1.4 }));
-    const anchor = cx + wEst > W - 4 ? 'end' : 'start';
-    g.append(s('text', { x: cx + (anchor === 'end' ? 3 : -3), y: ly, 'font-size': 10.5, 'text-anchor': anchor, fill: e.hypothetical ? 'var(--ink-3)' : 'var(--ink)', 'font-style': e.hypothetical ? 'italic' : null },
-      s('tspan', { 'font-weight': 700, 'font-family': 'IBM Plex Mono' }, yr(y) + (ann ? '†' : '')), s('tspan', { dx: 5 }, (e.label || '').slice(0, 44) + ((e.label || '').length > 44 ? '…' : ''))));
-    svg.append(g);
+    g.append(s('circle', { cx, cy: ry - 4, r: 1.8, fill: 'var(--ink-3)' }));
+    g.append(s('text', { x: right ? cx + 6 : cx - 6, y: ry, 'font-size': 11, 'text-anchor': right ? 'start' : 'end', fill: e.hypothetical ? 'var(--ink-3)' : 'var(--ink)', 'font-style': e.hypothetical ? 'italic' : null, stroke: 'var(--sheet)', 'stroke-width': 3.5, 'paint-order': 'stroke' },
+      s('tspan', { 'font-weight': 700, 'font-family': 'IBM Plex Mono', 'font-style': 'normal' }, yr(y) + (ann ? '†' : '')), s('tspan', { dx: 6 }, txt)));
+    labels.append(g);
     bindEl(g, key, e, e.label);
   });
-  if (b.now) { const cx = xOf(Number(b.now.year)); svg.append(s('path', { d: `M${cx} ${AX - 9}l5 -8h-10z`, fill: 'var(--blue)' }), s('text', { x: cx, y: AX - 22, 'text-anchor': 'end', 'font-size': 10, fill: 'var(--blue-ink)', dx: -2 }, b.now.label)); }
-  const list = h('ul', { class: 'tl-list' }, evs.map(({ e, i, y }) => { const key = `lenses.${bi}.events.${i}`; const li = h('li', {}, h('span', { class: 'y' }, yr(y) + (e.dateFrom !== 'text' ? '†' : '')), h('span', {}, e.label, e.hypothetical ? ' (supposed)' : ''), h('span', {}, chip(e, key), xrefBtn(e.xref))); bindEl(li, key, e, e.label); return li; }));
+  svg.append(leaders, labels);
+  if (b.now) { const cx = xOf(Number(b.now.year)); svg.append(s('path', { d: `M${cx} ${AX - 3}l5 -8h-10z`, fill: 'var(--blue)' }), s('text', { x: cx - 8, y: AX - 3, 'text-anchor': 'end', 'font-size': 10, fill: 'var(--blue-ink)', 'font-weight': 600 }, b.now.label)); }
+  const list = h('ul', { class: 'tl-list' }, evs.map(({ e, i, y }) => { const key = `lenses.${bi}.events.${i}`; const li = h('li', {}, h('span', { class: 'y' }, yr(y) + (e.dateFrom !== 'text' ? '†' : '')), h('span', {}, e.label, e.hypothetical ? ' (supposed)' : ''), h('span', {}, chip(e, key))); bindEl(li, key, e, e.label); return li; }));
   const xr = evs.filter(({ e }) => e.xref).map(({ e }) => h('span', {}, xrefBtn(e.xref)));
   return blockShell(b, bi, [h('div', { class: 'figure' }, svg), list, h('div', { class: 'foot' }, '† Date supplied by the annotator from outside the text (filled dots: printed in the text). Dashed: events the author only supposes. ', xr)]);
 }
@@ -1360,36 +1401,48 @@ function renderMap(b, bi) {
   });
   const placed = [];
   const lab = s('g', {});
+  const dots = places.map((p) => P(+p.lat, +p.lon));
+  const dense = places.length > 12 ? 0.86 : 1;
+  const F = fs * dense;
+  const overlap = (a, b2) => Math.max(0, Math.min(a[2], b2[2]) - Math.max(a[0], b2[0])) * Math.max(0, Math.min(a[3], b2[3]) - Math.max(a[1], b2[1]));
   places.forEach((p, i) => {
     const key = `lenses.${bi}.places.${i}`;
-    const [x, y] = P(+p.lat, +p.lon);
+    const [x, y] = dots[i];
     if (x < vx - 1 || x > vx + vw + 1 || y < vy - 1 || y > vy + vh + 1) return;
     const g = s('g', { class: 'mp-node', 'data-key': key });
     const exc = p.kind === 'exception' || p.kind === 'counterfactual';
-    g.append(s('circle', { cx: x, cy: y, r: fs * 0.36, fill: exc ? 'var(--sheet)' : 'var(--ink)', stroke: 'var(--ink)', 'stroke-width': fs * 0.12 }));
-    const w = (p.name || '').length * fs * 0.56, hgt = fs;
-    const cands = [[x + fs * 0.6, y + fs * 0.33, 'start'], [x - fs * 0.6, y + fs * 0.33, 'end'], [x, y - fs * 0.6, 'middle'], [x, y + fs * 1.25, 'middle']];
-    let pick = cands[0];
-    for (const c of cands) {
+    g.append(s('circle', { cx: x, cy: y, r: F * 0.36, fill: exc ? 'var(--sheet)' : 'var(--ink)', stroke: 'var(--ink)', 'stroke-width': F * 0.12 }));
+    const w = (p.name || '').length * F * 0.55, hgt = F;
+    const d1 = F * 0.6, d2 = F * 1.9;
+    const cands = [[x + d1, y + F * 0.33, 'start'], [x - d1, y + F * 0.33, 'end'], [x, y - d1, 'middle'], [x, y + F * 1.25, 'middle'], [x + d1, y - F * 0.5, 'start'], [x + d1, y + F * 1.1, 'start'], [x - d1, y - F * 0.5, 'end'], [x - d1, y + F * 1.1, 'end'], [x + d2, y - F * 1.1, 'start', 1], [x + d2, y + F * 1.8, 'start', 1], [x - d2, y - F * 1.1, 'end', 1], [x - d2, y + F * 1.8, 'end', 1]];
+    let best = null;
+    cands.forEach((c, ci) => {
       const bx = c[2] === 'start' ? c[0] : c[2] === 'end' ? c[0] - w : c[0] - w / 2;
       const box = [bx, c[1] - hgt * 0.8, bx + w, c[1] + hgt * 0.2];
-      const inView = box[0] > vx && box[2] < vx + vw && box[1] > vy && box[3] < vy + vh;
-      if (inView && !placed.some((q) => !(box[2] < q[0] || box[0] > q[2] || box[3] < q[1] || box[1] > q[3]))) { pick = c; placed.push(box); break; }
-    }
-    g.append(s('text', { x: pick[0], y: pick[1], 'font-size': fs, 'text-anchor': pick[2], fill: 'var(--ink)', 'font-weight': 600, stroke: 'var(--sea)', 'stroke-width': fs * 0.28, 'paint-order': 'stroke' }, p.name));
+      let cost = ci * 0.01 + (c[3] ? 0.5 : 0);
+      if (box[0] < vx || box[2] > vx + vw || box[1] < vy || box[3] > vy + vh) cost += 1000;
+      for (const q of placed) cost += overlap(box, q) * 10;
+      dots.forEach(([dx, dy], j) => { if (j !== i) cost += overlap(box, [dx - F * 0.4, dy - F * 0.4, dx + F * 0.4, dy + F * 0.4]) * 6; });
+      if (!best || cost < best.cost) best = { c, box, cost };
+    });
+    placed.push(best.box);
+    const c = best.c;
+    if (c[3]) g.append(s('line', { x1: x, y1: y, x2: c[2] === 'start' ? c[0] - F * 0.15 : c[0] + F * 0.15, y2: c[1] - F * 0.3, stroke: 'var(--ink-3)', 'stroke-width': F * 0.06 }));
+    g.append(s('text', { x: c[0], y: c[1], 'font-size': F, 'text-anchor': c[2], fill: 'var(--ink)', 'font-weight': 600, stroke: 'var(--sea)', 'stroke-width': F * 0.28, 'paint-order': 'stroke' }, p.name));
     lab.append(g);
     bindEl(g, key, p, p.name);
   });
   svg.append(lab);
   const center = ringInfo[0] && ringInfo[0].center;
+  const cname = center ? (places.find((p) => miles(center, [+p.lat, +p.lon]) < 40) || {}).name || 'the ring centre' : '';
   const list = h('ul', { class: 'places' }, places.map((p, i) => {
     const key = `lenses.${bi}.places.${i}`;
     const dist = center ? Math.round(miles(center, [+p.lat, +p.lon])) : null;
-    const li = h('li', {}, h('span', { class: 'pn' }, p.name), h('span', {}, chip(p, key)), h('span', { class: 'pt' }, p.note || '', dist != null && dist > 20 ? h('span', { class: 'dist' }, ` · ${dist.toLocaleString('en-US')} mi from ring centre${dist > ringInfo[0].miles ? ' (outside)' : ''}`) : null));
+    const li = h('li', {}, h('span', { class: 'pn' }, p.name), h('span', {}, chip(p, key)), h('span', { class: 'pt' }, p.note || '', dist != null && dist > 20 ? h('span', { class: 'dist' }, ` · ${dist.toLocaleString('en-US')} mi from ${cname}${dist > ringInfo[0].miles ? ', outside the ring' : ''}`) : null));
     bindEl(li, key, p, p.name);
     return li;
   }));
-  return blockShell(b, bi, [h('div', { class: 'mapwrap' }, h('div', { class: 'figure' }, svg), list), h('div', { class: 'foot' }, 'Coordinates are supplied by the annotator from a modern gazetteer; only the place names are in the text. Hollow dots: exceptions or places the author only supposes. Coastlines: Natural Earth 1:110m.')]);
+  return blockShell(b, bi, [h('div', { class: 'mapwrap' }, h('div', { class: 'figure scroll' }, svg), list), h('div', { class: 'foot' }, 'Coordinates are supplied by the annotator from a modern gazetteer; only the place names are in the text. Hollow dots: exceptions or places the author only supposes. Coastlines: Natural Earth 1:110m.')]);
 }
 
 // ---------------------------------------------------------------- BranchingDiagram
@@ -1399,26 +1452,28 @@ function renderBranch(b, bi) {
   const levels = [...new Set(nodes.map((n) => +n.level || 0))].sort((a, c) => a - c);
   const maxL = Math.max(...levels, 1);
   const xs = nodes.map((n) => +n.x || 0); const xmin = Math.min(...xs) - 0.5, xmax = Math.max(...xs) + 0.5;
-  const W = 680, H = 372, X0 = 76, X1 = W - 14, Yb = H - 34;
-  const gapAt = levels.find((l, i) => i && l - levels[i - 1] > 2);
-  const yOf = (l) => { let pos = l; if (gapAt != null && l >= gapAt) pos = levels[levels.indexOf(gapAt) - 1] + 2; const mp = gapAt != null ? levels[levels.indexOf(gapAt) - 1] + 2 : maxL; return Yb - (Yb - 26) * pos / mp; };
+  const W = 680, H = 392, X0 = 76, X1 = W - 14, Yb = H - 52;
+  const cA = Number.isFinite(+b.condensedAfter) && +b.condensedAfter < maxL ? +b.condensedAfter : null;
+  const posOf = (l) => (cA != null && l > cA ? cA + 1.6 + (l - levels.filter((x) => x > cA)[0]) * 0.2 : l);
+  const maxPos = posOf(maxL);
+  const yOf = (l) => Yb - (Yb - 30) * posOf(l) / maxPos;
   const xOf = (x) => X0 + (X1 - X0) * (x - xmin) / (xmax - xmin);
   const scales = (b.scales || []).filter(Boolean);
   let per = scales[0] ? +scales[0].per : 1000;
   const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'Reconstructed branching diagram' });
-  const roman = (n) => { const m = [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]; let r = ''; for (const [v, t] of m) while (n >= v) { r += t; n -= v; } return r; };
+  const roman = (n) => { const m = [[50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]; let r = ''; for (const [v, t] of m) while (n >= v) { r += t; n -= v; } return r; };
   const axis = s('g', {});
   const draw = () => {
     svg.textContent = '';
     axis.textContent = '';
-    const ls = []; for (let l = 1; l <= maxL; l++) if (gapAt == null || l < gapAt - (gapAt - levels[levels.indexOf(gapAt) - 1] - 1) || levels.includes(l)) ls.push(l);
+    const ls = []; for (let l = 1; l <= maxL; l++) if (cA == null || l <= cA || levels.includes(l)) ls.push(l);
     for (const l of ls) {
       const y = yOf(l);
       axis.append(s('line', { x1: X0 - 6, x2: X1, y1: y, y2: y, stroke: 'var(--rule)', 'stroke-width': 0.8 }));
       axis.append(s('text', { x: 8, y: y + 3.5, 'font-size': 10.5, fill: 'var(--ink-2)', 'font-family': 'Libre Caslon Text' }, roman(l)));
       axis.append(s('text', { x: X0 - 10, y: y + 3.5, 'font-size': 9, 'text-anchor': 'end', fill: 'var(--ink-3)', 'font-family': 'IBM Plex Mono' }, fmtDec(l * per)));
     }
-    if (gapAt != null) { const yA = yOf(levels[levels.indexOf(gapAt) - 1]) - 8, yB = yOf(gapAt) + 10; axis.append(s('path', { d: `M${X0 - 4} ${(yA + yB) / 2 + 4} l8 -8 M${X0 - 4} ${(yA + yB) / 2 + 9} l8 -8`, stroke: 'var(--ink-3)', 'stroke-width': 1 }), s('text', { x: X1, y: (yA + yB) / 2 + 3, 'text-anchor': 'end', 'font-size': 9.5, fill: 'var(--ink-3)', 'font-style': 'italic' }, 'condensed, as in the original figure')); }
+    if (cA != null) { const ym = (yOf(cA) + yOf(levels.find((x) => x > cA))) / 2; axis.append(s('path', { d: `M${X0 - 10} ${ym + 4} l8 -8 M${X0 - 10} ${ym + 9} l8 -8`, stroke: 'var(--ink-3)', 'stroke-width': 1 }), s('text', { x: X1, y: ym + 3, 'text-anchor': 'end', 'font-size': 9.5, fill: 'var(--ink-3)', 'font-style': 'italic' }, `lines ${roman(cA + 1)}–${roman(maxL)} condensed, as in the printed figure`)); }
     axis.append(s('text', { x: X0 - 10, y: 14, 'font-size': 9, 'text-anchor': 'end', fill: 'var(--ink-3)' }, 'generations'));
     svg.append(axis);
     const edges = s('g', {});
@@ -1457,7 +1512,7 @@ function renderBranch(b, bi) {
   const seg = h('span', { class: 'seg' }, segBtns);
   const scaleChips = scales.map((sc, i) => { const key = `lenses.${bi}.scales.${i}`; const c = chip(sc, key); if (c) bindEl(c, key, sc, sc.label); return c; });
   const bar = scales.length ? h('div', { class: 'scalebar' }, h('span', {}, 'Each horizontal line is'), seg, h('span', { style: 'display:inline-flex;gap:4px' }, scaleChips)) : null;
-  return blockShell(b, bi, [bar, h('div', { class: 'figure' }, svg), h('div', { class: 'foot' }, 'This plain-text edition has no figure. The rebuild places every node the prose names; positions are schematic. Four of the six descendants of (I) are not named in the text.')]);
+  return blockShell(b, bi, [bar, h('div', { class: 'figure scroll' }, svg), h('div', { class: 'foot' }, 'This plain-text edition has no figure. The rebuild places every node the prose names; positions are schematic. Four of the six descendants of (I) are not named in the text.')]);
 }
 
 const RENDER = { LiveCalculation: renderLiveCalc, WorkedExample: renderWorked, ArgumentTree: renderArg, ClaimCard: renderClaims, Counterexample: renderCounter, CastList: renderCast, Glossary: renderGloss, Timeline: renderTimeline, MapOfPlaces: renderMap, BranchingDiagram: renderBranch };
@@ -1468,8 +1523,8 @@ function renderCase(spec, rep) {
   if (spec && Array.isArray(spec.lenses)) spec.lenses.forEach((b, i) => { if (b && KIT[b.type] && rep.blocks[i] && rep.blocks[i].status !== 'dropped') counts[b.type] = (counts[b.type] || 0) + 1; });
   const sortBtn = (t, mini) => {
     const k = KIT[t], c = counts[t] || 0;
-    return h('button', { class: `sort ${mini ? '' : (k.area || '')} ${c ? 'on' : ''}`, title: `${k.name}: ${k.use}${c ? '' : ' (not used in this lens)'}`, 'aria-label': `${k.name}${c ? `, used ${c} time${c > 1 ? 's' : ''}` : ', not used'}`, onclick: () => { if (!c) return; const i = spec.lenses.findIndex((b) => b && b.type === t); const el = document.getElementById(`blk-${i}`); if (el) el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); } },
-      h('span', { class: 'g', 'aria-hidden': 'true' }, k.glyph), h('span', { class: 'nm' }, k.name), c ? h('span', { class: 'ct' }, String(c)) : null);
+    return h('button', { class: `sort ${!mini && k.ga === 'calc' ? 'big' : ''} ${c ? 'on' : ''}`, style: mini ? null : `grid-area:${k.ga}`, title: `${k.name}: ${k.use}${c ? '' : ' (not used in this lens)'}`, 'aria-label': `${k.name}${c ? `, used ${c} time${c > 1 ? 's' : ''}` : ', not used'}`, onclick: () => { if (!c) return; const i = spec.lenses.findIndex((b) => b && b.type === t); const el = document.getElementById(`blk-${i}`); if (el) el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); } },
+      h('span', { class: 'g', 'aria-hidden': 'true' }, k.glyph), h('span', { class: 'nm' }, mini ? k.name : (k.short || k.name)), c ? h('span', { class: 'ct' }, String(c)) : null);
   };
   const cs = $('#case'); cs.textContent = '';
   const a = rep.anchors, ck = rep.checks;
@@ -1482,8 +1537,8 @@ function renderCase(spec, rep) {
     h('div', { class: 'stamp' + (rep.decision === 'reject' ? ' bad' : '') },
       h('div', { class: 'sc', style: 'font-size:10px' }, rep.decision === 'reject' ? 'Rejected' : 'Pointers verified'),
       h('div', { class: 'big num' }, `${a.ok}/${a.total}`),
-      h('div', { class: 'ln' }, 'found verbatim in the text', a.folded ? ` (${a.folded} after folding quotes)` : ''),
-      h('div', { class: 'ln', style: 'margin-top:6px' }, h('b', {}, String(ck.ok + ck.approx)), ' printed numbers agree', bad ? [' · ', h('b', { style: 'color:var(--red)' }, String(bad)), ' do not'] : '')),
+      h('div', { class: 'sl' }, 'found verbatim in the text', a.folded ? ` (${a.folded} after folding quotes)` : ''),
+      h('div', { class: 'sl', style: 'margin-top:6px' }, h('b', {}, String(ck.ok + ck.approx)), ' printed numbers agree', bad ? [' · ', h('b', { style: 'color:var(--red)' }, String(bad)), ' do not'] : '')),
     h('div', { class: 'legend' },
       h('div', {}, h('span', { class: 'sw v' }), 'selected element and its source'),
       h('div', {}, h('span', { class: 'sw x' }), 'printed number disagrees'),
@@ -1576,68 +1631,89 @@ function rejectionCard(sp, rep, compact) {
     h('p', {}, compact ? 'Failing elements are hatched; components outside the kit appear as placeholders.' : 'The page checks every generated spec before it renders anything: the components must come from the kit, formulas must parse in the safe arithmetic language, and at least 60% of elements must point to text that exists verbatim in the chapter.'),
     h('ul', { class: 'reasons' }, reasons.map((r) => h('li', { class: r.sev }, h('span', { class: 'm', 'aria-hidden': 'true' }, r.sev === 'error' ? '✕' : '!'), h('span', {}, h('code', {}, r.where), ' ', r.msg)))),
     failed.length ? h('div', {}, h('div', { class: 'sc', style: 'font-size:10px;color:var(--ink-3);margin-bottom:6px' }, 'Pointers that were not found in the chapter'),
-      h('ul', { class: 'reasons' }, failed.map((f) => h('li', {}, h('span', { class: 'm' }, '¶'), h('span', {}, h('span', { style: 'font-family:Libre Caslon Text,serif' }, '“' + f.q.slice(0, 160) + (f.q.length > 160 ? '…' : '') + '”'), h('br'), h('span', { style: 'font-size:12px;color:var(--ink-3)' }, `${f.label ? String(f.label).slice(0, 60) + ': ' : ''}${f.why}`)))))) : null,
+      h('ul', { class: 'reasons' }, failed.map((f) => h('li', {}, h('span', { class: 'm' }, '¶'), h('span', {}, h('span', { style: 'font-family:Libre Caslon Text,serif' }, f.q ? '“' + f.q.slice(0, 160) + (f.q.length > 160 ? '…' : '') + '”' : '(no pointer)'), h('br'), h('span', { style: 'font-size:12px;color:var(--ink-3)' }, `${f.label ? String(f.label).slice(0, 60) + ': ' : ''}${f.why}`)))))) : null,
     h('div', { style: 'display:flex;gap:8px;flex-wrap:wrap;margin-top:6px' },
-      compact ? h('button', { class: 'btn', onclick: () => showSpec(sp) }, 'Back to the rejection') : h('button', { class: 'btn', onclick: () => showSpec(sp, { inspect: true }) }, 'Inspect anyway, failures hatched'),
+      compact ? h('button', { class: 'btn', onclick: () => showSpec(sp) }, 'Back to the rejection') : Array.isArray(sp.lenses) ? h('button', { class: 'btn', onclick: () => showSpec(sp, { inspect: true }) }, 'Inspect anyway, failures hatched') : null,
       h('button', { class: 'btn', onclick: () => openSpecDrawer('val') }, 'Full validation log'),
       h('button', { class: 'btn ghost', onclick: () => openSpecDrawer('spec') }, 'Raw spec')));
 }
 
 // ================================================================ source text pane
-let ITAL = null, CH = null, BK = null, MARKS = new Map();
+let ITAL = null, CH = null, BK = null, MARKS = new Map(), TRAIL = {};
 function renderCopy(bk, ch) {
   BK = bk; CH = ch;
   const bm = bookMeta(bk.id);
   $('#chd').innerHTML = '';
   $('#chd').append(h('div', { class: 'sc' }, `Source · ${bm.a}`), h('div', { class: 'tt' }, `${bm.t}, ${ch.n}: ${ch.title}`),
-    h('div', { class: 'fm' }, h('span', {}, `texts/${bk.id}.txt`), h('span', {}, `lines ${ch.start}–${ch.end}`), h('span', {}, 'Project Gutenberg plain text, as fetched 2026-10-15')),
+    h('div', { class: 'fm' }, h('span', {}, `texts/${bk.id}.txt`), h('span', {}, `lines ${ch.start}–${ch.end}`), h('span', {}, 'Project Gutenberg plain text, fetched 2026-10-15')),
     h('div', { class: 'outside', id: 'outside' }));
   // italics state at the start of each line (Gutenberg marks italics with underscores)
   ITAL = new Uint8Array(ch.end - ch.start + 2);
+  TRAIL = {};
   let it = 0;
-  const parts = [];
   for (let n = ch.start; n <= ch.end; n++) {
     ITAL[n - ch.start] = it;
     const t = bk.lines[n - 1] || '';
     for (let i = 0; i < t.length; i++) if (t[i] === '_') it ^= 1;
-    parts.push(`<div class="ln${/^\s*(CHAPTER|SECTION|PART)\b/.test(t) ? ' hd' : ''}" id="ln-${n}" data-n="${n}"><span class="no">${n}</span><span class="rl"></span><span class="tx">${lineHTML(n, [])}</span></div>`);
+  }
+  // group lines into paragraphs; reflow prose, keep layout for indented formulas and tables
+  const paras = []; let cur = [];
+  for (let n = ch.start; n <= ch.end; n++) { if ((bk.lines[n - 1] || '').trim()) cur.push(n); else if (cur.length) { paras.push(cur); cur = []; } }
+  if (cur.length) paras.push(cur);
+  const parts = [];
+  for (const P of paras) {
+    const ls = P.map((n) => bk.lines[n - 1]);
+    const isPre = ls.some((t) => /^ {6,}\S/.test(t) || /\S {3,}\S/.test(t.trim()));
+    const isHead = P.length <= 2 && ls.every((t) => t.trim().length < 64) && ls.some((t) => /^\s*(CHAPTER|SECTION|PART)\b/.test(t) || /^_[^_]+_\.?$/.test(t.trim()) || (/^[A-Z][A-Z .,'’—-]+$/.test(t.trim()) && t.trim().length > 3));
+    const isNote = !isPre && ls.every((t) => /^ {2,}\S/.test(t));
+    const cls = isHead ? 'head' : isPre ? 'pre' : isNote ? 'note' : 'prose';
+    const last = P[P.length - 1];
+    for (const n of P) TRAIL[n] = !isPre && n !== last ? ' ' : '';
+    parts.push(`<div class="para ${cls}">` + P.map((n) => `<span class="ln${n % 5 === 0 ? ' l5' : ''}" id="ln-${n}" data-n="${n}"><span class="lno">${n}</span><span class="tk"></span><span class="tx">${lineHTML(n, [], TRAIL[n])}</span></span>`).join(isPre ? '\n' : '') + '</div>');
   }
   const tx = $('#text');
-  tx.innerHTML = parts.join('');
+  tx.innerHTML = `<div class="text-in" id="textIn">${parts.join('')}<div class="bracket" id="bracket"></div></div>`;
   tx.scrollTop = 0;
   MARKS = new Map();
 }
-function lineHTML(n, marks) {
-  const t = BK.lines[n - 1] || '';
-  let it = ITAL[n - CH.start] || 0, out = it ? '<i>' : '', open = 0;
-  const bounds = new Map();
-  for (const [a, b, cls] of marks) { bounds.set(a, [...(bounds.get(a) || []), ['o', cls]]); bounds.set(b, [...(bounds.get(b) || []), ['c', cls]]); }
-  for (let i = 0; i <= t.length; i++) {
-    const bd = bounds.get(i);
-    if (bd) for (const [k, cls] of bd.sort((x) => (x[0] === 'c' ? -1 : 1))) { if (k === 'c' && open) { out += '</mark>'; open--; } else if (k === 'o') { out += `<mark class="${cls || ''}">`; open++; } }
-    if (i === t.length) break;
+function lineHTML(n, marks, trail) {
+  const t = (BK.lines[n - 1] || '') + (trail || '');
+  let it = ITAL[n - CH.start] || 0;
+  const cls = new Array(t.length).fill(null);
+  for (const [a, b, c] of marks) for (let i = a; i < b && i < t.length; i++) cls[i] = c || 'm';
+  let out = '', curI = 0, curM = null;
+  for (let i = 0; i < t.length; i++) {
     const c = t[i];
-    if (c === '_') { if (open) { out += '</mark>'; } out += it ? '</i>' : '<i>'; it ^= 1; if (open) out += '<mark>'; continue; }
+    if (c === '_') { it ^= 1; continue; }
+    const m = cls[i];
+    if (it !== curI || m !== curM) {
+      if (curM) out += '</mark>';
+      if (curI) out += '</i>';
+      if (it) out += '<i>';
+      if (m) out += `<mark class="${m}">`;
+      curI = it; curM = m;
+    }
     out += c === '<' ? '&lt;' : c === '>' ? '&gt;' : c === '&' ? '&amp;' : c;
   }
-  while (open-- > 0) out += '</mark>';
-  if (it) out += '</i>';
+  if (curM) out += '</mark>';
+  if (curI) out += '</i>';
   return out || ' ';
 }
 function setMarks(spans, cls = '') {
   // clear previous
-  for (const n of MARKS.keys()) { const el = document.getElementById('ln-' + n); if (el) { el.querySelector('.tx').innerHTML = lineHTML(n, []); el.classList.remove('on'); } }
+  for (const n of MARKS.keys()) { const el = document.getElementById('ln-' + n); if (el) { el.querySelector('.tx').innerHTML = lineHTML(n, [], TRAIL[n]); el.classList.remove('on'); } }
   MARKS = new Map();
   for (const sp of spans) {
     if (sp.outside) continue;
     for (let n = sp.L[0]; n <= sp.L[1]; n++) {
       if (n < CH.start || n > CH.end) continue;
       const ls = BK.starts[n - 1], le = ls + (BK.lines[n - 1] || '').length;
-      const a = Math.max(sp.a, ls) - ls, b = Math.min(sp.b, le) - ls;
+      const a = Math.max(sp.a, ls) - ls, b = (sp.b > le ? le + 1 : sp.b) - ls;
       if (b > a) MARKS.set(n, [...(MARKS.get(n) || []), [a, b, sp.cls || cls]]);
     }
   }
-  for (const [n, mk] of MARKS) { const el = document.getElementById('ln-' + n); if (el) { el.querySelector('.tx').innerHTML = lineHTML(n, mk); el.classList.add('on'); } }
+  for (const [n, mk] of MARKS) { const el = document.getElementById('ln-' + n); if (el) { el.querySelector('.tx').innerHTML = lineHTML(n, mk, TRAIL[n]); el.classList.add('on'); } }
+  drawBracket();
   // spans outside the chapter (e.g. the transcriber's note in the front matter)
   const out = spans.filter((x) => x.outside);
   const box = $('#outside');
@@ -1647,17 +1723,26 @@ function setMarks(spans, cls = '') {
     for (const sp of out) box.append(h('div', {}, h('div', { class: 'sc', style: 'font-size:9.5px;color:var(--blue-ink)' }, `Outside this chapter · line ${sp.L[0]}${sp.L[1] !== sp.L[0] ? '–' + sp.L[1] : ''} · verified`), h('div', { class: 'q' }, contextHTML(sp))));
   }
 }
+function relTop(el) { const tin = $('#textIn'); return el.getBoundingClientRect().top - tin.getBoundingClientRect().top; }
+function drawBracket() {
+  const br = $('#bracket'); if (!br) return;
+  const ms = $$('#textIn mark');
+  if (!ms.length) { br.classList.remove('on'); return; }
+  const top = relTop(ms[0]), last = ms[ms.length - 1], bot = relTop(last) + last.getBoundingClientRect().height;
+  br.style.top = (top - 2) + 'px'; br.style.height = Math.max(14, bot - top + 4) + 'px'; br.classList.add('on');
+}
 function contextHTML(sp) {
   const ls = BK.starts[sp.L[0] - 1], le = sp.L[1] < BK.starts.length ? BK.starts[sp.L[1]] : BK.raw.length;
-  const pre = BK.raw.slice(Math.max(0, ls - 120), sp.a).replace(/\s+/g, ' '), mid = BK.raw.slice(sp.a, sp.b).replace(/\s+/g, ' '), post = BK.raw.slice(sp.b, Math.min(BK.raw.length, le + 60)).replace(/\s+/g, ' ');
+  const cl = (t) => t.replace(/\s+/g, ' ').replace(/_/g, '');
+  const pre = cl(BK.raw.slice(Math.max(0, ls - 120), sp.a)), mid = cl(BK.raw.slice(sp.a, sp.b)), post = cl(BK.raw.slice(sp.b, Math.min(BK.raw.length, le + 60)));
   const frag = document.createDocumentFragment();
   frag.append('…' + pre.slice(-110), h('mark', {}, mid), post.slice(0, 80) + '…');
   return frag;
 }
 function scrollToLine(n) {
   const el = document.getElementById('ln-' + n), tx = $('#text');
-  if (!el || !tx) return;
-  const top = el.offsetTop - tx.clientHeight * 0.32;
+  if (!el || !tx || !tx.offsetParent) return;
+  const top = relTop(el) + 16 - tx.clientHeight * 0.3;
   tx.scrollTo({ top: Math.max(0, top), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 }
 function rebuildLineIndex() {
@@ -1677,6 +1762,7 @@ function markSelected(key) {
   if (ent) ent.doms.forEach((d) => d.classList.add('sel'));
 }
 function select(key, opts = {}) {
+  const user = opts.user !== false;
   const ent = REG.get(key);
   if (!ent) return;
   ST.sel = key;
@@ -1684,12 +1770,12 @@ function select(key, opts = {}) {
   closePop();
   if (!ent.ok) {
     setMarks([]);
-    showSlip(ent, true);
+    if (user) showSlip(ent, true);
   } else {
     setMarks(ent.spans);
     const first = ent.spans.find((x) => !x.outside);
     if (first) scrollToLine(first.L[0]);
-    showSlip(ent, false);
+    if (user) showSlip(ent, false);
   }
   if (opts.scrollBoard && ent.doms[0]) ent.doms[0].scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   if ($('#specDrawer').classList.contains('on')) highlightJSON(key);
@@ -1729,9 +1815,10 @@ function onLineClick(e) {
   const tx = $('#text');
   popEl = h('div', { class: 'pop', role: 'menu' }, h('div', { class: 'ph sc' }, `Line ${n} is cited by ${keys.length} elements`),
     keys.slice(0, 10).map((k) => { const ent = REG.get(k); const bi = +k.split('.')[1]; const t = ST.cur.lenses[bi] && ST.cur.lenses[bi].type; return h('button', { role: 'menuitem', onclick: () => { closePop(); select(k, { scrollBoard: true }); if (matchMedia('(max-width: 819px)').matches) setView('lens'); } }, h('span', { class: 'g' }, KIT[t] ? KIT[t].glyph : '·'), h('span', {}, String(ent.label || k).slice(0, 70))); }));
-  popEl.style.top = (ln.offsetTop + ln.offsetHeight + 4) + 'px';
-  popEl.style.left = '60px';
-  tx.append(popEl);
+  const r = ln.getClientRects()[0] || ln.getBoundingClientRect();
+  popEl.style.top = (r.bottom - $('#textIn').getBoundingClientRect().top + 6) + 'px';
+  popEl.style.left = '64px';
+  $('#textIn').append(popEl);
 }
 
 // ================================================================ spec drawer
@@ -1767,7 +1854,9 @@ function renderSpecDrawer() {
   const ch = chapterOf(sp.book, sp.chapter.start);
   $('#specSub').textContent = sp.live ? `Generated live by Claude for ${ch.n}, ${ch.title}. Unreviewed.` : sp.draft ? 'Deterministic draft: regular expressions over the text, no model.' : sp.constructed ? 'A constructed bad spec, run through the same validator.' : `Precomputed by Claude, October 2026; validated by scripts/prototypes/chapter-lenses.mjs and again in this page.`;
   const body = $('#specBody'); body.textContent = ''; body.scrollTop = 0;
-  if (specTab === 'spec') {
+  if (specTab === 'spec' && typeof sp.raw === 'string') {
+    body.append(h('p', { class: 'dsec', style: 'margin:0 0 10px;font-size:12.5px;color:var(--ink-3)' }, 'Claude\'s reply could not be parsed as JSON. The raw text:'), h('pre', { class: 'json' }, sp.raw.slice(0, 60000)));
+  } else if (specTab === 'spec') {
     const clean = JSON.parse(JSON.stringify(sp, (k, v) => (k.startsWith('_') || k === 'raw' ? undefined : v)));
     body.append(h('p', { class: 'dsec', style: 'margin:0 0 10px;font-size:12.5px;color:var(--ink-3)' }, sp.live || sp.draft ? 'The spec as received. ' : `Published as data/chapter-lenses/lenses/${sp.id}.json. `, 'Select any element in the lens to find it here. "src" strings are the pointers; "L" gives the line range the build found.'));
     const pre = h('pre', { class: 'json' }); pre.innerHTML = `<span data-p="spec">${jsonHTML(clean.lenses ? { ...clean } : clean, 'spec', 0)}</span>`;
@@ -1777,7 +1866,7 @@ function renderSpecDrawer() {
     highlightJSON(ST.sel);
   } else if (specTab === 'val') {
     const dec = { render: ['Rendered', 'Every element verified.'], hatched: ['Rendered with hatching', 'Some elements failed and are hatched.'], reject: ['Rejected', 'Not rendered as a lens.'] }[rep.decision];
-    body.append(h('div', { class: 'stamp' + (rep.decision === 'reject' ? ' bad' : ''), style: 'margin-bottom:12px' }, h('div', { class: 'sc', style: 'font-size:10px' }, 'Decision'), h('div', { class: 'big', style: 'font-size:18px' }, dec[0]), h('div', { class: 'ln' }, dec[1])));
+    body.append(h('div', { class: 'stamp' + (rep.decision === 'reject' ? ' bad' : ''), style: 'margin-bottom:12px' }, h('div', { class: 'sc', style: 'font-size:10px' }, 'Decision'), h('div', { class: 'big', style: 'font-size:18px' }, dec[0]), h('div', { class: 'sl' }, dec[1])));
     const a = rep.anchors, c = rep.checks;
     body.append(h('div', { class: 'dsec' }, h('h4', {}, 'Rules applied'), h('ul', {},
       h('li', {}, 'Top level must be an object with a "lenses" array of at most 9 components, each a type from the kit.'),
@@ -1831,7 +1920,7 @@ ${text}
 function openCompose() {
   openPanel('#compose');
   renderBookList();
-  if (!ST.chSel) ST.chSel = chapterOf(5827, 1380).key;
+  if (!ST.chSel) ST.chSel = chapterOf(65274, 2565).key;
   ST.bookSel = +ST.chSel.split(':')[0];
   renderBookList(); renderChapterList();
   updateLiveBadge();
@@ -1850,7 +1939,7 @@ function renderChapterList() {
   const c = b.chapters.find((x) => x.key === ST.chSel);
   const has = c && ST.index.lenses.find((l) => l.book === b.id && l.chapter.start === c.start);
   $('#csel').innerHTML = '';
-  if (c) $('#csel').append('Selected: ', h('b', {}, `${b.a}, ${c.n}: ${c.title}`), ` · ${c.words.toLocaleString('en-US')} words`, has ? h('span', {}, ' · ', h('button', { class: 'btn', style: 'padding:3px 8px', onclick: () => { closePanels(); openLens(has.id); } }, 'Open the precomputed lens')) : null);
+  if (c) $('#csel').append(h('span', {}, 'Selected: ', h('b', {}, `${b.a}, ${c.n}: ${c.title}`), ` · ${c.words.toLocaleString('en-US')} words`, has ? h('span', {}, ' · ', h('button', { class: 'btn', style: 'padding:3px 8px', onclick: () => { closePanels(); openLens(has.id); } }, 'Open the precomputed lens')) : null));
 }
 function updateLiveBadge() {
   const lb = $('#liveBadge'), bt = $('#btnLive');
@@ -1883,7 +1972,7 @@ async function composeLive() {
   $('#btnLive').disabled = true; $('#btnStop').hidden = false;
   status([h('span', { class: 'spin' }), 'Thinking… Claude is reading the chapter and choosing components.']);
   let tools;
-  try { const lim = await sample.limits(); if (lim && lim.tools) tools = [{ name: 'check_anchors', description: 'Check pointers before answering. Returns, for each string, whether it occurs verbatim in the chapter (whitespace-insensitive) and its line numbers. Use it to fix pointers that fail.', inputSchema: { type: 'object', properties: { anchors: { type: 'array', items: { type: 'string' }, maxItems: 60 } }, required: ['anchors'] }, execute: (inp) => { const arr = Array.isArray(inp.anchors) ? inp.anchors.slice(0, 60) : []; status([h('span', { class: 'spin' }), `Claude is checking ${arr.length} pointers against the text…`]); return arr.map((q, i) => { const r = locate(sc, String(q), false); return r.ok ? { i, ok: true, lines: r.L } : { i, ok: false, why: r.why }; }); } }]; } } catch {}
+  try { const lim = await sample.limits(); if (lim && lim.tools) tools = [{ name: 'check_anchors', description: 'Check pointers before answering. Returns, for each string, whether it occurs verbatim in the chapter (whitespace-insensitive) and its line numbers. Use it to fix pointers that fail.', inputSchema: { type: 'object', properties: { anchors: { type: 'array', items: { type: 'string' }, maxItems: 60 } }, required: ['anchors'] }, execute: (inp) => { const arr = Array.isArray(inp.anchors) ? inp.anchors.slice(0, 60) : []; status([h('span', { class: 'spin' }), `Claude is checking ${arr.length} pointers against the text…`]); return arr.map((q, i) => { const r = locate(sc, String(q), false); return r.ok ? { i, ok: true, lines: r.L } : { i, ok: false, why: r.why }; }); } }]; } catch {}
   const t0 = Date.now();
   try {
     const opts = { signal: ctl.signal, modelTier: 'default', onText: ({ text: tt }) => status([h('span', { class: 'spin' }), `Writing the spec… ${tt.length.toLocaleString('en-US')} characters, ${Math.round((Date.now() - t0) / 1000)} s`], tt.slice(-260)) };
@@ -1920,14 +2009,28 @@ async function composeDraft() {
   const sc = scopeFor(bk, ch.start, ch.end);
   const N = sc.view.n;
   const words = (t, k) => t.split(' ').slice(0, k).join(' ');
-  // 1. outline from numbered paragraphs, run-in italic headings, or section numerals
+  const around = (i, len, pad) => { let a = Math.max(0, i - pad), z = Math.min(N.length, i + len + pad); a = N.lastIndexOf(' ', a) + 1; const zz = N.indexOf(' ', z); z = zz < 0 ? N.length : zz; return N.slice(a, z); };
+  // 1. outline: numbered paragraphs, run-in italic headings, section numerals; else paragraph openings
   const nodes = [];
-  for (let n = ch.start + 1; n <= ch.end && nodes.length < 24; n++) {
+  const paras = [];
+  let curP = null;
+  for (let n = ch.start + 1; n <= ch.end; n++) {
     const t = bk.lines[n - 1] || '', prev = bk.lines[n - 2] || '';
+    if (t.trim() && !prev.trim()) { curP = { n, words: 0, first: t.replace(/\s+/g, ' ').trim() }; paras.push(curP); }
+    if (t.trim() && curP) curP.words += t.split(/\s+/).filter(Boolean).length;
     let m;
-    if (!prev.trim() && (m = t.match(/^(\d{1,3})\.\s+(\S.*)$/))) { const q = words(t.replace(/\s+/g, ' ').trim(), 12); nodes.push({ kind: 'section', text: `§${m[1]}`, src: [q] }); }
-    else if ((m = t.match(/^_([^_]{3,70})_\.?\s?—/))) nodes.push({ kind: 'section', text: m[1], src: [t.match(/^_[^_]{3,70}_\.?\s?—/)[0]] });
+    if (nodes.length >= 24) continue;
+    if (!prev.trim() && (m = t.match(/^(\d{1,3})\.\s+(\S.*)$/))) nodes.push({ kind: 'section', text: `§${m[1]}`, src: [words(t.replace(/\s+/g, ' ').trim(), 12)] });
+    else if ((m = t.match(/^_([^_]{3,70})_\.?\s?—/))) nodes.push({ kind: 'section', text: m[1], src: [m[0]] });
     else if (/^\s*([IVX]{1,5})\s*$/.test(t) && !prev.trim()) { let k = n + 1; while (k <= ch.end && !(bk.lines[k - 1] || '').trim()) k++; const q = words((bk.lines[k - 1] || '').replace(/\s+/g, ' ').trim(), 10); if (q.length > 12) nodes.push({ kind: 'section', text: `Part ${t.trim()}`, src: [q] }); }
+  }
+  let outlineTitle = 'Outline (from section marks)';
+  if (nodes.length < 3) {
+    nodes.length = 0;
+    const long = paras.filter((pp) => pp.words >= 40 && pp.first.split(' ').length >= 6);
+    const step = Math.max(1, Math.ceil(long.length / 14));
+    long.filter((_, i) => i % step === 0).slice(0, 14).forEach((pp, i) => nodes.push({ kind: 'section', text: `Paragraph at line ${pp.n}`, src: [words(pp.first, 14)] }));
+    outlineTitle = 'Outline (paragraph openings)';
   }
   // 2. sentences with numbers
   const sentences = N.match(/[^.!?]{20,400}?[.!?](?=\s|$)/g) || [];
@@ -1935,31 +2038,32 @@ async function composeDraft() {
   for (const sn of sentences) {
     const t = sn.trim();
     const nums = t.match(/\b\d+\/\d+\b|\b\d{1,3}(?:,\d{3})+\b|\b\d{2,}\b/g);
-    if (!nums || /^\d+\.\s*$/.test(t)) continue;
-    const real = nums.filter((x) => !/^\d{4}$/.test(x) || x.includes('/'));
-    const keep = real.length ? real : nums;
+    if (!nums || /^\d+\.\s*$/.test(t) || /^\d{1,3}\.\s/.test(t) && nums.length === 1) continue;
     if (N.indexOf(t) < 0) continue;
-    numCards.push({ claim: [...new Set(keep)].slice(0, 5).join(' · '), src: [t.slice(0, 300)], examples: [] });
+    numCards.push({ claim: [...new Set(nums)].slice(0, 5).join(' · '), src: [t.slice(0, 300)], examples: [] });
     if (numCards.length >= 12) break;
   }
-  // 3. names: honorifics and repeated capitalised words not at sentence starts
-  const STOP = new Set('The This That These Those There Then Thus Hence But And For Nor Yet If In On At By Of To As An A It Its He His She Her We Our They Their I Let Now When Where What Which Who Whom Whose Why How All Some Any Each Every No Not One Two Three First Second Third Fourth Fifth Mr Dr Sir Such So Or Is Are Was Were Be Being Been May Might Must Can Could Would Should Shall Will Do Does Did Nature God Providence English French Latin Christian Chapter Section Part Book Footnote Professor Lord St Mons Cardinal Abbé Mademoiselle Mlle Madame Essay Laws Law Theory Calculus Probability Science Philosophy Logic Induction Chance Mathematics January February March April May June July August September October November December Again Also Here Since Though Although While Whether Even Most More Many Much Upon Under Over After Before Again Again'.split(' '));
+  // 3. names: honorifics, and capitalised words that recur away from sentence starts
+  const STOP = new Set('The This That These Those There Then Thus Hence But And For Nor Yet If In On At By Of To As An A It Its He His She Her We Our They Their I Let Now When Where What Which Who Whom Whose Why How All Some Any Each Every No Not One Two Three First Second Third Fourth Fifth Mr Dr Sir Such So Or Is Are Was Were Be Being Been May Might Must Can Could Would Should Shall Will Do Does Did Nature God Providence English French German Latin Greek Christian Chapter Section Part Book Footnote Professor Lord St Mons Cardinal Abbé Mademoiselle Mlle Madame Essay Laws Law Theory Calculus Probability Science Philosophy Logic Induction Chance Mathematics January February March April May June July August September October November December Again Also Here Since Though Although While Whether Even Most More Many Much Upon Under Over After Before Universe Truth Reason Mind Matter'.split(' '));
   const counts = new Map(), first = new Map();
   const honor = /\b(?:Mr|Mrs|Dr|Sir|Professor|Prof|Mons|Lord|Cardinal|Abbé|Mademoiselle|Mlle|M)\.?\s+(?:[A-Z]\.\s*){0,2}[A-Z][a-zà-ÿ’'-]+/g;
   let m2;
   while ((m2 = honor.exec(N))) { const k = m2[0].replace(/\s+/g, ' '); counts.set(k, (counts.get(k) || 0) + 3); if (!first.has(k)) first.set(k, m2.index); }
   const cap = /(?<=[a-z,;:] )([A-Z][a-zà-ÿ’'-]{2,})(?:\s+([A-Z][a-zà-ÿ’'-]{2,}))?/g;
-  while ((m2 = cap.exec(N))) { const k = m2[2] && !STOP.has(m2[2]) ? `${m2[1]} ${m2[2]}` : m2[1]; if (STOP.has(m2[1])) continue; counts.set(k, (counts.get(k) || 0) + 1); if (!first.has(k)) first.set(k, m2.index); }
-  const people = [...counts.entries()].filter(([, c]) => c >= 2).sort((a, c) => c[1] - a[1]).slice(0, 14).map(([k, c]) => {
-    const at = first.get(k); const s0 = Math.max(0, N.lastIndexOf(' ', Math.max(0, at - 30)) + 1); let e0 = N.indexOf(' ', Math.min(N.length, at + k.length + 40)); if (e0 < 0) e0 = N.length;
-    return { name: k, as: k, role: `${c} mention${c > 1 ? 's' : ''}`, gloss: 'Capitalised name found by pattern; may be a place or term.', src: [N.slice(s0, e0)] };
-  });
+  while ((m2 = cap.exec(N))) { if (STOP.has(m2[1])) continue; const k = m2[2] && !STOP.has(m2[2]) ? `${m2[1]} ${m2[2]}` : m2[1]; counts.set(k, (counts.get(k) || 0) + 1); if (!first.has(k)) first.set(k, m2.index); }
+  const people = [...counts.entries()].filter(([, c]) => c >= 2).sort((a, c) => c[1] - a[1]).slice(0, 14).map(([k, c]) => ({ name: k, as: k, role: `${c} mention${c > 1 ? 's' : ''}`, gloss: 'Capitalised name found by pattern; may be a place or a term.', src: [around(first.get(k), k.length, 36)] }));
+  // 4. words the author italicises
+  const emph = new Map();
+  const it = /_([^_]{2,48})_/g;
+  while ((m2 = it.exec(N))) { const w = m2[1].trim(); if (w.split(' ').length > 4 || /[.;:]$/.test(w)) continue; const k = w.toLowerCase(); const e0 = emph.get(k) || { term: w, n: 0, at: m2.index, len: m2[0].length }; e0.n++; emph.set(k, e0); }
+  const terms = [...emph.values()].sort((a, c) => c.n - a.n || a.at - c.at).slice(0, 12).map((e0) => ({ term: e0.term, period: `Italicised by the author${e0.n > 1 ? ` (${e0.n} times)` : ''}.`, modern: 'A gloss needs a model; open this page in Claude.', src: [around(e0.at, e0.len, 30)] }));
   const lenses = [];
-  if (nodes.length >= 2) lenses.push({ type: 'ArgumentTree', title: 'Outline (from section marks)', why: 'Numbered paragraphs, run-in headings or section numerals, taken in order.', nodes });
+  if (nodes.length >= 2) lenses.push({ type: 'ArgumentTree', title: outlineTitle, why: 'Numbered paragraphs, run-in headings or section numerals; failing those, the openings of long paragraphs.', nodes });
   if (numCards.length) lenses.push({ type: 'ClaimCard', title: 'Sentences that contain numbers', why: 'Every sentence with a fraction or a number of two or more digits. A live lens would turn these into recomputable steps.', cards: numCards });
+  if (terms.length) lenses.push({ type: 'Glossary', title: 'Words the author italicises', why: 'Gutenberg marks italics with underscores; emphasis often flags a technical term.', terms });
   if (people.length) lenses.push({ type: 'CastList', title: 'Names (pattern match)', why: 'Honorifics and capitalised words that recur away from sentence starts. Expect noise.', people });
   if (!lenses.length) lenses.push({ type: 'ClaimCard', title: 'Opening', why: 'Nothing matched the patterns; showing the first sentence.', cards: [{ claim: 'First sentence', src: [(sentences[0] || N.slice(0, 120)).trim().slice(0, 200)], examples: [] }] });
-  const spec = { id: `draft-${bid}-${start}`, draft: true, book: bid, chapter: { start }, tabLabel: `${bm.a.split(' ').pop()} ${String(ch.n).replace(/^(Ch\.|Sect\.)\s*/, '')}`.slice(0, 22), provenance: 'Deterministic draft: regular expressions over the text, no AI. Pointers are exact by construction.', why: `A draft without a model. It finds structure, numbers and names with regular expressions, so it can show where the text is, but not what the chapter argues. Live composition with Claude chooses components from the kit by reading the chapter; open this page in Claude to try it on ${bm.a}'s ${ch.n}.`, lenses };
+  const spec = { id: `draft-${bid}-${start}`, draft: true, book: bid, chapter: { start }, tabLabel: `${bm.a.split(' ').pop()} ${String(ch.n).replace(/^(Ch\.|Sect\.)\s*/, '')}`.slice(0, 22), provenance: 'Deterministic draft: regular expressions over the text, no AI. Pointers are exact by construction.', why: `A draft made without a model. Regular expressions find structure, numbers, emphasis and names, so the draft can show where things are in the text but not what the chapter argues. Live composition reads the chapter and chooses components from the kit; it runs when this page is opened in Claude.`, lenses };
   ST.live = ST.live.filter((x) => !(x.draft && x.book === bid && x.chapter.start === start));
   ST.live.push(spec);
   closePanels();
@@ -2043,6 +2147,7 @@ document.addEventListener('keydown', (e) => {
   if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('el') && e.target.dataset.key) { e.preventDefault(); select(e.target.dataset.key); }
 });
 $('#text').addEventListener('click', onLineClick);
+window.addEventListener('resize', () => { clearTimeout(window.__rb); window.__rb = setTimeout(drawBracket, 120); });
 $('#scrim').addEventListener('click', () => closePanels());
 $$('[data-close]').forEach((b) => b.addEventListener('click', () => closePanels()));
 $('#btnSpec').addEventListener('click', () => openSpecDrawer());
@@ -2071,7 +2176,7 @@ $('#btnTheme').addEventListener('click', () => {
     ST.chapters = chapters; ST.index = index; ST.land = land;
     await openLens('laplace-xi');
     // the signature moment: Laplace's printed 6/10, selected at rest
-    if (REG.has('lenses.0.steps.1')) select('lenses.0.steps.1');
+    if (REG.has('lenses.0.steps.1')) select('lenses.0.steps.1', { user: false });
   } catch (e) {
     console.error(e);
     $('#boardIn').innerHTML = '';

@@ -77,8 +77,8 @@ mkdirSync(join(OUT, 'si'), { recursive: true });
 // Fields: which LC classes and subject words count as "the reader's sense" of a concept.
 const FIELDS = {
   prob: {
-    lcc: ['B', 'H', 'Q', 'T5', 'R', 'U', 'J'],
-    subj: /probab|statist|chance|logic|philosoph|knowledge|epistem|inference|induct|decision|bayes|econom|game theor|risk|uncertain|forecast|reason|mathemat|psycholog|judg|belief|evidence|cognit|gambl|insur|actuar|science|predict|financ|invest|rational|operations research|machine learning|artificial intelligence|data|comput|meteor|weather|climat|medic|clinic|health|epidem|biostat|engineer|account|manag|business|betting|lotter|polic|law|government|ethic/i,
+    lcc: ['B', 'H', 'Q', 'T5', 'R', 'U'],
+    subj: /probab|statist|chance|logic|philosoph|knowledge|epistem|inference|induct|decision|bayes|econom|game theor|risk|uncertain|forecast|reason|mathemat|psycholog|judg|belief|evidence|cognit|gambl|insur|actuar|science|predict|financ|invest|rational|operations research|machine learning|artificial intelligence|data|comput|meteor|weather|climat|medic|clinic|health|epidem|biostat|engineer|account|manag|business|betting|lotter|ethic/i,
   },
   evo: {
     lcc: ['QH', 'QL', 'QE', 'QK', 'QR', 'QP', 'GN', 'B', 'BL', 'H', 'Q1', 'Q12', 'Q17'],

@@ -739,7 +739,7 @@ function rowHTML(e, i) {
   if (e.group) tags.push(`<li class="tag grp" title="Dependence group">${esc(D.groups[e.group] || e.group)}</li>`);
   if (e.origin === 'live') tags.push('<li class="tag origin">Added live · Claude</li>');
   if (e.origin === 'example') tags.push('<li class="tag origin">Added · precomputed example</li>');
-  if (e.origin === 'admitted') tags.push('<li class="tag origin">Admitted by you · no figure</li>');
+  if (e.origin === 'admitted') tags.push('<li class="tag origin">Admitted from set-aside by you</li>');
   tags.push('<li class="tag">Abstract only</li>');
   tags.push('<li class="tag unread-tag" data-unread>Unread · not posted</li>');
   const claims = (e.claims || []).map((c) => `<li class="claim"><div class="ch"><span class="st st-${esc(c.standing)}">${esc((STAND[c.standing] || STAND.none).chip)}</span> <b>${esc(c.metric)}:</b> ${esc(c.value)}</div><div class="cb">vs ${esc(c.baseline)} · ${esc(c.dataset)}</div>${quoteHTML(c.quotes || [])}</li>`).join('');
@@ -954,7 +954,18 @@ function renderChart(ev, run) {
   }));
   // nudge collisions
   const nudge = (arr, dx) => { arr.sort((a, b) => a.x - b.x); for (let i = 0; i < arr.length; i++) for (let j = 0; j < i; j++) if (Math.abs(arr[i].x - arr[j].x) < dx && Math.abs(arr[i].y - arr[j].y) < 10) arr[i].x = arr[j].x + dx; };
-  nudge(ladder, 13); nudge(lane, narrow ? 9 : 11);
+  nudge(ladder, 13);
+  if (narrow) {
+    // Stagger crowded lane marks into three sub-rows before pushing any sideways.
+    const rowsY = [0, -10, 10], placed = [];
+    lane.sort((a, b) => a.x - b.x);
+    for (const m of lane) {
+      const base = m.y;
+      const row = rowsY.find((dy) => !placed.some((o) => Math.abs(o.x - m.x) < 9 && Math.abs(o.y - (base + dy)) < 4));
+      if (row != null) m.y = base + row; else { const last = placed[placed.length - 1]; m.x = last.x + 9; }
+      placed.push(m);
+    }
+  } else nudge(lane, 11);
   // paper links (same paper, several standings)
   const byPaper = {};
   for (const m of ladder) (byPaper[m.e.id] ||= []).push(m);
@@ -1048,7 +1059,7 @@ function renderChart(ev, run) {
     d += `H${x}V${yB(r.p)}`;
     const delta = r.p - prev;
     const lr = lrOf(r.e);
-    dots.push(`<g class="mk bmk" data-k="b|${esc(r.e.id)}" data-id="${esc(r.e.id)}" tabindex="0" role="button" aria-label="${esc(`After ${r.e.short}: ${pct(r.p)} (${pts(delta)} points)`)}"><circle class="hit" cx="${x}" cy="${yB(r.p)}" r="9"/><circle class="bdot d-${dirOf(lr)}" cx="${x}" cy="${yB(r.p)}" r="3.6"/><circle class="ring" cx="${x}" cy="${yB(r.p)}" r="7"/></g>`);
+    dots.push(`<g class="mk bmk" data-k="b|${esc(r.e.id)}" data-id="${esc(r.e.id)}" tabindex="-1" role="button" aria-label="${esc(`After ${r.e.short}: ${pct(r.p)} (${pts(delta)} points)`)}"><circle class="hit" cx="${x}" cy="${yB(r.p)}" r="9"/><circle class="bdot d-${dirOf(lr)}" cx="${x}" cy="${yB(r.p)}" r="3.6"/><circle class="ring" cx="${x}" cy="${yB(r.p)}" r="7"/></g>`);
     bBoxes.push({ x: x - 4, y: Math.min(yB(prev), yB(r.p)) - 4, w: 8, h: Math.abs(yB(prev) - yB(r.p)) + 8 });
     steps.push({ r, x, delta });
     prev = r.p;
@@ -1460,7 +1471,7 @@ function admit(id) {
   const s = D.setAside.find((x) => x.id === id);
   if (!s || ENTRIES.some((e) => e.id === id)) return;
   const finish = (p) => {
-    S.added.push({ id: s.id, t: s.t, a: s.a, y: s.y, c: s.c, th: s.th, ab: p ? p.ab : '', short: authShort(s.a) + ' ' + s.y.slice(0, 4), type: 'Set aside, admitted', system: 'single', group: null, self: false, lr: 1, lo: null, hi: null, rationale: s.reason, claims: [], context: s.quote, origin: 'admitted' });
+    S.added.push({ id: s.id, t: s.t, a: s.a, y: s.y, c: s.c, th: s.th, ab: p ? p.ab : '', short: authShort(s.a) + ' ' + s.y.slice(0, 4), type: 'No figure in abstract', system: 'single', group: null, self: false, lr: 1, lo: null, hi: null, rationale: s.reason, claims: [], context: s.quote, origin: 'admitted' });
     S.read[s.id] = true; S.lr[s.id] = 1;
     touch(); rebuildEntries(); buildRows(); renderSetAside(); render();
     setTimeout(() => openEntry(s.id), 60);
@@ -1592,7 +1603,7 @@ async function init() {
     return;
   }
   $('#propText').textContent = D.proposition.text;
-  $('#propRes').innerHTML = `<b>Resolves yes</b> if ${esc(D.proposition.resolution.replace(/^Resolves YES if,?\s*/i, ''))}`;
+  $('#propRes').innerHTML = `<b>Resolves yes</b> if, ${esc(D.proposition.resolution.replace(/^Resolves YES if,?\s*/i, ''))}`;
   $('#provLine').innerHTML = `${D.papers.length} entries and ${D.papers.reduce((n, p) => n + p.claims.length, 0)} claims extracted from arXiv abstracts (papers.json, fetched ${esc(fmtD(D.source.fetched))}). Every quoted span verified by exact match. Extractions, LRs and rationales: <b>${esc(D.provenance)}</b>.`;
   $('#legend').innerHTML = legendHTML();
   const stored = loadStore();
@@ -1606,7 +1617,6 @@ async function init() {
   renderResults(suggested());
   pick(D.liveExamples[0].id);
   checkSample();
-  setTimeout(() => loadPapers(), 2500);
 }
 init();
 })();

@@ -92,13 +92,13 @@ button { font: inherit; color: inherit; }
 .shelf { position: absolute; top: calc(100% + 6px); left: 0; z-index: 40; background: var(--leaf); border: 1px solid var(--rule); border-radius: 10px; box-shadow: var(--shadow); padding: 14px; width: min(760px, calc(100vw - 32px)); }
 .shelf h3 { margin: 0 0 10px; }
 .spines { display: flex; gap: 6px; align-items: flex-end; overflow-x: auto; padding-bottom: 4px; }
-.spine { flex: none; width: 66px; border: 1px solid var(--rule-2); border-radius: 3px 3px 2px 2px; background: var(--paper-2); cursor: pointer; padding: 8px 4px 6px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; position: relative; }
+.spine { flex: none; width: 74px; border: 1px solid var(--rule-2); border-radius: 3px 3px 2px 2px; background: var(--paper-2); cursor: pointer; padding: 8px 4px 6px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; position: relative; }
 .spine:hover { background: var(--paper-3); }
 .spine[aria-selected="true"] { background: var(--plate); color: var(--plate-ink); border-color: var(--plate); }
 .spine .sp-t { writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--serif); font-size: 13px; line-height: 1.15; max-height: 150px; overflow: hidden; }
 .spine .sp-a { font-weight: 600; font-size: 11px; }
 .spine .sp-y { font-size: 10px; opacity: 0.75; }
-.spine .sp-tag { font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.8; }
+.spine .sp-tag { font-size: 8.5px; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.8; }
 .shelf .note { color: var(--ink-3); margin: 10px 0 0; font-size: 12px; }
 
 /* ---------- fore-edge ---------- */
@@ -123,7 +123,7 @@ button { font: inherit; color: inherit; }
 .edge-tip .g { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink); line-height: 1.35; }
 
 /* ---------- body grid ---------- */
-.body { display: grid; grid-template-columns: 250px minmax(0, 1fr) 330px; min-height: 0; }
+.body { display: grid; grid-template-columns: 244px minmax(0, 1fr) 316px; min-height: 0; }
 .gate-rail { border-right: 1px solid var(--rule); overflow-y: auto; padding: 16px 16px 24px 0; min-height: 0; }
 .main { overflow-y: auto; min-height: 0; position: relative; outline: none; scroll-behavior: auto; }
 .ledger { border-left: 1px solid var(--rule); overflow-y: auto; min-height: 0; padding: 14px 0 24px 16px; }
@@ -205,6 +205,7 @@ button { font: inherit; color: inherit; }
 .leaf.cur { position: relative; transform-origin: left center; }
 .leaf.turn { animation: turn 150ms ease-out; }
 @keyframes turn { from { transform: rotateY(-14deg); opacity: 0.65; } to { transform: none; opacity: 1; } }
+.leaf.has-dog .run { padding-right: 58px; }
 .leaf .run { display: flex; justify-content: space-between; align-items: baseline; color: var(--ink-3); border-bottom: 1px solid var(--rule); padding-bottom: 8px; margin-bottom: 18px; gap: 10px; }
 .leaf .run .pg { font-family: var(--didone); font-size: 26px; font-weight: 600; color: var(--ink); }
 .leaf .chap-open { margin: 4px 0 18px; }
@@ -236,7 +237,7 @@ kbd { font-family: var(--ui); font-size: 11px; border: 1px solid var(--rule-2); 
 .srow { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 4px 16px; padding: 14px 6px 14px 0; border-bottom: 1px solid var(--rule); cursor: pointer; position: relative; }
 .srow:hover { background: var(--paper-2); }
 .srow.cur { background: var(--paper-2); box-shadow: inset 3px 0 0 var(--accent); }
-.srow .numeral { font-size: 30px; text-align: right; color: var(--ink-2); padding-top: 2px; }
+.srow .numeral { font-size: 30px; text-align: right; color: var(--ink-2); padding-top: 2px; white-space: nowrap; }
 .srow .st { font-family: var(--didone); font-size: 17px; line-height: 1.25; }
 .srow .sg { font-family: var(--serif); font-size: 16px; line-height: 1.5; color: var(--ink); margin-top: 4px; }
 .srow .sg.extr { color: var(--ink-2); font-style: italic; }
@@ -248,7 +249,7 @@ kbd { font-family: var(--ui); font-size: 11px; border: 1px solid var(--rule-2); 
 
 /* ---------- read ---------- */
 .rsec { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 0 30px; padding: 26px 0 30px; border-bottom: 1px solid var(--rule); scroll-margin-top: 8px; }
-.rsec .rh { grid-column: 1 / -1; display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 0 14px; align-items: start; margin-bottom: 14px; }
+.rsec .rh { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(72px, max-content) minmax(0, 1fr); gap: 0 14px; align-items: start; margin-bottom: 14px; }
 .rsec .rh .numeral { font-size: 46px; color: var(--verm); text-align: right; }
 .rsec .rh .ttl { font-family: var(--didone); font-size: 24px; line-height: 1.2; }
 .rsec .rh .meta { color: var(--ink-3); margin-top: 6px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
@@ -273,12 +274,13 @@ kbd { font-family: var(--ui); font-size: 11px; border: 1px solid var(--rule-2); 
 .kind.kin { color: var(--kin); }
 
 /* ---------- text / study ---------- */
-.chap-head { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 0 18px; margin: 6px 0 26px; }
-.chap-head .numeral { font-size: 64px; color: var(--verm); text-align: right; }
+.chap-head { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 0 16px; margin: 6px 0 26px; }
+.chap-head .numeral { font-size: 56px; color: var(--verm); margin: 2px 0 6px; }
 .chap-head .part { color: var(--ink-3); margin-bottom: 4px; }
 .chap-head .ttl { font-family: var(--didone); font-size: 30px; line-height: 1.15; font-weight: 500; }
 .chap-head .meta { color: var(--ink-3); margin-top: 10px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-.prow { display: grid; grid-template-columns: 64px minmax(0, 40em) minmax(0, 1fr); gap: 0 18px; position: relative; }
+.prow { display: grid; grid-template-columns: 48px minmax(0, 700px) var(--marg, 150px); gap: 0 16px; position: relative; justify-content: start; }
+.study .prow { --marg: 210px; }
 .prow .gut { text-align: right; color: var(--ink-3); font-size: 11px; padding-top: 6px; }
 .prow .gut .pg { display: inline-block; border-top: 1px solid var(--rule-2); padding-top: 2px; font-variant-numeric: tabular-nums; }
 .prow .gut .here-mark { display: block; margin-top: 4px; color: var(--accent); font-size: 16px; line-height: 1; }
@@ -289,7 +291,7 @@ kbd { font-family: var(--ui); font-size: 11px; border: 1px solid var(--rule-2); 
 .ptext em, .ex em, .glimpse em { font-style: italic; }
 .ptext mark { background: none; color: inherit; }
 .ptext mark.claim { background: linear-gradient(transparent 62%, var(--mark) 62%); box-shadow: 0 1px 0 var(--verm); }
-.ptext mark.target { background: var(--target); border-radius: 2px; transition: background 1.2s ease 1.8s; }
+.ptext mark.target { background: var(--target); border-radius: 2px; transition: background 1.6s ease 3.5s; }
 .ptext mark.target.fade { background: transparent; }
 .gl { border-bottom: 1px dotted var(--accent); cursor: help; }
 .gl-in { font-family: var(--ui); font-stretch: 80%; font-size: 11.5px; color: var(--accent); margin-left: 3px; letter-spacing: 0.02em; white-space: nowrap; vertical-align: 1px; }
@@ -304,8 +306,8 @@ kbd { font-family: var(--ui); font-size: 11px; border: 1px solid var(--rule-2); 
 .mde b { color: var(--ink); font-weight: 600; }
 .mportal { display: block; border: 1px solid var(--rule); background: var(--leaf); border-radius: 6px; padding: 6px 8px; font-size: 12px; cursor: pointer; text-align: left; color: var(--ink-2); margin-bottom: 8px; }
 .mportal b { color: var(--accent); }
-.study-banner { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: -8px 0 24px 82px; color: var(--ink-3); }
-.chap-foot { margin: 30px 0 0 82px; padding-top: 18px; border-top: 1px solid var(--rule); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.study-banner { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: -8px 0 24px 64px; color: var(--ink-3); }
+.chap-foot { margin: 30px 0 0 64px; padding-top: 18px; border-top: 1px solid var(--rule); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 .readline { position: sticky; top: 30%; height: 0; z-index: 1; pointer-events: none; }
 .readline::before { content: ''; position: absolute; left: 0; width: 46px; border-top: 1px solid var(--accent); opacity: 0.6; }
 
@@ -358,10 +360,10 @@ kbd { font-family: var(--ui); font-size: 11px; border: 1px solid var(--rule-2); 
 .example-note { background: var(--paper-2); border: 1px dashed var(--rule-2); border-radius: 8px; padding: 8px 10px; font-size: 12px; color: var(--ink-2); margin-bottom: 12px; }
 .example-note b { color: var(--ink); }
 .spine-map { list-style: none; margin: 0; padding: 0; }
-.sm-row { display: grid; grid-template-columns: 34px minmax(0, 1fr) 40px 70px; gap: 6px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--rule); cursor: pointer; font-size: 12px; }
+.sm-row { display: grid; grid-template-columns: 42px minmax(0, 1fr) 40px 70px; gap: 6px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--rule); cursor: pointer; font-size: 12px; }
 .sm-row:hover { background: var(--paper-2); }
 .sm-row.cur { box-shadow: inset 2px 0 0 var(--accent); }
-.sm-row .numeral { font-size: 13px; text-align: right; padding-right: 2px; }
+.sm-row .numeral { font-size: 12.5px; text-align: right; padding-right: 2px; white-space: nowrap; }
 .sm-row .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink-2); }
 .sm-row .len { display: block; height: 3px; background: var(--rule-2); border-radius: 2px; margin-top: 3px; }
 .sm-row .sw { height: 20px; border-radius: 3px; display: grid; place-items: center; font-size: 11px; font-weight: 600; color: #fff; }
@@ -413,7 +415,8 @@ details summary { cursor: pointer; color: var(--accent); }
   .prow .marg { grid-column: 2 / 3; padding: 0 0 12px; }
   .prow .marg:empty { display: none; }
   .chap-head { grid-template-columns: 40px minmax(0, 1fr); }
-  .chap-head .numeral { font-size: 44px; }
+  .chap-head .numeral { font-size: 42px; }
+  .chap-head .ttl { font-size: 25px; }
   .study-banner, .chap-foot { margin-left: 58px; }
 }
 @media (max-width: 860px) {
@@ -438,7 +441,7 @@ details summary { cursor: pointer; color: var(--accent); }
   .srow { grid-template-columns: 40px minmax(0, 1fr); }
   .srow .numeral { font-size: 22px; }
   .srow .smeta { grid-column: 2 / 3; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; align-items: center; text-align: left; }
-  .rsec .rh { grid-template-columns: 44px minmax(0, 1fr); }
+  .rsec .rh { grid-template-columns: minmax(44px, max-content) minmax(0, 1fr); }
   .rsec .rh .numeral { font-size: 32px; }
   .rsec .summary { font-size: 17px; }
   .ptext { font-size: 17.5px; }
@@ -515,7 +518,7 @@ details summary { cursor: pointer; color: var(--accent); }
       <div class="here" id="here"></div>
     </aside>
 
-    <main class="main" id="main" tabindex="-1" aria-live="polite"></main>
+    <main class="main" id="main" tabindex="-1"></main>
 
     <aside class="ledger" id="ledger" aria-label="Map of bets and dog-ears"></aside>
   </div>
@@ -540,6 +543,7 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const coarse = matchMedia('(pointer: coarse)').matches;
 const store = {
   get(k, d) { try { const v = localStorage.getItem('gearbox:' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
   set(k, v) { try { localStorage.setItem('gearbox:' + k, JSON.stringify(v)); } catch { /* storage unavailable */ } },
@@ -782,6 +786,16 @@ function glossaryFor(ci) {
 }
 function dogearsIn(ci) { return B.isLap ? LAP.dogears.filter((d) => d.ch === ci + 1) : []; }
 function portalsIn(ci) { return !B.isLap && LAP ? LAP.dogears.filter((d) => d.book === B.id && d.src.ch === ci) : []; }
+/* Short numeral for a chapter: roman labels as printed, '§' for introductions and essays. */
+function numLabel(c) {
+  const l = c.label.replace(/^(S&H|VS|S&M) /, '');
+  return /^[IVXLC]+(?:\.(?:\d+|[IVXLC]+))?$/.test(l) ? l : '§';
+}
+function numHTML(c) {
+  const l = numLabel(c);
+  const k = l.length <= 2 ? 1 : l.length === 3 ? 0.86 : l.length === 4 ? 0.72 : 0.62;
+  return `<span style="font-size:${k}em">${esc(l)}</span>`;
+}
 function bookMeta(id) { return STRUCT.books.find((b) => b.id === id); }
 function shortAuthor(id) { const a = bookMeta(id).a.split(' '); return a[a.length - 1]; }
 function pageLabel(pg, book = B) { return book.isLap ? 'p. ' + pg.n : 'p. ' + pg.n; }
@@ -808,10 +822,15 @@ function bookCost(g) {
   return t;
 }
 function opening(c) {
-  const p = c.paras.find((p) => p.kind === 'p' && p.words > 12);
-  if (!p) return '';
-  const s = splitSentences(p.plain)[0];
-  return p.plain.slice(s.s, s.e).trim();
+  if (c._open != null) return c._open;
+  for (const p of c.paras) {
+    if (p.kind !== 'p') continue;
+    for (const s of splitSentences(p.plain)) {
+      const t = p.plain.slice(s.s, s.e).trim();
+      if (wc(t) >= 9) return (c._open = t);
+    }
+  }
+  return (c._open = '');
 }
 
 /* ===================== bets ===================== */
@@ -917,7 +936,7 @@ function renderBookBtn() {
 function setClaudeChip() {
   const chip = $('#claudeChip');
   chip.classList.toggle('on', typeof sampleFn === 'function');
-  $('.txt', chip).textContent = sampleFn === undefined ? 'Checking for Claude' : sampleFn ? 'Claude live' : 'Precomputed only';
+  $('.txt', chip).textContent = sampleFn === undefined ? 'Checking for Claude' : sampleFn ? 'Claude live' : 'Precomputed example';
   chip.title = sampleFn ? 'Live generation available: any chapter of any book on the shelf' : 'Precomputed example. Live generation is available when this page is opened in Claude.';
 }
 
@@ -935,6 +954,8 @@ function computeHeat() {
   edge.bumps = new Set(edge.heat.map((h, i) => (h >= thr ? i : -1)).filter((i) => i >= 0));
   const tot = edge.heat.reduce((a, b) => a + b, 0);
   $('#edgeInfo').textContent = `${B.pages.length} pp. · “${S.customTerm || S.term}” ×${fmtInt(tot)}`;
+  const ht = $('#hintTerm');
+  if (ht) ht.textContent = S.customTerm || S.term;
 }
 function renderChips() {
   const el = $('#chips');
@@ -1020,7 +1041,7 @@ function drawEdge() {
       ctx.fillStyle = surpriseColor(bits);
       ctx.fillRect(x + 1, top + bh + 8, c.pageN * pw - 2, 4);
     }
-    const lab = c.label.length <= 6 ? c.label : String(ci + 1);
+    const lab = numLabel(c);
     const tw = ctx.measureText(lab).width;
     if (x + 3 > lastLabelX + 4 && c.pageN * pw > tw * 0.6) {
       ctx.fillStyle = v('--ink-3');
@@ -1184,7 +1205,7 @@ function richHTML(p, { claims = [], targets = [], glosses = null, glossSeen = nu
   const inserts = [];
   if (glosses) {
     for (const g of glosses) {
-      const re = new RegExp('\\b(' + g.re + ')\\b', 'gi');
+      const re = new RegExp('(?<![A-Za-zÀ-ÿ])(' + g.re + ')(?![A-Za-zÀ-ÿ])', 'gi');
       let m;
       while ((m = re.exec(plain))) {
         const s = m.index, e = s + m[0].length;
@@ -1257,7 +1278,7 @@ function viewRiffle() {
         <button class="btn" id="rNext" aria-label="Next page">→</button>
         <button class="btn" id="rDrop">Drop to gear 2 here</button>
       </div>
-      <p class="riffle-hint">Hold <kbd>Space</kbd> to riffle at about six pages a second; it slows to one a second on <span style="color:var(--verm-ink)">speed bumps</span>, pages hot for “${esc(S.customTerm || S.term)}”. <kbd>←</kbd> <kbd>→</kbd> turn one page. Drag along the fore-edge to scrub.</p>
+      <p class="riffle-hint" id="riffleHint">${coarse ? 'Tap Riffle to flip' : 'Hold <kbd>Space</kbd> to riffle'} at about six pages a second; it slows to one a second on <span style="color:var(--verm-ink)">speed bumps</span>, pages hot for “<span id="hintTerm">${esc(S.customTerm || S.term)}</span>”. ${coarse ? 'Drag along the fore-edge to scrub.' : '<kbd>←</kbd> <kbd>→</kbd> turn one page. Drag along the fore-edge to scrub.'}</p>
     </div></div>`;
 }
 function renderLeaf(animate) {
@@ -1269,10 +1290,11 @@ function renderLeaf(animate) {
   const h = edge.heat[pg.idx];
   const dogs = (dogPages().get(pg.idx) || []);
   const kin = dogs.length && dogs.every((d) => d.kind === 'kindred');
+  leaf.classList.toggle('has-dog', dogs.length > 0);
   leaf.innerHTML = `
     ${dogs.length ? `<button class="dogear ${kin ? 'kin' : ''}" data-dog="${B.isLap ? dogs.map((d) => LAP.dogears.indexOf(d)).join(',') : ''}" data-portal="${B.isLap ? '' : LAP.dogears.indexOf(dogs[0])}" aria-label="Dog-ear: ${dogs.length} passage(s)"><span>${esc(B.isLap ? [...new Set(dogs.map((d) => shortAuthor(d.book)))].join(', ') : '→ Laplace')}</span></button>` : ''}
     <div class="run"><span class="caps">${esc(c.label)} · ${esc(trunc(B.isLap ? LAP.chapters[pg.ch].short : c.title, 34))}</span><span class="pg num">${pg.n}</span></div>
-    ${opens ? `<div class="chap-open"><div class="numeral">${esc(c.label)}</div><div class="ttl">${esc(c.title)}</div></div>` : ''}
+    ${opens ? `<div class="chap-open"><div class="numeral">${esc(numLabel(c))}</div><div class="ttl">${esc(c.title)}</div></div>` : ''}
     <p class="glimpse">${pg.glimpse ? esc(trunc(pg.glimpse.t, 280)) : '<span style="color:var(--ink-3);font-style:normal">No running text on this page.</span>'}</p>
     <div class="facets">
       <div class="facet"><h5 class="caps" style="color:var(--ink-3)">Set in italics</h5>${pg.its.length ? `<div class="it">${pg.its.map(esc).join(' · ')}</div>` : '<div class="none">none</div>'}</div>
@@ -1327,7 +1349,7 @@ function viewSkim() {
     lastPart = c.part || lastPart;
     const des = dogearsIn(ci).length;
     return `${part}<div class="srow ${ci === S.pos.ch ? 'cur' : ''}" data-ch="${ci}" id="s-${ci}" tabindex="0" role="button" aria-label="Chapter ${esc(c.label)}: ${esc(c.title)}">
-      <div class="numeral">${esc(c.label.length > 5 ? String(ci + 1) : c.label)}</div>
+      <div class="numeral">${numHTML(c)}</div>
       <div style="min-width:0"><div class="st">${esc(c.title)}</div>
         ${a ? `<div class="sg">${esc(a.gist)}</div><ul class="sc">${a.claims.slice(0, 4).map((x) => `<li>${esc(x.claim)}</li>`).join('')}</ul>`
             : `<div class="sg extr">Opening line: “${esc(trunc(opening(c), 220))}”</div>`}</div>
@@ -1355,9 +1377,10 @@ function viewRead() {
            const p = B.paraByLine.get(x.line);
            return `<li><div class="ct">${esc(x.claim)}</div><blockquote><q>${esc(x.quote)}</q><button class="linkish cite num" data-jump="${ci}" data-line="${x.line}" data-quote="${esc(x.quote)}" data-gear="2">${p ? esc(pageLabel(B.pages[p.page])) : ''} → text</button></blockquote></li>`;
          }).join('')}</ol>`
-      : genPanel(ci, 'summary');
+      : ci === S.pos.ch ? genPanel(ci, 'summary')
+      : `<p class="summary" style="color:var(--ink-2);font-style:italic;font-size:16px">Opening line (extractive): “${esc(trunc(opening(c), 260))}”</p>${sampleFn && !genJob ? `<button class="linkish" data-gen="${ci}">Generate this chapter's apparatus with Claude</button>` : ''}`;
     return `<section class="rsec" id="r-${ci}" data-ch="${ci}">
-      <div class="rh"><div class="numeral">${esc(c.label.length > 5 ? String(ci + 1) : c.label)}</div><div><div class="ttl">${esc(c.title)}</div>
+      <div class="rh"><div class="numeral">${numHTML(c)}</div><div><div class="ttl">${esc(c.title)}</div>
         <div class="meta caps num"><span>${chapterPages(c)}</span><span>${fmtInt(c.words)} words</span>${a ? aiBadge(a) + jobInline(ci) : ''}
         ${bits != null ? `<button class="gear-chip g${gearForBits(bits)}" data-go="${ci}" data-gear="${gearForBits(bits)}">${S.bets[ci]?.example ? 'example ' : ''}bet ${bits.toFixed(1)} bits → <b>${gearForBits(bits)}</b> ${GEARS[gearForBits(bits)].name}</button>` : ''}</div></div></div>
       <div style="min-width:0">${body}</div><aside class="rside">${side}</aside></section>`;
@@ -1413,12 +1436,12 @@ function viewText(study) {
   const nxt = ci + 1 < B.chapters.length ? B.chapters[ci + 1] : null;
   const prv = ci > 0 ? B.chapters[ci - 1] : null;
   const banner = study
-    ? (a ? `<div class="study-banner">${aiBadge(a)}<span>${a.notes.length} margin notes · ${glosses.length} glosses · key claims underlined</span>${jobInline(ci)}</div>`
+    ? (a ? `<div class="study-banner">${aiBadge(a)}<span>${a.notes.length} margin notes · ${seen.size} glossed terms · key claims underlined</span>${jobInline(ci)}</div>`
          : `<div class="study-banner" style="display:block">${genPanel(ci, 'notes')}</div>`)
     : '';
-  return `<div class="view">${viewHead(study ? 1 : 2, study ? '' : detBadge)}
-    <div class="chap-head"><div class="numeral">${esc(c.label.length > 5 ? String(ci + 1) : c.label)}</div><div>
-      ${c.part ? `<div class="part caps">${esc(c.part)}</div>` : ''}<div class="ttl">${esc(c.title)}</div>
+  return `<div class="view ${study ? 'study' : 'textv'}">${viewHead(study ? 1 : 2, study ? '' : detBadge)}
+    <div class="chap-head"><div></div><div>
+      ${c.part ? `<div class="part caps">${esc(c.part)}</div>` : ''}<div class="numeral">${esc(numLabel(c))}</div><div class="ttl">${esc(c.title)}</div>
       <div class="meta caps num"><span>${chapterPages(c)}</span><span>${fmtInt(c.words)} words</span><span>${fmtTime(cost(ci, study ? 1 : 2))} at this gear</span>
       ${bits != null ? `<span class="gear-chip g${gearForBits(bits)}">${S.bets[ci]?.example ? 'example ' : ''}bet: ${bits.toFixed(1)} bits → gear ${gearForBits(bits)}</span>` : (app(ci)?.bet ? `<button class="gear-chip" data-gear="N">Bet on it first</button>` : '')}</div></div></div>
     ${banner}
@@ -1439,7 +1462,7 @@ function viewBet() {
     const bits = bitsFor(i);
     const b = S.bets[i];
     const has = !!app(i)?.bet;
-    return `<button class="pk ${b ? 'done' : ''} ${b?.example ? 'ex' : ''} ${i === ci ? 'cur' : ''}" data-betch="${i}" style="${b && bits != null ? `background-color:${surpriseColor(bits)}` : ''}${!has ? ';opacity:.45' : ''}" title="${esc(cc.title)}${bits != null ? ' · ' + bits.toFixed(1) + ' bits' : ''}">${esc(cc.label.length > 5 ? String(i + 1) : cc.label)}</button>`;
+    return `<button class="pk ${b ? 'done' : ''} ${b?.example ? 'ex' : ''} ${i === ci ? 'cur' : ''}" data-betch="${i}" style="${b && bits != null ? `background-color:${surpriseColor(bits)}` : ''}${!has ? ';opacity:.45' : ''}" title="${esc(cc.title)}${bits != null ? ' · ' + bits.toFixed(1) + ' bits' : ''}">${esc(numLabel(cc))}</button>`;
   }).join('')}</div>`;
   if (!a || !a.bet) {
     return `<div class="view">${viewHead('N')}${picker}<div style="height:16px"></div>${genPanel(ci, 'bet')}</div>`;
@@ -1470,7 +1493,7 @@ function viewBet() {
       <div class="rec"><div>You gave the right answer <b class="num">${Math.round(probs(prior.w)[bet.answer] * 100)}%</b>. Recommended: <button class="gear-chip g${g}" data-go="${ci}" data-gear="${g}"><b>${g}</b> ${GEARS[g].name}</button> <span class="num" style="color:var(--ink-3)">${fmtTime(cost(ci, g))} instead of ${fmtTime(cost(ci, 2))}</span></div>
         <div class="why">${esc(GEAR_WHY[g])} ${esc(bet.why || '')}</div>
         ${bet.quote ? `<div class="decisive"><span class="cl caps">Decisive passage · ${p ? esc(pageLabel(B.pages[p.page])) : ''}</span>“${esc(bet.quote)}”</div>` : ''}
-        <div class="bet-actions" style="justify-content:flex-start"><button class="btn primary" data-jump="${ci}" data-line="${bet.line ?? ''}" data-quote="${esc(bet.quote || '')}" data-gear="${g}">Shift to gear ${g} at this passage</button>
+        <div class="bet-actions" style="justify-content:flex-start"><button class="btn primary" data-jump="${ci}" data-line="${bet.line ?? ''}" data-quote="${esc(bet.quote || '')}" data-gear="${g}">Shift to gear ${g} ${g <= 2 ? 'at this passage' : 'for this chapter'}</button>
         <button class="btn" id="betAgain">Change bet</button>${nextUnbet(ci) != null ? `<button class="btn" data-betch="${nextUnbet(ci)}">Next bet: ${esc(B.chapters[nextUnbet(ci)].label)} →</button>` : ''}</div></div></div>`;
   }
   return `<div class="view">${viewHead('N', a.source ? aiBadge(a) : '')}
@@ -1549,7 +1572,7 @@ function ledgerMap() {
     const bits = bitsFor(ci);
     const g = gearForBits(bits);
     return `<li class="sm-row ${ci === S.pos.ch ? 'cur' : ''}" data-ch="${ci}" data-plan="${g}" tabindex="0" role="button" aria-label="Chapter ${esc(c.label)}, planned gear ${g}">
-      <span class="numeral">${esc(c.label.length > 5 ? String(ci + 1) : c.label)}</span>
+      <span class="numeral">${esc(numLabel(c))}</span>
       <span style="min-width:0"><span class="nm" style="display:block">${esc(B.isLap ? LAP.chapters[ci].short : c.title)}</span><span class="len" style="width:${Math.max(4, (c.words / maxW) * 100)}%"></span></span>
       ${bits != null ? `<span class="sw num" style="background:${surpriseColor(bits)}" title="${bits.toFixed(2)} bits${S.bets[ci].example ? ' (example)' : ''}">${bits.toFixed(1)}</span>` : `<span class="sw none" title="No bet yet">${app(ci)?.bet ? 'bet' : '—'}</span>`}
       <span class="tm num"><span class="gpip g${g}" title="Planned gear ${g}: ${GEARS[g].name}">${g}</span>${fmtTime(cost(ci, g))}</span></li>`;
@@ -1557,7 +1580,7 @@ function ledgerMap() {
   const moved = anyBet
     ? `Moved <b>${fmtTime(pl.saved)}</b> out of ${pl.nSaved} chapter${pl.nSaved === 1 ? '' : 's'} you already knew${pl.nSpent ? ` and put <b>${fmtTime(pl.spent)}</b> into ${pl.nSpent} that surprised you` : ''}. Chapters without a bet are planned at gear 2, the full text.`
     : betable ? 'Bet on a chapter (gear N) to see where your reading time should go.' : 'No bets for this book yet; generate a chapter\'s apparatus with Claude to get one.';
-  return `${S.usingExample ? `<div class="example-note"><b>Example bets.</b> Six bets by a hypothetical reader, to show the map. Place your own and they clear. <button class="linkish" id="clearExample">Clear now</button></div>` : ''}
+  return `${S.usingExample ? `<div class="example-note"><b>Example bets.</b> Six bets by a hypothetical reader, to show the map. Shift to <b>N</b> to bet on a chapter before you read it; your first bet clears these. <button class="linkish" id="clearExample">Clear now</button></div>` : ''}
     <div class="plan-head"><span class="caps" style="color:var(--ink-3)">Your reading plan</span>
       <div class="big"><div><b class="num">${fmtTime(pl.total)}</b><span>planned</span></div><div><b class="num" style="color:var(--ink-3)">${fmtTime(pl.straight)}</b><span>straight through, gear 2</span></div></div>
       <div class="moved">${moved}</div></div>
@@ -1580,7 +1603,7 @@ function ledgerDogs() {
   return `<h4 class="caps" style="margin-top:0;color:var(--ink-3)">On chapter ${esc(B.chapters[S.pos.ch].label)}</h4>
     ${here.length ? here.map(deCard).join('') : '<p style="color:var(--ink-3);font-size:12.5px">No dog-ears on this chapter.</p>'}
     <h4 class="caps" style="color:var(--ink-3)">Across the shelf</h4>
-    <ul class="mention-list">${Object.entries(byBook).sort((a, b) => b[1] - a[1]).map(([id, n]) => `<li><b>${esc(shortAuthor(Number(id)))}</b> · ${n} passage${n > 1 ? 's' : ''} linked to a page${LAP.mentionCounts[id] ? ` (of ${LAP.mentionCounts[id]} naming Laplace)` : ' (kindred only)'}</li>`).join('')}
+    <ul class="mention-list">${Object.entries(byBook).sort((a, b) => b[1] - a[1]).map(([id, n]) => `<li><b>${esc(shortAuthor(Number(id)))}</b> · ${n} linked passage${n > 1 ? 's' : ''} · ${LAP.mentionCounts[id] ? `${LAP.mentionCounts[id]} paragraph${LAP.mentionCounts[id] > 1 ? 's name' : ' names'} Laplace` : 'kindred only, never names him'}</li>`).join('')}
       <li style="color:var(--ink-3)">${esc(none.join(', '))}: nothing found.</li></ul>
     <details style="margin-top:12px"><summary>${unlinked.length} mentions not linked to a page</summary>
       <p style="color:var(--ink-3);font-size:12px;line-height:1.45">Found by searching the texts for “Laplace” and “Essai philosophique”. These discuss his other works (Mécanique céleste, System of the World, Laplace's equation), are footnotes to linked passages, or praise him in general.</p>
@@ -1664,6 +1687,7 @@ function afterRender(keepTop) {
   const main = $('#main');
   const g = S.gear;
   if (g === 5) {
+    main.scrollTop = 0;
     renderLeaf(false);
   } else if (g === 1 || g === 2) {
     const line = S.pos.line;
@@ -1692,7 +1716,8 @@ let userScrolled = false;
 function cacheRows() { rowCache = $$('.prow', $('#main')).map((r) => ({ el: r, line: Number(r.dataset.line) })); }
 let scrollRaf = 0;
 function onMainScroll() {
-  if (scrollRaf) return;
+  // Before the viewer interacts, scroll events come from our own positioning (and font-load reflow): don't move the place.
+  if (scrollRaf || !userScrolled) return;
   scrollRaf = requestAnimationFrame(() => {
     scrollRaf = 0;
     const main = $('#main');
@@ -1783,7 +1808,7 @@ function verifyApparatus(data, c) {
     bet = { q: b.q, options: order.map((i) => b.options[i]), answer: order.indexOf(0), why: typeof b.why === 'string' ? b.why : '', quote: line != null ? b.quote : null, line };
   }
   const text = c.paras.map((p) => p.plain).join(' ').toLowerCase();
-  const glosses = (Array.isArray(data?.glosses) ? data.glosses : []).filter((g) => typeof g?.term === 'string' && g.term.length > 2 && text.includes(g.term.toLowerCase()) && typeof (g.short || g.gloss) === 'string').slice(0, 12);
+  const glosses = (Array.isArray(data?.glosses) ? data.glosses : []).filter((g) => typeof g?.term === 'string' && g.term.length > 3 && !STOP.has(g.term.toLowerCase()) && text.includes(g.term.toLowerCase()) && typeof (g.short || g.gloss) === 'string').slice(0, 12);
   if (typeof data?.gist !== 'string' || typeof data?.summary !== 'string') return { error: `Claude's reply had no usable gist or summary (${ok} of ${total} quotes verified).` };
   return { gist: data.gist, summary: data.summary, claims, notes, bet, glosses, source: 'live', preferLive: true, stats: { ok, total }, at: Date.now() };
 }

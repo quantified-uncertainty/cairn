@@ -84,6 +84,9 @@ button { cursor: pointer; }
 .status .head strong { font-weight: 500; color: var(--lit); }
 .status .tag { font-family: var(--f-sc); font-size: 11.5px; letter-spacing: .06em; color: var(--brass); border: 1px solid var(--line); padding: 0 6px; border-radius: 2px; white-space: nowrap; }
 .status .lamps { margin-top: 7px; }
+.status .hb { display: flex; gap: 6px; align-items: center; flex: none; }
+.status .short { display: none; }
+.mini { background: none; border: 1px solid var(--line); color: var(--brass-hi); font-family: var(--f-sc); font-size: 12px; letter-spacing: .05em; border-radius: 2px; padding: 0 6px; display: none; }
 .status .tour { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; align-items: center; }
 .status .tour .meta { color: var(--muted); font-size: 13px; }
 .trail-list { margin: 8px 0 0; padding: 0; list-style: none; max-height: 34vh; overflow: auto; counter-reset: stop; }
@@ -99,19 +102,19 @@ button { cursor: pointer; }
 .badge-pre { font-family: var(--f-sc); font-size: 11.5px; color: var(--muted); letter-spacing: .04em; }
 
 /* ---------- Altimeter ---------- */
-.alt { position: absolute; left: var(--gut-l); top: 128px; bottom: 236px; width: 154px; display: flex; flex-direction: column; min-height: 0; }
-.alt .zoom { font-family: var(--f-sc); font-size: 12px; letter-spacing: .06em; color: var(--faint); display: flex; gap: 2px; flex-wrap: wrap; margin-bottom: 6px; }
+.alt { position: absolute; left: var(--gut-l); top: 112px; bottom: 236px; width: 164px; display: flex; flex-direction: column; min-height: 0; }
+.alt .zoom { font-family: var(--f-sc); font-size: 12px; letter-spacing: .02em; color: var(--faint); display: flex; gap: 1px; flex-wrap: nowrap; margin-bottom: 6px; }
 .alt .zoom span { padding: 0 3px; border-radius: 2px; }
 .alt .zoom span.on { color: var(--ink); background: var(--brass); }
 .alt .zoom-cap { font-size: 12px; color: var(--muted); margin: -2px 0 6px; font-style: italic; }
 .tiers { list-style: none; margin: 0; padding: 0; flex: 1; display: flex; flex-direction: column; min-height: 0; border-left: 1px solid var(--line); }
 .tiers li { flex: 1 1 0; min-height: 0; display: flex; align-items: center; position: relative; }
-.tiers button { all: unset; cursor: pointer; display: grid; grid-template-columns: 62px 1fr; align-items: center; gap: 6px; width: 100%; height: 100%; padding-left: 7px; font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.tiers button { all: unset; cursor: pointer; display: grid; grid-template-columns: 58px 1fr; white-space: nowrap; align-items: center; gap: 6px; width: 100%; height: 100%; padding-left: 7px; font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
 .tiers button:focus-visible { outline: 1px solid var(--focus); }
 .tiers button:hover { color: var(--brass-hi); }
 .tiers .bar { position: relative; height: 5px; }
-.tiers .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(201,168,98,.35); }
-.tiers .bar b { position: absolute; left: 0; top: -1px; bottom: -1px; background: var(--lit); box-shadow: 0 0 6px rgba(255,224,160,.6); }
+.tiers .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(201,168,98,.3); }
+.tiers .bar b { position: absolute; left: 0; top: 1.5px; height: 2px; background: var(--lit); box-shadow: 0 0 6px rgba(255,224,160,.7); }
 .tiers li.cur button { color: var(--brass-hi); }
 .tiers li.cur::before { content: ""; position: absolute; left: -5px; top: 50%; margin-top: -4px; border: 4px solid transparent; border-left: 5px solid var(--brass-hi); }
 .tiers li.pd { border-bottom: 1px dashed rgba(93,187,136,.75); }
@@ -225,8 +228,18 @@ button { cursor: pointer; }
   .ask { top: calc(var(--gut-t) + 26px); left: var(--gut-l); right: var(--gut-r); width: auto; transform: none; }
   .tabs button { font-size: 12.5px; padding: 2px 8px; }
   .whisper input { font-size: 16px; }
-  .status { max-height: 30vh; overflow: auto; font-size: 13.5px; }
-  .chips .chip { font-size: 12.5px; }
+  .status { max-height: 34vh; overflow: auto; font-size: 13.5px; padding: 7px 10px; }
+  .status .long { display: none; }
+  .status .short { display: inline; }
+  .status .mini { display: inline-block; }
+  .status:not(.open) .more { display: none; }
+  .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .chips::-webkit-scrollbar { display: none; }
+  .status .chips { flex-wrap: wrap; }
+  .chips .chip { font-size: 12.5px; white-space: nowrap; flex: none; }
+  .card.peek .callno small, .card.peek .eg, .card.peek .grab { display: none; }
+  .card.peek h2 { font-size: 18px; margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+  .card.peek .cardin { padding-top: 10px; }
   .alt { display: none; }
   .compass { width: 104px; bottom: calc(var(--gut-b) + 50px); }
   .compass canvas { width: 104px; height: 104px; }
@@ -393,7 +406,7 @@ const INSET_FRONT = 0.26;       // book fronts stand 26 cm in from the wall
 const R_FRONT = R_WALL - INSET_FRONT;
 const Y0 = 0.62;                // top of the plinth = surface of the first shelf
 const TIER_H = 0.52;
-const BOARD = 0.045;
+const BOARD = 0.062;
 const DOOR = 0.05;              // half-angle of the door opening (rad)
 const PIL_W = 0.4;              // pilaster width (m)
 const THETA_C = Math.PI;        // the wall unrolls with its seam at the door
@@ -475,7 +488,7 @@ for (let i = 0; i < N; i++) {
   else CAT[i] = [1, 2, 3, 4, 5][W.acc[i]] ?? 5;
 }
 const CAT_INFO = [
-  { key: 'gut', label: 'Free · Gutenberg', short: 'Free to read', css: 'var(--acc-gut)', sw: ['#2f6e52', '#3b7d5c', '#285f4a', '#46855f', '#2f6a5d', '#3d7650'] },
+  { key: 'gut', label: 'Free · Gutenberg', short: 'Free to read', css: 'var(--acc-gut)', sw: ['#3a7d5e', '#468a67', '#326d55', '#529470', '#3a776a', '#48835b'] },
   { key: 'free', label: 'Free · public scan', short: 'Free to read', css: 'var(--acc-free)', sw: ['#5cb887', '#4fa777', '#66c194'] },
   { key: 'borrow', label: 'Borrowable', short: 'Borrowable', css: 'var(--acc-borrow)', sw: ['#c98b2e', '#b97a26', '#d49a3e'] },
   { key: 'pd', label: 'Print-disabled only', short: 'Print-disabled only', css: 'var(--acc-pd)', sw: ['#5470ad', '#47629f', '#5d7cb9'] },
@@ -660,7 +673,7 @@ float lampAt(float th, float y){
   float dx = wrapPi(th - uLamp.x) * uR0; float dy = y - uLamp.y;
   return exp(-(dx * dx + dy * dy) / (2.0 * uLamp.z * uLamp.z));
 }
-float fogAt(vec3 wp){ float d = length(wp - cameraPosition); return clamp(1.0 - exp(-d * 0.026), 0.0, 0.72); }
+float fogAt(vec3 wp){ float d = length(wp - cameraPosition); return clamp(1.0 - exp(-d * 0.019), 0.0, 0.62); }
 `;
 // JS mirror of wallPos (keep in sync)
 const WM = { Ru: R_WALL };
@@ -721,7 +734,7 @@ void main(){
 }`;
 function woodMaterial(color, extra = '') {
   return new THREE.ShaderMaterial({
-    uniforms: { ...U, uCol: { value: new THREE.Color(color) }, uRings: RINGS },
+    uniforms: { ...U, uCol: { value: new THREE.Color(color) }, uRings: RINGS, uRingOn: RING_ON },
     vertexShader: plainVS,
     fragmentShader: /* glsl */`
       ${WALL_GLSL}
@@ -739,9 +752,12 @@ function woodMaterial(color, extra = '') {
   });
 }
 const RINGS = { value: Array.from({ length: 8 }, () => new THREE.Vector4(0, 0, -100, 0)) };
+const RING_ON = { value: 0 };
 const RING_GLSL = /* glsl */`
+uniform float uRingOn;
 float ringsAt(float th, float y){
   float acc = 0.0;
+  if (uRingOn < 0.5) return 0.0;
   for (int k = 0; k < 8; k++) {
     vec4 r = uRings[k];
     if (r.w <= 0.0) continue;
@@ -830,13 +846,13 @@ vec2 litState(vec2 lit){
   float hit = step(0.999, lit.y);
   float rel = (1.0 - hit) * lit.y;
   float on = arrived * max(hit, rel);
-  float base = mix(1.0, mix(0.13, 1.18, on), uDim);
+  float base = mix(1.0, mix(0.3, 1.35, on), uDim);
   float flash = arrived * exp(-max(since, 0.0) * 2.6) * (0.35 + 0.9 * hit);
-  float glow = flash + arrived * hit * 0.16 * uDim;
+  float glow = flash + arrived * (hit * 0.42 + rel * 0.05) * uDim;
   return vec2(base, glow);
 }`;
 const spineMat = new THREE.ShaderMaterial({
-  uniforms: { ...U, ...LIT, uRings: RINGS },
+  uniforms: { ...U, ...LIT, uRings: RINGS, uRingOn: RING_ON },
   vertexShader: /* glsl */`
     ${WALL_GLSL}
     ${LIT_GLSL}
@@ -861,7 +877,7 @@ const spineMat = new THREE.ShaderMaterial({
       float faceShade = aFace < 0.5 ? 1.0 : (aFace < 1.5 ? 0.9 : 0.52);
       vec3 col = aCol.rgb;
       if (aFace > 0.5 && aFace < 1.5) col = vec3(0.62, 0.56, 0.44); // page edges on top
-      float light = (0.5 + 0.78 * lamp) * (0.93 + 0.14 * h1);
+      float light = (0.64 + 0.72 * lamp) * (0.93 + 0.14 * h1);
       vCol = col * light * ls.x * (1.0 + 0.45 * hov + 0.6 * sel * uPull);
       vShade = faceShade;
       vGlow = ls.y + ringsAt(aWall.x, aWall.y) * 0.32 + sel * uPull * 0.22;
@@ -879,8 +895,8 @@ const spineMat = new THREE.ShaderMaterial({
           band += smoothstep(0.105, 0.115, vUv.y) * (1.0 - smoothstep(0.13, 0.14, vUv.y));
           band += smoothstep(0.83, 0.835, vUv.y) * (1.0 - smoothstep(0.84, 0.845, vUv.y)) * 0.6;
         } else if (vGilt > 1.5) {
-          float patch = smoothstep(0.66, 0.67, vUv.y) * (1.0 - smoothstep(0.79, 0.8, vUv.y)) * smoothstep(0.12, 0.16, vUv.x) * (1.0 - smoothstep(0.84, 0.88, vUv.x));
-          c = mix(c, c * 0.45, patch);
+          float lbl = smoothstep(0.66, 0.67, vUv.y) * (1.0 - smoothstep(0.79, 0.8, vUv.y)) * smoothstep(0.12, 0.16, vUv.x) * (1.0 - smoothstep(0.84, 0.88, vUv.x));
+          c = mix(c, c * 0.45, lbl);
         }
         c = mix(c, vec3(0.86, 0.69, 0.36) * (0.4 + 0.7 * length(vCol)), band * 0.85);
         float edge = smoothstep(0.0, 0.08, vUv.x) * smoothstep(0.0, 0.08, 1.0 - vUv.x);
@@ -1021,9 +1037,9 @@ const FRIEZE_Y0 = WALL_TOP + 0.4, FRIEZE_Y1 = WALL_TOP + 1.65, FRIEZE_SEG = 6;
         g.font = `600 ${Math.round(CH * 0.58)}px ${FAM.display}`;
         const lw = g.measureText(letter).width;
         const nameMax = widthPx - lw - 110;
-        g.font = `500 ${Math.round(CH * 0.2)}px ${FAM.display}`;
+        g.font = `500 ${Math.round(CH * 0.25)}px ${FAM.display}`;
         let nm = name;
-        const f = fitFont(g, nm, Math.max(0, nameMax), FAM.display, Math.round(CH * 0.2), Math.round(CH * 0.12), '500');
+        const f = fitFont(g, nm, Math.max(0, nameMax), FAM.display, Math.round(CH * 0.25), Math.round(CH * 0.13), '500');
         nm = nameMax > 120 ? f.text : '';
         const nameW = nm ? (g.font = `500 ${f.size}px ${FAM.display}`, g.measureText(nm).width) : 0;
         const total = lw + (nm ? 34 + nameW : 0);
@@ -1032,7 +1048,7 @@ const FRIEZE_Y0 = WALL_TOP + 0.4, FRIEZE_Y1 = WALL_TOP + 1.65, FRIEZE_SEG = 6;
         g.font = `600 ${Math.round(CH * 0.58)}px ${FAM.display}`; g.fillText(letter, left, CH * 0.72);
         if (nm) {
           g.font = `500 ${f.size}px ${FAM.display}`; g.fillStyle = '#e2c98c'; g.fillText(nm, left + lw + 34, CH * 0.52);
-          g.font = `400 ${Math.round(CH * 0.15)}px ${FAM.mono}`; g.fillStyle = '#9b8a66';
+          g.font = `400 ${Math.round(CH * 0.16)}px ${FAM.mono}`; g.fillStyle = '#a8977a';
           g.fillText(`${fmt(n)} works`, left + lw + 34, CH * 0.76);
         }
       });
@@ -1103,12 +1119,12 @@ const plateOpacity = { value: 0 };
     if (s) spans.push({ s, a: i, b: j, th0: bayTh0[bayOf[i]], th1: bayTh1[bayOf[j - 1]] });
     i = j;
   }
-  const big = spans.filter((sp) => (sp.th1 - sp.th0) * R_FRONT >= 1.7 && sp.b - sp.a >= 20).sort((x, y) => (y.b - y.a) - (x.b - x.a)).slice(0, 144);
+  const big = spans.filter((sp) => (sp.th1 - sp.th0) * R_FRONT >= 2.3 && sp.b - sp.a >= 20).sort((x, y) => (y.b - y.a) - (x.b - x.a)).slice(0, 144);
   const CW = 2048, CH = 2048, cw = 512, ch = 56, cols = 4;
   const cv = document.createElement('canvas'); cv.width = CW; cv.height = CH;
   const g = cv.getContext('2d');
   const verts = [];
-  const PW = 1.5, PH = PW * ch / cw;
+  const PW = 2.1, PH = PW * ch / cw;
   big.forEach((sp, k) => {
     const cx = (k % cols) * cw, cy = Math.floor(k / cols) * ch;
     g.fillStyle = 'rgba(9,12,19,0.88)'; g.fillRect(cx + 2, cy + 3, cw - 4, ch - 6);
@@ -1230,18 +1246,21 @@ function cellLabelText(b, t) {
 function drawLipLabel(b, t, frac) {
   return (g, x, y, cw, ch) => {
     const L = cellLabelText(b, t);
-    const w = cw * frac;
-    g.textBaseline = 'middle'; g.fillStyle = '#fff';
-    g.font = `700 19px ${FAM.mono}`; g.textAlign = 'left';
+    const w = cw * frac, mid = y + ch / 2 + 1;
+    g.textBaseline = 'middle'; g.fillStyle = '#fff'; g.textAlign = 'left';
     const left = `${L.calls}${L.est ? ' ≈' : ''}`;
-    g.fillText(left, x + 8, y + ch / 2 + 1);
-    let xx = x + 8 + g.measureText(left).width + 14;
+    const f1 = fitFont(g, left, w - 16, FAM.mono, 22, 12, '700');
+    g.font = `700 ${f1.size}px ${FAM.mono}`; g.fillText(f1.text, x + 8, mid);
+    let xx = x + 8 + g.measureText(f1.text).width + 16;
     const right = `${L.n} · ${D.tiers[t].label}`;
-    g.font = `400 17px ${FAM.mono}`; const rw = g.measureText(right).width;
-    g.globalAlpha = 0.8; g.textAlign = 'right'; g.fillText(right, x + w - 8, y + ch / 2 + 1); g.globalAlpha = 1;
-    if (L.rng && x + w - 8 - rw - 14 - xx > 60) {
-      const f = fitFont(g, L.rng, x + w - 8 - rw - 14 - xx, FAM.text, 20, 14, 'italic 400');
-      g.font = `italic 400 ${f.size}px ${FAM.text}`; g.textAlign = 'left'; g.globalAlpha = 0.9; g.fillText(f.text, xx, y + ch / 2 + 1); g.globalAlpha = 1;
+    g.font = `400 18px ${FAM.mono}`; const rw = g.measureText(right).width;
+    if (x + w - 8 - rw > xx) {
+      g.globalAlpha = 0.8; g.textAlign = 'right'; g.fillText(right, x + w - 8, mid); g.globalAlpha = 1;
+      const room = x + w - 8 - rw - 16 - xx;
+      if (L.rng && room > 70) {
+        const f = fitFont(g, L.rng, room, FAM.text, 22, 14, 'italic 400');
+        g.font = `italic 400 ${f.size}px ${FAM.text}`; g.textAlign = 'left'; g.globalAlpha = 0.92; g.fillText(f.text, xx, mid); g.globalAlpha = 1;
+      }
     }
   };
 }
@@ -1269,7 +1288,7 @@ function updateNearLabels(view, force = false) {
         const cellW = (bayTh1[b] - bayTh0[b]) * R_FRONT;
         const dyl = Y0 + t * TIER_H - view.y, dxl = wrapPi((bayTh0[b] + bayTh1[b]) / 2 - view.theta) * R_FRONT;
         const dl = Math.hypot(view.dist, dyl, dxl);
-        if ((0.034 / dl) * view.pxPerRad >= 9) wantLips.push({ b, t, d: dl, w: cellW });
+        if ((0.054 / dl) * view.pxPerRad >= 13) wantLips.push({ b, t, d: dl, w: cellW });
         for (let k = s; k < e; k++) {
           const i = cellItems[k];
           const wM = halfA[i] * 2 * R_FRONT;
@@ -1319,11 +1338,11 @@ function updateNearLabels(view, force = false) {
   lipPage.release(keepL);
   const lw = [], lu = [], lt = [];
   for (const l of Lp) {
-    const w = l.w - 0.05, h = 0.034;
+    const w = l.w - 0.05, h = 0.054;
     const frac = clamp((w / h) * (lipPage.ch / lipPage.cw), 0.1, 1);
     const s = lipPage.slot(l.b * NT + l.t, drawLipLabel(l.b, l.t, frac));
     if (s < 0) continue;
-    lw.push((bayTh0[l.b] + bayTh1[l.b]) / 2, Y0 + l.t * TIER_H - BOARD + 0.005, (w / 2) / R_FRONT, h);
+    lw.push((bayTh0[l.b] + bayTh1[l.b]) / 2, Y0 + l.t * TIER_H - BOARD + 0.004, (w / 2) / R_FRONT, h);
     lu.push(...lipPage.uvOf(s, frac));
     lt.push(0.93, 0.85, 0.66, -1);
   }
@@ -1350,14 +1369,14 @@ const haloMat = new THREE.ShaderMaterial({
     attribute vec4 aWall; attribute vec2 aLit; uniform float uCam;
     varying vec2 vP; varying float vI;
     void main(){
-      float sz = mix(0.55, 1.1, smoothstep(4.0, 18.0, uCam)) * aWall.z;
+      float sz = mix(0.5, 1.9, smoothstep(3.0, 20.0, uCam)) * aWall.z;
       float th = aWall.x + position.x * sz / uR0;
       float y = aWall.y + position.y * sz * 1.25;
       vec3 wp = wallPos(th, y, 0.34);
       gl_Position = projectionMatrix * viewMatrix * vec4(wp, 1.0);
       float since = uTime - uLitT0 - aLit.x;
       float arrived = smoothstep(0.0, 0.3, since);
-      vI = arrived * (0.32 + 0.9 * exp(-max(since, 0.0) * 1.6)) * aLit.y * uDim;
+      vI = arrived * (0.55 + 0.9 * exp(-max(since, 0.0) * 1.6)) * aLit.y * uDim;
       vP = position.xy * 2.0;
     }`,
   fragmentShader: /* glsl */`
@@ -1463,8 +1482,9 @@ const roomFade = { value: 1 };
         float spokes = smoothstep(0.985, 1.0, cos(a * 16.0));
         c += vec3(0.04, 0.03, 0.015) * spokes * step(5.0, r) * step(r, 16.0);
         // warm pools under the desk lamps
-        float pool = 0.0;
-        for (int k = 0; k < 16; k++) { float ak = float(k) * 0.3926991; float da = abs(atan(sin(a - ak), cos(a - ak))); pool += exp(-pow(da * r / 1.4, 2.0)) * step(5.5, r) * step(r, 15.5); }
+        float stepA = 0.3926991;
+        float da = abs(mod(a + stepA * 0.5, stepA) - stepA * 0.5);
+        float pool = exp(-pow(da * r / 1.4, 2.0)) * step(5.5, r) * step(r, 15.5);
         c += vec3(0.11, 0.085, 0.04) * pool * 0.55;
         c *= 1.0 - smoothstep(16.0, 21.5, r) * 0.45;
         gl_FragColor = vec4(mix(uFogCol, c, uFade), 1.0);
@@ -1475,7 +1495,7 @@ const roomFade = { value: 1 };
   const deskMat = new THREE.MeshBasicMaterial({ color: 0x1a120b });
   const topMat = new THREE.MeshBasicMaterial({ color: 0x173326 });
   const lampGeo = new THREE.CylinderGeometry(0.09, 0.2, 0.16, 12, 1, true);
-  const lampMat = new THREE.MeshBasicMaterial({ color: 0x3d8d5e, side: THREE.DoubleSide });
+  const lampMat = new THREE.MeshBasicMaterial({ color: 0x2f6e4c, side: THREE.DoubleSide });
   const glowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d'); const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, 'rgba(255,225,160,1)'); gr.addColorStop(0.35, 'rgba(255,200,120,.35)'); gr.addColorStop(1, 'rgba(255,190,110,0)'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64); return canvasTex(c, false); })();
   const glowMat = new THREE.SpriteMaterial({ map: glowTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.9 });
   const deskBox = new THREE.BoxGeometry(1, 1, 1);
@@ -1490,7 +1510,7 @@ const roomFade = { value: 1 };
     p3.y = 0.73; s3.set(1.25, 0.03, 9.6); m4.compose(p3, q, s3); topI.setMatrixAt(k, m4);
     for (const r of [7.2, 9.6, 12.0, 14.4]) {
       const lamp = new THREE.Mesh(lampGeo, lampMat); lamp.position.set(Math.sin(a) * r, 1.12, -Math.cos(a) * r); roomGroup.add(lamp);
-      const spr = new THREE.Sprite(glowMat); spr.position.set(Math.sin(a) * r, 1.0, -Math.cos(a) * r); spr.scale.set(1.1, 1.1, 1); roomGroup.add(spr);
+      const spr = new THREE.Sprite(glowMat); spr.position.set(Math.sin(a) * r, 1.0, -Math.cos(a) * r); spr.scale.set(0.75, 0.75, 1); roomGroup.add(spr);
     }
   }
   roomGroup.add(deskI, topI);
@@ -1772,7 +1792,7 @@ function updateCrumb() {
 const tiersEl = $('#tiers');
 const maxTier = Math.max(...tierCounts);
 tiersEl.innerHTML = D.tiers.map((t, k) => ({ t, k })).reverse().map(({ t, k }) =>
-  `<li data-t="${k}" class="${k === PD_TIER ? 'pd' : ''}"><button type="button" title="${esc(t.label)}: ${fmt(tierCounts[k])} works. Fly to this shelf."><span class="num">${esc(t.label)}</span><span class="bar"><i style="width:${(Math.sqrt(tierCounts[k] / maxTier) * 100).toFixed(1)}%"></i><b style="width:0"></b></span></button></li>`).join('');
+  `<li data-t="${k}" class="${k === PD_TIER ? 'pd' : ''}"><button type="button" title="${esc(t.label)}: ${fmt(tierCounts[k])} works. Fly to this shelf."><span class="num">${esc(t.label.replace('Before ', '<').replace('1895–1904', '1895–04').replace('1998–2003', '1998–03'))}</span><span class="bar"><i style="width:${(Math.sqrt(tierCounts[k] / maxTier) * 100).toFixed(1)}%"></i><b style="width:0"></b></span></button></li>`).join('');
 tiersEl.addEventListener('click', (e) => {
   const li = e.target.closest('li'); if (!li) return;
   const t = Number(li.dataset.t);
@@ -1882,7 +1902,7 @@ compass.addEventListener('keydown', (e) => {
 const statusEl = $('#w-status');
 let litVersion = 0;
 let lightState = { mode: 'none' };
-const EXAMPLES = ['probability', 'evolution', 'decision making', 'slavery', 'artificial intelligence', 'Darwin', 'forecasting'];
+const EXAMPLES = ['probability', 'evolution', 'decision making', 'slavery', 'Darwin', 'forecasting'];
 function setLit(hitsArr, related, opts = {}) {
   // hitsArr: indices; related: Map idx -> strength (0..0.9); computes delays and rings
   aLitArr.fill(0);
@@ -1905,7 +1925,7 @@ function setLit(hitsArr, related, opts = {}) {
   LIT.uLitT0.value = now;
   const rings = RINGS.value;
   rings.forEach((r) => r.set(0, 0, -100, 0));
-  if (!reduceMotion && !opts.noRings) cs.slice(0, 8).forEach((c, k) => rings[k].set(c.th, c.y, now + 0.05 * k, k === 0 ? 1 : 0.6));
+  if (!reduceMotion && !opts.noRings) { cs.slice(0, 8).forEach((c, k) => rings[k].set(c.th, c.y, now + 0.05 * k, k === 0 ? 1 : 0.6)); ringUntil = now + 6.5; }
   // halos: hits first, then strongest related
   const hl = [...hitsArr.map((i) => [i, 1]), ...[...related].sort((a, b) => b[1] - a[1]).map(([i, s]) => [i, s * 0.55])].slice(0, HALO_MAX);
   hl.forEach(([i, s], k) => { haloWall.array.set([thC[i], yB[i] + hgt[i] / 2, Math.max(0.6, Math.min(1.2, halfA[i] * R_FRONT * 30)), 0], k * 4); haloLit.array.set([aLitArr[i * 2], s], k * 2); });
@@ -1919,7 +1939,7 @@ function setLit(hitsArr, related, opts = {}) {
   for (const [i] of related) litHist[Math.floor((thC[i] / TAU) * 180) % 180] += 0.25;
   updateTierLit(perTier);
 }
-let dimTarget = 0;
+let dimTarget = 0, ringUntil = 0;
 function clearLit() {
   aLitArr.fill(0); for (let i = 0; i < N; i++) aLitArr[i * 2] = -1; aLitAttr.needsUpdate = true;
   RINGS.value.forEach((r) => r.set(0, 0, -100, 0));
@@ -1996,14 +2016,21 @@ function renderWhisperStatus() {
   if (!ws) { statusEl.hidden = true; return; }
   statusEl.hidden = false;
   const nHits = ws.hits.length;
-  const tiersHit = new Set(ws.hitIdx.map((i) => W.tier[i]));
-  const lo = Math.min(...[...tiersHit]), hi = Math.max(...[...tiersHit]);
-  const span = nHits ? `${D.tiers[lo].label} to ${D.tiers[hi].label}` : '';
+  const tiersHit = new Set(ws.hitIdx.map((i) => W.tier[i]).filter((t) => t > 0));
+  const lo = Math.min(...tiersHit), hi = Math.max(...tiersHit);
+  const nUnd = ws.hitIdx.filter((i) => W.tier[i] === 0).length;
+  const span = tiersHit.size ? `shelved from ${D.tiers[lo].label} to ${D.tiers[hi].label}${nUnd ? ` (+${fmt(nUnd)} undated)` : ''}` : 'all undated';
   const nFree = ws.hitIdx.filter((i) => CAT[i] <= 1).length;
+  const lamps = ws.allLamps ? ws.lamps : ws.lamps.slice(0, 5);
+  const moreN = ws.lamps.length - lamps.length;
+  statusEl.classList.toggle('open', !!ws.open);
   statusEl.innerHTML = `
-    <div class="head"><div>“<strong>${esc(ws.label)}</strong>”: ${nHits ? `<span class="num">${fmt(nHits)}</span> work${nHits === 1 ? '' : 's'} heard it${nHits > ws.hitIdx.length ? ` (brightest ${fmt(ws.hitIdx.length)} lit)` : ''}, ${span}; <span class="num">${fmt(nFree)}</span> free to read. <span class="num">${fmt(ws.rel.size)}</span> more echo through shared subjects.` : 'nothing on the wall heard that. Try a broader word or a subject heading.'}</div>${ws.example ? '<span class="tag">example</span>' : ''}</div>
-    ${ws.lamps.length ? `<div class="chips lamps" aria-label="Subject lamps"><span class="lbl">Subject lamps</span>${ws.lamps.map((l) => `<button type="button" class="chip ${ws.disabled.has(l.s) ? 'off' : 'on'}" data-s="${l.s}" aria-pressed="${!ws.disabled.has(l.s)}">${esc(subjects[l.s])}<span class="ct">${l.c}</span></button>`).join('')}</div>` : ''}
-    ${nHits ? `<div class="tour"><button type="button" class="btn quiet" id="tour-prev" aria-label="Previous lit cluster">‹</button><button type="button" class="btn" id="tour-next">Visit lit works ›</button><span class="meta" id="tour-meta">${clustersOf(ws.hitIdx).length} lit clusters</span><button type="button" class="btn quiet" id="w-clear" style="margin-left:auto">Clear</button></div>` : '<div class="tour"><button type="button" class="btn quiet" id="w-clear">Clear</button></div>'}`;
+    <div class="head"><div class="sum">“<strong>${esc(ws.label)}</strong>”: ${nHits ? `<span class="long"><span class="num">${fmt(nHits)}</span> work${nHits === 1 ? '' : 's'} heard it${nHits > ws.hitIdx.length ? ` (brightest ${fmt(ws.hitIdx.length)} lit)` : ''}, ${span}; <span class="num">${fmt(nFree)}</span> free to read. <span class="num">${fmt(ws.rel.size)}</span> more echo through shared subjects.</span><span class="short"><span class="num">${fmt(nHits)}</span> heard it · <span class="num">${fmt(ws.rel.size)}</span> echo</span>` : 'nothing on the wall heard that. Try a broader word or a subject heading.'}</div>
+      <div class="hb">${ws.example ? '<span class="tag">example</span>' : ''}<button type="button" class="mini" id="w-more" aria-expanded="${!!ws.open}">${ws.open ? 'Less' : 'Lamps'}</button></div></div>
+    <div class="more">
+    ${ws.lamps.length ? `<div class="chips lamps" aria-label="Subject lamps: switch a subject off to stop its echo"><span class="lbl">Subject lamps</span>${lamps.map((l) => `<button type="button" class="chip ${ws.disabled.has(l.s) ? 'off' : 'on'}" data-s="${l.s}" aria-pressed="${!ws.disabled.has(l.s)}">${esc(subjects[l.s])}<span class="ct">${l.c}</span></button>`).join('')}${moreN > 0 ? `<button type="button" class="chip" id="lamps-more">+${moreN} more</button>` : ''}</div>` : ''}
+    ${nHits ? `<div class="tour"><button type="button" class="btn quiet" id="tour-prev" aria-label="Previous lit cluster">‹</button><button type="button" class="btn" id="tour-next">Visit lit works ›</button><span class="meta" id="tour-meta">${clustersOf(ws.hitIdx).length} lit clusters</span><button type="button" class="btn quiet" id="w-clear" style="margin-left:auto">Clear</button></div>` : '<div class="tour"><button type="button" class="btn quiet" id="w-clear">Clear</button></div>'}
+    </div>`;
 }
 function clustersOf(idx) {
   const byBay = new Map();
@@ -2021,6 +2048,8 @@ statusEl.addEventListener('click', (e) => {
     renderWhisperStatus();
     return;
   }
+  if (e.target.closest('#w-more') && whisperState) { whisperState.open = !whisperState.open; renderWhisperStatus(); return; }
+  if (e.target.closest('#lamps-more') && whisperState) { whisperState.allLamps = true; renderWhisperStatus(); return; }
   if (e.target.closest('#w-clear')) { whisperState = null; trailState = null; clearLit(); statusEl.hidden = true; $('#whisper').value = ''; return; }
   const next = e.target.closest('#tour-next'), prev = e.target.closest('#tour-prev');
   if ((next || prev) && whisperState) {
@@ -2108,7 +2137,7 @@ function renderCard(i, example = false) {
   const s = cellStart[b * NT + t], e = cellStart[b * NT + t + 1];
   const pos = [...cellItems.slice(s, e)].indexOf(i);
   const left = pos > 0 ? cellItems[s + pos - 1] : -1, right = pos < e - s - 1 ? cellItems[s + pos + 1] : -1;
-  const subj = W.s[i].slice(0, 8);
+  const subj = [...W.s[i]].sort((a, b) => subjectDf[b] - subjectDf[a]).slice(0, 6);
   const rng = W.src[i] === 0 ? rangeFor(W.sub[i], callNum(i)) : null;
   const fs = full?.fs;
   cardEl.dataset.example = example ? '1' : '0';
@@ -2522,6 +2551,7 @@ renderer.setAnimationLoop((tms, frame) => {
   const now = performance.now();
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   U.uTime.value = now / 1000;
+  RING_ON.value = U.uTime.value < ringUntil ? 1 : 0;
   stepUnroll(dt);
   dimNow = lerp(dimNow, dimTarget, 1 - Math.exp(-dt * (reduceMotion ? 60 : 3.5)));
   LIT.uDim.value = dimNow;
@@ -2559,7 +2589,7 @@ renderer.setAnimationLoop((tms, frame) => {
 {
   const laplace = rowById.get('58881');
   const i0 = laplace ?? Math.floor(N * 0.75);
-  st.theta = thC[i0]; st.h = yB[i0] + 1.6; st.d = 9.5;
+  st.theta = thC[i0] + 0.012; st.h = Y0 + 15.5 * TIER_H; st.d = 11.5;
   clampState(); applyCamera();
   $('#whisper').value = 'probability';
   whisper('probability', { example: true });
@@ -2568,6 +2598,11 @@ renderer.setAnimationLoop((tms, frame) => {
   LIT.uPull.value = 1; pullT = -1e9;
   if (W.src[i0] === 0) loadCatalogFull();
 }
+// Hooks for automated screenshots (harmless for readers).
+window.__rr = { st, flyTo, whisper, setUnroll, pullBook, closeCard, setTab, showTrail, rowById, thC, yB, hgt, clearLit: () => { whisperState = null; trailState = null; clearLit(); statusEl.hidden = true; }, get u() { return unrollState.u; },
+  setU(u) { unrollState.u = unrollState.target = u; btnUnroll.setAttribute('aria-pressed', String(u > 0.5)); btnUnroll.textContent = u > 0.5 ? 'Roll the wall up' : 'Unroll the wall'; },
+  frames: (n) => new Promise((res) => { let k = 0; const f = () => (++k >= n ? res() : requestAnimationFrame(f)); requestAnimationFrame(f); }),
+  ripple() { LIT.uLitT0.value = U.uTime.value - 30; ringUntil = 0; } };
 $('#btn-about').addEventListener('click', () => { $('#about').hidden = false; $('#about-close').focus(); });
 function closeAbout() { $('#about').hidden = true; $('#btn-about').focus(); }
 $('#about-close').addEventListener('click', closeAbout);

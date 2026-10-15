@@ -273,6 +273,7 @@ export const VOLUMES = [
           nodes: [
             { ref: 'ol:OL17962180W#21', adds: 'Selection and aggregation of forecasters, from the authors of Noise.' },
             { ref: 'ol:OL15992072W#20', adds: 'Overconfidence: why confident judgments are not accurate ones.' },
+            { ref: 'ox:psychology-2e/7-3-problem-solving', adds: 'Cognitive biases at textbook level: the bias third of the model, not the noise.' },
           ],
           uncharted: [
             { title: 'Satopää et al., the bias–information–noise (BIN) model of forecasting', note: 'Not in this corpus.', search: 'https://scholar.google.com/scholar?q=Satop%C3%A4%C3%A4+bias+information+noise+forecasting' },

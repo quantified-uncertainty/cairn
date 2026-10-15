@@ -1,0 +1,1560 @@
+<title>Crux Table</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Sofia+Sans+Condensed:ital,wght@0,300..800;1,300..800&display=swap");
+:root{
+  --paper:#ECEFE8; --paper-2:#E2E7DF; --paper-3:#F5F6F1; --card:#F8F9F5;
+  --ink:#121720; --ink-2:#3C4553; --ink-3:#687280; --ink-4:#A1A9AE;
+  --rule:#C2CAC1; --rule-2:#D5DBD3; --ledger:#9BB2C8; --margin:#BF4337;
+  --pole-a:#2747A6; --pole-a2:#7A8FCB; --mid:#5D6673; --pole-b2:#D58A73; --pole-b:#B3361D;
+  --hi:#F1DC7E; --hi-ink:#121720; --shadow:0 18px 50px -18px rgba(18,23,32,.35);
+  --serif:"Old Standard TT", "Iowan Old Style", Georgia, serif;
+  --display:"Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --sans:"Sofia Sans Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1217; --paper-2:#151A21; --paper-3:#1A2028; --card:#161C23;
+    --ink:#E5E8E2; --ink-2:#B8BFC7; --ink-3:#8A94A0; --ink-4:#58616C;
+    --rule:#2C343E; --rule-2:#222932; --ledger:#2C4660; --margin:#B5493D;
+    --pole-a:#8AA2FF; --pole-a2:#5E6FA8; --mid:#9AA3AD; --pole-b2:#A9604C; --pole-b:#FF8A69;
+    --hi:#5C4B12; --hi-ink:#F4EFD8; --shadow:0 18px 50px -18px rgba(0,0,0,.7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1217; --paper-2:#151A21; --paper-3:#1A2028; --card:#161C23;
+  --ink:#E5E8E2; --ink-2:#B8BFC7; --ink-3:#8A94A0; --ink-4:#58616C;
+  --rule:#2C343E; --rule-2:#222932; --ledger:#2C4660; --margin:#B5493D;
+  --pole-a:#8AA2FF; --pole-a2:#5E6FA8; --mid:#9AA3AD; --pole-b2:#A9604C; --pole-b:#FF8A69;
+  --hi:#5C4B12; --hi-ink:#F4EFD8; --shadow:0 18px 50px -18px rgba(0,0,0,.7);
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--paper)}
+body{margin:0;color:var(--ink);font-family:var(--serif);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button{font:inherit;color:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--pole-a);outline-offset:2px;border-radius:2px}
+.wrap{padding-left:max(28px, env(safe-area-inset-left, 0px));padding-right:max(28px, env(safe-area-inset-right, 0px));max-width:1500px;margin:0 auto}
+@media (max-width:760px){.wrap{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}}
+.sans{font-family:var(--sans)}
+.caps{font-family:var(--sans);text-transform:uppercase;letter-spacing:.09em;font-size:11.5px;font-weight:600}
+.num{font-variant-numeric:lining-nums tabular-nums}
+.muted{color:var(--ink-3)}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- masthead ---------- */
+.mast{border-bottom:1px solid var(--ink);padding-top:22px;position:relative}
+.mast-top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:1px solid var(--rule);padding-bottom:9px}
+.mast-top .brand{font-family:var(--sans);font-weight:800;letter-spacing:.22em;text-transform:uppercase;font-size:13px}
+.mast-top .brand b{color:var(--margin)}
+.mast-top .meta{font-family:var(--sans);font-size:12px;color:var(--ink-3);text-align:right}
+.mast-top .brand{white-space:nowrap}
+@media (max-width:760px){.mast-top .meta{display:none}.aboutbtn .long{display:none}}
+@media (min-width:761px){.aboutbtn .short{display:none}}
+.mast-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:28px;align-items:end;padding:20px 0 18px}
+.mast h1{font-family:var(--display);font-style:italic;font-weight:500;font-size:clamp(38px,5.4vw,82px);line-height:.94;letter-spacing:-.018em;margin:0 0 16px;font-variation-settings:"opsz" 96}
+.mast h1 .amp{color:var(--margin);font-weight:400}
+.mast h1 .w1{margin-right:-.075em}
+.dek{font-size:17px;line-height:1.5;max-width:60ch;margin:0;color:var(--ink-2)}
+.dek em{font-style:italic;color:var(--ink)}
+.stats{display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:14px;font-family:var(--sans);font-size:13px;color:var(--ink-2)}
+.stats b{font-family:var(--display);font-weight:600;font-size:19px;color:var(--ink);margin-right:3px;font-variant-numeric:lining-nums}
+.chrono{min-width:0}
+.chrono svg{display:block;width:100%;height:auto;overflow:visible}
+.chrono .spine{cursor:pointer}
+.chrono .spine:hover rect.sp, .chrono .spine:focus rect.sp{fill:var(--margin)}
+.chrono-cap{font-family:var(--sans);font-size:11.5px;color:var(--ink-3);margin-top:4px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+@media (max-width:900px){.mast-grid{grid-template-columns:1fr;gap:12px}}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;align-items:stretch;gap:0;border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:30;background:var(--paper)}
+.tabs .tl{display:flex;overflow-x:auto;scrollbar-width:none;min-width:0;flex:1}
+.tabs .tl::-webkit-scrollbar{display:none}
+.tab{appearance:none;border:0;background:none;padding:13px 16px 11px;font-family:var(--sans);font-size:14.5px;font-weight:600;letter-spacing:.02em;color:var(--ink-3);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab .rn{font-family:var(--display);font-style:italic;font-weight:500;margin-right:6px;color:var(--ink-4)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tab[aria-selected="true"] .rn{color:var(--margin)}
+.tab:hover{color:var(--ink)}
+.tabs .aboutbtn{appearance:none;border:0;border-left:1px solid var(--rule);background:none;padding:0 14px;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.tabs .aboutbtn:hover{color:var(--ink)}
+@media (max-width:760px){.tab{padding:12px 11px 10px;font-size:13.5px}.tabs .aboutbtn{padding:0 10px}}
+
+main{padding-top:20px;padding-bottom:80px}
+.view[hidden]{display:none}
+.lede{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:end;margin-bottom:14px}
+.lede p{margin:0;max-width:78ch;color:var(--ink-2);font-size:15.5px}
+.lede h2{font-family:var(--display);font-weight:500;font-size:28px;margin:0 0 4px;letter-spacing:-.01em}
+@media (max-width:760px){.lede{grid-template-columns:1fr}}
+
+.ai{font-family:var(--sans);font-style:italic;color:var(--ink-2)}
+.aitag{display:inline-block;font-family:var(--sans);font-style:normal;font-weight:700;font-size:10px;letter-spacing:.12em;text-transform:uppercase;border:1px dotted var(--ink-3);color:var(--ink-3);padding:0 4px;border-radius:2px;margin-right:6px;vertical-align:1px}
+.vtag{display:inline-flex;align-items:center;gap:4px;font-family:var(--sans);font-size:11px;font-weight:600;color:var(--ink-2);letter-spacing:.02em}
+.vtag::before{content:"";width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;background:radial-gradient(circle,currentColor 0 1.6px,transparent 2px)}
+.chip{appearance:none;border:1px solid var(--rule);background:var(--card);border-radius:999px;padding:4px 11px;font-family:var(--sans);font-size:13px;cursor:pointer;color:var(--ink-2)}
+.chip:hover{border-color:var(--ink-3);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn{appearance:none;border:1px solid var(--ink);background:var(--ink);color:var(--paper);padding:9px 15px;font-family:var(--sans);font-weight:700;font-size:14px;letter-spacing:.02em;cursor:pointer;border-radius:2px}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.linkbtn{appearance:none;border:0;background:none;padding:0;font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--pole-a);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+
+/* ---------- matrix ---------- */
+.mx-tools{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin:4px 0 12px;font-family:var(--sans);font-size:13px;color:var(--ink-2)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.mx-wrap{position:relative}
+@media (max-width:1279px){.mx-wrap{overflow-x:auto;border-left:1px solid var(--rule)}}
+table.mx{border-collapse:separate;border-spacing:0;width:100%;table-layout:fixed;min-width:1180px}
+table.mx col.c-head{width:232px}
+table.mx col.c-main{width:auto}
+table.mx col.c-marg{width:70px}
+table.mx thead th{position:sticky;top:46px;z-index:5;background:var(--paper);border-bottom:2px solid var(--ink);vertical-align:bottom;padding:8px 8px 7px;text-align:left;font-weight:400}
+@media (max-width:1279px){table.mx thead th{position:static}}
+table.mx thead th.corner{font-family:var(--sans);font-size:11.5px;color:var(--ink-3);vertical-align:bottom}
+.colh{display:block;cursor:pointer;background:none;border:0;padding:0;text-align:left;width:100%}
+.colh .yr{font-family:var(--display);font-size:25px;font-weight:500;line-height:1;display:block;font-variant-numeric:lining-nums}
+.colh .yr small{font-size:15px;color:var(--ink-3)}
+.colh .nm{font-family:var(--sans);font-weight:800;letter-spacing:.1em;text-transform:uppercase;font-size:12px;display:block;margin-top:3px}
+.colh .wk{font-style:italic;font-size:12px;color:var(--ink-3);display:block;line-height:1.2;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+th.marg .colh .yr{font-size:18px}
+th.marg .colh .wk{display:none}
+tr.part td{padding:18px 8px 6px;font-family:var(--sans);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--margin);border-bottom:1px solid var(--margin)}
+tr.part td span{font-family:var(--display);font-style:italic;letter-spacing:0;text-transform:none;font-size:19px;color:var(--ink);font-weight:500;margin-left:10px}
+table.mx tbody th.rh{position:sticky;left:0;z-index:3;background:var(--paper);text-align:left;vertical-align:top;font-weight:400;padding:12px 14px 12px 4px;border-bottom:1px solid var(--ledger);box-shadow:inset -3px 0 0 var(--paper), inset -4px 0 0 var(--margin), inset -6px 0 0 var(--paper), inset -7px 0 0 var(--margin)}
+.rh .qn{font-family:var(--display);font-weight:600;font-size:15px;color:var(--margin);font-variant-numeric:lining-nums}
+.rh .qt{font-family:var(--serif);font-size:15.5px;line-height:1.28;margin:2px 0 8px;display:block;padding-right:8px}
+.rh .kind{font-family:var(--sans);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.rh .where{margin-top:6px}
+.spread{display:block;margin:4px 0 2px;overflow:visible}
+.spread text{font-family:var(--sans)}
+table.mx td{vertical-align:top;padding:0;border-bottom:1px solid var(--ledger);border-right:1px solid var(--rule-2)}
+.cell{display:flex;flex-direction:column;gap:5px;width:100%;height:100%;min-height:150px;text-align:left;background:transparent;border:0;padding:10px 10px 9px;cursor:pointer;position:relative}
+.cell:hover{background:var(--paper-3)}
+.cell .st{font-family:var(--sans);font-weight:700;font-size:13.5px;line-height:1.18;color:var(--ink)}
+.cell .qx{font-family:var(--serif);font-style:italic;font-size:12.6px;line-height:1.35;color:var(--ink-2)}
+.cell .lc{font-family:var(--sans);font-size:11px;color:var(--ink-3);margin-top:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.cell canvas.mtb{display:block;width:100%;height:9px}
+.cell.silent{cursor:default}
+.cell.silent:hover{background:transparent}
+.cell.silent .sl{font-family:var(--sans);font-size:12px;font-style:italic;color:var(--ink-4)}
+.cell.silent .why{font-family:var(--sans);font-size:11.5px;color:var(--ink-3);line-height:1.3}
+.cell.silent canvas.mtb{opacity:.75}
+td.marg .cell{min-height:120px;padding:9px 6px}
+td.marg .cell .st{font-size:11.5px;font-weight:600}
+td.marg .cell .qx, td.marg .cell .lc span.l{display:none}
+td.marg .cell.silent .why{display:none}
+.cell.on{background:var(--paper-2)}
+.cell.live::after{content:"LIVE";position:absolute;top:8px;right:8px;font-family:var(--sans);font-size:9.5px;font-weight:800;letter-spacing:.12em;color:var(--margin)}
+tr.tbrow td{background:var(--paper-3);padding:14px 16px 16px;border-bottom:1px solid var(--ledger)}
+.tbpanel{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,300px);gap:24px}
+.tbpanel .bars{min-width:0}
+.tbline{display:grid;grid-template-columns:76px minmax(0,1fr);align-items:center;gap:10px;margin:3px 0}
+.tbline .bn{font-family:var(--sans);font-size:12px;font-weight:700;text-align:right;color:var(--ink-2)}
+.tbline canvas{display:block;height:22px;cursor:crosshair}
+.tbsyn{font-size:14px}
+.tbsyn p{margin:0 0 8px}
+.tbtip{position:fixed;z-index:60;pointer-events:none;background:var(--ink);color:var(--paper);padding:7px 9px;border-radius:3px;font-family:var(--sans);font-size:12px;max-width:340px;line-height:1.35;box-shadow:var(--shadow)}
+.tbtip i{font-family:var(--serif)}
+.mx-foot{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:36px;margin-top:34px;border-top:2px solid var(--ink);padding-top:16px}
+.mx-foot h3{font-family:var(--display);font-weight:500;font-size:22px;margin:0 0 6px}
+.mx-foot p{margin:0 0 10px;color:var(--ink-2);font-size:14.5px}
+ol.reading{list-style:none;padding:0;margin:0;font-family:var(--sans);font-size:13px;columns:2;column-gap:24px}
+ol.reading li{break-inside:avoid;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;padding:4px 0;border-bottom:1px dotted var(--rule)}
+ol.reading .rn{font-weight:800;min-width:16px;color:var(--ink-3)}
+ol.reading .rt{min-width:0}
+ol.reading .rt i{font-family:var(--serif);color:var(--ink-3)}
+.pipeline{list-style:none;padding:0;margin:0;counter-reset:p}
+.pipeline li{counter-increment:p;display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;padding:6px 0;border-bottom:1px dotted var(--rule);font-size:14px}
+.pipeline li::before{content:counter(p, lower-roman) ".";font-family:var(--display);font-style:italic;color:var(--margin)}
+.pipeline b{font-family:var(--sans)}
+@media (max-width:900px){.mx-foot{grid-template-columns:1fr}ol.reading{columns:1}}
+
+/* mobile matrix list */
+.mlist{display:none}
+@media (max-width:760px){
+  .mx-wrap{display:none}
+  .mlist{display:block}
+  .mx-tools .legend{display:none}
+}
+.mq{border-top:2px solid var(--ink);padding:12px 0 6px;margin-top:6px}
+.mq .qn{font-family:var(--display);font-weight:600;color:var(--margin)}
+.mq h3{font-family:var(--serif);font-weight:400;font-size:18px;line-height:1.25;margin:2px 0 6px}
+.mq .kind{font-family:var(--sans);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.mrow{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--ledger);padding:9px 0;cursor:pointer}
+.mrow .who{font-family:var(--sans);font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.mrow .who span{display:block;font-family:var(--display);font-weight:500;font-size:15px;letter-spacing:0;text-transform:none;color:var(--ink-3)}
+.mrow .st{font-family:var(--sans);font-weight:700;font-size:14px;line-height:1.2;display:block;margin-top:3px}
+.mrow .qx{font-style:italic;font-size:13.5px;color:var(--ink-2);display:block;margin-top:3px}
+.msilent{font-family:var(--sans);font-size:12.5px;color:var(--ink-3);padding:8px 0 4px}
+
+/* ---------- drawer ---------- */
+.scrim{position:fixed;inset:0;background:rgba(10,14,20,.38);z-index:70}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--card);z-index:80;box-shadow:var(--shadow);display:flex;flex-direction:column;border-left:1px solid var(--ink);transform:translateX(0);transition:transform .22s ease}
+.drawer[hidden]{display:none}
+.dh{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--rule)}
+.dh .crumb{font-family:var(--sans);font-size:12px;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;font-weight:700;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dx{appearance:none;border:1px solid var(--rule);background:var(--paper);font-family:var(--sans);font-size:13px;font-weight:700;padding:5px 10px;cursor:pointer;border-radius:2px}
+.db{overflow-y:auto;padding:18px 22px 40px;flex:1;min-height:0}
+.db h2{font-family:var(--display);font-weight:500;font-size:30px;line-height:1.05;margin:2px 0 4px}
+.db .work{font-style:italic;color:var(--ink-2);font-size:15px}
+.db .ed{font-family:var(--sans);font-size:12px;color:var(--ink-3);margin:4px 0 14px}
+.db .dq{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:10px 0;margin:10px 0 14px}
+.db .dq .qt{font-size:16px;line-height:1.3;margin:2px 0 8px}
+.db .stance{font-family:var(--display);font-style:italic;font-size:22px;line-height:1.15;margin:4px 0 8px}
+.db .note{font-size:14px;line-height:1.45;margin:0 0 16px}
+blockquote.q{margin:0 0 16px;padding:0 0 0 14px;border-left:3px solid var(--ink);font-size:17.5px;line-height:1.5}
+blockquote.q.role-rejects, blockquote.q.role-objection{border-left-style:dashed;border-left-color:var(--ink-3);color:var(--ink-2)}
+.qmeta{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font-family:var(--sans);font-size:12px;color:var(--ink-3);margin-top:6px}
+.role{display:inline-block;font-family:var(--sans);font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:1px 6px;border-radius:2px;background:var(--paper-2);color:var(--ink-2);margin-bottom:6px}
+.ctx{font-family:var(--serif);font-size:14px;line-height:1.55;background:var(--paper);border:1px solid var(--rule);padding:10px 12px;margin-top:8px;white-space:pre-wrap;max-height:360px;overflow:auto;color:var(--ink-2)}
+.ctx .ln{font-family:var(--sans);font-size:10px;color:var(--ink-4);user-select:none}
+mark{background:var(--hi);color:var(--hi-ink);padding:0 1px;border-radius:1px}
+.dtb{margin:16px 0 4px}
+.dtb canvas{display:block;width:100%;height:30px}
+.dtb .cap{font-family:var(--sans);font-size:11.5px;color:var(--ink-3);display:flex;justify-content:space-between;gap:10px}
+.reader{font-size:15.5px;line-height:1.62;white-space:pre-wrap;color:var(--ink)}
+.reader .gap{display:block;height:.6em}
+@media (max-width:760px){.drawer{top:auto;height:92%;width:100%;border-left:0;border-top:1px solid var(--ink);border-radius:10px 10px 0 0}}
+
+/* ---------- conversation ---------- */
+.conv{display:grid;grid-template-columns:250px minmax(0,1fr);gap:30px}
+.threads{display:flex;flex-direction:column;gap:8px;position:sticky;top:66px;align-self:start}
+.thr{appearance:none;text-align:left;border:1px solid var(--rule);background:var(--card);padding:10px 12px;cursor:pointer;border-radius:2px}
+.thr b{display:block;font-family:var(--display);font-weight:500;font-size:18px;line-height:1.1}
+.thr span{display:block;font-size:13px;color:var(--ink-3);margin-top:4px;line-height:1.3}
+.thr .cnt{font-family:var(--sans);font-size:11.5px;color:var(--ink-3);margin-top:6px}
+.thr[aria-pressed="true"]{border-color:var(--ink);background:var(--paper-3);box-shadow:inset 3px 0 0 var(--margin)}
+.score{position:relative}
+.score-head h2{font-family:var(--display);font-style:italic;font-weight:500;font-size:clamp(28px,3.6vw,46px);line-height:1;margin:0 0 6px}
+.score-head p{margin:0 0 6px;color:var(--ink-2)}
+.score-legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-family:var(--sans);font-size:12.5px;color:var(--ink-2);margin:8px 0 18px}
+.score-legend svg{vertical-align:middle}
+.turns{position:relative;padding-right:150px}
+.turn{display:grid;grid-template-columns:84px minmax(0,1fr);gap:16px;padding:14px 0;border-top:1px solid var(--rule-2);position:relative}
+.turn .yr{font-family:var(--display);font-weight:500;font-size:30px;line-height:1;font-variant-numeric:lining-nums;color:var(--ink)}
+.turn .yr.same{color:var(--ink-4)}
+.turn .who{font-family:var(--sans);font-weight:800;letter-spacing:.1em;text-transform:uppercase;font-size:12.5px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.turn .who .rl{font-weight:700;letter-spacing:.08em;color:var(--margin);font-size:11px}
+.turn blockquote{margin:5px 0 6px;font-size:19px;line-height:1.45}
+.turn.rej blockquote{color:var(--ink-3)}
+.turn .qmeta{margin-top:2px}
+.gapline{display:flex;align-items:center;gap:12px;margin:2px 0;font-family:var(--sans);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.gapline::before,.gapline::after{content:"";height:1px;background:var(--rule);flex:1}
+.ednote{margin:10px 0 10px 100px;padding:6px 0 6px 12px;border-left:2px dotted var(--ink-3);font-size:14px;max-width:62ch}
+svg.arcs{position:absolute;top:0;right:0;width:150px;height:100%;overflow:visible;pointer-events:none}
+svg.arcs .lbl{paint-order:stroke;stroke:var(--paper);stroke-width:4px;stroke-linejoin:round}
+svg.arcs text{font-family:var(--sans);font-size:10.5px;fill:var(--ink-2)}
+.echolist{margin-top:40px;border-top:2px solid var(--ink);padding-top:14px}
+.echolist h3{font-family:var(--display);font-weight:500;font-size:24px;margin:0 0 4px}
+.echo{display:grid;grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr);gap:10px;padding:12px 0;border-bottom:1px dotted var(--rule);align-items:start}
+.echo .side .w{font-family:var(--sans);font-size:12px;font-weight:700;color:var(--ink-2)}
+.echo .side .t{font-size:14.5px;line-height:1.45;margin-top:3px}
+.echo .mid{font-family:var(--sans);font-size:11px;text-align:center;color:var(--ink-3);padding-top:16px}
+@media (max-width:900px){
+  .conv{grid-template-columns:1fr}
+  .threads{position:static;flex-direction:row;overflow-x:auto;padding-bottom:4px}
+  .thr{min-width:210px}
+  .turns{padding-right:46px}
+  svg.arcs{width:46px}
+  .turn{grid-template-columns:52px minmax(0,1fr);gap:10px}
+  .turn .yr{font-size:21px}
+  .turn blockquote{font-size:16.5px}
+  .ednote{margin-left:62px}
+  .echo{grid-template-columns:1fr}
+  .echo .mid{padding:0;text-align:left}
+}
+
+/* ---------- disagreement ---------- */
+.dis-top{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:30px;align-items:start}
+.pairpick{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-family:var(--sans);font-size:14px}
+.pairpick select{font-family:var(--sans);font-size:15px;font-weight:700;padding:6px 8px;background:var(--card);color:var(--ink);border:1px solid var(--ink);border-radius:2px}
+.pairpick .vs{font-family:var(--display);font-style:italic;font-size:22px;color:var(--margin)}
+.pairchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.heat{font-family:var(--sans)}
+.heat table{border-collapse:collapse}
+.heat td,.heat th{width:30px;height:28px;text-align:center;font-size:11.5px;padding:0}
+.heat th{font-weight:700;color:var(--ink-3);font-size:10.5px;letter-spacing:.04em}
+.heat td button{width:28px;height:26px;border:0;cursor:pointer;font:inherit;font-weight:700;border-radius:2px}
+.heat td button.sel{outline:2px solid var(--margin);outline-offset:-1px}
+.heat .cap{font-size:11.5px;color:var(--ink-3);margin-top:6px;max-width:300px}
+.verdict{margin:22px 0 10px;font-family:var(--display);font-size:clamp(24px,2.6vw,34px);line-height:1.12;font-weight:500}
+.verdict i{color:var(--margin)}
+.crux{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:26px;border:1px solid var(--ink);background:var(--card);padding:16px 18px;margin:12px 0 18px}
+.crux h3{font-family:var(--sans);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 4px;color:var(--margin)}
+.crux .cq{font-family:var(--display);font-size:24px;line-height:1.15;margin:0 0 8px}
+.crux p{margin:0 0 8px;font-size:14.5px}
+.flag{border-left:3px solid var(--margin);padding:6px 10px;background:var(--paper-3);font-size:14px;margin:10px 0}
+.flag b{font-family:var(--sans)}
+.drow{display:grid;grid-template-columns:minmax(0,1fr) 210px minmax(0,1fr);gap:18px;padding:14px 0;border-top:1px solid var(--rule);align-items:start}
+.drow.crux-row{box-shadow:inset 4px 0 0 var(--margin);padding-left:12px}
+.drow .side{min-width:0}
+.drow .side .st{font-family:var(--sans);font-weight:700;font-size:15px;line-height:1.2}
+.drow .side .qx{font-style:italic;font-size:14px;color:var(--ink-2);margin-top:4px}
+.drow .side .lc{font-family:var(--sans);font-size:11.5px;color:var(--ink-3);margin-top:4px}
+.drow .side.b{text-align:right}
+.drow .mid{text-align:center}
+.drow .mid .qn{font-family:var(--display);font-weight:600;color:var(--margin)}
+.drow .mid .qq{font-size:14px;line-height:1.25;margin:2px 0 6px}
+.drow .mid .kind{font-family:var(--sans);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.dsec{font-family:var(--sans);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--ink-3);margin:26px 0 4px}
+.agree{font-size:14.5px;padding:6px 0;border-top:1px dotted var(--rule);display:grid;grid-template-columns:44px minmax(0,1fr);gap:10px}
+.agree .qn{font-family:var(--display);font-weight:600;color:var(--margin)}
+@media (max-width:900px){
+  .dis-top{grid-template-columns:1fr}
+  .crux{grid-template-columns:1fr}
+  .drow{grid-template-columns:1fr}
+  .drow .side.b{text-align:left}
+  .drow .mid{text-align:left;order:-1}
+}
+
+/* ---------- vocabulary ---------- */
+.vwrap{overflow-x:auto}
+table.voc{border-collapse:separate;border-spacing:0;width:100%;min-width:1100px;table-layout:fixed}
+table.voc th.ch{width:250px;text-align:left;vertical-align:top;padding:14px 16px 14px 0;font-weight:400;border-bottom:1px solid var(--ledger);position:sticky;left:0;background:var(--paper);z-index:2}
+table.voc thead th{font-family:var(--sans);font-size:12px;letter-spacing:.1em;text-transform:uppercase;text-align:left;padding:6px 8px;border-bottom:2px solid var(--ink);font-weight:800}
+table.voc thead th span{display:block;font-family:var(--display);font-size:18px;letter-spacing:0;text-transform:none;font-weight:500;color:var(--ink-3)}
+table.voc td{vertical-align:top;padding:12px 8px;border-bottom:1px solid var(--ledger);border-right:1px solid var(--rule-2)}
+.vc .term{font-family:var(--display);font-style:italic;font-weight:600;font-size:17px;line-height:1.15;display:block;margin-bottom:5px}
+.vc .span{font-size:13px;line-height:1.42;color:var(--ink-2)}
+.vc .lc{font-family:var(--sans);font-size:11px;color:var(--ink-3);margin-top:5px}
+.vc button{appearance:none;background:none;border:0;padding:0;text-align:left;cursor:pointer;width:100%}
+.voc .cn{font-family:var(--display);font-weight:500;font-size:19px;line-height:1.15;display:block}
+.voc .gl{font-size:13px;margin-top:6px;display:block}
+.warn{margin-top:8px;font-family:var(--sans);font-size:12.5px;line-height:1.35;border:1px solid var(--margin);color:var(--ink);padding:6px 8px;background:var(--paper-3)}
+.warn b{color:var(--margin);letter-spacing:.08em;text-transform:uppercase;font-size:10.5px;display:block}
+.vlist{display:none}
+@media (max-width:760px){.vwrap{display:none}.vlist{display:block}}
+.vblock{border-top:2px solid var(--ink);padding:12px 0;margin-top:8px}
+.vitem{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;padding:8px 0;border-bottom:1px solid var(--ledger)}
+
+/* ---------- add ---------- */
+.add-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:30px;align-items:start}
+.askbox{border:1px solid var(--ink);background:var(--card);padding:16px 18px}
+.askbox label{font-family:var(--sans);font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--ink-3)}
+.askrow{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}
+.askrow input{flex:1 1 320px;min-width:0;font-family:var(--serif);font-size:19px;padding:9px 11px;border:1px solid var(--ink-3);background:var(--paper);color:var(--ink);border-radius:2px}
+.askrow input:focus{outline:2px solid var(--pole-a);outline-offset:1px}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.status{font-family:var(--sans);font-size:13.5px;margin-top:12px;min-height:20px;color:var(--ink-2);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.status .dot{width:8px;height:8px;border-radius:50%;background:var(--margin);animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
+.counter{display:flex;gap:16px;font-family:var(--sans);font-size:13px;margin-top:8px}
+.counter b{font-family:var(--display);font-size:22px;font-weight:600;margin-right:3px;font-variant-numeric:lining-nums}
+.ticker{list-style:none;margin:10px 0 0;padding:0;font-family:var(--sans);font-size:12.5px;color:var(--ink-2);max-height:160px;overflow:auto;border-top:1px dotted var(--rule)}
+.ticker li{padding:4px 0;border-bottom:1px dotted var(--rule)}
+.ticker code{font-family:var(--sans);font-weight:700;color:var(--ink)}
+.badge{display:inline-block;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.06em;border:1px solid var(--ink-3);color:var(--ink-2);padding:2px 7px;border-radius:2px}
+.res-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:22px 0 6px;border-bottom:2px solid var(--ink);padding-bottom:6px}
+.res-head h3{font-family:var(--display);font-weight:500;font-size:clamp(22px,2.6vw,30px);margin:0;line-height:1.1}
+.rcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:12px}
+.rcard{border:1px solid var(--rule);background:var(--card);padding:12px 13px;min-width:0}
+.rcard .who{font-family:var(--sans);font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:12px;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.rcard .st{font-family:var(--sans);font-weight:700;font-size:15px;line-height:1.2;margin:6px 0}
+.rcard blockquote{margin:6px 0;font-size:14.5px;line-height:1.45;border-left:2px solid var(--ink);padding-left:9px}
+.rcard .lc{font-family:var(--sans);font-size:11px;color:var(--ink-3)}
+.rejected{margin-top:16px}
+.rejected li{font-size:13.5px;color:var(--ink-3);margin:4px 0}
+.rejected s{text-decoration-thickness:1px}
+.kwic{margin-top:10px}
+.kw{padding:10px 0;border-bottom:1px dotted var(--rule);display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px}
+.kw .w{font-family:var(--sans);font-size:12px;font-weight:700}
+.kw .w span{display:block;font-weight:500;color:var(--ink-3)}
+.kw .t{font-size:14.5px;line-height:1.5}
+.side-note{font-size:14px;color:var(--ink-2)}
+.side-note h4{font-family:var(--sans);font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 6px;color:var(--ink-3)}
+.side-note ol{padding-left:18px;margin:0 0 12px}
+.side-note li{margin-bottom:5px}
+@media (max-width:900px){.add-grid{grid-template-columns:1fr}}
+
+/* ---------- about ---------- */
+.about{position:fixed;inset:0;z-index:90;display:flex;justify-content:center;align-items:flex-start;padding:5vh max(16px, env(safe-area-inset-left, 0px)) 5vh max(16px, env(safe-area-inset-right, 0px));background:rgba(10,14,20,.45);overflow:auto}
+.about[hidden]{display:none}
+.about .sheet{background:var(--card);max-width:860px;width:100%;border:1px solid var(--ink);box-shadow:var(--shadow);padding:26px 30px 30px;position:relative}
+.about h2{font-family:var(--display);font-style:italic;font-weight:500;font-size:34px;margin:0 0 6px;line-height:1.05}
+.about h3{font-family:var(--sans);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--margin);margin:20px 0 6px}
+.about p,.about li{font-size:15px;line-height:1.5}
+.about ul{padding-left:18px;margin:4px 0}
+.about .x{position:absolute;top:14px;right:14px}
+.about code{font-family:var(--sans);font-weight:700;font-size:13px}
+@media (max-width:760px){.about .sheet{padding:20px 18px}}
+
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media (prefers-reduced-motion: no-preference){
+  .ink-in{animation:inkin .5s ease-out both}
+  @keyframes inkin{from{transform:translateY(3px)}to{transform:none}}
+}
+</style>
+
+<div id="app">
+  <header class="mast wrap">
+    <div class="mast-top">
+      <div class="brand">Crux <b>·</b> Table</div>
+      <div class="meta">A syntopicon for one shelf and one question · Open Stacks prototype</div>
+    </div>
+    <div class="mast-grid">
+      <div>
+        <h1><span class="w1">W</span>hat is probability, <span class="amp">&amp;</span> what can it justify?</h1>
+        <p class="dek">Nine public-domain books, <em>1748–1923</em>, read against eight sub-questions. Every quotation on this page was matched word for word against the Project Gutenberg text; every stance is an <em>AI reading</em> you can audit in one click.</p>
+        <div class="stats num" id="stats" aria-live="polite"><span><b>…</b> loading the shelf</span></div>
+      </div>
+      <div class="chrono" id="chrono" aria-label="The shelf on a timeline"></div>
+    </div>
+  </header>
+
+  <nav class="tabs wrap" aria-label="Views">
+    <div class="tl" role="tablist">
+      <button class="tab" role="tab" id="t-matrix" aria-controls="view-matrix" aria-selected="true"><span class="rn">I.</span>The Table</button>
+      <button class="tab" role="tab" id="t-conv" aria-controls="view-conv" aria-selected="false"><span class="rn">II.</span>The Conversation</button>
+      <button class="tab" role="tab" id="t-dis" aria-controls="view-dis" aria-selected="false"><span class="rn">III.</span>The Crux</button>
+      <button class="tab" role="tab" id="t-voc" aria-controls="view-voc" aria-selected="false"><span class="rn">IV.</span>The Vocabulary</button>
+      <button class="tab" role="tab" id="t-add" aria-controls="view-add" aria-selected="false"><span class="rn">V.</span>Add a Question</button>
+    </div>
+    <button class="aboutbtn" id="about-open"><span class="long">About this prototype</span><span class="short">About</span></button>
+  </nav>
+
+  <main class="wrap">
+    <!-- I. MATRIX -->
+    <section class="view" id="view-matrix" role="tabpanel" aria-labelledby="t-matrix">
+      <div class="lede">
+        <div>
+          <h2>The Table</h2>
+          <p>Rows are sub-questions, columns are books in order of first publication. Each mark places an author between the row's two poles; the shaded strip under it shows where in that book the question is discussed. Silence is a finding too: the strip shows how little the book says.</p>
+        </div>
+      </div>
+      <div class="mx-tools">
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="mx-wrap" id="mx-wrap"></div>
+      <div class="mlist" id="mlist"></div>
+      <div class="mx-foot" id="mx-foot"></div>
+    </section>
+
+    <!-- II. CONVERSATION -->
+    <section class="view" id="view-conv" role="tabpanel" aria-labelledby="t-conv" hidden>
+      <div class="conv">
+        <div class="threads" id="threads" aria-label="Conversations"></div>
+        <div class="score" id="score"></div>
+      </div>
+    </section>
+
+    <!-- III. DISAGREEMENT -->
+    <section class="view" id="view-dis" role="tabpanel" aria-labelledby="t-dis" hidden>
+      <div class="dis-top">
+        <div>
+          <div class="lede" style="margin-bottom:8px"><div><h2>The Crux</h2><p>Pick two authors. The table collapses to the rows where they actually diverge, ordered so that the disagreement that would explain the most of the others comes first.</p></div></div>
+          <div class="pairpick">
+            <label class="vh" for="pa">First author</label><select id="pa"></select>
+            <span class="vs">versus</span>
+            <label class="vh" for="pb">Second author</label><select id="pb"></select>
+          </div>
+          <div class="pairchips" id="pairchips"></div>
+        </div>
+        <div class="heat" id="heat"></div>
+      </div>
+      <div id="pairview"></div>
+    </section>
+
+    <!-- IV. VOCABULARY -->
+    <section class="view" id="view-voc" role="tabpanel" aria-labelledby="t-voc" hidden>
+      <div class="lede"><div><h2>The Vocabulary</h2><p>The same idea under different names. Each row is a neutral concept (AI-written gloss); each cell is that author's own term, in bold, with the verified sentence where he uses it. Red boxes mark false friends: one word, two ideas.</p></div></div>
+      <div class="vwrap" id="vwrap"></div>
+      <div class="vlist" id="vlist"></div>
+    </section>
+
+    <!-- V. ADD -->
+    <section class="view" id="view-add" role="tabpanel" aria-labelledby="t-add" hidden>
+      <div class="add-grid">
+        <div>
+          <div class="lede" style="margin-bottom:10px"><div><h2>Add a sub-question</h2><p>Claude searches the nine full texts with a <code class="sans">search_texts</code> tool, then proposes a stance and quotations for each author. The page shows only quotations that came back from the tool and match the text verbatim; everything else is struck out below.</p></div></div>
+          <div class="askbox">
+            <label for="newq">Your sub-question</label>
+            <div class="askrow">
+              <input id="newq" type="text" autocomplete="off" placeholder="e.g. Can a single event have a probability?" value="">
+              <button class="btn" id="run-ai" type="button">Ask Claude to fill the row</button>
+              <button class="btn ghost" id="run-find" type="button">Find passages (no AI)</button>
+              <button class="btn ghost" id="run-stop" type="button" hidden>Stop</button>
+            </div>
+            <div class="presets" id="presets"></div>
+            <div class="status" id="add-status" aria-live="polite"></div>
+            <div class="counter num" id="add-counter" hidden></div>
+            <ul class="ticker" id="ticker" hidden></ul>
+          </div>
+          <div id="add-out"></div>
+        </div>
+        <aside class="side-note" id="add-side"></aside>
+      </div>
+    </section>
+  </main>
+
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-labelledby="dr-title">
+    <div class="dh"><div class="crumb" id="dr-crumb"></div><button class="dx" id="dr-close" type="button">Close</button></div>
+    <div class="db" id="dr-body"></div>
+  </aside>
+
+  <div class="about" id="about" hidden role="dialog" aria-modal="true" aria-labelledby="about-title">
+    <div class="sheet">
+      <button class="dx x" id="about-close" type="button">Close</button>
+      <h2 id="about-title">About this prototype</h2>
+      <p>A <b>deep mockup</b> for <i>Open Stacks</i>: Adler's Syntopicon rebuilt for one shelf and one question, with every quotation checked against the source by the page itself. The table, conversation, crux and vocabulary views are fully interactive on precomputed data; the "Add a Question" view generates a new row live when the page is opened inside Claude.</p>
+      <h3>What it demonstrates</h3>
+      <ul>
+        <li><b>Model selects, page quotes.</b> The language model proposes stances and passages; a deterministic step looks each quotation up in the Gutenberg text and shows the source's words, never the model's. A quotation that does not match is dropped (build time) or struck out (live).</li>
+        <li><b>Where the question lives.</b> TileBars (Hearst, CHI 1995) show, with no model at all, which stretches of each book discuss each sub-question. Silent cells keep their strip, so silence is visible evidence.</li>
+        <li><b>Reuse the model cannot fake.</b> The page detects shared 10-word runs and rare numbers across books ("echoes"), e.g. Venn reprinting Laplace's 1,826,214 and Jevons's pilot fish. Echo arcs are solid; the model's "responds to" links are dashed.</li>
+        <li><b>The crux.</b> For any pair of authors the table collapses to divergent rows, ordered by an (AI-proposed) dependency graph between sub-questions, and flags verbal disputes about the word "probability".</li>
+      </ul>
+      <h3>What is real</h3>
+      <ul id="about-real"></ul>
+      <h3>What is AI-generated</h3>
+      <p id="about-ai"></p>
+      <h3>What is mocked or limited</h3>
+      <ul>
+        <li>Live generation needs the Claude artifact runtime (<code>sample</code>); on the static wiki the "Add" view shows a precomputed example row, labelled as such, plus a no-AI passage finder that works anywhere.</li>
+        <li>Locators are Gutenberg line numbers plus chapter, section (Venn's §, Hume's Selby-Bigge ¶) or essay; these texts carry no printed page numbers.</li>
+        <li>Dates are first publication; the wording quoted is that of the edition named for each book (Hume's 1777 text, Jevons's 1877 second edition, Venn's 1888 third, the 1902 and 1913 translations of Laplace and Poincaré). Peirce's and Poincaré's quotations are dated by the essay or book they come from.</li>
+        <li>Mill and Darwin are marginal witnesses: their books are on the shelf for other reasons, and the table says so.</li>
+        <li>Verification proves a quotation exists, not that the stance is right. Irony and views stated in order to be refuted are marked where found (Mill's objector, Poincaré's "chance is only the measure of our ignorance"), and context is one click away.</li>
+      </ul>
+      <h3>Read more</h3>
+      <ul>
+        <li><a href="https://open-stacks.quantifieduncertainty.org/building/prototype-gallery/" target="_blank" rel="noopener">Open Stacks prototype gallery</a></li>
+        <li><a href="https://open-stacks.quantifieduncertainty.org/interfaces/exploratory-search/" target="_blank" rel="noopener">Chapter: Exploratory search</a> · <a href="https://open-stacks.quantifieduncertainty.org/finding/searching-inside-books/" target="_blank" rel="noopener">Chapter: Searching inside books</a> · <a href="https://open-stacks.quantifieduncertainty.org/interfaces/generative-interfaces/" target="_blank" rel="noopener">Chapter: Generative interfaces</a></li>
+        <li>Prior art: Britannica's <i>Syntopicon</i> (1952), which indexed 102 "Great Ideas" by hand; Adler and Van Doren, <i>How to Read a Book</i> (syntopical reading); Hearst's TileBars.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="tbtip" id="tip" hidden></div>
+</div>
+
+<script>
+(() => {
+'use strict';
+// ------------------------------------------------------------------ helpers
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const h = (strs, ...vals) => strs.reduce((a, s, i) => a + s + (i < vals.length ? vals[i] : ''), '');
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
+const POSCOL = ['var(--pole-a)', 'var(--pole-a2)', 'var(--mid)', 'var(--pole-b2)', 'var(--pole-b)'];
+const posColor = (p) => (p == null ? 'var(--ink-3)' : POSCOL[p + 2]);
+const ROLE_LABEL = { rejects: 'states a view in order to reject it', objection: 'voices an objection he then answers', quotes: 'quoting another writer, approvingly', earlier: 'his own earlier view' };
+const store = { get(k) { try { return localStorage.getItem('crux:' + k); } catch { return null; } }, set(k, v) { try { localStorage.setItem('crux:' + k, v); } catch { /* ignore */ } } };
+let D = null; // data
+let BOOK = {}; // key -> book
+let QUOTE = {};
+let QS = {}; // id -> question
+let CELL = {}; // 'Q1|hume' -> cell
+const liveRows = [];
+
+function plainOf(hhtml) { const d = document.createElement('div'); d.innerHTML = hhtml; return d.textContent; }
+function excerpt(html, n) {
+  const t = plainOf(html);
+  if (t.length <= n) return esc(t);
+  let cut = t.slice(0, n); cut = cut.slice(0, cut.lastIndexOf(' '));
+  return esc(cut.replace(/[,;:]$/, '')) + ' …';
+}
+function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function chapterAt(b, line) { let c = null; for (const ch of b.chapters) { if (ch.l <= line) c = ch; else break; } return c; }
+function tileOf(b, line) { let i = 0; for (let k = 0; k < b.tiles.length; k++) if (b.tiles[k] <= line) i = k; return i; }
+
+// normalisation shared with the build script (verification uses the same rules)
+function normalise(src) {
+  let out = ''; const map = []; let pend = false;
+  for (let i = 0; i < src.length; i++) {
+    let ch = src[i];
+    if (ch === '[') { const m = /^\[\d{1,3}\]/.exec(src.slice(i, i + 6)); if (m) { i += m[0].length - 1; continue; } }
+    if (ch === '_' || ch === '*') continue;
+    if (/\s/.test(ch)) { if (out.length) pend = true; continue; }
+    if (ch === '‘' || ch === '’') ch = "'"; else if (ch === '“' || ch === '”') ch = '"';
+    if (pend) { out += ' '; map.push(i); pend = false; }
+    out += ch; map.push(i);
+  }
+  return { s: out, map };
+}
+function findNorm(hay, needle) { // -> [start,end) in original hay, or null
+  const H = normalise(hay), n = normalise(needle).s;
+  if (!n) return null;
+  const i = H.s.indexOf(n); if (i < 0) return null;
+  return [H.map[i], H.map[i + n.length - 1] + 1];
+}
+function displayHTML(slice) {
+  let t = slice.replace(/\[\d{1,3}\]/g, '').replace(/\s+/g, ' ').trim();
+  t = esc(t).replace(/_([^_]+?)_/g, '<i>$1</i>').replace(/\*([^*]+?)\*/g, '<i>$1</i>');
+  return t.replace(/[_*]/g, '');
+}
+
+// texts (lazy)
+const TEXT = {};
+async function getText(key) {
+  if (TEXT[key]) return TEXT[key];
+  const b = BOOK[key];
+  TEXT[key] = fetch('data/' + b.file).then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); }).then((raw) => ({ raw, lines: raw.split('\n') }));
+  return TEXT[key];
+}
+
+// ------------------------------------------------------------------ glyphs
+function pstrip(pos, range, frame, w = 62) {
+  const x = (p) => 4 + ((p + 2) / 4) * (w - 8);
+  let s = `<svg class="ps" width="${w}" height="14" viewBox="0 0 ${w} 14" aria-hidden="true">`;
+  if (frame === 'reframes') {
+    s += `<line x1="4" x2="${w - 4}" y1="9" y2="9" stroke="var(--ink-4)" stroke-width="1" stroke-dasharray="2 3"/>`;
+    s += `<circle cx="${w / 2}" cy="7" r="5" fill="none" stroke="var(--ink)" stroke-width="1.6"/><line x1="${w / 2 - 3.6}" y1="10.6" x2="${w / 2 + 3.6}" y2="3.4" stroke="var(--ink)" stroke-width="1.6"/>`;
+    return s + '</svg>';
+  }
+  if (pos == null) { s += `<line x1="4" x2="${w - 4}" y1="7" y2="7" stroke="var(--ink-4)" stroke-width="1" stroke-dasharray="1 3"/></svg>`; return s; }
+  s += `<line x1="4" x2="${w - 4}" y1="7" y2="7" stroke="var(--ink-4)" stroke-width="1"/>`;
+  for (let p = -2; p <= 2; p++) s += `<line x1="${x(p)}" x2="${x(p)}" y1="${p === 0 ? 3 : 4.5}" y2="${p === 0 ? 11 : 9.5}" stroke="var(--ink-4)" stroke-width="1"/>`;
+  if (range) s += `<rect x="${x(range[0])}" y="5" width="${x(range[1]) - x(range[0])}" height="4" rx="2" fill="${posColor(pos)}" opacity=".45"/>`;
+  s += `<circle cx="${x(pos)}" cy="7" r="4.6" fill="${posColor(pos)}" stroke="var(--paper)" stroke-width="1"/>`;
+  return s + '</svg>';
+}
+function spreadSVG(q, w = 196, cells = null) {
+  cells = cells || D.books.map((b) => CELL[`${q.id}|${b.key}`]).filter(Boolean);
+  const hasR = cells.some((c) => c.frame === 'reframes');
+  const pad = 10, right = hasR ? 30 : 10, x = (p) => pad + ((p + 2) / 4) * (w - pad - right);
+  const stacks = {}; const pts = [];
+  for (const c of cells) {
+    const b = BOOK[c.a];
+    const key = c.frame === 'reframes' ? 'R' : c.pos;
+    stacks[key] = (stacks[key] || 0) + 1;
+    pts.push({ c, b, key, k: stacks[key] - 1 });
+  }
+  const maxStack = Math.max(1, ...Object.values(stacks));
+  const H = 26 + maxStack * 15;
+  let s = `<svg class="spread" width="${w}" height="${H}" viewBox="0 0 ${w} ${H}" role="img" aria-label="${esc(q.poles[0])} to ${esc(q.poles[1])}: positions of ${cells.length} authors">`;
+  const base = H - 16;
+  s += `<line x1="${pad}" x2="${w - right}" y1="${base}" y2="${base}" stroke="var(--ink-3)"/>`;
+  if (hasR) s += `<text x="${w - 9}" y="${H - 2}" font-size="9" fill="var(--ink-3)" text-anchor="middle">⊘</text>`;
+  for (let p = -2; p <= 2; p++) s += `<line x1="${x(p)}" x2="${x(p)}" y1="${base - 3}" y2="${base + 3}" stroke="var(--ink-3)"/>`;
+  s += `<text x="${pad}" y="${H - 2}" font-size="10.5" fill="var(--pole-a)" font-weight="700">${esc(q.poles[0])}</text>`;
+  s += `<text x="${w - right}" y="${H - 2}" font-size="10.5" fill="var(--pole-b)" font-weight="700" text-anchor="end">${esc(q.poles[1])}</text>`;
+  for (const { c, b, key, k } of pts) {
+    if (key === 'R') {
+      const cx = w - 9, cy = base - 9 - k * 15;
+      s += `<g><title>${esc(b.short)}: ${esc(c.stance)} (rejects the framing)</title><circle cx="${cx}" cy="${cy}" r="7" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.4"/><text x="${cx}" y="${cy + 3.5}" font-size="9" text-anchor="middle" font-weight="800" fill="var(--ink)">${esc(b.short.slice(0, 2))}</text></g>`;
+      continue;
+    }
+    const cx = x(key), cy = base - 9 - k * 15;
+    s += `<g><title>${esc(b.short)}: ${esc(c.stance)}</title><circle cx="${cx}" cy="${cy}" r="7" fill="${posColor(c.pos)}"/><text x="${cx}" y="${cy + 3.4}" font-size="8.6" text-anchor="middle" font-weight="800" fill="var(--paper)">${esc(b.short.slice(0, 2))}</text></g>`;
+  }
+  return s + '</svg>';
+}
+
+// ------------------------------------------------------------------ TileBars on canvas
+function drawTiles(canvas, b, tiles, marks = [], opts = {}) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth || canvas.width, hgt = canvas.clientHeight || 10;
+  if (!w) return;
+  canvas.width = Math.round(w * dpr); canvas.height = Math.round(hgt * dpr);
+  const g = canvas.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, hgt);
+  const ink = cssVar('--ink'), bg = cssVar('--paper-2'), mark = cssVar('--margin'), rule = cssVar('--ink-4');
+  const n = tiles.length; const tw = w / n;
+  const top = opts.chapters ? 0 : 0, barH = opts.chapters ? hgt - 7 : hgt;
+  g.fillStyle = bg; g.fillRect(0, top, w, barH);
+  for (let i = 0; i < n; i++) {
+    const v = +tiles[i];
+    if (!v) continue;
+    g.globalAlpha = 0.12 + 0.88 * (v / 9);
+    g.fillStyle = ink;
+    g.fillRect(i * tw, top, Math.max(tw - (tw > 3 ? 0.6 : 0), 0.8), barH);
+  }
+  g.globalAlpha = 1;
+  if (opts.chapters) {
+    g.fillStyle = rule;
+    for (const ch of b.chapters) { const t = tileOf(b, ch.l); g.fillRect(Math.round(t * tw), barH + 1, 1, 5); }
+  }
+  for (const m of marks) {
+    const t = tileOf(b, m); const cx = (t + 0.5) * tw;
+    g.fillStyle = mark; g.beginPath();
+    if (opts.chapters) { g.moveTo(cx - 4, 0); g.lineTo(cx + 4, 0); g.lineTo(cx, 5); }
+    else { g.moveTo(cx - 3, 0); g.lineTo(cx + 3, 0); g.lineTo(cx, 4); }
+    g.closePath(); g.fill();
+  }
+}
+const pendingCanvases = [];
+function redrawAll() { for (const f of pendingCanvases) f(); }
+function regCanvas(fn) { pendingCanvases.push(fn); requestAnimationFrame(fn); }
+try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => requestAnimationFrame(redrawAll)); } catch { /* old browsers */ }
+let rsz; window.addEventListener('resize', () => { clearTimeout(rsz); rsz = setTimeout(() => { redrawAll(); drawArcs(); }, 120); });
+
+// ------------------------------------------------------------------ boot
+fetch('data/crux-table/crux.json').then((r) => r.json()).then(boot).catch((e) => {
+  $('#stats').innerHTML = `<span>Could not load <code>data/crux-table/crux.json</code> (${esc(e.message)}).</span>`;
+});
+
+function boot(data) {
+  D = data;
+  for (const b of D.books) BOOK[b.key] = b;
+  QUOTE = D.quotes;
+  for (const q of D.questions) QS[q.id] = q;
+  for (const c of D.cells) CELL[`${c.q}|${c.a}`] = c;
+  renderStats(); renderChrono(); renderLegend(); renderMatrix(); renderMobile(); renderFoot();
+  renderThreads(); renderPairs(); renderVocab(); renderAdd(); renderAbout();
+  const t = store.get('tab'); if (t && $('#' + t)) selectTab(t);
+}
+
+function renderStats() {
+  const m = D.meta.counts;
+  const readMin = D.reading.reduce((a, r) => a + r.minutes, 0);
+  $('#stats').innerHTML = [
+    `<span><b>${m.verified}</b>quotations verified verbatim</span>`,
+    `<span><b>${m.dropped}</b>dropped at build</span>`,
+    `<span><b>${m.cells}</b>stances on ${D.questions.length} sub-questions</span>`,
+    `<span><b>${m.echoes}</b>echoes found by the page</span>`,
+    `<span><b>${D.reading.length}</b>chapters (~${Math.round(readMin / 60)} h) to audit it all</span>`,
+  ].join('');
+}
+
+function renderChrono() {
+  const W = 620, H = 230, x0 = 18, x1 = W - 14, y0 = 1740, y1 = 1925, base = H - 34;
+  const X = (y) => x0 + ((y - y0) / (y1 - y0)) * (x1 - x0);
+  const maxW = Math.max(...D.books.map((b) => b.words));
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Timeline 1740 to 1925 with the nine books placed at their year of first publication, heights proportional to length">`;
+  for (let y = 1750; y <= 1925; y += 25) {
+    s += `<line x1="${X(y)}" x2="${X(y)}" y1="${base}" y2="${base + 6}" stroke="var(--ink)" />`;
+    s += `<text x="${X(y)}" y="${base + 20}" text-anchor="middle" font-family="Bodoni Moda, serif" font-size="13" fill="var(--ink-2)">${y}</text>`;
+  }
+  for (let y = 1740; y <= 1925; y += 5) s += `<line x1="${X(y)}" x2="${X(y)}" y1="${base}" y2="${base + 2.5}" stroke="var(--ink-3)" stroke-width=".6"/>`;
+  s += `<line x1="${x0}" x2="${x1}" y1="${base}" y2="${base}" stroke="var(--ink)" stroke-width="1.4"/>`;
+  // edition ghosts and spans
+  const ghosts = { hume: [1777, '1777 text'], jevons: [1877, '2nd ed.'], venn: [1866, '1st ed. 1866'], laplace: [1902, 'tr. 1902'], poincare: [1913, 'tr. 1913'], peirce: [1923, 'coll. 1923'] };
+  const spans = { peirce: [1878, 1893], poincare: [1902, 1908] };
+  // place spines at their year, nudged apart so none overlap
+  const xs = {}; let prevX = -1e9;
+  for (const b of [...D.books].sort((p, q) => p.y - q.y || D.books.indexOf(p) - D.books.indexOf(q))) { const wdt = b.marginal ? 11 : 15; let x = X(b.y); if (x - prevX < wdt + 3) x = prevX + wdt + 3; xs[b.key] = x; prevX = x; }
+  for (const b of D.books) {
+    const cx = xs[b.key];
+    const hgt = 30 + 120 * Math.sqrt(b.words / maxW);
+    const wdt = b.marginal ? 11 : 15;
+    if (spans[b.key]) { const [a, z] = spans[b.key]; s += `<rect x="${X(a)}" y="${base - 3}" width="${X(z) - X(a)}" height="3" fill="var(--margin)"/>`; }
+    if (ghosts[b.key]) { const [gy, gl] = ghosts[b.key]; s += `<g><title>${esc(b.short)}: ${gl}</title><line x1="${X(gy)}" x2="${X(gy)}" y1="${base + 1}" y2="${base - 14}" stroke="var(--ink-3)" stroke-dasharray="2 2"/><circle cx="${X(gy)}" cy="${base - 15}" r="1.6" fill="var(--ink-3)"/></g>`; }
+    s += `<g class="spine" tabindex="0" role="button" data-book="${b.key}" aria-label="${esc(b.author)}, ${esc(b.title)}, ${b.yLabel}"><title>${esc(b.author)}, ${esc(b.title)} (${b.yLabel}); ${b.words.toLocaleString()} words</title>`;
+    s += `<rect class="sp" x="${cx - wdt / 2}" y="${base - hgt}" width="${wdt}" height="${hgt}" fill="${b.marginal ? 'var(--ink-3)' : 'var(--ink)'}" />`;
+    s += `<rect x="${cx - wdt / 2}" y="${base - hgt + 6}" width="${wdt}" height="2" fill="var(--paper)" opacity=".7"/><rect x="${cx - wdt / 2}" y="${base - 10}" width="${wdt}" height="2" fill="var(--paper)" opacity=".7"/>`;
+    s += `<text transform="translate(${cx + 3.6} ${base - 14}) rotate(-90)" font-family="Sofia Sans Condensed, sans-serif" font-weight="800" font-size="${b.marginal ? 9 : 10.5}" letter-spacing="1.2" fill="var(--paper)">${esc(b.short.toUpperCase())}</text>`;
+    s += `</g>`;
+  }
+  s += '</svg>';
+  $('#chrono').innerHTML = s + `<div class="chrono-cap"><span>Spine height ∝ √ length (own text only) · red bar = essays spread over years · dashed tick = later edition or translation actually quoted</span><span>Click a spine to open the book</span></div>`;
+  $$('#chrono .spine').forEach((g) => {
+    const go = () => openBook(g.dataset.book);
+    g.addEventListener('click', go); g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+  });
+}
+
+function renderLegend() {
+  $('#legend').innerHTML = [
+    `<span>${pstrip(-2)} left pole</span>`, `<span>${pstrip(0, [-1, 1])} both / conditional</span>`, `<span>${pstrip(2)} right pole</span>`,
+    `<span>${pstrip(null, null, 'reframes', 30)} rejects the framing</span>`, `<span>${pstrip(null, null, null, 30)} silent</span>`,
+    `<span class="vtag">verified verbatim</span>`, `<span><span class="aitag">AI</span>stance labels and readings</span>`,
+  ].join('');
+}
+
+// ------------------------------------------------------------------ matrix
+function quoteLoc(q) { return `${esc(q.loc)}${q.loc ? ' · ' : ''}l. ${q.l0}${q.l1 !== q.l0 ? '–' + q.l1 : ''}`; }
+function cellHTML(qid, b, c, opts = {}) {
+  const q = QS[qid] || opts.q;
+  const tiles = q?.tiles?.[b.key];
+  if (!c) {
+    const why = D.silence[`${qid}|${b.key}`];
+    return `<div class="cell silent"><span class="sl">— silent —</span>${why ? `<span class="why"><span class="aitag">AI</span>${esc(why)}</span>` : ''}<span class="lc" style="margin-top:auto"></span>${tiles ? `<canvas class="mtb" data-tb="${qid}|${b.key}" aria-hidden="true"></canvas>` : ''}</div>`;
+  }
+  const first = QUOTE[c.quotes[0].id] || c._q?.[0];
+  const role = c.quotes[0].role;
+  const rq = role && role !== 'asserts' ? `<span class="role" style="margin:0">${role === 'rejects' ? 'rejected view' : role === 'objection' ? 'objection' : role === 'quotes' ? 'quoting' : 'earlier view'}</span>` : '';
+  return `<button class="cell${opts.live ? ' live' : ''}" type="button" data-cell="${qid}|${b.key}" aria-label="${esc(b.short)} on ${esc(q.q)}: ${esc(c.stance)}">
+    <span>${pstrip(c.pos, c.range, c.frame)}</span>
+    <span class="st">${esc(c.stance)}</span>
+    ${rq}<span class="qx">“${excerpt(first.h, 96)}”</span>
+    <span class="lc"><span class="vtag" title="${c.quotes.length} quotation${c.quotes.length > 1 ? 's' : ''}, each matched verbatim in the Gutenberg text">${c.quotes.length} verified</span><span class="l">${esc(first.loc || '')}</span></span>
+    ${tiles ? `<canvas class="mtb" data-tb="${qid}|${b.key}" aria-hidden="true"></canvas>` : ''}
+  </button>`;
+}
+function renderMatrix() {
+  const books = D.books;
+  let s = '<table class="mx"><colgroup><col class="c-head">';
+  for (const b of books) s += `<col class="${b.marginal ? 'c-marg' : 'c-main'}">`;
+  s += '</colgroup><thead><tr><th class="corner">Sub-question<br>poles &amp; spread</th>';
+  for (const b of books) s += `<th class="${b.marginal ? 'marg' : ''}" scope="col"><button class="colh" type="button" data-book="${b.key}" title="${esc(b.author)}, ${esc(b.title)} — ${esc(b.ed)}"><span class="yr">${b.marginal ? b.y : b.yLabel.replace(/–(\d\d)(\d\d)$/, '–$2').replace(/^(\d{4})–(\d{2})$/, '$1<small>–$2</small>')}</span><span class="nm">${esc(b.short)}</span><span class="wk">${esc(b.title)}</span></button></th>`;
+  s += '</tr></thead><tbody>';
+  let part = '';
+  const allQs = [...D.questions, ...liveRows.map((r) => r.q)];
+  for (const q of allQs) {
+    if (q.part !== part) { part = q.part; s += `<tr class="part"><td colspan="${books.length + 1}">Part ${part === 'What is probability?' ? 'I' : part === 'What can it justify?' ? 'II' : 'III'}<span>${esc(part)}</span></td></tr>`; }
+    const live = q.live;
+    const cells = books.map((b) => (live ? live.cells[b.key] : CELL[`${q.id}|${b.key}`])).filter(Boolean);
+    s += `<tr data-q="${q.id}"><th class="rh" scope="row"><span class="qn">${q.id}</span><span class="qt">${esc(q.q)}</span>${spreadSVG(q, 200, cells)}<div class="kind">${esc(q.kind)}</div><button class="linkbtn where" type="button" data-where="${q.id}" aria-expanded="false">Where on the shelf ▸</button></th>`;
+    for (const b of books) s += `<td class="${b.marginal ? 'marg' : ''}">${cellHTML(q.id, b, live ? live.cells[b.key] : CELL[`${q.id}|${b.key}`], { q, live: !!live })}</td>`;
+    s += '</tr>';
+  }
+  s += '</tbody></table>';
+  $('#mx-wrap').innerHTML = s;
+  $$('#mx-wrap canvas.mtb').forEach((cv) => {
+    const [qid, key] = cv.dataset.tb.split('|');
+    const q = QS[qid] || liveRows.find((r) => r.q.id === qid)?.q; const b = BOOK[key];
+    const c = q.live ? q.live.cells[key] : CELL[`${qid}|${key}`];
+    const marks = c ? c.quotes.map((r) => (QUOTE[r.id] || r.q)?.l0).filter(Boolean) : [];
+    regCanvas(() => drawTiles(cv, b, q.tiles[key], marks));
+  });
+}
+function renderMobile() {
+  let s = '';
+  const allQs = [...D.questions, ...liveRows.map((r) => r.q)];
+  for (const q of allQs) {
+    const live = q.live;
+    const cells = D.books.map((b) => (live ? live.cells[b.key] : CELL[`${q.id}|${b.key}`])).filter(Boolean);
+    s += `<section class="mq"><span class="qn">${q.id}</span> <span class="kind">${esc(q.kind)}</span><h3>${esc(q.q)}</h3>${spreadSVG(q, Math.min(340, (window.innerWidth || 360) - 40), cells)}`;
+    const silent = [];
+    for (const b of D.books) {
+      const c = live ? live.cells[b.key] : CELL[`${q.id}|${b.key}`];
+      if (!c) { silent.push(b.short); continue; }
+      const f = QUOTE[c.quotes[0].id] || c.quotes[0].q;
+      s += `<button class="mrow" type="button" data-cell="${q.id}|${b.key}"><span class="who">${esc(b.short)}<span>${b.yLabel.split('–')[0]}</span></span><span>${pstrip(c.pos, c.range, c.frame, 70)}<span class="st">${esc(c.stance)}</span><span class="qx">“${excerpt(f.h, 110)}”</span></span></button>`;
+    }
+    if (silent.length) s += `<div class="msilent">Silent: ${silent.join(', ')}</div>`;
+    s += '</section>';
+  }
+  $('#mlist').innerHTML = s;
+}
+function renderFoot() {
+  const m = D.meta.counts;
+  const top = D.reading.slice(0, 14);
+  const totalMin = D.reading.reduce((a, r) => a + r.minutes, 0);
+  $('#mx-foot').innerHTML = `
+    <div>
+      <h3>Read these to audit the whole table</h3>
+      <p>Every cell rests on quotations from ${D.reading.length} chapters. Ordered by how many cells each one supports; minutes at 230 words a minute (~${Math.round(totalMin / 60)} hours for all ${D.reading.length}).</p>
+      <ol class="reading">${top.map((r, i) => `<li><span class="rn num">${i + 1}</span><span class="rt"><b>${esc(BOOK[r.a].short)}</b>, ${esc(r.label)} <i>${esc(r.title)}</i></span><span class="num muted">${r.cells} cell${r.cells > 1 ? 's' : ''} · ${r.minutes} min</span></li>`).join('')}</ol>
+    </div>
+    <div>
+      <h3>How this table was made</h3>
+      <ol class="pipeline">
+        <li><span><b>Read.</b> Claude read the probability chapters of all nine texts (local Project Gutenberg files) and wrote ${D.meta.counts.proposed} candidate quotations with stances. <span class="aitag">AI</span></span></li>
+        <li><span><b>Verify.</b> A script looked up every candidate in its book: ${m.verified} matched exactly (whitespace, italics markers and footnote anchors normalised), ${m.dropped} dropped. The page shows the source's words at the matched span.</span></li>
+        <li><span><b>Locate.</b> Chapter, section (§) or paragraph (¶) and Gutenberg line numbers, and the date of the essay or book quoted.</span></li>
+        <li><span><b>Find.</b> TileBars: each book cut into ${D.meta.tileWords.toLocaleString()}-word tiles and scored for each row's period vocabulary. No model involved.</span></li>
+        <li><span><b>Detect reuse.</b> Shared 10-word runs and rare numbers between books: ${m.echoes} echoes, used for the solid arcs in the Conversation.</span></li>
+      </ol>
+      <p class="ai" style="margin-top:10px"><span class="aitag">AI</span>${esc(D.meta.provenance)}.</p>
+    </div>`;
+}
+
+// TileBars panel under a row
+function toggleWhere(btn) {
+  const qid = btn.dataset.where; const tr = btn.closest('tr');
+  const open = btn.getAttribute('aria-expanded') === 'true';
+  const next = tr.nextElementSibling;
+  if (open) { if (next?.classList.contains('tbrow')) next.remove(); btn.setAttribute('aria-expanded', 'false'); btn.textContent = 'Where on the shelf ▸'; return; }
+  btn.setAttribute('aria-expanded', 'true'); btn.textContent = 'Where on the shelf ▾';
+  const q = QS[qid] || liveRows.find((r) => r.q.id === qid)?.q;
+  const row = document.createElement('tr'); row.className = 'tbrow';
+  row.innerHTML = `<td colspan="${D.books.length + 1}"><div class="tbpanel"><div class="bars">${D.books.map((b) => `<div class="tbline"><span class="bn">${esc(b.short)}</span><canvas data-q="${qid}" data-b="${b.key}" aria-label="TileBar for ${esc(b.short)}"></canvas></div>`).join('')}
+    <div class="caption sans muted" style="font-size:12px;margin-top:6px">Each bar is one book's own text, length to scale, in ${D.meta.tileWords.toLocaleString()}-word tiles; darker = more of the row's vocabulary. Ticks below mark chapters; red marks are the quotations in the table. Hover for the chapter, click to read that tile.</div></div>
+    <div class="tbsyn"><p class="ai"><span class="aitag">AI synthesis</span>${esc(q.synth || '')}</p><p class="sans muted" style="font-size:12.5px">Vocabulary searched: ${q.terms.map((t) => `<b>${esc(t)}</b>`).join(', ')}</p></div></div></td>`;
+  tr.after(row);
+  const maxTiles = Math.max(...D.books.map((b) => b.tiles.length));
+  $$('canvas', row).forEach((cv) => {
+    const b = BOOK[cv.dataset.b];
+    const marks = (() => { const c = q.live ? q.live.cells[b.key] : CELL[`${qid}|${b.key}`]; return c ? c.quotes.map((r) => (QUOTE[r.id] || r.q)?.l0).filter(Boolean) : []; })();
+    const sizer = () => { const avail = cv.parentElement.clientWidth - 86; cv.style.width = Math.max(40, Math.round(avail * (b.tiles.length / maxTiles))) + 'px'; cv.style.height = '22px'; drawTiles(cv, b, q.tiles[b.key], marks, { chapters: true }); };
+    regCanvas(sizer);
+    bindTileHover(cv, b, q);
+  });
+}
+function bindTileHover(cv, b, q) {
+  const tip = $('#tip');
+  const idx = (e) => { const r = cv.getBoundingClientRect(); return Math.max(0, Math.min(b.tiles.length - 1, Math.floor(((e.clientX - r.left) / r.width) * b.tiles.length))); };
+  cv.addEventListener('mousemove', (e) => {
+    const i = idx(e); const ch = chapterAt(b, b.tiles[i]); const v = +q.tiles[b.key][i];
+    const hot = (q.hot?.[b.key] || []).find((x) => x.t === i);
+    tip.innerHTML = `<b>${esc(b.short)}</b> · ${esc(ch ? (ch.part ? ch.part + ', ' : '') + ch.label + ' ' + ch.title : '')}<br>tile ${i + 1} of ${b.tiles.length} · lines ${b.tiles[i]}–${b.tileEnd[i] - 1} · score ${v}/9${hot ? `<br><i>“…${esc(hot.s.slice(0, 200))}…”</i>` : ''}`;
+    tip.hidden = false;
+    const x = Math.min(window.innerWidth - 350, e.clientX + 14); tip.style.left = x + 'px'; tip.style.top = (e.clientY + 16) + 'px';
+  });
+  cv.addEventListener('mouseleave', () => { tip.hidden = true; });
+  cv.addEventListener('click', (e) => { tip.hidden = true; openReader(b.key, idx(e), q); });
+}
+
+// ------------------------------------------------------------------ drawer
+let lastFocus = null;
+function openDrawer(crumb, html, after) {
+  lastFocus = document.activeElement;
+  $('#dr-crumb').textContent = crumb;
+  $('#dr-body').innerHTML = html;
+  $('#drawer').hidden = false; $('#scrim').hidden = false;
+  $('#dr-body').scrollTop = 0;
+  $('#dr-close').focus();
+  if (after) after($('#dr-body'));
+}
+function closeDrawer() { $('#drawer').hidden = true; $('#scrim').hidden = true; $('#tip').hidden = true; if (lastFocus) try { lastFocus.focus(); } catch { /* */ } }
+$('#dr-close').addEventListener('click', closeDrawer);
+$('#scrim').addEventListener('click', closeDrawer);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { if (!$('#about').hidden) closeAbout(); else if (!$('#drawer').hidden) closeDrawer(); } });
+
+function quoteBlock(qid, role, q) {
+  q = q || QUOTE[qid];
+  const b = BOOK[q.a];
+  const ch = chapterAt(b, q.l0);
+  return `<div class="qwrap" data-qid="${esc(qid)}">${role && role !== 'asserts' ? `<span class="role">${esc(ROLE_LABEL[role] || role)}</span>` : ''}
+    <blockquote class="q role-${esc(role || 'asserts')}">“${q.h}”
+      <div class="qmeta"><span class="vtag" title="Exact substring of the Gutenberg text after whitespace and markup normalisation">verified verbatim</span><span>${esc(q.loc)}${ch && ch.title ? ` <i class="serif">${esc(ch.title)}</i>` : ''}</span><span class="num">lines ${q.l0}–${q.l1}</span><span>${q.y}</span>
+      <button class="linkbtn" type="button" data-ctx="${esc(qid)}">Context</button> <a class="linkbtn" href="https://www.gutenberg.org/ebooks/${b.id}" target="_blank" rel="noopener">Gutenberg ↗</a></div>
+    </blockquote><div class="ctxbox"></div></div>`;
+}
+async function showContext(btn) {
+  const wrap = btn.closest('.qwrap'); const box = $('.ctxbox', wrap);
+  if (box.innerHTML) { box.innerHTML = ''; btn.textContent = 'Context'; return; }
+  const qid = wrap.dataset.qid; const q = QUOTE[qid] || liveQuote[qid];
+  box.innerHTML = '<div class="ctx">Loading the text…</div>';
+  try {
+    const T = await getText(q.a);
+    const a = Math.max(0, q.l0 - 1 - 9), z = Math.min(T.lines.length, q.l1 + 9);
+    const win = T.lines.slice(a, z).join('\n').replace(/[_*]/g, '').replace(/\[\d{1,3}\]/g, '');
+    const hit = findNorm(win, plainOf(q.h));
+    let html;
+    if (hit) html = esc(win.slice(0, hit[0])) + '<mark>' + esc(win.slice(hit[0], hit[1])) + '</mark>' + esc(win.slice(hit[1]));
+    else html = esc(win);
+    box.innerHTML = `<div class="ctx"><span class="ln">lines ${a + 1}–${z} of ${BOOK[q.a].file} (Project Gutenberg #${BOOK[q.a].id})</span>\n${html}</div>`;
+    btn.textContent = 'Hide context';
+    const mk = $('mark', box); if (mk) mk.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  } catch (e) { box.innerHTML = `<div class="ctx">Could not load the text (${esc(e.message)}).</div>`; }
+}
+function openCell(key) {
+  const [qid, a] = key.split('|');
+  const lr = liveRows.find((r) => r.q.id === qid);
+  const q = QS[qid] || lr?.q; const b = BOOK[a];
+  const c = lr ? lr.q.live.cells[a] : CELL[key];
+  if (!c) return;
+  const pos = c.frame === 'reframes' ? 'Rejects the framing of the question' : c.pos == null ? '' : `Position ${c.pos > 0 ? '+' : ''}${c.pos} on a scale from −2 (${q.poles[0]}) to +2 (${q.poles[1]})`;
+  const qhtml = c.quotes.map((r) => quoteBlock(r.id, r.role, QUOTE[r.id] || liveQuote[r.id])).join('');
+  const others = D.questions.filter((x) => x.id !== qid && CELL[`${x.id}|${a}`]).map((x) => `<button class="chip" type="button" data-cell="${x.id}|${a}">${x.id}</button>`).join(' ');
+  openDrawer(`${b.short} · ${qid}`, `
+    <h2 id="dr-title">${esc(b.author)}</h2>
+    <div class="work">${esc(b.title)} · ${b.yLabel}</div>
+    <div class="ed">${esc(b.ed)}</div>
+    <div class="dq"><span class="caps" style="color:var(--margin)">${esc(qid)} · ${esc(q.kind)}</span><div class="qt">${esc(q.q)}</div>${spreadSVG(q, 300, D.books.map((bb) => (lr ? lr.q.live.cells[bb.key] : CELL[`${qid}|${bb.key}`])).filter(Boolean))}</div>
+    <div>${pstrip(c.pos, c.range, c.frame, 90)} <span class="sans muted" style="font-size:12px">${esc(pos)}</span></div>
+    <div class="stance">${esc(c.stance)}</div>
+    <p class="note ai"><span class="aitag">AI reading</span>${esc(c.note || '')}</p>
+    ${qhtml}
+    <div class="dtb"><canvas id="dr-tb" aria-label="Where ${esc(b.short)} discusses this"></canvas><div class="cap"><span>Where ${esc(b.short)} discusses ${esc(qid)} (TileBar; red = quotations above)</span><span>click to read</span></div></div>
+    ${others ? `<div class="sans" style="margin-top:16px;font-size:13px"><span class="muted">${esc(b.short)} on other rows:</span> ${others}</div>` : ''}
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" type="button" data-compare="${a}">Compare ${esc(b.short)} with…</button><button class="btn ghost" type="button" data-book="${a}">Read the book</button></div>
+  `, (body) => {
+    const cv = $('#dr-tb', body);
+    const marks = c.quotes.map((r) => (QUOTE[r.id] || liveQuote[r.id]).l0);
+    regCanvas(() => drawTiles(cv, b, q.tiles[a], marks, { chapters: true }));
+    bindTileHover(cv, b, q);
+  });
+}
+async function openReader(key, tile, q) {
+  const b = BOOK[key];
+  const ch = chapterAt(b, b.tiles[tile]);
+  openDrawer(`${b.short} · reading tile ${tile + 1}/${b.tiles.length}`, `<h2 id="dr-title">${esc(b.short)}: ${esc(ch ? ch.label : '')}</h2><div class="work">${esc(ch ? ch.title : b.title)}</div><div class="ed">Lines ${b.tiles[tile]}–${b.tileEnd[tile] - 1}${q ? ` · highlighting the vocabulary of ${esc(q.id)}` : ''}</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn ghost" type="button" data-read="${key}|${tile - 1}|${q ? q.id : ''}" ${tile <= 0 ? 'disabled' : ''}>← previous</button><button class="btn ghost" type="button" data-read="${key}|${tile + 1}|${q ? q.id : ''}" ${tile >= b.tiles.length - 1 ? 'disabled' : ''}>next →</button></div>
+    <div class="reader" id="reader">Loading…</div>`);
+  try {
+    const T = await getText(key);
+    const raw = T.lines.slice(b.tiles[tile] - 1, b.tileEnd[tile] - 1).join('\n').replace(/[_*]/g, '');
+    let html = esc(raw).replace(/\n{2,}/g, '\n\n');
+    if (q) {
+      const terms = q.terms.filter((t) => t.length > 2).sort((x, y) => y.length - x.length).map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '\\s+'));
+      if (terms.length) html = html.replace(new RegExp('(\\b(?:' + terms.join('|') + ')[a-z]*)', 'gi'), '<mark>$1</mark>');
+    }
+    $('#reader').innerHTML = html;
+  } catch (e) { $('#reader').textContent = 'Could not load the text: ' + e.message; }
+}
+function openBook(key) {
+  const b = BOOK[key];
+  const rows = D.questions.map((q) => { const c = CELL[`${q.id}|${key}`]; return `<button class="mrow" type="button" ${c ? `data-cell="${q.id}|${key}"` : 'disabled'} style="grid-template-columns:44px minmax(0,1fr)"><span class="who" style="color:var(--margin)">${q.id}</span><span><span class="qx" style="font-style:normal;color:var(--ink)">${esc(q.q)}</span>${c ? `${pstrip(c.pos, c.range, c.frame, 70)}<span class="st">${esc(c.stance)}</span>` : '<span class="msilent" style="padding:2px 0">silent</span>'}</span></button>`; }).join('');
+  openDrawer(`${b.short} · the book`, `<h2 id="dr-title">${esc(b.author)}</h2><div class="work">${esc(b.title)} · ${b.yLabel}</div><div class="ed">${esc(b.ed)} · ${b.words.toLocaleString()} words of the author's own text · <a class="linkbtn" href="https://www.gutenberg.org/ebooks/${b.id}" target="_blank" rel="noopener">Gutenberg #${b.id} ↗</a></div>
+    <div class="caps" style="margin:14px 0 4px">Stances in this table</div>${rows}
+    <div class="caps" style="margin:18px 0 4px">Contents (click to read)</div>
+    <div class="sans" style="font-size:13.5px">${b.chapters.map((ch) => `<button class="linkbtn" style="display:block;margin:3px 0;text-decoration:none;color:var(--ink)" type="button" data-read="${key}|${tileOf(b, ch.l)}|"><b>${esc((ch.part ? ch.part + ' · ' : '') + ch.label)}</b> ${esc(ch.title)}</button>`).join('')}</div>`);
+}
+
+// ------------------------------------------------------------------ conversation
+let curThread = null;
+function renderThreads() {
+  $('#threads').innerHTML = D.threads.map((t) => {
+    const ys = t.turns.map((u) => QUOTE[u.q].y);
+    return `<button class="thr" type="button" data-thread="${t.id}" aria-pressed="false"><b>${esc(t.title)}</b><span>${esc(t.lede)}</span><div class="cnt num">${t.turns.length} turns · ${Math.min(...ys)}–${Math.max(...ys)} · ${t.arcs.length} verified echo${t.arcs.length === 1 ? '' : 'es'}</div></button>`;
+  }).join('');
+  showThread(store.get('thread') || D.threads[0].id);
+}
+function showThread(id) {
+  const t = D.threads.find((x) => x.id === id) || D.threads[0];
+  curThread = t; store.set('thread', t.id);
+  $$('#threads .thr').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.thread === t.id)));
+  let s = `<div class="score-head"><span class="caps" style="color:var(--margin)">A conversation in verified quotations</span><h2>${esc(t.title)}</h2><p>${esc(t.lede)} Every line below is a quotation matched against its source; the turns are in order of publication. The arrangement, the roles and the notes between eras are AI-proposed.</p></div>
+    <div class="score-legend"><span><svg width="34" height="12"><path d="M2 10 C 14 -2, 22 -2, 32 10" fill="none" stroke="var(--ink)" stroke-width="1.8"/></svg> same words found in both books (page-detected)</span><span><svg width="34" height="12"><path d="M2 10 C 14 -2, 22 -2, 32 10" fill="none" stroke="var(--ink-3)" stroke-width="1.3" stroke-dasharray="4 3"/></svg> “responds to” (AI-inferred)</span></div>
+    <div class="turns" id="turns">`;
+  let prevY = null;
+  t.turns.forEach((u, i) => {
+    const q = QUOTE[u.q]; const b = BOOK[q.a];
+    if (prevY != null && q.y - prevY >= 15) s += `<div class="gapline num">${q.y - prevY} years</div>`;
+    if (t.notes && t.notes[i]) s += `<div class="ednote ai"><span class="aitag">Editor's note · AI</span>${esc(t.notes[i])}</div>`;
+    const rej = u.role === 'stated to reject';
+    s += `<article class="turn${rej ? ' rej' : ''}" data-i="${i}" id="turn-${i}"><div class="yr${prevY === q.y ? ' same' : ''}">${q.y}</div><div><div class="who">${esc(b.short)} <span class="rl">${esc(u.role)}</span></div><blockquote>“${q.h}”</blockquote><div class="qmeta"><span class="vtag">verified</span><span><i class="serif">${esc(b.title)}</i>, ${esc(q.loc)}</span><span class="num">l. ${q.l0}</span><button class="linkbtn" type="button" data-qopen="${u.q}">Context</button></div></div></article>`;
+    prevY = q.y;
+  });
+  s += `<svg class="arcs" id="arcs" aria-hidden="true"></svg></div>`;
+  s += renderEchoList();
+  $('#score').innerHTML = s;
+  requestAnimationFrame(drawArcs);
+}
+function drawArcs() {
+  const svg = $('#arcs'); if (!svg || !curThread || $('#view-conv').hidden) return;
+  const box = $('#turns'); const H = box.scrollHeight; const W = svg.clientWidth || 150;
+  svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const mid = (i) => { const el = $('#turn-' + i); return el.offsetTop + Math.min(el.offsetHeight / 2, 40); };
+  const links = [];
+  curThread.turns.forEach((u, i) => { if (u.re != null) links.push({ from: u.re, to: i, kind: 'ai' }); });
+  for (const a of curThread.arcs) links.push({ from: a.from, to: a.to, kind: 'echo', echo: a.echo });
+  links.sort((p, q) => (p.to - p.from) - (q.to - q.from));
+  const depthAt = []; let s = '', top = '';
+  const small = W < 80;
+  for (const L of links) {
+    let d = 0; for (let k = L.from; k <= L.to; k++) d = Math.max(d, depthAt[k] || 0);
+    for (let k = L.from; k <= L.to; k++) depthAt[k] = d + 1;
+    const y1 = mid(L.from), y2 = mid(L.to);
+    const bulge = Math.min(W - (small ? 6 : 70), (small ? 12 : 20) + d * (small ? 8 : 14));
+    const x = 4;
+    const path = `M ${x} ${y1} C ${x + bulge} ${y1}, ${x + bulge} ${y2}, ${x} ${y2}`;
+    if (L.kind === 'echo') {
+      top += `<path d="${path}" fill="none" stroke="var(--ink)" stroke-width="2"/><circle cx="${x}" cy="${y1}" r="3" fill="var(--ink)"/><circle cx="${x}" cy="${y2}" r="3" fill="var(--ink)"/>`;
+      const e = D.echoes.find((z) => z.id === L.echo);
+      if (!small) top += `<text class="lbl" x="${x + bulge * 0.75 + 5}" y="${(y1 + y2) / 2}" dominant-baseline="middle">${esc(L.echo)} · ${e && e.kind === 'number' ? 'same number' : (e ? e.words + ' same words' : 'same words')}</text>`;
+    } else {
+      s += `<path d="${path}" fill="none" stroke="var(--ink-3)" stroke-width="1.3" stroke-dasharray="4 3"/><path d="M ${x + 6} ${y2 - 4} L ${x} ${y2} L ${x + 6} ${y2 + 4}" fill="none" stroke="var(--ink-3)" stroke-width="1.3"/>`;
+    }
+  }
+  svg.innerHTML = s + top;
+}
+function renderEchoList() {
+  const items = D.echoes.map((e) => {
+    const A = BOOK[e.a.book], B = BOOK[e.b.book];
+    return `<div class="echo"><div class="side"><div class="w">${esc(A.short)} · ${esc(e.a.loc)} · l. ${e.a.l0}</div><div class="t">“${e.a.h}”</div></div><div class="mid">${e.kind === 'number' ? 'same<br>number' : `${e.words}<br>words`}</div><div class="side"><div class="w">${esc(B.short)} · ${esc(e.b.loc)} · l. ${e.b.l0}</div><div class="t">“${e.b.h}”</div></div></div>`;
+  });
+  return `<div class="echolist"><h3>Echoes the page found</h3><p class="muted" style="margin:0 0 6px;font-size:14px">Runs of ten or more identical words (after lower-casing and dropping punctuation), and numbers of six or more digits, shared between two books. Most are quotation; some are stock phrases. None was proposed by a model.</p>${items.slice(0, 10).join('')}<details><summary class="linkbtn" style="margin-top:10px;display:inline-block">Show all ${items.length}</summary>${items.slice(10).join('')}</details></div>`;
+}
+
+// ------------------------------------------------------------------ disagreement
+const DOWN = {}; const UP = {};
+function graph() {
+  for (const q of D.questions) { DOWN[q.id] = new Set(); UP[q.id] = new Set(); }
+  for (const [a, b] of D.deps) { DOWN[a].add(b); UP[b].add(a); }
+  const close = (m) => { let ch = true; while (ch) { ch = false; for (const k in m) for (const j of [...m[k]]) for (const z of m[j] || []) if (!m[k].has(z)) { m[k].add(z); ch = true; } } };
+  close(DOWN); close(UP);
+}
+function compare(a, b) {
+  const rows = [];
+  for (const q of D.questions) {
+    const A = CELL[`${q.id}|${a}`], B = CELL[`${q.id}|${b}`];
+    if (!A && !B) continue;
+    if (!A || !B) { rows.push({ q, A, B, type: 'one' }); continue; }
+    let dist;
+    let framing = false;
+    if (A.frame === 'reframes' || B.frame === 'reframes') { framing = A.frame !== B.frame; dist = framing ? 2.5 : 0; }
+    else dist = Math.abs(A.pos - B.pos);
+    rows.push({ q, A, B, dist, framing, type: dist >= 2 ? 'div' : dist === 1 ? 'deg' : 'agree' });
+  }
+  const div = rows.filter((r) => r.type === 'div');
+  const divIds = new Set(div.map((r) => r.q.id));
+  for (const r of div) { r.crux = ![...UP[r.q.id]].some((u) => divIds.has(u)); r.down = [...DOWN[r.q.id]].filter((d) => divIds.has(d)); }
+  div.sort((x, y) => (y.crux - x.crux) || (y.down.length - x.down.length) || (y.dist - x.dist));
+  return { rows, div, divIds };
+}
+function renderPairs() {
+  graph();
+  const opts = D.books.map((b) => `<option value="${b.key}">${esc(b.short)} (${b.yLabel})</option>`).join('');
+  $('#pa').innerHTML = opts; $('#pb').innerHTML = opts;
+  const saved = (store.get('pair') || 'laplace|venn').split('|');
+  $('#pa').value = BOOK[saved[0]] ? saved[0] : 'laplace'; $('#pb').value = BOOK[saved[1]] ? saved[1] : 'venn';
+  $('#pairchips').innerHTML = '<span class="sans muted" style="font-size:12.5px;align-self:center">Precomputed readings:</span>' + Object.keys(D.pairs).map((k) => { const [x, y] = k.split('|'); return `<button class="chip" type="button" data-pair="${k}">${esc(BOOK[x].short)} · ${esc(BOOK[y].short)}</button>`; }).join('');
+  $('#pa').addEventListener('change', showPair); $('#pb').addEventListener('change', showPair);
+  showPair();
+}
+function heatHTML(sa, sb) {
+  const bs = D.books;
+  let s = '<table aria-label="Number of divergent rows for each pair of authors"><tr><th></th>' + bs.map((b) => `<th title="${esc(b.author)}">${esc(b.short.slice(0, 3))}</th>`).join('') + '</tr>';
+  let max = 1; const vals = {};
+  for (const x of bs) for (const y of bs) if (x.key !== y.key) { const v = compare(x.key, y.key).div.length; vals[x.key + y.key] = v; max = Math.max(max, v); }
+  for (const x of bs) {
+    s += `<tr><th>${esc(x.short.slice(0, 3))}</th>`;
+    for (const y of bs) {
+      if (x.key === y.key) { s += '<td><span style="display:block;width:28px;height:26px;background:var(--paper-2)"></span></td>'; continue; }
+      const v = vals[x.key + y.key]; const sel = (x.key === sa && y.key === sb) || (x.key === sb && y.key === sa);
+      const a = v ? 0.12 + 0.8 * (v / max) : 0;
+      s += `<td><button type="button" class="${sel ? 'sel' : ''}" data-pair="${x.key}|${y.key}" title="${esc(x.short)} vs ${esc(y.short)}: ${v} divergent row${v === 1 ? '' : 's'}" style="background:color-mix(in srgb, var(--pole-b) ${Math.round(a * 100)}%, var(--paper-3));color:${a > 0.5 ? 'var(--paper)' : 'var(--ink-2)'}">${v || ''}</button></td>`;
+    }
+    s += '</tr>';
+  }
+  return s + '</table><div class="cap">Divergent rows (positions two or more steps apart, or one author rejecting the framing) for every pair. Click a square.</div>';
+}
+function depSVG(divIds, crux) {
+  const P = { Q1: [60, 22], Q2: [210, 22], Q3: [40, 82], Q7: [200, 82], Q4: [24, 142], Q6: [120, 142], Q5: [40, 196], Q8: [170, 196] };
+  let s = `<svg width="250" height="222" viewBox="0 0 250 222" role="img" aria-label="Dependency graph between sub-questions (AI-proposed)"><defs><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="var(--ink-3)"/></marker></defs>`;
+  for (const [a, b] of D.deps) { const [x1, y1] = P[a], [x2, y2] = P[b]; const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); s += `<line x1="${x1 + dx / L * 15}" y1="${y1 + dy / L * 15}" x2="${x2 - dx / L * 17}" y2="${y2 - dy / L * 17}" stroke="var(--ink-3)" stroke-width="1.1" marker-end="url(#ah)"/>`; }
+  for (const [k, [x, y]] of Object.entries(P)) {
+    const on = divIds.has(k), cr = crux.has(k);
+    s += `<g><title>${k}: ${esc(QS[k].q)}</title><circle cx="${x}" cy="${y}" r="14" fill="${on ? 'var(--pole-b)' : 'var(--paper)'}" stroke="${cr ? 'var(--ink)' : 'var(--ink-3)'}" stroke-width="${cr ? 3 : 1.2}"/><text x="${x}" y="${y + 4}" text-anchor="middle" font-family="Bodoni Moda, serif" font-weight="700" font-size="12" fill="${on ? 'var(--paper)' : 'var(--ink-2)'}">${k}</text></g>`;
+  }
+  return s + '</svg>';
+}
+function sideHTML(c, cls) {
+  if (!c) return `<div class="side ${cls}"><div class="st muted">silent</div></div>`;
+  const q = QUOTE[c.quotes[0].id];
+  return `<div class="side ${cls}"><div class="st">${esc(c.stance)}</div><div class="qx">“${excerpt(q.h, 170)}”</div><div class="lc"><span class="vtag">verified</span> ${esc(q.loc)}</div></div>`;
+}
+function midHTML(r, A, B) {
+  const w = 190, pad = 12, x = (p) => pad + ((p + 2) / 4) * (w - pad - 24);
+  const ca = r.A, cb = r.B;
+  let s = `<svg width="${w}" height="44" viewBox="0 0 ${w} 44" aria-hidden="true"><line x1="${pad}" x2="${w - 24}" y1="24" y2="24" stroke="var(--ink-3)"/>`;
+  for (let p = -2; p <= 2; p++) s += `<line x1="${x(p)}" x2="${x(p)}" y1="20" y2="28" stroke="var(--ink-3)"/>`;
+  const dot = (c, b, up) => {
+    if (!c) return '';
+    if (c.frame === 'reframes') return `<g><circle cx="${w - 6}" cy="${up ? 9 : 38}" r="6" fill="var(--paper)" stroke="var(--ink)"/><text x="${w - 6}" y="${(up ? 9 : 38) + 3}" font-size="8" text-anchor="middle" font-family="Sofia Sans Condensed" font-weight="800" fill="var(--ink)">${esc(b.short.slice(0, 2))}</text></g>`;
+    const cx = x(c.pos), cy = up ? 12 : 36;
+    return `<g><line x1="${cx}" x2="${cx}" y1="${cy}" y2="24" stroke="${posColor(c.pos)}" stroke-width="1.5"/><circle cx="${cx}" cy="${cy}" r="7" fill="${posColor(c.pos)}"/><text x="${cx}" y="${cy + 3}" font-size="8" text-anchor="middle" font-family="Sofia Sans Condensed" font-weight="800" fill="var(--paper)">${esc(b.short.slice(0, 2))}</text></g>`;
+  };
+  if (ca && cb && ca.pos != null && cb.pos != null) s += `<line x1="${x(ca.pos)}" x2="${x(cb.pos)}" y1="24" y2="24" stroke="var(--margin)" stroke-width="3"/>`;
+  s += dot(ca, A, true) + dot(cb, B, false) + '</svg>';
+  return `<div class="mid"><span class="qn">${r.q.id}</span><div class="qq">${esc(r.q.q)}</div>${s}<div class="kind" title="${esc(D.kinds[r.q.kind] || '')}">${esc(r.q.kind)}${r.dist != null && r.type !== 'one' ? ` · ${r.framing ? 'one rejects the framing' : 'gap ' + r.dist}` : ''}</div></div>`;
+}
+function showPair() {
+  let a = $('#pa').value, b = $('#pb').value;
+  if (a === b) { b = D.books.find((x) => x.key !== a).key; $('#pb').value = b; }
+  if (BOOK[a].y > BOOK[b].y) [a, b] = [b, a];
+  store.set('pair', `${a}|${b}`);
+  const A = BOOK[a], B = BOOK[b];
+  const { rows, div, divIds } = compare(a, b);
+  const shared = rows.filter((r) => r.type !== 'one');
+  const crux = new Set(div.filter((r) => r.crux).map((r) => r.q.id));
+  $('#heat').innerHTML = heatHTML(a, b);
+  const note = D.pairs[`${a}|${b}`] || D.pairs[`${b}|${a}`];
+  const q1a = CELL[`Q1|${a}`], q1b = CELL[`Q1|${b}`];
+  const verbal = q1a && q1b && q1a.pos != null && q1b.pos != null && (Math.sign(q1a.pos) !== Math.sign(q1b.pos) || Math.abs(q1a.pos - q1b.pos) >= 2);
+  const echoes = D.echoes.filter((e) => (e.a.book === a && e.b.book === b) || (e.a.book === b && e.b.book === a));
+  let s = `<div class="verdict">${esc(A.short)} <i>(${A.yLabel})</i> and ${esc(B.short)} <i>(${B.yLabel})</i> both take positions on ${shared.length} sub-question${shared.length === 1 ? '' : 's'} and diverge on ${div.length}.</div>`;
+  if (div.length) {
+    const cr = div.filter((r) => r.crux);
+    s += `<div class="crux"><div><h3>The crux${cr.length > 1 ? 'es' : ''}</h3>${cr.map((r) => `<div class="cq"><span style="color:var(--margin)">${r.q.id}</span> ${esc(r.q.q)}</div><p>${esc(D.kinds[r.q.kind] || '')}${r.down.length ? ` If they agreed here, the graph suggests their disagreement on ${r.down.join(', ')} would likely follow suit.` : ''}</p>`).join('')}
+      ${verbal ? `<div class="flag"><b>Verbal-dispute check.</b> When ${esc(A.short)} says “probability” he means: <i>${esc(q1a.stance.toLowerCase())}</i>; ${esc(B.short)} means: <i>${esc(q1b.stance.toLowerCase())}</i>. Some rows below may dissolve once the word is fixed.</div>` : ''}
+      ${note ? `<p class="ai"><span class="aitag">AI reading</span>${esc(note)}</p>` : `<p class="ai muted"><span class="aitag">AI</span>No precomputed reading for this pair; the crux is computed from the stance positions and the dependency graph.</p>`}
+      </div><div>${depSVG(divIds, crux)}<div class="sans muted" style="font-size:11.5px">Filled: divergent rows. Ringed: the crux. Arrows: “settling the upper question would bear on the lower” (AI-proposed dependency graph).</div></div></div>`;
+  } else if (note) s += `<p class="ai"><span class="aitag">AI reading</span>${esc(note)}</p>`;
+  if (div.length) s += `<div class="dsec">Where they diverge</div>` + div.map((r) => `<div class="drow${r.crux ? ' crux-row' : ''}">${sideHTML(r.A, 'a')}${midHTML(r, A, B)}${sideHTML(r.B, 'b')}</div>`).join('');
+  const deg = rows.filter((r) => r.type === 'deg');
+  if (deg.length) s += `<div class="dsec">Differ only in degree</div>` + deg.map((r) => `<div class="drow">${sideHTML(r.A, 'a')}${midHTML(r, A, B)}${sideHTML(r.B, 'b')}</div>`).join('');
+  const agr = rows.filter((r) => r.type === 'agree');
+  if (agr.length) s += `<div class="dsec">Where they agree</div>` + agr.map((r) => `<div class="agree"><span class="qn">${r.q.id}</span><span>${esc(r.q.q)} <span class="sans muted" style="font-size:13px">— ${esc(A.short)}: ${esc(r.A.stance)}; ${esc(B.short)}: ${esc(r.B.stance)}</span></span></div>`).join('');
+  const one = rows.filter((r) => r.type === 'one');
+  if (one.length) s += `<div class="dsec">Only one of them speaks</div>` + one.map((r) => `<div class="agree"><span class="qn">${r.q.id}</span><span>${esc(r.q.q)} <span class="sans muted" style="font-size:13px">— ${r.A ? `${esc(A.short)}: ${esc(r.A.stance)}; ${esc(B.short)} silent` : `${esc(B.short)}: ${esc(r.B.stance)}; ${esc(A.short)} silent`}</span></span></div>`).join('');
+  if (echoes.length) s += `<div class="dsec">Evidence they read each other · ${echoes.length} echo${echoes.length > 1 ? 'es' : ''} found by the page</div>` + echoes.map((e) => `<div class="echo"><div class="side"><div class="w">${esc(BOOK[e.a.book].short)} · ${esc(e.a.loc)}</div><div class="t">“${e.a.h}”</div></div><div class="mid">${e.kind === 'number' ? 'same<br>number' : e.words + '<br>words'}</div><div class="side"><div class="w">${esc(BOOK[e.b.book].short)} · ${esc(e.b.loc)}</div><div class="t">“${e.b.h}”</div></div></div>`).join('');
+  $('#pairview').innerHTML = s;
+}
+
+// ------------------------------------------------------------------ vocabulary
+function windowAround(html, term, n = 230) {
+  const t = plainOf(html);
+  if (t.length <= n) return markTerm(esc(t), term);
+  const words = term.replace(/\(.*?\)|“.*?”|[“”"]/g, ' ').split(/…|\/|,/).map((x) => x.trim()).filter((x) => x.length > 3);
+  let at = 0; for (const w of words) { const i = t.toLowerCase().indexOf(w.toLowerCase().split(' ')[0]); if (i >= 0) { at = i; break; } }
+  let a = Math.max(0, at - 90), z = Math.min(t.length, a + n);
+  if (z === t.length) a = Math.max(0, z - n);
+  if (a > 0) a = t.indexOf(' ', a) + 1; if (z < t.length) z = t.lastIndexOf(' ', z);
+  return (a > 0 ? '… ' : '') + markTerm(esc(t.slice(a, z)), term) + (z < t.length ? ' …' : '');
+}
+function markTerm(html, term) {
+  const words = term.replace(/\(.*?\)|“.*?”|[“”"]/g, ' ').split(/…|\/|,/).map((x) => x.trim()).filter((x) => x.length > 3);
+  let out = html;
+  for (const w of words) {
+    const re = new RegExp('(' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '\\s+') + ')', 'i');
+    if (re.test(plainOf(out))) { out = out.replace(re, '<mark>$1</mark>'); }
+  }
+  return out;
+}
+function renderVocab() {
+  const authors = D.books.filter((b) => D.vocab.some((v) => v.cells.some((c) => c.a === b.key)));
+  let s = `<table class="voc"><colgroup><col style="width:250px">${authors.map(() => '<col>').join('')}</colgroup><thead><tr><th>Concept</th>${authors.map((b) => `<th>${esc(b.short)}<span>${b.yLabel.split('–')[0]}</span></th>`).join('')}</tr></thead><tbody>`;
+  let m = '';
+  for (const v of D.vocab) {
+    s += `<tr><th class="ch" scope="row"><span class="caps" style="color:var(--margin)">${v.id}</span><span class="cn">${esc(v.concept)}</span><span class="gl ai"><span class="aitag">AI</span>${esc(v.gloss)}</span>${v.warn ? `<div class="warn"><b>False friend</b>${esc(v.warn)}</div>` : ''}</th>`;
+    m += `<section class="vblock"><span class="caps" style="color:var(--margin)">${v.id}</span><h3 style="font-family:var(--display);font-weight:500;margin:2px 0 6px;font-size:21px">${esc(v.concept)}</h3><p class="ai" style="margin:0 0 6px;font-size:14px"><span class="aitag">AI</span>${esc(v.gloss)}</p>${v.warn ? `<div class="warn"><b>False friend</b>${esc(v.warn)}</div>` : ''}`;
+    for (const b of authors) {
+      const c = v.cells.find((x) => x.a === b.key);
+      if (!c) { s += '<td></td>'; continue; }
+      const q = QUOTE[c.q];
+      const cellIn = `<button type="button" data-vq="${c.q}"><span class="term">${esc(c.term)}</span><span class="span">“${windowAround(q.h, c.term)}”</span><div class="lc"><span class="vtag">verified</span> ${esc(q.loc)} · ${q.y}</div></button>`;
+      s += `<td class="vc">${cellIn}</td>`;
+      m += `<div class="vitem vc"><span class="who sans" style="font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.06em">${esc(b.short)}<span style="display:block;font-family:var(--display);font-weight:500;text-transform:none;color:var(--ink-3);font-size:14px">${q.y}</span></span>${cellIn}</div>`;
+    }
+    s += '</tr>'; m += '</section>';
+  }
+  $('#vwrap').innerHTML = s + '</tbody></table>';
+  $('#vlist').innerHTML = m;
+}
+function openVocabQuote(qid) {
+  const q = QUOTE[qid]; const b = BOOK[q.a];
+  const v = D.vocab.find((x) => x.cells.some((c) => c.q === qid)); const c = v.cells.find((x) => x.q === qid);
+  openDrawer(`${b.short} · ${v.id}`, `<h2 id="dr-title">${esc(b.author)}</h2><div class="work">${esc(b.title)} · ${b.yLabel}</div><div class="ed">${esc(b.ed)}</div><div class="dq"><span class="caps" style="color:var(--margin)">${v.id}</span><div class="qt">${esc(v.concept)}</div></div><div class="stance">${/[“”"]/.test(c.term) ? esc(c.term) : '“' + esc(c.term) + '”'}</div><p class="note ai"><span class="aitag">AI gloss</span>${esc(v.gloss)}</p>${v.warn ? `<div class="warn"><b>False friend</b>${esc(v.warn)}</div>` : ''}${quoteBlock(qid, 'asserts')}`);
+}
+
+// ------------------------------------------------------------------ search index (for Add)
+const STOP = new Set('the of and to a in that is it be as which by this for with not or are we on but from at have his has was an if they he there would their its so all may one any been such these more than our what them other no will can into who only same those were do some had him upon me my i you your she her them us when then also very much must should could shall being same thus'.split(' '));
+const stem = (w) => (w.length > 5 && w.endsWith('ies') ? w.slice(0, -3) + 'y' : w.length > 4 && w.endsWith('es') ? w.slice(0, -2) : w.length > 3 && w.endsWith('s') && !w.endsWith('ss') ? w.slice(0, -1) : w.length > 6 && w.endsWith('ing') ? w.slice(0, -3) : w.length > 5 && w.endsWith('ed') ? w.slice(0, -2) : w);
+const toks = (s) => (s.toLowerCase().replace(/[_*]/g, '').match(/[a-zà-ÿ]+|\d+/g) || []).filter((w) => !STOP.has(w) && w.length > 1).map(stem);
+let IDX = null, idxPromise = null;
+function buildIndex(onProgress) {
+  if (idxPromise) return idxPromise;
+  idxPromise = (async () => {
+    const passages = []; const post = new Map(); let total = 0;
+    for (const b of D.books) {
+      onProgress?.(`Loading ${b.short} (${b.words.toLocaleString()} words)…`);
+      const T = await getText(b.key);
+      for (const [s0, e0] of b.regions) {
+        let cur = [], start = s0, len = 0;
+        const flush = (end) => {
+          const text = cur.join('\n').trim();
+          if (text.length > 40) passages.push({ id: `${b.key}:${start}`, book: b.key, l0: start, l1: end, text });
+          cur = []; len = 0;
+        };
+        for (let l = s0; l < e0; l++) {
+          const line = T.lines[l - 1] ?? '';
+          if (!line.trim()) { if (len >= 300) flush(l - 1); else if (cur.length) cur.push(''); continue; }
+          if (!cur.length) start = l;
+          cur.push(line); len += line.length;
+          if (len > 1400) flush(l);
+        }
+        if (cur.length) flush(e0 - 1);
+      }
+      await new Promise((r) => setTimeout(r, 0));
+    }
+    onProgress?.('Indexing passages…');
+    passages.forEach((p, i) => {
+      const ts = toks(p.text); p.len = ts.length; total += ts.length;
+      const tf = new Map(); for (const t of ts) tf.set(t, (tf.get(t) || 0) + 1);
+      for (const [t, n] of tf) { if (!post.has(t)) post.set(t, []); post.get(t).push([i, n]); }
+    });
+    IDX = { passages, post, avg: total / passages.length, byId: new Map(passages.map((p) => [p.id, p])) };
+    return IDX;
+  })();
+  return idxPromise;
+}
+function search(query, { authors = null, limit = 8, perAuthor = 3 } = {}) {
+  const qt = [...new Set(toks(query))];
+  const N = IDX.passages.length, k1 = 1.2, bb = 0.75; const sc = new Map();
+  for (const t of qt) {
+    const pl = IDX.post.get(t); if (!pl) continue;
+    const idf = Math.log(1 + (N - pl.length + 0.5) / (pl.length + 0.5));
+    for (const [i, n] of pl) {
+      const p = IDX.passages[i]; if (authors && !authors.includes(p.book)) continue;
+      sc.set(i, (sc.get(i) || 0) + idf * (n * (k1 + 1)) / (n + k1 * (1 - bb + bb * p.len / IDX.avg)));
+    }
+  }
+  const ranked = [...sc.entries()].sort((x, y) => y[1] - x[1]);
+  const out = []; const per = {};
+  for (const [i, s] of ranked) { const p = IDX.passages[i]; per[p.book] = (per[p.book] || 0) + 1; if (per[p.book] > perAuthor) continue; out.push({ p, s }); if (out.length >= limit) break; }
+  return { hits: out, terms: qt };
+}
+function passageInfo(p) { const b = BOOK[p.book]; const ch = chapterAt(b, p.l0); return { id: p.id, author: b.short, year: ch?.y || b.y, work: b.title, where: ch ? `${ch.part ? ch.part + ', ' : ''}${ch.label} ${ch.title}` : '', lines: `${p.l0}-${p.l1}` }; }
+function tileBarsFor(terms) {
+  // lexical TileBars computed in the browser over the same tiles as the build
+  const res = {}; const raw = {}; const all = [];
+  terms = [...new Set(terms.map((t) => String(t).toLowerCase().trim()).filter((t) => t.length > 2))];
+  const pats = terms.map((t) => new RegExp('\\b' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '\\s+'), 'g'));
+  const counts = {}; const df = pats.map(() => 0); let nt = 0;
+  for (const b of D.books) {
+    const T = TEXT_SYNC[b.key]; counts[b.key] = [];
+    for (let i = 0; i < b.tiles.length; i++) {
+      const tx = T.lines.slice(b.tiles[i] - 1, b.tileEnd[i] - 1).join('\n').toLowerCase().replace(/[_*]/g, '');
+      const cs = pats.map((re) => (tx.match(re) || []).length); cs.forEach((n, k) => { if (n) df[k]++; });
+      counts[b.key].push(cs); nt++;
+    }
+  }
+  const idf = df.map((d) => Math.log(1 + nt / (1 + d)));
+  for (const b of D.books) { raw[b.key] = counts[b.key].map((cs) => cs.reduce((acc, n, k) => acc + (n ? idf[k] * Math.log(1 + n) : 0), 0)); all.push(...raw[b.key]); }
+  all.sort((x, y) => x - y); const p99 = all[Math.floor(all.length * 0.99)] || 1;
+  for (const b of D.books) res[b.key] = raw[b.key].map((v) => Math.max(0, Math.min(9, Math.round(v / p99 * 9)))).join('');
+  return res;
+}
+const TEXT_SYNC = {};
+async function ensureTexts(onProgress) { await buildIndex(onProgress); for (const b of D.books) TEXT_SYNC[b.key] = await getText(b.key); }
+
+// ------------------------------------------------------------------ Add a question
+let sampleFn = null, sampleState = 'pending', toolsOK = false, ctl = null;
+const liveQuote = {};
+const PRESETS = ['Can a single event have a probability?', 'Is a simpler law more probable than a complicated one?', 'Does probability apply to moral and social questions?', 'Is the average man a real type?', 'Can probability measure the credibility of a scientific hypothesis?'];
+function renderAdd() {
+  $('#presets').innerHTML = PRESETS.map((p) => `<button class="chip" type="button" data-preset="${esc(p)}">${esc(p)}</button>`).join('');
+  $('#add-side').innerHTML = `<h4>What the page checks</h4><ol>
+    <li>Every quotation must come from a passage that <b>search_texts</b> or <b>read_passage</b> actually returned during this run.</li>
+    <li>It must be an exact substring of that passage (after the same whitespace and markup normalisation as the table).</li>
+    <li>The passage must belong to the author the stance is attributed to.</li>
+    <li>Positions must be whole numbers from −2 to +2. Stances and notes are shown as AI readings.</li></ol>
+    <h4>Tools Claude gets</h4><ol><li><b>search_texts</b>(query, authors?) → up to 8 passages (id, author, year, chapter, text), BM25 over ${D.books.length} full texts, own text only.</li><li><b>read_passage</b>(id) → the passage with its neighbours.</li></ol>
+    <h4>Without Claude</h4><p>“Find passages” runs the same BM25 search and TileBars in your browser, with no model: a concordance you can read yourself.</p>`;
+  $('#run-find').addEventListener('click', runFind);
+  $('#run-ai').addEventListener('click', runAI);
+  $('#run-stop').addEventListener('click', () => ctl?.abort());
+  $('#newq').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); (sampleFn && sampleState === 'ready' ? runAI : runFind)(); } });
+  showExample();
+  detectSample();
+}
+async function detectSample() {
+  const btn = $('#run-ai');
+  btn.disabled = true; btn.textContent = 'Checking for Claude…';
+  try {
+    const s = window.claude?.use ? await window.claude.use('sample') : null;
+    if (!s) throw new Error('absent');
+    sampleFn = s; sampleState = 'ready';
+    const lim = await s.limits?.().catch(() => null);
+    toolsOK = !!lim?.tools;
+    btn.disabled = false; btn.textContent = 'Ask Claude to fill the row';
+    $('#add-status').innerHTML = `<span class="badge">Live generation available</span><span class="muted">${toolsOK ? 'Claude will search the texts with page tools.' : 'Page tools are unavailable in this view, so the page will search first and hand Claude the top passages.'}</span>`;
+    const ex = $('#ex-badge'); if (ex) ex.textContent = 'Precomputed example — ask your own question above';
+  } catch {
+    sampleState = 'none';
+    btn.disabled = true; btn.textContent = 'Ask Claude (open in Claude to enable)';
+    btn.title = 'Live generation uses the Claude artifact runtime, which is not present on the static wiki.';
+  }
+}
+function showExample() {
+  const ex = D.example;
+  const q = { id: 'Ex', q: ex.q, poles: ex.poles, terms: ex.terms, tiles: ex.tb.tiles, kind: 'example' };
+  const cells = {}; for (const c of ex.cells) cells[c.a] = c;
+  $('#add-out').innerHTML = `<div class="res-head"><h3>${esc(ex.q)}</h3><span class="badge" id="ex-badge">Precomputed example — live generation available when opened in Claude</span></div>
+    <p class="muted" style="margin:6px 0 0;font-size:14px">Made the way a live run makes a row: stances by Claude (October 2026), quotations verified by script. ${ex.cells.length} authors take a position.</p>
+    ${resultBlock(q, ex.cells.map((c) => ({ ...c, quotes: c.quotes.map((r) => ({ ...r, q: QUOTE[r.id] })) })), [])}`;
+  drawResultBars(q);
+}
+function resultBlock(q, cells, rejected) {
+  const sp = spreadSVG(q, 360, cells);
+  return `<div style="margin-top:12px">${sp}</div>
+    <div class="tbpanel" style="margin-top:12px;grid-template-columns:1fr"><div class="bars" id="res-bars">${D.books.map((b) => `<div class="tbline"><span class="bn">${esc(b.short)}</span><canvas data-b="${b.key}"></canvas></div>`).join('')}<div class="sans muted" style="font-size:12px;margin-top:4px">TileBars for: ${q.terms.map((t) => `<b>${esc(t)}</b>`).join(', ')} (lexical, no model)</div></div></div>
+    <div class="rcards">${cells.map((c) => {
+      const b = BOOK[c.a];
+      return `<div class="rcard"><div class="who">${esc(b.short)} <span>${pstrip(c.pos, null, null, 66)}</span></div><div class="st">${esc(c.stance)}</div>${c.quotes.map((r) => `<blockquote>“${r.q.h}”</blockquote><div class="lc"><span class="vtag">verified</span> ${esc(r.q.loc)} · l. ${r.q.l0}</div>`).join('')}<p class="ai" style="font-size:13px;margin:8px 0 0"><span class="aitag">AI</span>${esc(c.note || '')}</p></div>`;
+    }).join('')}</div>
+    ${rejected.length ? `<div class="rejected"><div class="dsec" style="margin-top:14px">Rejected by the page · ${rejected.length}</div><ul>${rejected.map((r) => `<li><s>“${esc(r.text.slice(0, 220))}${r.text.length > 220 ? '…' : ''}”</s> <span class="sans">— ${esc(BOOK[r.author]?.short || r.author)}: ${esc(r.reason)}</span></li>`).join('')}</ul></div>` : ''}`;
+}
+function drawResultBars(q) {
+  const maxTiles = Math.max(...D.books.map((b) => b.tiles.length));
+  $$('#res-bars canvas').forEach((cv) => {
+    const b = BOOK[cv.dataset.b];
+    regCanvas(() => { const avail = cv.parentElement.clientWidth - 86; cv.style.width = Math.max(30, Math.round(avail * (b.tiles.length / maxTiles))) + 'px'; cv.style.height = '20px'; drawTiles(cv, b, q.tiles[b.key], [], { chapters: true }); });
+    bindTileHover(cv, b, q);
+  });
+}
+function status(html, busy = false) { $('#add-status').innerHTML = (busy ? '<span class="dot" aria-hidden="true"></span>' : '') + html; }
+function termsOf(q) { return [...new Set((q.toLowerCase().match(/[a-z]+/g) || []).filter((w) => w.length > 3 && !STOP.has(w)))].slice(0, 10); }
+async function runFind() {
+  const qtext = $('#newq').value.trim() || PRESETS[0];
+  $('#newq').value = qtext;
+  status('Loading the nine texts and building a passage index (once per visit)…', true);
+  try {
+    await ensureTexts((m) => status(esc(m), true));
+    const terms = termsOf(qtext);
+    const tiles = tileBarsFor(terms);
+    const q = { id: 'Find', q: qtext, terms, tiles, poles: ['', ''] };
+    const { hits } = search(qtext, { limit: 24, perAuthor: 3 });
+    const by = {}; for (const { p } of hits) (by[p.book] = by[p.book] || []).push(p);
+    const re = terms.length ? new RegExp('(\\b(?:' + terms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')[a-z]*)', 'gi') : null;
+    let out = `<div class="res-head"><h3>${esc(qtext)}</h3><span class="badge">Concordance · no AI</span></div><p class="muted" style="font-size:14px;margin:6px 0 0">BM25 over ${IDX.passages.length.toLocaleString()} passages of the authors' own text; up to three per author, in order of publication. Read them and judge for yourself.</p>
+      <div class="tbpanel" style="margin-top:12px;grid-template-columns:1fr"><div class="bars" id="res-bars">${D.books.map((b) => `<div class="tbline"><span class="bn">${esc(b.short)}</span><canvas data-b="${b.key}"></canvas></div>`).join('')}<div class="sans muted" style="font-size:12px;margin-top:4px">TileBars for: ${terms.map((t) => `<b>${esc(t)}</b>`).join(', ')}</div></div></div><div class="kwic">`;
+    for (const b of D.books) for (const p of (by[b.key] || [])) {
+      const info = passageInfo(p);
+      let t = esc(p.text.replace(/[_*]/g, '').replace(/\s+/g, ' ').slice(0, 700)); if (re) t = t.replace(re, '<mark>$1</mark>');
+      out += `<div class="kw"><div class="w">${esc(b.short)}<span>${info.year} · ${esc(info.where)} · l. ${p.l0}</span></div><div class="t">${t}${p.text.length > 700 ? ' …' : ''}</div></div>`;
+    }
+    out += '</div>';
+    $('#add-out').innerHTML = out; drawResultBars(q);
+    status(`Found ${hits.length} passages for “${esc(qtext)}”.`);
+  } catch (e) { status('Could not load the texts: ' + esc(e.message)); }
+}
+function shelfList() { return D.books.map((b) => `${b.key} — ${b.author}, ${b.title} (${b.yLabel})${b.marginal ? ' [marginal to this topic]' : ''}`).join('\n'); }
+function buildPrompt(qtext, prefetched) {
+  return `You are helping build a syntopicon ("crux table") over a fixed shelf of nine public-domain books. The main question is: "What is probability, and what can it justify?"
+
+Existing sub-questions (for context; do not repeat them):
+${D.questions.map((q) => `${q.id}. ${q.q} (poles: ${q.poles[0]} / ${q.poles[1]})`).join('\n')}
+
+NEW sub-question to fill: "${qtext}"
+
+The shelf (author key — author, work, year):
+${shelfList()}
+
+${prefetched ? `Here are passages the page retrieved for you (id in brackets). You may ONLY quote from these:\n\n${prefetched}\n` : `Use the search_texts tool several times (try the period's own vocabulary: e.g. "chance", "expectation", "series", "belief", "single event", "average"), filter by author when useful, and use read_passage when you need more context. Only text returned by these tools may be quoted.`}
+
+Rules:
+- Decide two poles for the new sub-question (short phrases, left = -2, right = +2).
+- For each author who actually addresses it, give: position (integer -2..2, or null if he rejects the framing), stance (at most 8 words), note (at most 25 words, your reading), and 1–2 quotations.
+- Each quotation must be COPIED EXACTLY, character for character, from a single passage's text: contiguous, 8 to 60 words, no ellipses, no changes. Give the passage id it comes from.
+- Leave out authors who do not address the question. Never guess. Watch for views an author states only in order to reject them.
+- Also give 5–10 search terms in the period's vocabulary (used to draw TileBars).
+
+Reply with only JSON of this shape:
+{"poles":["left","right"],"terms":["..."],"cells":[{"author":"venn","position":-1,"stance":"...","note":"...","quotes":[{"passage":"venn:6419","text":"exact words"}]}]}`;
+}
+async function runAI() {
+  if (!sampleFn) return;
+  const qtext = $('#newq').value.trim() || PRESETS[0];
+  $('#newq').value = qtext;
+  $('#run-ai').disabled = true; $('#run-find').disabled = true; $('#run-stop').hidden = false;
+  const ticker = $('#ticker'); ticker.innerHTML = ''; ticker.hidden = false;
+  const counter = $('#add-counter'); counter.hidden = false;
+  const seen = new Map();
+  const tick = (html) => { const li = document.createElement('li'); li.innerHTML = html; ticker.prepend(li); };
+  const setCounts = (p, v, r) => { counter.innerHTML = `<span><b>${p}</b>proposed</span><span><b>${v}</b>verified</span><span><b>${r}</b>rejected</span>`; };
+  setCounts(0, 0, 0);
+  try {
+    status('Loading the nine texts for the search tool…', true);
+    await ensureTexts((m) => status(esc(m), true));
+    const tools = [
+      { name: 'search_texts', description: 'Full-text BM25 search over the nine books on the shelf (authors\' own text only). Returns up to 8 passages with id, author, year, chapter and text. Quote only from returned text.',
+        inputSchema: { type: 'object', properties: { query: { type: 'string', description: 'Words to search for, in the period\'s vocabulary' }, authors: { type: 'array', items: { type: 'string', enum: D.books.map((b) => b.key) }, description: 'Optional author keys to restrict the search' } }, required: ['query'] },
+        execute: (input) => {
+          const query = String(input.query || '').slice(0, 200);
+          const authors = Array.isArray(input.authors) ? input.authors.map(String).filter((k) => BOOK[k]) : null;
+          const { hits } = search(query, { authors: authors && authors.length ? authors : null, limit: 8, perAuthor: authors && authors.length === 1 ? 8 : 3 });
+          for (const { p } of hits) seen.set(p.id, p);
+          tick(`<code>search_texts</code>(“${esc(query)}”${authors ? ', ' + esc(authors.join(', ')) : ''}) → ${hits.length} passages: ${esc([...new Set(hits.map((x) => BOOK[x.p.book].short))].join(', '))}`);
+          status('Claude is searching the shelf…', true);
+          return { results: hits.map(({ p }) => ({ ...passageInfo(p), text: p.text.replace(/[_*]/g, '').replace(/\s+/g, ' ').slice(0, 1100) })) };
+        } },
+      { name: 'read_passage', description: 'Return one passage by id together with the passage before and after it, for context. Quote only from returned text.',
+        inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] },
+        execute: (input) => {
+          const id = String(input.id || ''); const i = IDX.passages.findIndex((p) => p.id === id);
+          if (i < 0) throw new Error('unknown passage id ' + id);
+          const ps = [IDX.passages[i - 1], IDX.passages[i], IDX.passages[i + 1]].filter((p) => p && p.book === IDX.passages[i].book);
+          for (const p of ps) seen.set(p.id, p);
+          tick(`<code>read_passage</code>(${esc(id)}) → ${ps.length} passages`);
+          return { passages: ps.map((p) => ({ ...passageInfo(p), text: p.text.replace(/[_*]/g, '').replace(/\s+/g, ' ').slice(0, 1600) })) };
+        } },
+    ];
+    let prefetched = null;
+    if (!toolsOK) {
+      const { hits } = search(qtext, { limit: 27, perAuthor: 3 });
+      for (const { p } of hits) seen.set(p.id, p);
+      prefetched = hits.map(({ p }) => { const i = passageInfo(p); return `[${p.id}] ${i.author} (${i.year}), ${i.where}:\n${p.text.replace(/[_*]/g, '').replace(/\s+/g, ' ').slice(0, 1100)}`; }).join('\n\n');
+      tick(`page search → ${hits.length} passages handed to Claude (page tools unavailable here)`);
+    }
+    ctl = new AbortController();
+    status('Thinking… (a run with searches usually takes 30–90 seconds)', true);
+    const opts = { signal: ctl.signal, modelTier: 'default', onText: () => status('Claude is writing the row…', true) };
+    if (toolsOK) opts.tools = tools;
+    const res = await sampleFn.json(buildPrompt(qtext, prefetched), opts);
+    // ---- verify
+    const cells = []; const rejected = []; let proposed = 0;
+    const list = Array.isArray(res?.cells) ? res.cells : [];
+    for (const c of list) {
+      const a = String(c?.author || '').toLowerCase(); const b = BOOK[a];
+      const qs = Array.isArray(c?.quotes) ? c.quotes : [];
+      const good = [];
+      for (const qq of qs) {
+        proposed++;
+        const text = String(qq?.text || ''); const pid = String(qq?.passage || '');
+        if (!b) { rejected.push({ author: a, text, reason: 'unknown author' }); continue; }
+        const p = seen.get(pid);
+        if (!p) { rejected.push({ author: a, text, reason: `passage ${pid || '(none)'} was never returned by a tool in this run` }); continue; }
+        if (p.book !== a) { rejected.push({ author: a, text, reason: `passage ${pid} belongs to ${BOOK[p.book].short}` }); continue; }
+        const span = findNorm(p.text, text);
+        if (!span || text.trim().split(/\s+/).length < 5) { rejected.push({ author: a, text, reason: 'not found verbatim in that passage' }); continue; }
+        // locate the span in the book for line numbers
+        const T = TEXT_SYNC[a]; const before = p.text.slice(0, span[0]).split('\n').length - 1; const l0 = p.l0 + before; const l1 = l0 + p.text.slice(span[0], span[1]).split('\n').length - 1;
+        const ch = chapterAt(b, l0);
+        const id = `live-${a}-${l0}-${Object.keys(liveQuote).length}`;
+        const s0 = '_*'.includes(p.text[span[0] - 1]) ? span[0] - 1 : span[0], s1 = '_*'.includes(p.text[span[1]]) ? span[1] + 1 : span[1];
+        liveQuote[id] = { a, h: displayHTML(p.text.slice(s0, s1)), l0, l1, loc: ch ? `${ch.part ? ch.part + ', ' : ''}${ch.label}` : '', y: ch?.y || b.y };
+        good.push({ id, role: 'asserts', q: liveQuote[id] });
+        void T;
+      }
+      setCounts(proposed, proposed - rejected.length, rejected.length);
+      if (!b || !good.length) continue;
+      let pos = Number.isInteger(c.position) && c.position >= -2 && c.position <= 2 ? c.position : null;
+      cells.push({ a, pos, frame: pos == null ? 'reframes' : null, stance: String(c.stance || '').slice(0, 80), note: String(c.note || '').slice(0, 240), quotes: good });
+    }
+    setCounts(proposed, proposed - rejected.length, rejected.length);
+    const terms = [...new Set((Array.isArray(res?.terms) ? res.terms.map((t) => String(t).toLowerCase().trim()).filter((t) => t.length > 2).slice(0, 12) : []).concat(termsOf(qtext)))].slice(0, 14);
+    const poles = Array.isArray(res?.poles) && res.poles.length === 2 ? res.poles.map((x) => String(x).slice(0, 40)) : ['no', 'yes'];
+    const q = { id: 'Q' + (9 + liveRows.length), q: qtext, poles, terms, tiles: tileBarsFor(terms), kind: 'added live', part: 'Added in this session' };
+    const outCells = cells.sort((x, y) => BOOK[x.a].y - BOOK[y.a].y);
+    $('#add-out').innerHTML = `<div class="res-head"><h3>${esc(qtext)}</h3><span class="badge">Live · ${outCells.length} author${outCells.length === 1 ? '' : 's'} · stances AI-generated</span></div>
+      ${outCells.length ? '' : '<p>No quotation survived verification, so no cell is shown. Try rephrasing the question in the books\' own vocabulary.</p>'}
+      ${resultBlock(q, outCells, rejected)}
+      ${outCells.length ? `<p style="margin-top:14px"><button class="btn" type="button" id="to-table">Add this row to the table</button> <span class="sans muted" style="font-size:13px">(this session only)</span></p>` : ''}`;
+    drawResultBars(q);
+    const btn = $('#to-table');
+    if (btn) btn.addEventListener('click', () => {
+      const cellsMap = {}; for (const c of outCells) cellsMap[c.a] = c;
+      q.live = { cells: cellsMap }; liveRows.push({ q });
+      for (const c of outCells) for (const r of c.quotes) QUOTE[r.id] = r.q;
+      renderMatrix(); renderMobile(); selectTab('t-matrix');
+      requestAnimationFrame(() => $(`#mx-wrap tr[data-q="${q.id}"]`)?.scrollIntoView({ block: 'center' }));
+    });
+    status(`Done: ${proposed} quotations proposed, ${proposed - rejected.length} verified, ${rejected.length} rejected.`);
+  } catch (e) {
+    const code = e?.code || 'upstream_error';
+    if (code === 'cancelled') status('Stopped.');
+    else if (code === 'not_granted' || code === 'sampling_disabled' || code === 'not_declared' || code === 'capability_disabled' || code === 'capability_removed') { status('Claude is not available for this page in this view. The no-AI passage finder still works.'); sampleState = 'none'; $('#run-ai').hidden = true; }
+    else if (code === 'tools_unavailable') { toolsOK = false; status('This view cannot run page tools. Run again: the page will search first and hand Claude the passages.'); }
+    else if (code === 'rate_limited') status('Too many requests right now. Please wait a little before trying again.');
+    else if (code === 'invalid_json') status('Claude\'s reply could not be read as a table row. Try again, or rephrase the question.');
+    else if (code === 'refused') status('Claude declined this request. Try a different phrasing.');
+    else status('Something went wrong (' + esc(code) + '). You can try again.');
+  } finally {
+    $('#run-ai').disabled = sampleState !== 'ready'; $('#run-find').disabled = false; $('#run-stop').hidden = true; ctl = null;
+  }
+}
+
+// ------------------------------------------------------------------ about
+function renderAbout() {
+  const m = D.meta.counts;
+  $('#about-real').innerHTML = [
+    `<li><b>The nine texts</b>: full Project Gutenberg files (public domain in the US), fetched 15 October 2026: ${D.books.map((b) => `${esc(b.short)} <a href="https://www.gutenberg.org/ebooks/${b.id}" target="_blank" rel="noopener">#${b.id}</a>`).join(', ')}. Editorial introductions (Cohen and Dewey in the Peirce volume, Royce in Poincaré, Courtney in Mill), contents pages and indexes are excluded.</li>`,
+    `<li><b>Every quotation</b> (${m.verified} candidates verified, ${m.dropped} dropped, ${m.quotesShown} shown): the text displayed is the source's text at the matched span. ${esc(D.meta.normalisation)}</li>`,
+    `<li><b>TileBars, locators, echoes, reading list</b>: computed deterministically by <code>scripts/prototypes/crux-table.mjs</code> (built ${esc(D.meta.built)}).</li>`,
+  ].join('');
+  $('#about-ai').innerHTML = `<span class="aitag">AI</span>Stance labels, positions on each axis, the readings under each cell, the sub-questions and their poles, the row syntheses, the vocabulary glosses and term labels, the false-friend notes, the dependency graph between sub-questions, the pair readings, the order and roles of the conversation turns and the editor's notes. ${esc(D.meta.provenance)}.`;
+}
+function openAbout() { lastFocus = document.activeElement; $('#about').hidden = false; $('#about-close').focus(); }
+function closeAbout() { $('#about').hidden = true; if (lastFocus) try { lastFocus.focus(); } catch { /* */ } }
+$('#about-open').addEventListener('click', openAbout);
+$('#about-close').addEventListener('click', closeAbout);
+$('#about').addEventListener('click', (e) => { if (e.target.id === 'about') closeAbout(); });
+
+// ------------------------------------------------------------------ tabs & delegation
+function selectTab(id) {
+  $$('.tab').forEach((t) => { const on = t.id === id; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; $('#' + t.getAttribute('aria-controls')).hidden = !on; });
+  store.set('tab', id);
+  if (id === 't-conv') requestAnimationFrame(drawArcs);
+  requestAnimationFrame(redrawAll);
+}
+$$('.tab').forEach((t) => t.addEventListener('click', () => selectTab(t.id)));
+$('.tl').addEventListener('keydown', (e) => {
+  const tabs = $$('.tab'); const i = tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true');
+  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; selectTab(n.id); n.focus(); }
+});
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-cell],[data-where],[data-ctx],[data-book],[data-thread],[data-pair],[data-compare],[data-read],[data-vq],[data-preset],[data-qopen]');
+  if (!t || t.disabled) return;
+  if (t.dataset.cell) return openCell(t.dataset.cell);
+  if (t.dataset.where) return toggleWhere(t);
+  if (t.dataset.ctx) return showContext(t);
+  if (t.dataset.thread) return showThread(t.dataset.thread);
+  if (t.dataset.pair) { const [a, b] = t.dataset.pair.split('|'); $('#pa').value = a; $('#pb').value = b; showPair(); if ($('#view-dis').hidden) selectTab('t-dis'); return; }
+  if (t.dataset.compare) { closeDrawer(); $('#pa').value = t.dataset.compare; if ($('#pb').value === t.dataset.compare) $('#pb').value = t.dataset.compare === 'venn' ? 'laplace' : 'venn'; showPair(); selectTab('t-dis'); return; }
+  if (t.dataset.read) { const [k, i, qid] = t.dataset.read.split('|'); return openReader(k, Math.max(0, +i), QS[qid] || null); }
+  if (t.dataset.vq) return openVocabQuote(t.dataset.vq);
+  if (t.dataset.preset) { $('#newq').value = t.dataset.preset; $('#newq').focus(); return; }
+  if (t.dataset.qopen) { const q = QUOTE[t.dataset.qopen]; const b = BOOK[q.a]; openDrawer(`${b.short} · quotation`, `<h2 id="dr-title">${esc(b.author)}</h2><div class="work">${esc(b.title)} · ${q.y}</div><div class="ed">${esc(b.ed)}</div>${quoteBlock(t.dataset.qopen, 'asserts')}`, (body) => { const btn = $('[data-ctx]', body); if (btn) showContext(btn); }); return; }
+  if (t.dataset.book) return openBook(t.dataset.book);
+});
+})();
+</script>

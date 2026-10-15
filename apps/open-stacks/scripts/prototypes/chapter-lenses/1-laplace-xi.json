@@ -17,11 +17,11 @@
       "steps": [
         { "id": "ver", "label": "Probability that his testimony is true", "expr": "v", "stated": "1/10",
           "src": ["so that the probability of his testimony is 1/10"],
-          "note": "The premise says he deceives one time in ten, so his testimony is true 9 times in 10. The printed 1/10 is one of two corrections the transcriber's note promises for page 110; neither was applied to this file.",
+          "note": "The premise says he deceives one time in ten, so his testimony is true 9 times in 10. The transcriber's note promises two corrections on page 110, '9/10 in place of 1/10' and '9/10 in place of 6/10'; this file contains neither.",
           "erratum": [{ "q": "Two further corrections have also been made: 9/10 in place of 1/10, and 9/10 in place of 6/10, on page 110", "scope": "book" }] },
         { "id": "h1", "label": "He tells the truth: 79 is drawn and he says so", "expr": "1/N * v", "printed": "1/1000 * 6/10", "stated": "9/10000",
           "src": ["the probability that the witness will announce number 79 is the probability itself of the drawing of this number, that is to say, 1/1000. It is necessary to multiply it by the probability 6/10 of the veracity of the witness; one will have then 9/10000 for the probability of the event observed in this hypothesis."],
-          "note": "As printed, 1/1000 × 6/10 = 6/10000, not 9/10000. With the veracity of 9/10 that the premise implies, the printed result is right.",
+          "note": "With the veracity of 9/10 that the premise implies, the printed result is right: the operand, not the product, is the misprint.",
           "erratum": [{ "q": "Two further corrections have also been made: 9/10 in place of 1/10, and 9/10 in place of 6/10, on page 110", "scope": "book" }] },
         { "id": "nd", "label": "He deceives: 79 was not drawn", "expr": "(N-1)/N", "stated": "999/1000",
           "src": ["If the witness deceives, number 79 is not drawn, and the probability of this case is 999/1000."] },
@@ -217,7 +217,7 @@
       "title": "Terms of 1814, in Truscott and Emory's 1902 translation",
       "why": "A few words carry technical meanings a modern reader could misread.",
       "terms": [
-        { "term": "veracity", "period": "The probability that a witness tells the truth.", "modern": "A witness's reliability, P(report is true); in modern terms a hit rate set equal to one minus the false-report rate.",
+        { "term": "veracity", "period": "The probability that a witness tells the truth.", "modern": "A witness's reliability, P(report is true). Laplace assumes the same rate whether or not the event happened.",
           "src": ["that is to say, the veracity itself of the witness."] },
         { "term": "à priori", "period": "Before the testimony is taken into account.", "modern": "Prior probability.",
           "src": ["it is necessary first to determine _à priori_ the probability of the event in each hypothesis."] },

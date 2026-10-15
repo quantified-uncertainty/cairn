@@ -481,15 +481,18 @@ const ANCHORS = [
   'OL4039298W', // Berger, Statistical Decision Theory and Bayesian Analysis
 ];
 const GROUPS = [
-  { g: 'probability', n: 28, q: ['probabilities', 'mathematical statistics'] },
-  { g: 'decision', n: 28, q: ['statistical decision', 'bayesian statistical decision theory', 'decision making', 'judgment', 'game theory'] },
-  { g: 'ml', n: 30, q: ['machine learning', 'neural networks (computer science)', 'artificial intelligence', 'information theory'] },
-  { g: 'economics', n: 30, q: ['economics', 'microeconomics', 'econometrics', 'behavioral economics'] },
-  { g: 'philsci', n: 26, q: ['philosophy of science', 'knowledge, theory of', 'history of science', 'reasoning'] },
-  { g: 'forecasting', n: 8, q: ['forecasting'] },
+  { g: 'probability', n: 28, q: ['probabilities', 'mathematical statistics'], lc: /^(QA|HA|Q|BC|T)$/ },
+  { g: 'decision', n: 28, q: ['statistical decision', 'bayesian statistical decision theory', 'decision making', 'judgment', 'game theory'], lc: /^(QA|HD|BF|HB|Q|BD|BC|T|H|JA|JF|HM)$/ },
+  { g: 'ml', n: 30, q: ['machine learning', 'neural networks (computer science)', 'artificial intelligence', 'information theory'], lc: /^(Q|QA|TK|TA)$/ },
+  { g: 'economics', n: 30, q: ['economics', 'microeconomics', 'econometrics', 'behavioral economics'], lc: /^(HB|HC|HG|HA|HD)$/ },
+  { g: 'philsci', n: 26, q: ['philosophy of science', 'knowledge, theory of', 'history of science', 'reasoning'], lc: /^(Q|B|BD|BC|BF|QA|CB|QH)$/ },
+  { g: 'forecasting', n: 8, q: ['forecasting'], lc: /^(HB|CB|Q|HC|HD|T|BF|HN|QA)$/ },
 ];
 const groupOf = (w) => GROUPS.findIndex((G) => (w.q || []).some((q) => G.q.includes(q)));
 const latinTitle = (t) => /^[\x20-\x7EÀ-ɏ‘-”–—]+$/.test(t);
+// keep the profile a researcher's: skip self-help shelves
+const SELF_HELP = /self-help|^success|conduct of life|self-actualization|happiness|motivation \(psychology\)|interpersonal relations|negotiation/i;
+const selfHelp = (w) => (w.s || []).some((s) => SELF_HELP.test(s)) || /solutions? manual|study guide|workbook|test bank/i.test(w.t);
 const read = new Set();
 const readGroup = new Map();
 for (const id of ANCHORS) {
@@ -505,8 +508,8 @@ for (let gi = 0; gi < GROUPS.length; gi++) {
   let have = [...readGroup.values()].filter((g) => g === gi).length;
   const pool = catalog
     .map((w, i) => ({ w, i }))
-    .filter(({ w, i }) => !read.has(i) && groupOf(w) === gi && latinTitle(w.t) && !KEEP_UNREAD.has(w.id) && !selfHelp(w) && (w.rl || 0) < 5000 && (w.ed || 0) >= 1);
-  const weight = (w) => Math.pow((w.rl || 0) + 1, 0.75) * Math.pow((w.ed || 0) + 1, 0.25);
+    .filter(({ w, i }) => !read.has(i) && groupOf(w) === gi && G.lc.test(catInfo[i].sc || '') && latinTitle(w.t) && !KEEP_UNREAD.has(w.id) && !selfHelp(w) && (w.rl || 0) < 5000 && (w.ed || 0) >= 1);
+  const weight = (w) => Math.pow((w.rl || 0) + 1, 0.6) * Math.pow((w.ed || 0) + 1, 0.3);
   while (have < G.n && pool.length) {
     const tot = pool.reduce((a, p) => a + weight(p.w), 0);
     let r = rand() * tot, k = 0;

@@ -237,7 +237,10 @@ function verify(id, [key, text]) {
     editorialHit = true; from = i + 1;
   }
   if (hit < 0) { dropped.push({ id, book: key, reason: editorialHit ? 'matched only in editorial matter' : 'no exact match in source', text }); return null; }
-  const o0 = b.nmap[hit], o1 = b.nmap[hit + nq.length - 1] + 1;
+  let o0 = b.nmap[hit], o1 = b.nmap[hit + nq.length - 1] + 1;
+  // keep italics markers that hug the span, so _..._ pairs stay balanced in the display
+  if ('_*'.includes(b.raw[o0 - 1])) o0--;
+  if ('_*'.includes(b.raw[o1])) o1++;
   const l0 = lineOf(b, o0), l1 = lineOf(b, o1 - 1);
   const h = displayHTML(b.raw.slice(o0, o1));
   const where = locate(b, l0);

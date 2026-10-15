@@ -319,20 +319,20 @@ function validateSpec(spec) {
       if (blk.type === 'LiveCalculation') {
         blk.steps = leaves(blk.steps, `${w}.steps`, (s) => {
           const j = judge(s, env); env[s.id] = ev(s.expr, env);
-          s.check = j; stats.checks[j.status]++;
+          s.computed = j; stats.checks[j.status]++;
           if (s.erratum) s.erratum = fixSrc(s.erratum, `${w}.erratum`) || undefined;
           return true;
         });
       } else {
         const walk = (node, path) => {
           if (node.src) node.src = fixSrc(node.src, path) || undefined;
-          if (node.stated != null) { const j = judge({ expr: node.n, stated: node.stated }, env); node.check = j; stats.checks[j.status]++; }
+          if (node.stated != null) { const j = judge({ expr: node.n, stated: node.stated }, env); node.computed = j; stats.checks[j.status]++; }
           (node.children || []).forEach((c, i) => walk(c, `${path}.${i}`));
         };
         walk(blk.tree, `${w}.tree`);
         if (blk.answer) {
           blk.answer.src = fixSrc(blk.answer.src, `${w}.answer`) || undefined;
-          const j = judge(blk.answer, env); blk.answer.check = j; stats.checks[j.status]++;
+          const j = judge(blk.answer, env); blk.answer.computed = j; stats.checks[j.status]++;
         }
       }
     } else if (blk.type === 'ArgumentTree') {
