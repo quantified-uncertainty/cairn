@@ -251,15 +251,29 @@ export function layoutPanels(els, W, H) {
   });
 }
 
+// The original: its landing page (an abstract page, the post) and, when the file is
+// somewhere else (a PDF), the file too. Links open in a new tab.
+const hostOf = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
+const isGraphql = (u) => /\/graphql\b/.test(u || '');
+function sourceLinks(it) {
+  const page = it.page || (isGraphql(it.url) ? null : it.url);
+  if (!page || !/^https?:/.test(page)) return [];
+  const out = [h('a', { className: 'src', href: page, target: '_blank', rel: 'noopener', title: `Open the original: ${page} (o)`, textContent: hostOf(page) + ' ↗' })];
+  if (it.url && it.url !== page && /^https?:/.test(it.url) && !isGraphql(it.url) && (it.kind === 'pdf' || /\.pdf($|[?#])/i.test(it.url)))
+    out.push(h('a', { className: 'src', href: it.url, target: '_blank', rel: 'noopener', title: it.url, textContent: 'pdf ↗' }));
+  return out;
+}
 export function paintHead(it) {
   const saved = state.saved.includes(it.id);
+  const page = sourceLinks(it)[0]?.href;
   $('#item-head').replaceChildren(
     h('span', { id: 'loadpct', hidden: true }),
-    h('h1', { title: it.t }, itemIcon(it, 14), it.t),
+    h('h1', { title: it.t }, itemIcon(it, 14), page ? h('a', { className: 'ttl', href: page, target: '_blank', rel: 'noopener', title: `${it.t}\nOpen the original (o)`, textContent: it.t }) : it.t),
     h('div', { className: 'meta' },
       h('span', { className: 'lane', textContent: LANES[it.lane] || it.lane }),
       it.a ? h('span', { className: 'au', textContent: it.a }) : null,
       fmtDate(it) ? h('span', { textContent: fmtDate(it) }) : null,
+      ...sourceLinks(it),
       saved ? h('span', { className: 'star', textContent: '★' }) : null),
     h('span', { className: 'pos', id: 'pos' }),
   );

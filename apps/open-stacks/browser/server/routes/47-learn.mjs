@@ -240,7 +240,7 @@ export default function (app) {
       }
       const tau = (FLOW.has(it.kind) ? L.LEARN.tau.flow : it.kind === 'scan' ? L.LEARN.tau.scan : L.LEARN.tau.pdf) * 1000;
       for (const s of r.seq || []) at(L.localDay(s[2] * 1000)).pages += Math.min(s[1] || 0, (s[3] || 0) / tau);
-      const e = ex ? ex.get(id)?.e : i != null ? L.engagement(it, r) : null;
+      const e = ex?.get(id)?.e || (i != null ? L.engagement(it, r) : null);
       if (e && L.isDone(e, r, it) && r.last) at(L.localDay(r.last)).finished.add(id);
       if (e && i != null && r.last >= now - 90 * DAY && !e.unopened) best.push({ id, t: it.t, lane, V: r2(e.y), label: e.label, j: e.L ? 'less' : e.S ? 'save' : e.M ? 'more' : null, last: r.last });
     }
