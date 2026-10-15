@@ -657,15 +657,17 @@ function setHot(k) {
   if (k >= 0) tr.querySelector('.tr-hover').style.left = (100 * (k + 0.5)) / S.n + '%';
 }
 
-/** Fill `body` (W x H px) with page k: the cell's picture at once, then a sharp one. */
-function fillPeek(body, k, W, H) {
+/** Fill `body` (W x H px) with page k: the cell's picture at once, then a sharp one; `cap` adds a caption line. */
+function fillPeek(body, k, W, H, cap = false) {
   const el = S.cells[k]; if (!el) return;
   const a = el._m?.a || S.a;
+  if (cap) H -= 24;
   let w = W, hh = w / a;
   if (hh > H) { hh = H; w = hh * a; }
   const pg = h('div', { className: 'ovp-page' });
   Object.assign(pg.style, { width: Math.floor(w) + 'px', height: Math.floor(hh) + 'px' });
-  body.replaceChildren(pg);
+  const wrap = h('div', { className: 'ovp-wrap' }, cap ? h('div', { className: 'ovp-cap', textContent: captionOf(k) }) : null, pg);
+  body.replaceChildren(wrap);
   const gen = S.gen;
   const fresh = () => S.open && S.gen === gen && pg.isConnected;
   if (S.kind === 'flow') {
@@ -730,9 +732,14 @@ function showPeek(k, x) {
   if (peekK === k) return;
   peekK = k;
   fillPeek(peekEl.querySelector('.ovp-pg'), k, W, H);
-  const sec = [...S.secs].reverse().find((s) => s.k <= k);
-  peekEl.querySelector('.ovp-l').textContent = `p. ${k + 1}${el.dataset.info || ''} of ${S.n}${sec ? ' · ' + sec.t : ''}`;
+  peekEl.querySelector('.ovp-l').textContent = captionOf(k);
 }
+function captionOf(k) {
+  const sec = [...S.secs].reverse().find((s) => s.k <= k);
+  return `p. ${k + 1}${S.cells[k]?.dataset.info || ''} of ${S.n}${sec ? ' · ' + sec.t : ''}`;
+}
+/** peek.js compares cards by identity: one per cell. */
+const cardOf = (el) => (S.open && el?.isConnected ? (el._card ||= { k: Number(el.dataset.k), ov: true }) : null);
 function hidePeek() { clearTimeout(peekT); peekEl.hidden = true; delete peekEl.dataset.side; peekK = -1; }
 let peekAttached = false;
 function attachPeekOnce() {
@@ -741,8 +748,8 @@ function attachPeekOnce() {
   try {
     opt.peek.attachPeek(grid, {
       selector: '.ov-cell', delay: 120,
-      cardOf: (el) => (S.open ? { k: Number(el.dataset.k), id: S.it?.id } : null),
-      render: (card, body, ctx) => fillPeek(body, card.k, ctx.width - 24, ctx.height - 24),
+      cardOf,
+      render: (card, body, ctx) => fillPeek(body, card.k, ctx.width - 44, ctx.height - 48, true),
     });
   } catch (e) { console.warn('overview: peek.js', e); delete opt.peek; }
 }
@@ -755,7 +762,7 @@ function trackEvt(e) {
   e.stopPropagation();
   const pk = $('#peek');
   if (e.type === 'pointerleave' || e.type === 'pointerout') {
-    if (e.type === 'pointerleave' && e.target === tr) { if (pk && pkOurs) { pk.hidden = true; pkOurs = false; } setHot(-1); hidePeek(); tr.classList.remove('ov-hover'); }
+    if (e.type === 'pointerleave' && e.target === tr) { if (pk && pkOurs) { pk.hidden = true; pkOurs = false; } setHot(-1); hidePeek(); opt.peek?.closePeek?.(); tr.classList.remove('ov-hover'); }
     return;
   }
   const r = tr.getBoundingClientRect();
@@ -772,7 +779,8 @@ function trackEvt(e) {
   if (k !== S.hot) {
     setHot(k);
     scrollToK(k, S.inView.has(k) ? 'nearest' : 'center');
-    showPeek(k, S.cells[k].getBoundingClientRect().left);
+    if (peekAttached) opt.peek.showPeek(grid, cardOf(S.cells[k]), S.cells[k]);
+    else showPeek(k, S.cells[k].getBoundingClientRect().left);
   }
   tr.querySelector('.tr-hover').style.left = f * 100 + '%';
 }

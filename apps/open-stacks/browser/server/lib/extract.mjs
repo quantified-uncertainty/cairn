@@ -644,11 +644,12 @@ function imgSrc(el, base) {
   let src = el.a.src || '';
   if (!src || /^data:image\/(?:gif|svg\+xml);/i.test(src) && src.length < 400) src = el.a['data-src'] || el.a['data-lazy-src'] || (el.a.srcset || el.a['data-srcset'] || '').split(/\s+/)[0] || src;
   if (!src) return null;
-  if (src.startsWith('data:')) return src.length > 100000 ? null : src;
+  if (src.startsWith('data:')) { src = src.replace(/\s+/g, ''); return src.length > 100000 ? null : src; }
   try { return new URL(src, base).href; } catch { return null; }
 }
 const dim = (v) => { const x = parseFloat(v); return Number.isFinite(x) && x > 0 && !/%/.test(v) ? Math.round(x) : null; };
 
+const NOT_TERM = /^(?:questions?|answers?|notes?|examples?|update|edit(?:ed)?|comments?|summary|sources?|caveats?|tl;?dr|epistemic status|status|disclaimer|context|background|response|reply|q|a|claims?|steps? \d+|parts? \d+|day \d+|bonus|warning|tip|important|see also|footnotes?|links?|authors?|date|aside|edit \d+|update \d+|result|results|conclusion|takeaways?|problem|solution|answer|hint|why|how|what|who|when|where)$/i;
 /** Parts shared by posts and web pages. `kind`: 'post' | 'web'. */
 function fromBlocks(root, { kind, base, page, docLen }) {
   const P = new Parts();
@@ -728,7 +729,7 @@ function fromBlocks(root, { kind, base, page, docLen }) {
     const rest = b.t.slice(b.t.indexOf(lead) + lead.length);
     const term = lead.replace(/[:.\s]+$/, '');
     const gloss = /:\s*$/.test(lead) ? rest.trim() : /^\s*[:—–]\s*/.test(rest) ? rest.replace(/^\s*[:—–]\s*/, '') : null;
-    if (!gloss || gloss.length < 20 || gloss.length > 300 || term.length < 2) continue;
+    if (!gloss || gloss.length < 20 || gloss.length > 300 || term.length < 2 || NOT_TERM.test(term) || /^(?:this|that|it|i|we|you|he|she|they|my|our)\b/i.test(gloss)) continue;
     P.add({ pid: `definition:p${b.k}`, type: 'definition', label: term, text: gloss, sec: secOf(b), loc: { anchor: `p${b.k}`, quote: b.t, href: hrefOf(b, b.t) }, at: at(b.el), score: 0.6 });
   }
 
@@ -842,9 +843,10 @@ export function fromPost({ htmlBody, page, preview }) {
   for (const b of prose) {
     if (b.tag !== 'p' || b.quote || RE.pullNot.test(b.t) || RE.tldr.test(b.t) || RE.status.test(b.t)) continue;
     const share = boldShare(b.seg);
-    if (b.t.length >= 20 && b.t.length <= 250 && share >= 0.8) { P.add(part('pull', b, b.t, { html: `<p>${unwrapBlocks(clean(b.seg))}</p>`, score: 0.7 })); continue; }
+    const sentenceLike = (t) => wordsOf(t).length >= 5 && (/[.!?"”’)]$/.test(t) || t.length >= 60) && !/:$/.test(t);
+    if (b.t.length >= 20 && b.t.length <= 250 && share >= 0.8 && sentenceLike(b.t)) { P.add(part('pull', b, b.t, { html: `<p>${unwrapBlocks(clean(b.seg))}</p>`, score: 0.7 })); continue; }
     const lead = leadBold(b.seg);
-    if (b.t.length <= 400 && lead.length >= 15 && lead.length <= 200 && b.t.startsWith(lead.slice(0, 10))) P.add(part('pull', b, b.t, { html: `<p>${unwrapBlocks(clean(b.seg))}</p>`, cue: lead, score: 0.7 - 0.05 }));
+    if (b.t.length <= 400 && lead.length >= 15 && lead.length <= 200 && b.t.startsWith(lead.slice(0, 10)) && wordsOf(lead).length >= 4 && !/:\s*$/.test(lead) && !b.list) P.add(part('pull', b, b.t, { html: `<p>${unwrapBlocks(clean(b.seg))}</p>`, cue: lead, score: 0.7 - 0.05 }));
   }
   // Opening paragraph, when there is no TL;DR.
   if (!tldr) {
@@ -1049,5 +1051,16 @@ export function cardsFor(feed, view, per, { item = null, sample = false } = {}) 
   const types = new Set(F.types);
   const parts = (view.parts || []).filter((p) => types.has(p.type));
   parts.sort((a, b) => b.score - a.score || a.at - b.at);
-  return parts.slice(0, per ?? F.per).map((p) => ({ ...p, cid: `${id}#${p.pid}`, id }));
+  const cap = per ?? F.per;
+  // Best first, but in a feed of several part types no type takes more than 2
+  // slots while another type has parts waiting.
+  let pick = parts;
+  if (F.types.length > 1 && parts.length > cap) {
+    const n = {}, first = [], rest = [];
+    for (const p of parts) { if ((n[p.type] || 0) < 2) { n[p.type] = (n[p.type] || 0) + 1; first.push(p); } else rest.push(p); }
+    pick = first.slice(0, cap);
+    if (pick.length < cap) pick = pick.concat(rest.slice(0, cap - pick.length));
+    pick.sort((a, b) => b.score - a.score || a.at - b.at);
+  }
+  return pick.slice(0, cap).map((p) => ({ ...p, cid: `${id}#${p.pid}`, id }));
 }

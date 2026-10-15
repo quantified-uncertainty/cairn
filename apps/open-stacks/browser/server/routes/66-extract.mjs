@@ -279,7 +279,7 @@ import(${JSON.stringify(LIB)}).then((X) => {
       mkdirSync(d, { recursive: true });
       for (const s of r.svgs) { const f = join(d, `${safe(s.f)}-${s.k}.svg`); if (!existsSync(f)) writeFileSync(f, s.svg); }
     }
-    return r.ex;
+    return { ...r.ex, cpu: r.cpu };
   }
   async function buildPost(it, job) {
     const host = new URL(it.url).host;
@@ -294,7 +294,8 @@ import(${JSON.stringify(LIB)}).then((X) => {
     try { htmlBody = JSON.parse(cache.read(it.url).toString('utf-8'))?.data?.post?.result?.htmlBody || null; } catch { /* not JSON */ }
     if (!htmlBody) return failed('post', it.page || null, 'empty');
     await idle(job);
-    return (await parseJob({ src: 'post', htmlBody, page: it.page || it.url, preview }, job)).ex;
+    const r = await parseJob({ src: 'post', htmlBody, page: it.page || it.url, preview }, job);
+    return { ...r.ex, cpu: r.cpu };
   }
   async function buildWeb(it, job) {
     await hostSem(it.url).run(job, async () => { await idle(job); try { await cache.ensure(it.url, { fg: job.fg }); } catch (e) { if (!missing(e)) throw netErr(e); } });
@@ -303,7 +304,8 @@ import(${JSON.stringify(LIB)}).then((X) => {
     if (m.type && !/html|xml/i.test(m.type)) return failed('web', it.url, 'unsupported');
     const html = cache.read(it.url).toString('utf-8');
     await idle(job);
-    return (await parseJob({ src: 'web', html, url: m.final || it.url }, job)).ex;
+    const r = await parseJob({ src: 'web', html, url: m.final || it.url }, job);
+    return { ...r.ex, cpu: r.cpu };
   }
   async function buildScan(it, job) {
     let pages = null, labels = null;
@@ -316,7 +318,8 @@ import(${JSON.stringify(LIB)}).then((X) => {
       if (l.status === 'fulfilled') labels = l.value.labels || null;
     });
     if (!pages) return failed('ocr', `https://archive.org/details/${it.ia}`, 'empty');
-    return (await parseJob({ src: 'ocr', pages, labels, ia: it.ia, n: it.n }, job)).ex;
+    const r = await parseJob({ src: 'ocr', pages, labels, ia: it.ia, n: it.n }, job);
+    return { ...r.ex, cpu: r.cpu };
   }
 
   const building = new Map(); // id -> job {fg, p}
@@ -330,7 +333,8 @@ import(${JSON.stringify(LIB)}).then((X) => {
     else if (src === 'post') res = await buildPost(it, job);
     else if (src === 'web') res = await buildWeb(it, job);
     else res = await buildScan(it, job);
-    const ex = { v: VER, id: it.id, at: Date.now(), ms: Date.now() - t0, ...res };
+    const { cpu, ...rest } = res;
+    const ex = { v: VER, id: it.id, at: Date.now(), ms: Date.now() - t0, ...(cpu != null ? { cpu: Math.round(cpu) } : {}), ...rest };
     if (!ex.err && !ex.parts.length && ex.lead.show === 'none') ex.err = 'empty';
     save(ex);
     stats.built++;
