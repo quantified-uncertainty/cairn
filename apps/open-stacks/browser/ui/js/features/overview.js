@@ -202,6 +202,7 @@ async function prepare(i, it) {
   const [a] = currentRange();
   S.cursor = a; paintCursor();
   scrollToK(a, 'third');
+  S.anchor = a; // pictures come in from here (then from the middle of the view once the reader scrolls)
   if (kind === 'scan') prefetchScan(a);
   if (S.t && !S.t.grid) S.t.grid = Math.round(performance.now() - S.t.t0);
   observeAll();
@@ -336,7 +337,7 @@ let lastScroll = 0, pfT = 0, progAt = 0;
 const scrollTo = (y) => { progAt = performance.now(); sc.scrollTop = y; };
 sc.addEventListener('scroll', () => {
   lastScroll = performance.now();
-  if (lastScroll - progAt > 150) hidePeek();
+  if (lastScroll - progAt > 150) { hidePeek(); S.anchor = null; }
   if (S.kind === 'scan') { clearTimeout(pfT); pfT = setTimeout(() => S.open && prefetchScan(S.center), 250); }
 }, { passive: true });
 
@@ -361,10 +362,12 @@ function pump() {
 }
 function run() {
   if (!S.open || !S.built) return;
-  const conc = S.kind === 'pdf' ? 2 : S.kind === 'scan' ? 10 : 1;
+  // PDFs: three pages in flight, so the worker builds the next while one is drawn.
+  const conc = S.kind === 'pdf' ? 3 : S.kind === 'scan' ? 10 : 1;
   // pdf.js draws on the main thread: hold back while the grid is scrolling.
   if (S.kind === 'pdf' && performance.now() - lastScroll < 110) { setTimeout(pump, 120); return; }
-  const list = [...want].sort((a, b) => (S.inView.has(b) - S.inView.has(a)) || Math.abs(a - S.center) - Math.abs(b - S.center));
+  const c0 = S.anchor ?? S.center;
+  const list = [...want].sort((a, b) => (S.inView.has(b) - S.inView.has(a)) || Math.abs(a - c0) - Math.abs(b - c0) || a - b);
   if (S.kind === 'flow') {
     // Miniature text pages: as many as fit in 8 ms of each frame.
     const t0 = performance.now();

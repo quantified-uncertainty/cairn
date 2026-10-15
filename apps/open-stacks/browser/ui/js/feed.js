@@ -190,7 +190,9 @@ function showError(e) {
 // ---------- how many pages fit ----------
 // Page shape (width / height) per item, learned from rendered pages.
 const aspects = new Map();
-const aspectOf = (it) => itemAspect(profileOf(it)) || (aspects.get(it.id) ?? (it.kind === 'scan' ? 0.66 : 0.74));
+// A profile knows the shape before anything is drawn; a shape already learned on
+// this visit wins, so the number of pages does not change when a profile arrives.
+const aspectOf = (it) => aspects.get(it.id) ?? (itemAspect(profileOf(it)) || (it.kind === 'scan' ? 0.66 : 0.74));
 /** Pages per spread in auto mode: as many as fit at (nearly) full height, 1 to 3,
  *  so a laptop shows two and a large screen three, with little empty space. */
 export function fitPer(it, W, H) {
@@ -442,8 +444,8 @@ on('item:settled', ({ it }) => {
 // whatever is fastest: a full render already in memory, else a quick
 // low-resolution one (PDFs) or the small page image (scans).
 const quick = new Map(); // `${id}|${k}` -> Promise<canvas>, low-res PDF pages
-/** How many quick pdf.js renders scrubbing has made (the benchmark counts them). */
-export const scrubStats = { quick: 0 };
+/** How many quick pdf.js renders scrubbing has made (the benchmark counts them; drop() forgets them). */
+export const scrubStats = { quick: 0, drop: () => quick.clear() };
 function quickPdf(it, k, H) {
   return lru(quick, `${it.id}|${k}`, async () => {
     scrubStats.quick++;

@@ -160,5 +160,6 @@ on('profile:updated', ({ id, profile }) => {
 on('item:settled', ({ it }) => {
   const pf = profileOf(it); if (!pf) return;
   preloadSprite(pf);
-  if (it.kind === 'pdf' && !peekDoc(it)) (window.requestIdleCallback || setTimeout)(() => { if (state.order[state.pos] != null && items[state.order[state.pos]] === it) openDoc(it).catch(() => {}); }, { timeout: 3000 });
+  const open = () => { if (items[state.order[state.pos]] === it) openDoc(it).catch(() => {}); };
+  if (it.kind === 'pdf' && !peekDoc(it)) { if (window.requestIdleCallback) requestIdleCallback(open, { timeout: 3000 }); else setTimeout(open, 500); }
 });

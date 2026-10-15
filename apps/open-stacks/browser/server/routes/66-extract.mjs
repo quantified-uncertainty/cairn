@@ -279,6 +279,8 @@ import(${JSON.stringify(LIB)}).then((X) => {
       mkdirSync(d, { recursive: true });
       for (const s of r.svgs) { const f = join(d, `${safe(s.f)}-${s.k}.svg`); if (!existsSync(f)) writeFileSync(f, s.svg); }
     }
+    // A stub ("See pages 1-last of paper.pdf") is a paper without HTML.
+    if (!r.ex.parts.length && r.ex.lead.show === 'none' && html.length < 60000) return failed('latexml', url, 'no-html');
     return { ...r.ex, cpu: r.cpu };
   }
   async function buildPost(it, job) {

@@ -255,7 +255,8 @@ function dilate(src, gw, gh, rx, ry) {
 
 /** The figure regions of one page, from its text runs, image boxes and ink.
  *  W, H: the page in its own units (PDF points or image pixels). */
-export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
+export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }) {
+  let runs = runs0;
   const { gw, gh, cs, ink } = grid;
   const ci = (x) => Math.max(0, Math.min(gw - 1, Math.floor(x / cs)));
   const cj = (y) => Math.max(0, Math.min(gh - 1, Math.floor(y / cs)));
@@ -264,7 +265,7 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
   const textLike = (s) => s.str.replace(/\s+/g, '').length >= 2 && letters(s) >= (scan ? 0.7 : 0.55);
 
   // 1. Body text size, the text block, and two columns or one.
-  const hz = runs.filter((s) => !s.rot);
+  let hz = runs.filter((s) => !s.rot);
   const body = wmedian(hz.filter((s) => s.n >= 12 && textLike(s)).map((s) => [s.fs, s.n])) || wmedian(hz.map((s) => [s.fs, s.n])) || H * 0.012;
   const fsOk = (s) => s.fs > body * (scan ? 0.7 : 0.8) && s.fs < body * (scan ? 1.45 : 1.25);
   const long = hz.filter((s) => fsOk(s) && s.n >= 25 && textLike(s));
@@ -280,6 +281,29 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
     }
   }
   const gm = (gL + gR) / 2;
+  if (two) {
+    // A line of the left column that runs on into a figure's labels in the gutter
+    // ("… root verbs" + a tick label) is two runs: cut it at the gutter where the
+    // type changes (size or baseline) or the gap is wide.
+    const mk = (ps) => {
+      const r = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity, rot: false, parts: ps, base: ps[0].base, str: ps.map((p) => p.str).join(' ') };
+      let fw = 0, nn = 0; for (const p of ps) { grow(r, p); fw += p.fs * p.n; nn += p.n; }
+      r.fs = fw / Math.max(1, nn); r.n = nn + ps.length - 1; return r;
+    };
+    const cut = [];
+    for (const s of runs) {
+      const ps = s.parts;
+      if (s.rot || !ps || ps.length < 2 || !(s.x0 < gL - body && s.x1 > gR + body)) { cut.push(s); continue; }
+      let at = -1;
+      for (let i = 0; i + 1 < ps.length && at < 0; i++) {
+        const a = ps[i], b = ps[i + 1];
+        if (a.x1 < gL - 0.6 * body || a.x1 > gL + 0.4 * body || b.x0 < a.x1) continue;
+        if (Math.abs(a.fs - b.fs) > 0.15 * Math.max(a.fs, b.fs) || Math.abs(a.base - b.base) > 0.15 * a.fs || b.x0 - a.x1 > 0.6 * a.fs) at = i;
+      }
+      if (at < 0) cut.push(s); else cut.push(mk(ps.slice(0, at + 1)), mk(ps.slice(at + 1)));
+    }
+    if (cut.length !== runs.length) { runs = cut; hz = runs.filter((s) => !s.rot); }
+  }
   const colOf = (x0, x1) => (!two ? [bx0, bx1] : x1 <= gm + body ? [bx0, gL] : x0 >= gm - body ? [gR, bx1] : [bx0, bx1]);
 
   // 2. Prose: long body-size lines, and the short last lines of their paragraphs.
@@ -303,36 +327,50 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
   const headY = Math.max(0.075 * H, ...heads.map((s) => s.y1 + 1.2 * body));
 
   // 3. Captions: a line-starting run "Figure 3:" and the lines that follow it.
-  const caps = [];
+  const caps = [], labs = [];
   for (const s of byY) {
     const m = CAP.exec(s.str);
-    if (!m || s.cap || s.margin) continue;
+    if (!m || s.margin) continue;
     // "Figure 3 shows …" is body text ("Figure 3 Loss curves" a caption; the i flag lets [A-Z] match any letter).
     const rest = s.str.slice(m.index + m[0].length);
     if (!m[4].trim() && rest.trim() && !/^[A-Z]/.test(rest)) continue;
     const [c0] = colOf(s.x0, s.x1);
     if (hz.some((o) => o !== s && Math.abs(o.base - s.base) < 0.5 * body && o.x1 <= s.x0 + 1 && o.x1 > c0 - body && s.x0 - o.x1 < body)) continue; // not at a line start (text wrapped beside a figure is further off)
-    const blk = { x0: s.x0, y0: s.y0, x1: s.x1, y1: s.y1, runs: [s], kind: capKind(m[1]), label: capLabel(m) };
+    labs.push({ s, m });
+  }
+  for (const { s, m } of labs) {
+    if (s.cap) continue;
+    // Captions side by side (sub-figures with captions of their own): each keeps to its own side.
+    const sib = labs.filter((l) => l.s !== s && Math.abs(l.s.base - s.base) < 0.5 * body);
+    const limR = Math.min(Infinity, ...sib.filter((l) => l.s.x0 > s.x1).map((l) => l.s.x0 - 0.3 * body));
+    const limL = sib.some((l) => l.s.x1 < s.x0) ? s.x0 - 0.6 * body : -Infinity;
+    const blk = { x0: s.x0, y0: s.y0, x1: s.x1, y1: s.y1, runs: [s], kind: capKind(m[1]), label: capLabel(m), algo: /^(alg|list)/i.test(m[1]), lim: [limL, limR] };
     s.cap = blk;
     let last = s;
     // A caption stays in its column on a two-column page (unless its label starts across both).
-    const inCol = !two ? () => true : s.x1 <= gm + body ? (o) => o.x1 <= gm + body : s.x0 >= gm - body ? (o) => o.x0 >= gm - body : () => true;
+    const inCol0 = !two ? () => true : s.x1 <= gm + body ? (o) => o.x1 <= gm + body : s.x0 >= gm - body ? (o) => o.x0 >= gm - body : () => true;
+    const inCol = (o) => inCol0(o) && o.x0 >= limL && o.x1 <= limR;
     // The rest of the label's line first (a bold label is often a run of its own).
     for (const o of byY.filter((o) => !o.cap && !o.margin && inCol(o) && Math.abs(o.base - s.base) < 0.5 * body && o.x0 >= s.x0).sort((a, b) => a.x0 - b.x0)) {
       if (o.x0 - blk.x1 > 3 * body || CAP.test(o.str)) break;
       o.cap = blk; blk.runs.push(o); grow(blk, o);
     }
-    // A bare label ("Fig. 39.") is followed by body text, not more caption (nor, in scans, is any label).
+    // A bare label ("Fig. 39.") is followed by body text, not more caption (nor, in scans, is any label);
+    // an algorithm's label line is its caption, the lines under it the algorithm.
     const bare = blk.runs.reduce((n, o) => n + o.str.trim().length, 0) <= m[0].trim().length + 2;
     const [cc0, cc1] = colOf(s.x0, s.x1), centred = Math.abs((s.x0 + s.x1) / 2 - (cc0 + cc1) / 2) < body && s.x0 > cc0 + body;
-    for (let more = true; more && blk.runs.length < 24;) {
+    // A row of a table (cells spaced well apart on one line) is not caption text.
+    const cell = (o) => hz.some((p) => p !== o && !p.margin && inCol(p) && Math.abs(p.base - o.base) < 0.3 * body && Math.max(p.x0 - o.x1, o.x0 - p.x1) > 1.5 * body);
+    let gap = null;
+    for (let more = !blk.algo; more && blk.runs.length < 24;) {
       more = false;
       for (const o of byY) {
         // A line that starts "Figure 7." continues a caption whose line breaks mid-sentence ("… are shown in").
         if (o.cap || o.margin || !inCol(o) || (CAP.test(o.str) && /[.!?:]["”)]?\s*$/.test(last.str)) || ((bare || scan) && o.prose)) continue;
-        const sameLine = Math.abs(o.base - last.base) < 0.5 * body && o.x0 >= blk.x0 - body && o.x0 - blk.x1 < 3 * body && o.y0 >= blk.y0 - body;
-        const next = o.y0 - last.y1 > -0.5 * s.fs && o.y0 - last.y1 < 0.75 * s.fs && ovX(o, blk) > 0 && Math.abs(o.fs - s.fs) < 0.2 * s.fs && (centred || o.x0 >= blk.x0 - body);
-        if (sameLine || next) { o.cap = blk; blk.runs.push(o); grow(blk, o); if (o.y0 > last.y0) last = o; more = true; }
+        const sameLine = Math.abs(o.base - last.base) < 0.5 * body && o.x0 >= blk.x0 - body && o.x0 - blk.x1 < 3 * body && o.y0 >= blk.y0 - body && !CAP.test(o.str);
+        const d = o.y0 - last.y1;
+        const next = d > -0.5 * s.fs && d < (gap == null ? 0.75 * s.fs : Math.min(0.75 * s.fs, Math.max(0.3 * s.fs, gap + 0.4 * s.fs))) && ovX(o, blk) > 0 && Math.abs(o.fs - s.fs) < 0.2 * s.fs && (centred || o.x0 >= blk.x0 - body) && !cell(o);
+        if (sameLine || next) { o.cap = blk; blk.runs.push(o); grow(blk, o); if (o.y0 > last.y0) { if (next && !sameLine) gap = Math.max(gap ?? -Infinity, d); last = o; } more = true; if (blk.runs.length >= 24) break; }
       }
     }
     for (const o of blk.runs) o.prose = false;

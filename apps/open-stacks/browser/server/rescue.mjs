@@ -75,6 +75,10 @@ try {
   for (const it of items) if ((it.kind === 'web' || it.kind === 'pdf') && it.url) DOCS.set(it.url, { kind: it.kind, t: it.t, a: it.a, id: it.id });
 } catch { /* no corpus */ }
 export const docInfo = (u) => DOCS.get(u) || null;
+/** A document the corpus file did not list at startup (another lane, a rebuilt corpus): it falls back to the archive too. */
+export function addDoc(u, { kind, t = '', a = '', id } = {}) {
+  if (u && !DOCS.has(u) && (kind === 'web' || kind === 'pdf') && okUrl(u)) DOCS.set(u, { kind, t: String(t).slice(0, 300), a: String(a).slice(0, 200), id });
+}
 
 // ---------------------------------------------------------------- fetching ----
 /** Only http(s), and never this machine or the local network (a post could point anywhere). */
@@ -312,7 +316,8 @@ export function liveMirrors(u, alts = [], { blockedImgur = !!S.blocked.imgur } =
 /** URLs worth asking the Wayback Machine about for an image: the URL itself and its other forms. */
 export function waybackKeys(u) {
   const out = [u];
-  const add = (x) => { if (x && !out.includes(x)) out.push(x); };
+  const bare = (x) => x.replace(/^https?:\/\//, '');
+  const add = (x) => { if (x && !out.some((y) => bare(y) === bare(x))) out.push(x); }; // the archive ignores the scheme
   const id = imgurId(u);
   if (id) { const ext = (u.match(/\.(png|jpe?g|gif)(?:[?#]|$)/i) || [])[1]; for (const e of [ext, 'jpg', 'png', 'gif'].filter(Boolean)) add(`http://i.imgur.com/${id}.${e}`); }
   const wm = u.match(/^(https?:\/\/upload\.wikimedia\.org\/wikipedia\/[^/]+)\/thumb\/([0-9a-f]\/[0-9a-f]{2}\/[^/]+)\/\d+px-[^/]+$/);

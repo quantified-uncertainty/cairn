@@ -83,7 +83,7 @@ async function scrub(id, moves = 20) {
   track.dispatchEvent(new PointerEvent('pointermove', { clientX: r.left + ((s + 0.5) / n) * r.width, clientY: r.top + r.height / 2, bubbles: true }));
   await sleep(400);
   const sameQuick = scrubStats.quick;
-  dropRenders();
+  dropRenders(); scrubStats.drop?.();
   const out = [];
   for (let j = 0; j < moves; j++) {
     const k = Math.floor((((j + 1) * 7919) % 1000) / 1000 * n);

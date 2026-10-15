@@ -662,7 +662,7 @@ function build() {
         s.id === 'data' ? null : h('button', { type: 'button', className: 'st-reset', textContent: 'Reset', title: `Put ${s.title} back to the defaults`, onclick: () => resetSection(s) })),
       ...s.rows);
     main.append(el);
-    nav.append(h('button', { type: 'button', textContent: s.title, onclick: () => { picked = j; main.scrollTop = el.offsetTop - 4; } }));
+    nav.append(h('button', { type: 'button', textContent: s.title, onclick: () => { picked = j; main.scrollTop = el.offsetTop - 4; main.dispatchEvent(new Event('scroll')); } })); // no scroll event when already at the end
   });
   main.addEventListener('scroll', () => {
     let cur = 0;

@@ -119,7 +119,8 @@
 
 /* footer: the item's top picture as an avatar, title, year and place */
 .fd-foot { flex: none; display: flex; align-items: center; gap: 10px; padding: 8px 12px 9px; border-top: 1px solid var(--line); min-width: 0; margin-top: auto; }
-.fd-foot.noav { border-top: 0; padding: 6px 1px 0; }
+.fd-foot.noav { padding: 8px 14px 10px; }
+.t-lead .fd-foot.noav { border-top: 0; padding: 6px 1px 0; }
 .fd-av { flex: none; width: 48px; height: 48px; border-radius: 4px; background: #fff; box-shadow: 0 0 0 2px var(--lc); display: grid; place-items: center; overflow: hidden; }
 .fd-av img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .fd-av.mono { background: color-mix(in srgb, var(--lc) 28%, var(--bg-3)); }
@@ -227,6 +228,6 @@
 .pk-pq { margin: 0 0 8px; padding-left: 14px; border-left: 2px solid var(--accent); font: italic 17px/1.5 var(--serif); }
 .pk-why { margin: 0 0 16px; font: 13.5px/1.5 var(--serif); color: var(--ink-3); }
 .pk-plate { display: block; object-fit: contain; }
-.fd-card.tblpick .fd-main { padding: 0; }
-.fd-card.tblpick .fd-tblbox { margin: 0; border-radius: 2px; box-shadow: 0 1px 0 #0006, 0 6px 18px #0006; }
+.fd-card.tblpick > .fd-tblbox { flex: none; margin: 0; }
+.fd-card.t-lead.tblpick > .fd-tblbox { border-radius: 2px; box-shadow: 0 1px 0 #0006, 0 6px 18px #0006; }
 .fd-card.t-lead.tblpick.sel .fd-tblbox, .fd-card.t-lead.tblpick:hover .fd-tblbox { outline: 2px solid var(--accent); outline-offset: 2px; }

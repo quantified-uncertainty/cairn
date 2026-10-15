@@ -14,7 +14,8 @@
 //                               says an image it shows is wrong (learned, then looked for again)
 //   POST /rescue/manual {u, from}  a copy found by hand (checked before it is used)
 //   POST /rescue/run {wait, force}  run the scavenger now (it also runs every few hours)
-//   GET  /rescue/doc?u=URL   -> {st, via, archived, date, from, why} for the reader's header
+//   GET  /rescue/doc?u=URL[&kind=web|pdf&t=title]  -> {st, via, archived, date, from, why} for
+//                               the reader's header (kind registers an allowlisted document)
 //   GET  /rescue/state       -> counts, what is broken or rescued, the log and the runs
 //
 // Settings (environment): STACKS_RESCUE_EVERY hours between scavenger runs (4);
@@ -119,7 +120,12 @@ export default function (app) {
     app.json(res, { started: true });
   });
 
-  app.route('GET', '/rescue/doc', (req, res, url) => app.json(res, R.docState(url.searchParams.get('u') || '')));
+  app.route('GET', '/rescue/doc', (req, res, url) => {
+    const u = url.searchParams.get('u') || '', kind = url.searchParams.get('kind');
+    // The reader names the item's kind: documents of allowlisted hosts not in corpus.json at startup fall back too.
+    if (kind && cache.allowed(u)) R.addDoc(u, { kind, t: url.searchParams.get('t') || '' });
+    app.json(res, R.docState(u));
+  });
 
   app.route('GET', '/rescue/state', (req, res) => {
     const pick = (o, n) => Object.entries(o).slice(-n).map(([u, r]) => ({ u, ...r }));

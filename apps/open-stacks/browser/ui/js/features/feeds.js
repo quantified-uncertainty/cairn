@@ -343,7 +343,7 @@ function renderCard(card, L, W, ready) {
     const brk = (c) => { c.classList.add('broken'); c.replaceChildren(h('span', { className: 'fd-na', textContent: 'picture unavailable' })); };
     if (pics.length === 1 && pics[0].type === 'table' && pics[0].html) { // a table pick: drawn as a table card
       el.classList.add('tblpick');
-      el.append(h('div', { className: 'fd-main free' }, h('div', { className: 'fd-tblbox' }, htmlEl('fg-tbl-in fd-tbl', pics[0].html))));
+      el.append(h('div', { className: 'fd-tblbox' }, htmlEl('fg-tbl-in fd-tbl', pics[0].html)));
     } else if (pics.length) { const box = picsBox(pics, W, brk); el.append(box.el); }
     if (t === 'lead') {
       el.append(capOf(pics[0] || {}, pics[0]?.type === 'plate' ? 1 : 2) || '', foot(card, L, it, { av: false }));

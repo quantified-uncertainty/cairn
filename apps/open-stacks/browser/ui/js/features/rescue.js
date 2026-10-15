@@ -287,7 +287,7 @@ async function docNote(it) {
   // Ask again until the document has opened (the archive is consulted while it loads).
   if (!st || (st.st !== 'rescued' && (st.n || 0) < 3 && Date.now() - st.t > 1500)) {
     const n = (st?.n || 0) + 1;
-    st = await fetch('/rescue/doc?u=' + encodeURIComponent(it.url)).then((r) => r.json()).catch(() => ({}));
+    st = await fetch(`/rescue/doc?u=${encodeURIComponent(it.url)}&kind=${it.kind}&t=${encodeURIComponent(it.t || '')}`).then((r) => r.json()).catch(() => ({}));
     st.n = n; st.t = Date.now();
     docs.set(it.url, st);
   }

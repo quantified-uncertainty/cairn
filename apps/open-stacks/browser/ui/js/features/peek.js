@@ -92,11 +92,12 @@ export function pinPeek(on) {
 }
 export const peekState = () => ({ open: P.open, pinned: P.pinned, card: P.card, side: P.side, el: P.el, root: P.root });
 
-function scheduleClose() {
+/** Close after `grace` outside both the card and the panel; longer while the pointer heads for the panel. */
+function scheduleClose(fromPanel = false) {
   if (P.pinned || !P.open) return;
   clearTimeout(closeT);
-  const o = P.o || {};
-  closeT = setTimeout(() => { if (!P.inPanel && !P.pinned) closePeek(); }, towardPanel() ? Math.max(450, o.grace ?? 250) : (o.grace ?? 250));
+  const g = P.o?.grace ?? 250;
+  closeT = setTimeout(() => { if (!P.inPanel && !P.pinned) closePeek(); }, !fromPanel && towardPanel() ? Math.max(450, g) : g);
 }
 function onKey(e) {
   if (e.key !== 'Escape' || !P.open || e.metaKey || e.ctrlKey || e.altKey) return;
@@ -112,7 +113,7 @@ function onDown(e) {
 }
 
 panel.addEventListener('pointerenter', () => { P.inPanel = true; clearTimeout(closeT); clearTimeout(swapT); clearTimeout(restT); });
-panel.addEventListener('pointerleave', () => { P.inPanel = false; scheduleClose(); });
+panel.addEventListener('pointerleave', () => { P.inPanel = false; vx = 0; scheduleClose(true); });
 
 /** Watch `root` for cards to peek at. Returns a function that stops watching. */
 export function attachPeek(root, { selector, cardOf, render, delay = 200, grace = 250, onOpen, onClose } = {}) {
