@@ -7,10 +7,15 @@ import { fileURLToPath } from 'url';
 export const HERE = join(dirname(fileURLToPath(import.meta.url)), '..');
 const argPort = process.argv.indexOf('--port');
 export const PORT = Number(argPort > 0 ? process.argv[argPort + 1] : process.env.STACKS_PORT) || 4747;
-// Listen on loopback only: the proxy, notes and paid summaries must not be
-// reachable from other machines on the network (cafes, shared offices).
-// STACKS_HOST=0.0.0.0 opts in, e.g. for a tablet on a trusted network.
-export const HOST = process.env.STACKS_HOST || '127.0.0.1';
+// Listen on loopback only: the proxy, notes, exports and paid summaries must
+// not be reachable from other machines on the network (cafes, shared offices).
+// The default, localhost, means both loopback addresses, 127.0.0.1 and ::1
+// (server.mjs). --host 0.0.0.0 (or STACKS_HOST) opts in to the network, e.g.
+// for a tablet on a trusted network; the server then prints a warning.
+const argHost = process.argv.indexOf('--host');
+export const HOST = (argHost > 0 ? process.argv[argHost + 1] : process.env.STACKS_HOST) || 'localhost';
+/** True for a name or address only this machine can reach. */
+export const isLoopback = (h) => h === 'localhost' || h === '::1' || /^(::ffff:)?127(\.\d{1,3}){3}$/.test(h);
 export const CACHE = process.env.STACKS_CACHE || join(homedir(), '.cache', 'open-stacks');
 export const MODEL = process.env.STACKS_MODEL || 'claude-opus-5-5';
 export const UA = 'OpenStacksBrowser/0.3 (personal research reader; https://github.com/quantified-uncertainty/cairn)';

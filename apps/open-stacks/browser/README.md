@@ -11,6 +11,16 @@ node server.mjs                   # then open http://localhost:4747
 
 Needs Node 20+. Everything you open is cached in `~/.cache/open-stacks` (`STACKS_CACHE` to change), along with your notes and summaries.
 
+### Network access
+
+The server listens on this machine only: `localhost`, meaning both 127.0.0.1 and ::1. Other machines on the network cannot connect to it. To reach it from another device, such as a tablet, choose the address to listen on with `--host` or `STACKS_HOST`:
+
+```bash
+node server.mjs --host 0.0.0.0    # every network interface (or STACKS_HOST=0.0.0.0)
+```
+
+The server has no login. Anyone who can reach it can use the proxy, read and change your notes, save files to the export folder and spend your API budget on summaries, so do this only on a network you trust. The server prints a warning, with the addresses to use, whenever the host is not loopback. `--port N` and `STACKS_PORT` work the same way for the port.
+
 ## Lanes
 
 | Lane | What | Source |

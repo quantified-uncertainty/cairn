@@ -4,7 +4,7 @@ How the pieces fit, for anyone adding a feature. The README covers running and u
 
 ## Server (`server.mjs`, `server/`)
 
-- `server/config.mjs` exports `HERE`, `PORT` (`--port N` or `STACKS_PORT`), `CACHE` (`STACKS_CACHE`, default `~/.cache/open-stacks`), `MODEL` (`STACKS_MODEL`), `UA` and `hasKey()`.
+- `server/config.mjs` exports `HERE`, `PORT` (`--port N` or `STACKS_PORT`), `HOST` (`--host H` or `STACKS_HOST`; see below), `isLoopback(host)`, `CACHE` (`STACKS_CACHE`, default `~/.cache/open-stacks`), `MODEL` (`STACKS_MODEL`), `UA` and `hasKey()`.
 - `server/cache.mjs` is the disk cache for open sources: `allowed(url)`, `cached(url)`, `ensure(url)` (fetch once into the cache), `meta(url)`, `read(url)`, `paths(url)`, `key(str)` (sha1), `enqueue(urls, pri, group)` (the prefetch queue) and `stats`.
 - `server/routes/*.mjs` load in name order. Each exports `default function (app)`; `app` has:
   - `route(method, pathOrRegExp, async (req, res, url, match) => {})`, where method is `'GET'`, `'POST'` or `'*'`;
@@ -13,6 +13,12 @@ How the pieces fit, for anyone adding a feature. The README covers running and u
   - helpers `json(res, obj, code)`, `send(res, code, body, type)` and `body(req)` (parsed JSON);
   - `cache`, `CACHE`, `HERE`, `MODEL`, `UA` and `hasKey`.
 - Static files come from `ui/`. `/corpus.json` and `/enrich.json` (optional) come from the browser folder. `/features.json` lists `ui/js/features/*.js` and `ui/features/*.css`.
+
+### Who can reach the server
+
+- **Host.** The default `HOST` is `localhost`, so `server.mjs` listens on both 127.0.0.1 and ::1. Browsers and Node may try either address for `localhost` (macOS lists ::1 first), and `webview.js` loads live pages from the other loopback name. Without IPv6, the server listens on 127.0.0.1 alone. Any other host, such as `0.0.0.0`, is used as given. When the host is not loopback, the server prints a warning that lists the addresses other machines can use. `--open` and the startup line show `http://localhost:PORT`, or the host itself when it is a specific address.
+- **CORS.** `send()` and `json()` set no `Access-Control-Allow-Origin` header, so other origins cannot read notes, summaries, events or status. Only `/proxy` sends `Access-Control-Allow-Origin: *`, because it serves public open-source content. Don't add the header to a response that carries the reader's data.
+- **Writes.** `POST /export` and `POST /export/remarkable` also refuse requests whose `Origin` differs from `Host`. Other POST routes have no such check.
 
 ## Client (`ui/js/`)
 

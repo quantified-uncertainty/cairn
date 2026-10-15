@@ -371,7 +371,7 @@ Estimated cost of a 10-minute skim:
 - **No ranking from passive time, and no summaries for it.** The conveyor passing an item, or a riffle, is not a sign of interest, and neither should trigger a summary.
 - **No new mode without a visible indicator**, an off switch, and Back to undo what it did.
 - **No Space, Enter or Backspace as a hold-for-layer key on the keyboard**, and no F13-F15 for app bindings (macOS may use them for brightness).
-- **No phone or tablet remote yet.** `server.mjs` calls `server.listen(PORT)` without a host, so the server listens on every network interface. Today every route, including the proxy, notes and paid summaries, can be reached from the local network. Bind it to 127.0.0.1 first, then add a token.
+- **No phone or tablet remote yet.** The server listens on loopback only. `--host 0.0.0.0` opens every route to the local network without any login, including the proxy, notes and paid summaries. A remote needs a token first.
 - **No continuous vertical "dive mode" for now.** It is a large change, because every feature assumes a single spread, and items 3, 8 and 9 cover most of what it would offer.
 
 ## Deferred
@@ -384,7 +384,7 @@ These ideas from the brainstorm were merged or left out of the shortlist:
 - The page strip as a map of the whole item that previews pages on hover; a panel that slides in from the left edge with an "Up next" rail.
 - Triage ahead: cheap-model verdicts 20 items out, with a "Skipped" tray. Worth it once the conveyor has proved itself.
 - Radio: spoken summaries of each item as a way to navigate, with read-aloud to dive in.
-- A tablet remote at `/remote`, once the server listens only on localhost.
+- A tablet remote at `/remote`, once the server has a token (it listens only on localhost by default).
 - A pedal scheme with tap, double tap and hold.
 - A macOS Voice Control command pack, and BetterTouchTool presets as experiments that need no code.
 - Energy-budget sessions (a time budget with a rest card), and a lean-back mode where any key on one half of the keyboard advances.
