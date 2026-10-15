@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robust Reasoning Processes</title>
+<meta name="description" content="Notes on measuring reasoning processes by what they deliver, what they cost, and what it costs to corrupt them.">
+<script>
+  /* Stand-in for Starlight's ThemeProvider: a stored choice wins, otherwise follow the OS. */
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('starlight-theme'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<style>
+/* =====================================================================
+   1. Tokens. Starlight's own variable names. The neutrals are the
+      family's shared set (identical to the Handbook); only the three
+      accent values are RRP's. Starlight: :root is dark, [data-theme='light'] is light.
+   ===================================================================== */
+/* SPEC: tokens (dark) */
+:root {
+  --sl-color-white: #f4f1ea;   /* headings          16.2:1 */
+  --sl-color-gray-1: #ebe7df;
+  --sl-color-gray-2: #dcd7cd;  /* body text         12.7:1 */
+  --sl-color-gray-3: #a7a195;  /* secondary text     7.1:1 */
+  --sl-color-gray-4: #8f897e;  /* map dots, axes     5.3:1 */
+  --sl-color-gray-5: #45423c;  /* borders, rules */
+  --sl-color-gray-6: #24231f;  /* nav bg, hairlines */
+  --sl-color-black: #161514;   /* page bg */
+  --sl-color-accent-low: #1b2c4a;
+  --sl-color-accent: #4f7fd1;
+  --sl-color-accent-high: #9dbdf2; /* links in dark   9.6:1 */
+  --sl-color-text: var(--sl-color-gray-2);
+  --sl-color-text-accent: var(--sl-color-accent-high);
+  --sl-color-bg-nav: var(--sl-color-gray-6);
+  --sl-color-hairline: var(--sl-color-gray-6);
+  --sl-color-hairline-shade: var(--sl-color-black);
+  color-scheme: dark;
+}
+/* SPEC: tokens (light) */
+:root[data-theme='light'] {
+  --sl-color-white: #1c1b19;   /* headings          17.2:1 */
+  --sl-color-gray-1: #24221f;
+  --sl-color-gray-2: #2e2c28;  /* body text         13.9:1 */
+  --sl-color-gray-3: #5f5b53;  /* secondary text     6.8:1 */
+  --sl-color-gray-4: #6f6a61;  /* map dots, axes     5.4:1 */
+  --sl-color-gray-5: #d6d1c7;
+  --sl-color-gray-6: #ebe8e2;
+  --sl-color-gray-7: #f7f6f3;
+  --sl-color-black: #ffffff;
+  --sl-color-accent-low: #dbe5f6;
+  --sl-color-accent: #2a57a6;  /* links in light     7.0:1 */
+  --sl-color-accent-high: #183a75;
+  --sl-color-text-accent: var(--sl-color-accent);
+  --sl-color-bg-nav: var(--sl-color-gray-7);
+  --sl-color-hairline: var(--sl-color-gray-6);
+  --sl-color-hairline-shade: var(--sl-color-gray-6);
+  color-scheme: light;
+}
+/* Mock only: with no data-theme attribute, follow the OS. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --sl-color-white: #1c1b19; --sl-color-gray-1: #24221f; --sl-color-gray-2: #2e2c28;
+    --sl-color-gray-3: #5f5b53; --sl-color-gray-4: #6f6a61; --sl-color-gray-5: #d6d1c7;
+    --sl-color-gray-6: #ebe8e2; --sl-color-gray-7: #f7f6f3; --sl-color-black: #ffffff;
+    --sl-color-accent-low: #dbe5f6; --sl-color-accent: #2a57a6; --sl-color-accent-high: #183a75;
+    --sl-color-text-accent: var(--sl-color-accent);
+    --sl-color-bg-nav: var(--sl-color-gray-7);
+    --sl-color-hairline: var(--sl-color-gray-6);
+    --sl-color-hairline-shade: var(--sl-color-gray-6);
+    color-scheme: light;
+  }
+}
+
+/* =====================================================================
+   2. Starlight defaults (and the app's existing global.css list rules)
+      that this mock imitates. Not part of the spec.
+   ===================================================================== */
+:root {
+  --sl-font-system: ui-sans-serif, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --sl-nav-height: 3.5rem;
+  --sl-content-pad-x: 1rem;
+  --sl-content-width: 67.5rem;
+  --sl-content-gap-y: 1rem;
+  --sl-line-height: 1.75;
+  --sl-text-h1: 2.1875rem;
+  --sl-text-h2: 2.1875rem;
+  --sl-text-h3: 1.8125rem;
+}
+@media (min-width: 50em) {
+  :root { --sl-nav-height: 4rem; --sl-content-pad-x: 1.5rem; --sl-text-h1: 2.625rem; }
+}
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--sl-font-system);
+  line-height: var(--sl-line-height);
+  -webkit-font-smoothing: antialiased;
+  color: var(--sl-color-text);
+  background-color: var(--sl-color-black);
+}
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.header {
+  position: sticky; top: 0; z-index: 10;
+  height: var(--sl-nav-height);
+  padding: 0 var(--sl-content-pad-x);
+  background: var(--sl-color-bg-nav);
+  border-bottom: 1px solid var(--sl-color-hairline-shade);
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.site-title { font-size: 1.25rem; font-weight: 600; white-space: nowrap; color: var(--sl-color-white); text-decoration: none; }
+.search {
+  display: flex; align-items: center; gap: .5rem; height: 2.5rem; padding: 0 .25rem;
+  border: 0; background: none; color: var(--sl-color-gray-1); font: inherit; cursor: pointer;
+}
+.search .label, .search kbd { display: none; }
+.search svg { width: 1.25rem; height: 1.25rem; }
+.right { display: none; align-items: center; gap: 1rem; }
+.right .gh { color: var(--sl-color-gray-3); display: flex; }
+.right .gh svg { width: 1.25rem; height: 1.25rem; }
+.right .sep { width: 1px; height: 2rem; background: var(--sl-color-gray-5); }
+.theme select { font: inherit; font-size: .875rem; color: var(--sl-color-gray-2); background: transparent; border: 0; padding: .25rem 0; cursor: pointer; }
+.theme select option { background: var(--sl-color-black); color: var(--sl-color-gray-2); }
+@media (min-width: 50em) {
+  .header { display: grid; grid-template-columns: minmax(12rem, 1fr) minmax(0, 22rem) 1fr; }
+  .search {
+    width: 100%; padding: 0 .5rem 0 .75rem;
+    border: 1px solid var(--sl-color-gray-5); border-radius: .5rem;
+    background: var(--sl-color-black); color: var(--sl-color-gray-2); font-size: .875rem;
+  }
+  .search svg { width: 1rem; height: 1rem; }
+  .search .label { display: inline; }
+  .search kbd { display: inline; margin-left: auto; padding: 0 .375rem; border-radius: .25rem;
+    background: var(--sl-color-gray-6); color: var(--sl-color-gray-2); font: inherit; font-size: .75rem; }
+  .right { display: flex; justify-self: end; }
+}
+
+main { padding: 0 0 3vh; }
+.content-panel { padding: 1.5rem var(--sl-content-pad-x); }
+.content-panel + .content-panel { border-top: 1px solid var(--sl-color-hairline); }
+.sl-container { max-width: var(--sl-content-width); }
+@media (min-width: 72rem) { .sl-container { margin-inline: auto; } }
+h1 { font-size: var(--sl-text-h1); line-height: 1.2; font-weight: 600; color: var(--sl-color-white); }
+.sl-markdown-content > * + * { margin-top: var(--sl-content-gap-y); }
+.sl-markdown-content :not(h1, h2, h3) + :is(h2, h3) { margin-top: 1.5em; }
+.sl-markdown-content :is(h2, h3) { line-height: 1.2; font-weight: 600; color: var(--sl-color-white); }
+.sl-markdown-content h2 { font-size: var(--sl-text-h2); }
+.sl-markdown-content h3 { font-size: var(--sl-text-h3); }
+.sl-markdown-content a { color: var(--sl-color-text-accent); }
+.sl-markdown-content a:hover { color: var(--sl-color-white); }
+.sl-markdown-content li + li { margin-top: .25rem; }
+.sl-markdown-content svg { display: block; max-width: 100%; height: auto; }
+/* apps/reasoning-processes/src/styles/global.css (existing) */
+.sl-markdown-content ul { list-style-type: disc; padding-left: 1.5em; }
+.sl-markdown-content ol { list-style-type: decimal; padding-left: 1.5em; }
+.sl-markdown-content li { margin-top: .25em; margin-bottom: .25em; }
+footer { display: flex; justify-content: center; margin: 3rem 0 1.5rem; }
+.version { font-size: .8125rem; color: var(--sl-color-gray-3); }
+
+/* =====================================================================
+   3. SPEC: home.css. The Handbook's splash rules, plus the h3 and
+      contents-list rules RRP needs. Scoped to splash pages.
+   ===================================================================== */
+:root:not([data-has-sidebar]) {
+  --sl-content-width: 40rem;
+  --sl-line-height: 1.6;
+  --sl-text-h1: 2.25rem;
+  --sl-text-h2: 1.25rem;
+  --sl-text-h3: 1.0625rem;
+}
+:root:not([data-has-sidebar]) .content-panel + .content-panel { border-top: 0; padding-top: 0; }
+:root:not([data-has-sidebar]) .sl-markdown-content { font-size: 1.0625rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content h2 { margin-top: 2.5rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content h2 + h3 { margin-top: 1rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content h3 + * { margin-top: .25rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content p + ol { margin-top: .5rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content ol { padding-left: 2em; }
+:root:not([data-has-sidebar]) .sl-markdown-content ol ::marker { color: var(--sl-color-gray-3); font-variant-numeric: tabular-nums; }
+:root:not([data-has-sidebar]) .sl-markdown-content ol + ul { list-style: none; padding-left: 2em; margin-top: .25rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content :is(ol, ol + ul) a { text-decoration: none; }
+:root:not([data-has-sidebar]) .sl-markdown-content :is(ol, ol + ul) a:hover { text-decoration: underline; }
+:root:not([data-has-sidebar]) .sl-markdown-content hr { margin-top: 2.5rem; border: 0; border-top: 1px solid var(--sl-color-gray-5); }
+:root:not([data-has-sidebar]) .copy-markdown-container { display: none; }
+
+/* =====================================================================
+   4. SPEC: HomeMap.astro <style> (component-scoped).
+   ===================================================================== */
+.home-map { margin-inline: 0; }
+.sl-markdown-content .home-map { margin-top: 1.5rem; }
+.home-map svg { width: 100%; height: auto; overflow: visible; font-family: inherit; }
+.home-map .narrow { display: none; }
+@media (max-width: 34rem) { .home-map .wide { display: none; } .home-map .narrow { display: block; } }
+.home-map text { fill: var(--sl-color-gray-2); }
+.home-map .axis-label { fill: var(--sl-color-gray-3); }
+.home-map .axis, .home-map .leader { fill: none; stroke: var(--sl-color-gray-4); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; }
+.home-map .dot { fill: var(--sl-color-gray-4); }
+.home-map .corner { fill: none; stroke: var(--sl-color-text-accent); stroke-width: 1.25; stroke-dasharray: 5 4; }
+.home-map .corner-label { fill: var(--sl-color-text-accent); }
+.home-map figcaption { margin-top: .75rem; font-size: 1rem; line-height: 1.55; color: var(--sl-color-gray-3); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="site-title" href="/">Robust Reasoning Processes</a>
+  <button class="search" type="button" aria-label="Search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <span class="label">Search</span>
+    <kbd>Ctrl K</kbd>
+  </button>
+  <div class="right">
+    <a class="gh" href="https://github.com/quantified-uncertainty/cairn" aria-label="GitHub">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6 0-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.2.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1.1.9 2.2v3.3c0 .3.1.7.8.6A12 12 0 0 0 12 .3"/></svg>
+    </a>
+    <span class="sep" aria-hidden="true"></span>
+    <label class="theme">
+      <span class="sr-only">Select theme</span>
+      <select id="theme-select">
+        <option value="auto">Auto</option>
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+      </select>
+    </label>
+  </div>
+</header>
+
+<main>
+  <!-- Starlight PageTitle panel: renders the frontmatter title once `hero` is removed. -->
+  <div class="content-panel">
+    <div class="sl-container">
+      <h1 id="_top">Robust Reasoning Processes</h1>
+    </div>
+  </div>
+
+  <!-- Starlight MarkdownContent panel: this is the body of index.mdx. -->
+  <div class="content-panel">
+    <div class="sl-container">
+      <div class="sl-markdown-content">
+        <p>Notes on measuring reasoning processes such as peer review, prediction markets, audits and LLM judges: what they deliver, what they cost, and what it costs to corrupt them. This is an early research exploration, with drafts and conjectures rather than settled results.</p>
+
+        <p>Start with <a href="/start-here/introduction/">Chapter 1</a>, or go straight to <a href="/concepts/process-catalogue/">The Process Catalogue</a>.</p>
+
+        <h2 id="the-map">The map</h2>
+
+        <p>Each process gets two numbers: what it costs to run, per bit of validated information, and what an adversary must pay to bend its output. Plotting the catalogue’s 17 processes on those two axes leaves one corner empty.</p>
+
+        <!-- <HomeMap> … </HomeMap>: the caption is the component's slot, written in index.mdx. -->
+        <figure class="home-map">
+          <svg class="wide" viewBox="0 0 640 396" width="640" height="396" style="font-size:16px" role="img" aria-label="Scatter plot of 17 reasoning processes by cost to run and cost to corrupt. They lie roughly along a diagonal, and the cheap-to-run, hard-to-corrupt corner is empty.">
+            <path class="corner" d="M2 44H221.8V182.4H2"/>
+            <text class="corner-label" x="16" y="70">Empty so far:</text>
+            <text class="corner-label" x="16" y="92">cheap to run,</text>
+            <text class="corner-label" x="16" y="114">hard to corrupt</text>
+            <path class="axis" d="M2 38V364H636"/>
+            <path class="axis" d="M-2 44L2 37L6 44"/>
+            <path class="axis" d="M629 360L636 364L629 368"/>
+            <text class="axis-label" x="2" y="26">Cost to corrupt</text>
+            <text class="axis-label" x="636" y="390" text-anchor="end">Cost to run</text>
+            <circle class="dot" cx="504.4" cy="68.6" r="4.5"><title>Formal proof</title></circle>
+            <circle class="dot" cx="567.2" cy="93.2" r="4.5"><title>Full replication</title></circle>
+            <circle class="dot" cx="303.4" cy="105.5" r="4.5"><title>Forecaster track records</title></circle>
+            <circle class="dot" cx="341.1" cy="145.5" r="4.5"><title>Real-money market</title></circle>
+            <circle class="dot" cx="391.4" cy="127.0" r="4.5"><title>Output-metered market</title></circle>
+            <circle class="dot" cx="316.0" cy="179.3" r="4.5"><title>Tournament</title></circle>
+            <circle class="dot" cx="190.4" cy="265.4" r="4.5"><title>Play-money market</title></circle>
+            <circle class="dot" cx="529.5" cy="154.7" r="4.5"><title>Courts</title></circle>
+            <circle class="dot" cx="278.3" cy="210.0" r="4.5"><title>Expert panel</title></circle>
+            <circle class="dot" cx="290.9" cy="259.2" r="4.5"><title>Financial audit</title></circle>
+            <circle class="dot" cx="328.6" cy="283.9" r="4.5"><title>Peer review</title></circle>
+            <circle class="dot" cx="64.8" cy="330.0" r="4.5"><title>Composite indices</title></circle>
+            <circle class="dot" cx="121.3" cy="311.5" r="4.5"><title>Online reviews</title></circle>
+            <circle class="dot" cx="366.2" cy="197.8" r="4.5"><title>Debate protocol</title></circle>
+            <circle class="dot" cx="83.6" cy="250.0" r="4.5"><title>Consistency battery</title></circle>
+            <circle class="dot" cx="58.5" cy="277.7" r="4.5"><title>Multi-model LLM panel</title></circle>
+            <circle class="dot" cx="39.7" cy="308.4" r="4.5"><title>Single LLM judge</title></circle>
+            <text x="504.4" y="55.6" text-anchor="middle">Formal proof</text>
+            <text x="353.1" y="150.5">Real-money market</text>
+            <text x="340.6" y="289">Peer review</text>
+            <path class="leader" d="M46.7 311L145 346.4"/>
+            <text x="150" y="352">Single LLM judge</text>
+          </svg>
+          <svg class="narrow" viewBox="0 0 343 356" width="343" height="356" style="font-size:15px" role="img" aria-label="Scatter plot of 17 reasoning processes by cost to run and cost to corrupt. They lie roughly along a diagonal, and the cheap-to-run, hard-to-corrupt corner is empty.">
+            <path class="corner" d="M2 39.9H118.5V161.4H2"/>
+            <text class="corner-label" x="10" y="60" style="font-size:14px">Empty so far:</text>
+            <text class="corner-label" x="10" y="79" style="font-size:14px">cheap to run,</text>
+            <text class="corner-label" x="10" y="98" style="font-size:14px">hard to corrupt</text>
+            <path class="axis" d="M2 34V320H341"/>
+            <path class="axis" d="M-2 40L2 33L6 40"/>
+            <path class="axis" d="M334 316L341 320L334 324"/>
+            <text class="axis-label" x="2" y="23">Cost to corrupt</text>
+            <text class="axis-label" x="341" y="344" text-anchor="end">Cost to run</text>
+            <circle class="dot" cx="268.4" cy="61.5" r="4"><title>Formal proof</title></circle>
+            <circle class="dot" cx="301.7" cy="83.1" r="4"><title>Full replication</title></circle>
+            <circle class="dot" cx="161.8" cy="93.9" r="4"><title>Forecaster track records</title></circle>
+            <circle class="dot" cx="181.8" cy="129.0" r="4"><title>Real-money market</title></circle>
+            <circle class="dot" cx="208.5" cy="112.8" r="4"><title>Output-metered market</title></circle>
+            <circle class="dot" cx="168.5" cy="158.7" r="4"><title>Tournament</title></circle>
+            <circle class="dot" cx="101.9" cy="234.3" r="4"><title>Play-money market</title></circle>
+            <circle class="dot" cx="281.7" cy="137.1" r="4"><title>Courts</title></circle>
+            <circle class="dot" cx="148.5" cy="185.7" r="4"><title>Expert panel</title></circle>
+            <circle class="dot" cx="155.2" cy="228.9" r="4"><title>Financial audit</title></circle>
+            <circle class="dot" cx="175.2" cy="250.5" r="4"><title>Peer review</title></circle>
+            <circle class="dot" cx="35.3" cy="291.0" r="4"><title>Composite indices</title></circle>
+            <circle class="dot" cx="65.3" cy="274.8" r="4"><title>Online reviews</title></circle>
+            <circle class="dot" cx="195.1" cy="174.9" r="4"><title>Debate protocol</title></circle>
+            <circle class="dot" cx="45.3" cy="220.8" r="4"><title>Consistency battery</title></circle>
+            <circle class="dot" cx="32.0" cy="245.1" r="4"><title>Multi-model LLM panel</title></circle>
+            <circle class="dot" cx="22.0" cy="272.1" r="4"><title>Single LLM judge</title></circle>
+            <text x="268.4" y="49.5" text-anchor="middle">Formal proof</text>
+            <text x="185.2" y="255.5">Peer review</text>
+            <path class="leader" d="M28 275.7L77 304"/>
+            <text x="82" y="309">Single LLM judge</text>
+          </svg>
+          <figcaption>Positions are our own rough judgments from <a href="/concepts/process-catalogue/">The Process Catalogue</a>, so the empty corner is a conjecture to test, not a finding. <a href="/concepts/hardening-deterrence/">Deterrence</a> looks like the most promising route into it.</figcaption>
+        </figure>
+
+        <h2 id="contents">Contents</h2>
+        <p>Planned chapters are listed where they will go, without links.</p>
+
+        <h3 id="start-here">Start here</h3>
+        <ol>
+          <li><a href="/start-here/introduction/">Robust Reasoning Processes</a> — the problem and the three core quantities</li>
+          <li><a href="/start-here/key-questions/">Cruxes</a> — the central uncertainties, and what would move them</li>
+        </ol>
+
+        <h3 id="part-i--the-judge">Part I — The Judge</h3>
+        <p>The consumer of reasoning, who cannot check the work directly.</p>
+        <ol start="3">
+          <li><a href="/concepts/core-model/">The Core Model</a> — the basic quantities, graded by how far to trust them</li>
+          <li><a href="/proposals/epistemic-impact-analysis/">Epistemic Impact Analysis</a> — valuing information by how it improves beliefs</li>
+          <li><a href="/concepts/constructing-utility-functions/">Constructing Utility Functions</a> — weighted question portfolios</li>
+          <li><a href="/concepts/untrustworthy-sources/">What Can You Use from an Untrustworthy Source?</a> — trust costly signals</li>
+        </ol>
+        <ul>
+          <li>Interlude: <a href="/case-studies/the-funding-effect/">The Funding Effect</a> — a measured case of distortion</li>
+        </ul>
+
+        <h3 id="part-ii--the-processes">Part II — The Processes</h3>
+        <p>The procedures themselves, and what their verdicts rest on.</p>
+        <ol start="7">
+          <li><a href="/concepts/process-catalogue/">The Process Catalogue</a> — 17 processes rated on both axes</li>
+          <li><a href="/concepts/oversight-protocols/">What Grounds an Oversight Protocol?</a> — debate, markets and more</li>
+          <li><a href="/proposals/consistency-evals/">Consistency Evaluations</a> — can an AI estimator be arbitraged?</li>
+          <li><a href="/concepts/what-is-a-strong-reasoner/">What Is a Strong Reasoner?</a> — an AI whose judgments deserve weight</li>
+        </ol>
+
+        <h3 id="part-iii--hardening">Part III — Hardening</h3>
+        <p>How to make a process harder to corrupt, and at what cost.</p>
+        <ol start="11">
+          <li><a href="/concepts/hardening-techniques/">Hardening: Overview</a> — the six families of lever, compared</li>
+          <li><a href="/concepts/hardening-calibration/">Calibration</a> — make confidence claims true</li>
+          <li><a href="/concepts/hardening-verifiability/">Verifiability Asymmetry</a> — make checking cheaper than producing</li>
+          <li><a href="/concepts/hardening-independence/">Independence &amp; Decorrelation</a> — make an attacker beat every signal</li>
+          <li><a href="/concepts/hardening-invariance/">Invariance &amp; Low Sensitivity</a> — ignore what an adversary controls</li>
+          <li><a href="/concepts/hardening-incentives/">Incentive-Compatibility</a> — make honest reporting the best strategy</li>
+          <li><a href="/concepts/hardening-deterrence/">Deterrence</a> — penalties that cost little unless someone cheats</li>
+          <li>Certification and Gyms — planned</li>
+        </ol>
+
+        <h3 id="part-iv--the-environment">Part IV — The Environment</h3>
+        <p>The game the processes live inside: producers, resolvers, adversaries.</p>
+        <ol start="19">
+          <li><a href="/environment/identity-and-track-records/">Identity and Track-Record Infrastructure</a> — making penalties stick</li>
+          <li>The Market for Truth — planned</li>
+          <li>Law, Liability, and Private Deliberation — planned</li>
+          <li>Culture, Consent, and Adoption — planned</li>
+        </ol>
+
+        <h3 id="part-v--applications">Part V — Applications</h3>
+        <p>What strong reasoners could be used for, and what has been tried.</p>
+        <ol start="23">
+          <li><a href="/concepts/epistemic-applications/">The Reliability Ladder</a> — five tiers of use, ordered by the trust each needs</li>
+          <li><a href="/proposals/building-strong-reasoners/">Building Strong Reasoners</a> — five directions with cheap first tests</li>
+          <li><a href="/proposals/overseeing-automated-research/">Overseeing Automated Research</a> — managing research you cannot check</li>
+          <li><a href="/case-studies/llm-epistemics-in-production/">LLM Epistemics in Production</a> — QURI’s systems, failures included</li>
+          <li><a href="/open-questions/">Open Problems</a> — gathered from every chapter</li>
+        </ol>
+
+        <p>Terms and symbols are indexed in the <a href="/reference/glossary/">Glossary &amp; Notation</a>.</p>
+
+        <h2 id="how-to-read-these-notes">How to read these notes</h2>
+        <ul>
+          <li><strong>Formalisms are graded</strong> [exact], [standard shape] or [heuristic], by how far each can be trusted. See <a href="/concepts/core-model/">The Core Model</a>.</li>
+          <li><strong>Failures are published.</strong> <a href="/case-studies/llm-epistemics-in-production/">LLM Epistemics in Production</a> reports false positives, overconfidence and a miscounted competition alongside the wins.</li>
+        </ul>
+
+        <hr>
+
+        <p>Other CAIRN sites: <a href="https://delegation-risk.quantifieduncertainty.org/">Delegation Risk</a>, <a href="https://evaluation-engineering.quantifieduncertainty.org/">Evaluation Engineering</a>, <a href="https://cairn-meta.vercel.app/">CAIRN Handbook</a>.</p>
+
+        <p>Maintained by the <a href="https://quantifieduncertainty.org/">Quantified Uncertainty Research Institute</a>. Source on <a href="https://github.com/quantified-uncertainty/cairn">GitHub</a>.</p>
+      </div>
+
+      <footer><span class="version">v0.0.1</span></footer>
+    </div>
+  </div>
+</main>
+
+<script>
+  /* Stand-in for Starlight's ThemeSelect. */
+  (function () {
+    var sel = document.getElementById('theme-select');
+    var stored = null;
+    try { stored = localStorage.getItem('starlight-theme'); } catch (e) {}
+    sel.value = stored === 'light' || stored === 'dark' ? stored : 'auto';
+    sel.addEventListener('change', function () {
+      var v = sel.value;
+      try { v === 'auto' ? localStorage.removeItem('starlight-theme') : localStorage.setItem('starlight-theme', v); } catch (e) {}
+      if (v === 'auto') v = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', v);
+    });
+  })();
+</script>
+</body>
+</html>

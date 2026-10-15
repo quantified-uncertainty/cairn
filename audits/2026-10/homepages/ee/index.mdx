@@ -1,0 +1,59 @@
+---
+title: Evaluation Engineering
+description: The design of systems that produce large numbers of estimates and evaluations at known cost, under incentives that keep them honest.
+template: splash
+---
+
+Evaluation engineering is the design of systems that produce large numbers of estimates and evaluations, such as grant reviews, charity assessments and research triage, at known cost and under incentives that keep them honest.
+
+We know how to produce one careful evaluation of a grant or a charity. The bet here is that the hard part is now the ten-thousandth: producing it cheaply and reliably enough that the results get used. The core pattern is old, with [precedents well outside this project](/start-here/lineage/#outside-precedents-for-the-core-pattern). A cheap layer scores every item, a hidden random sample also goes to an expensive, trusted evaluator, and that sample measures how far the cheap layer can be trusted.
+
+Who pays is part of the design. In the wiki’s coding of [about 160 standing systems](/concepts/evaluation-systems-in-the-wild/#does-who-pays-predict-failure), those paid by the parties they rate had about 3.5 times the odds of a documented failure.
+
+This is not the [AI-model “evals” field](/start-here/introduction/#not-ai-model-evals-though-they-overlap), though the two overlap wherever an LLM is the judge. The pages are working notes, not settled positions. They were drafted largely with Claude Code, and each states its own status.
+
+Start with [Chapter 1](/start-here/introduction/), or see the ideas applied in [the worked example](/concepts/worked-example/): a funder reviewing 1,000 grants a year under four designs, with illustrative costs.
+
+## Contents
+
+### Start here
+
+1. [Evaluation Engineering](/start-here/introduction/) — what the field is, and what it is not
+2. [Estimation vs. Evaluation](/start-here/estimation-vs-evaluation/) — checkable numbers versus judgment
+3. [Why It Matters](/start-here/use-cases/) — where audited evaluation would change decisions
+4. [Cruxes](/start-here/key-questions/) — the open questions that would most change the field
+
+### Part I — The Systems View
+
+5. [Evaluation as a System](/concepts/the-systems-view/) — the design space and its four properties
+6. [The Four Components](/concepts/components/) — prediction, calculation, ontology, evaluation
+
+### Part II — Methods & Techniques
+
+7. [Evaluation Methods](/concepts/evaluation-methods/) — expert panels to LLM judges, and how each fails
+8. [Techniques](/concepts/techniques/) — patterns that wire the parts together, with their evidence
+9. [LLMs as Evaluators](/concepts/llm-evaluators/) — what they cheapen, and how judges get gamed
+
+- [Measuring an Evaluator](/concepts/measuring-an-evaluator/) — agreement, calibration and error bars
+- [Interlude: A Worked Example](/concepts/worked-example/) — 1,000 grants, four designs, priced
+- [The Capability Ladder](/concepts/capability-ladder/) — five rungs for grading a system
+- [Launch Checklist](/concepts/launch-checklist/) — what to have in place before scores are used
+
+### Part III — Evidence from the Wild
+
+10. [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/) — about 160 systems, and how they failed
+11. [Patterns & Failure Modes](/concepts/patterns-and-failure-modes/) — reactivity, Goodhart effects, rating inflation
+
+### Part IV — The Environment
+
+12. [Epistemic Culture](/concepts/epistemic-culture/) — what happens when the evaluated push back
+
+### Reference
+
+[Glossary](/reference/glossary/), [Objections & FAQ](/reference/objections/), [Lineage](/start-here/lineage/), [Related Work](/reference/related-work/), [Adjacent Fields](/reference/adjacent-fields/), [Open Problems](/open-questions/). The whole wiki is also one text file, [llms-full.txt](/llms-full.txt).
+
+---
+
+Other CAIRN sites: [Delegation Risk](https://delegation-risk.quantifieduncertainty.org/), [Robust Reasoning Processes](https://reasoning-processes.quantifieduncertainty.org/), [CAIRN Handbook](https://cairn-meta.vercel.app/).
+
+Maintained by the [Quantified Uncertainty Research Institute](https://quantifieduncertainty.org/). Source on [GitHub](https://github.com/quantified-uncertainty/cairn).
