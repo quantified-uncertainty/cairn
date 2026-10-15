@@ -67,7 +67,7 @@ The economics of quality disclosure predicts that who pays a certifier shapes wh
 - **Too many labels destroy a label's value** — the "Groucho effect": small uncertainty about what a label *means* makes consumers infer the labeled product is marginal ([Harbaugh, Maxwell & Roussillon, *Mgmt Sci* 2011](https://pubsonline.informs.org/doi/abs/10.1287/mnsc.1110.1412)).
 - **Gatekeepers fail in correlated, predictable ways** when they rent their reputation to the issuer who pays them ([Coffee, *Gatekeepers* 2006](https://global.oup.com/academic/product/gatekeepers-9780199288090)) — Enron, WorldCom, the 2008 ratings.
 
-**Seen in the wild:** credit ratings (issuer-pays → inflation); LEED (fee-for-cert; certified buildings showed no collective energy savings); hospital report cards (cream-skimming); restaurant hygiene (independent inspector + hard-to-game metric → LA grade cards worked, though NYC's inspections proved inconsistent).
+**Seen in the wild:** credit ratings (issuer-pays → inflation); LEED (fee-for-cert; certified New York City offices showed no collective energy savings: [Scofield, *Energy & Buildings* 2013](https://doi.org/10.1016/j.enbuild.2013.08.032)); hospital report cards (cream-skimming); restaurant hygiene (independent inspector + hard-to-game metric → LA grade cards worked, though NYC's inspections proved inconsistent).
 
 > **Design implication.** Credible evaluation needs (a) a non-gameable, differentially-costly signal, (b) an independent payer or strong reputational stake, (c) skeptical receivers, and (d) a clear standard. Mandatory, standardized, risk-adjusted, hard-to-game disclosure beats voluntary issuer-paid coarse certification.
 

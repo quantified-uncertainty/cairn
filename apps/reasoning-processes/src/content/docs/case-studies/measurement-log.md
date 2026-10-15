@@ -39,7 +39,7 @@ The models were Claude Sonnet 5.5, GPT-6.1 Sol, Gemini 4 Argon, DeepSeek V4 Pro 
 | GPT-6.1 Sol | −0.3 [−1.6, +1.0] | 0 / 20 | 0.016 | 0.6 (0.6) | 0 / 400 |
 | Gemini 4 Argon | −0.3 [−1.2, +0.5] | 3 / 20 | 0.0025 | 1.5 (1.2) | 0 / 400 |
 | DeepSeek V4 Pro | +8.1 [+3.8, +12.4] | 4 / 15 | 0.013 | 3.3 (3.0) | 107 / 400 |
-| Qwen3.8 2.4T | +2.2 [−0.2, +4.6] | 2 / 15 | 0.024 | 2.0 (1.9) | 87 / 400, plus 1 error |
+| Qwen3.8 2.4T | +2.2 [−0.2, +4.6] | 2 / 15 | 0.023 | 2.0 (1.9) | 87 / 400, plus 1 error |
 
 What the run shows:
 
@@ -59,7 +59,7 @@ What the run shows:
    - Truncation did not differ clearly by which label came first.
    - It is plausibly related to how hard the model found the choice.
 
-**What changes.** The claim that $b_\pi(D)$ is checkable without ground truth survives contact with real models, provided the options are not described identically. For these five judges on these prompts, label leans are a few points at most and point in no consistent direction. That does not show any model is neutral in general. The run says nothing about demographically coded names, which were excluded by design, or about symmetric content-borne bias, or about decisions where the judge has real information.
+**What changes.** The run supports the claim that $b_\pi(D)$ can be checked without ground truth, provided the options are not described identically. For these five judges on these prompts, label leans are a few points at most and point in no consistent direction. That does not show any model is neutral in general. The run says nothing about demographically coded names, which were excluded by design, or about symmetric content-borne bias, or about decisions where the judge has real information.
 
 **Limits.**
 

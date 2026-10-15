@@ -12,6 +12,7 @@ export default defineConfig({
 	// Pages cut or merged in the October 2026 contraction (owner decision D2:
 	// deleted, not archived). Each points at the closest surviving page.
 	redirects: {
+		'/design-patterns/examples/code-deployment-example/': '/delegation-risk/worked-example-coding-agent/',
 		'/getting-started/introduction/': '/',
 		'/getting-started/minimal-framework/': '/getting-started/core-concepts/',
 		'/getting-started/how-sections-connect/': '/getting-started/reading-order/',
@@ -47,8 +48,8 @@ export default defineConfig({
 		'/design-patterns/safety-mechanisms/': '/design-patterns/coordinator-constraints/',
 		'/design-patterns/forecasting-navigation/': '/design-patterns/coordinator-constraints/',
 		'/design-patterns/principles-to-practice/': '/design-patterns/composing-patterns/',
-		'/design-patterns/examples/healthcare-bot-example/': '/design-patterns/examples/code-deployment-example/',
-		'/design-patterns/examples/trading-system-example/': '/design-patterns/examples/code-deployment-example/',
+		'/design-patterns/examples/healthcare-bot-example/': '/delegation-risk/worked-example-coding-agent/',
+		'/design-patterns/examples/trading-system-example/': '/delegation-risk/worked-example-coding-agent/',
 		'/experimental/probabilistic-estimation/tools/risk-calculator/': '/design-patterns/tools/delegation-risk-calculator/',
 		'/design-patterns/tools/decision-guide/': '/design-patterns/tools/quick-start/',
 		'/experimental/probabilistic-estimation/estimates/expert-elicitation/': '/design-patterns/tools/expert-elicitation/',
@@ -212,7 +213,7 @@ export default defineConfig({
 						{ label: 'Channel Integrity', slug: 'design-patterns/channel-integrity', badge: { text: 'Core', variant: 'tip' } },
 						{ label: 'Coordinator Constraints', slug: 'design-patterns/coordinator-constraints' },
 						{ label: 'Composing Patterns', slug: 'design-patterns/composing-patterns', badge: { text: 'Core', variant: 'tip' } },
-						{ label: 'Example: Code Deployment Agent', slug: 'design-patterns/examples/code-deployment-example', badge: { text: 'Core', variant: 'tip' } },
+						{ label: 'Worked Example: Coding Agent', slug: 'delegation-risk/worked-example-coding-agent', badge: { text: 'Core', variant: 'tip' } },
 						{ label: 'Example: Research Assistant', slug: 'design-patterns/examples/research-assistant-example', badge: { text: 'Core', variant: 'tip' } },
 						{ label: 'Quick Start', slug: 'design-patterns/tools/quick-start' },
 						{ label: 'Delegation Risk Calculator', slug: 'design-patterns/tools/delegation-risk-calculator' },

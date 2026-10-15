@@ -24,7 +24,7 @@ Every entry names **what it evaluates**, its **output format**, its **method**, 
 2. **Affiliate / ad-funded editorial** (Wirecutter, RTINGS, CNET) — recommendation-revenue conflict.
 3. **Rated party pays** — issuer-pays ratings, fee-for-certification, award-licensing (Moody's/S&P, UL, ISO, LEED, J.D. Power, DXOMARK).
 
-How much this matters is tested [below](#does-who-pays-predict-failure); the answer is: less than the hand-picked contrasts suggested.
+How much this matters is tested [below](#does-who-pays-predict-failure); the answer is weaker than the hand-picked contrasts suggested.
 
 **Recurring failure modes.** Fake reviews / astroturfing / review bombing · gaming and Goodharting (citations, ratings) · capture (credit ratings in 2008; the World Bank's *Doing Business* scandal) · pay-to-play · grade inflation · self-declaration abuse · snapshot-in-time validity · reciprocal retaliation in two-sided systems · opaque weighting.
 
@@ -172,7 +172,7 @@ How much this matters is tested [below](#does-who-pays-predict-failure); the ans
 
 ## AI models & public information
 
-- **[Arena](https://arena.ai/)** (Chatbot Arena, then LMArena; [renamed](https://arena.ai/blog/lmarena-is-now-arena/) January 2026) — LLMs. Bradley–Terry/Elo leaderboard from crowd pairwise votes. Venture-funded; since 2025 it also sells evaluations to model labs and enterprises. *Weakness:* labs can test private variants and publish the best; in April 2025 a lab topped the board with a non-public chat-tuned model, which the operator said did not match its policy ([TechCrunch](https://techcrunch.com/2025/04/11/metas-vanilla-maverick-ai-model-ranks-below-rivals-on-a-popular-chat-benchmark); [Singh et al. 2025](https://arxiv.org/abs/2504.20879)).
+- **[Arena](https://arena.ai/)** (Chatbot Arena, then LMArena; [renamed](https://arena.ai/blog/lmarena-is-now-arena/) January 2026) — LLMs. Bradley–Terry/Elo leaderboard from crowd pairwise votes. Venture-funded; since September 2025 it also [sells evaluations](https://arena.ai/blog/ai-evaluations/) to model labs and enterprises. *Weakness:* labs can test private variants and publish the best ([Singh et al. 2025](https://arxiv.org/abs/2504.20879) count 27 private variants from Meta before Llama 4). In April 2025 Meta's leaderboard entry was a non-public, chat-tuned variant; the operator apologised and changed its policy ([TechCrunch](https://techcrunch.com/2025/04/11/metas-vanilla-maverick-ai-model-ranks-below-rivals-on-a-popular-chat-benchmark)).
 - **X Community Notes** (formerly Birdwatch) — context notes on posts. A matrix-factorisation "bridging" algorithm favours notes rated helpful across groups of raters who usually disagree, so one faction cannot carry a note alone ([Wojcik et al. 2022](https://arxiv.org/abs/2210.15723)). Meta replaced US third-party fact-checking with the same model in 2025 ([Meta](https://about.fb.com/news/2025/01/meta-more-speech-fewer-mistakes/)).
 - **[The Unjournal](https://unjournal.org/)** — economics, policy and social-science research. Commissions paid, public expert evaluations with ratings. Grant-funded nonprofit; charges authors nothing.
 
@@ -190,9 +190,9 @@ The result was 43 established failures, each sourced in the CSV, 18 alleged, and
 
 **Results.** 154 systems have a known payer, and 42 of them have an established failure.
 - *The payer typology predicts nothing detectable.* Failure rates run from 19% (user-paid) to 34% (paid by the evaluated party), well within noise (permutation test p = 0.71). In leave-one-out prediction, knowing the payer category does slightly worse than ignoring it.
-- *Method does little better.* Testing and inspection have the lowest failure rate (12%) and crowd systems the highest (39%), but p = 0.25 and the predictive gain is nil. Across bootstrap resamples of catalogue entries, payer came out ahead of method in 28%: no clear winner either way.
+- *Method does little better.* Among the larger method families, testing and inspection have the lowest failure rate (12%) and crowd systems the highest (39%), but p = 0.25 and the predictive gain is nil. Across bootstrap resamples of catalogue entries, payer came out ahead of method in 28%: no clear winner either way.
 - *One contrast does hold up: does the rated party pay at all?* Where it does, 27 of 67 systems (40%) have an established failure; where it does not, 11 of 62 (18%). That is an odds ratio of 3.1 (90% CI 1.5–6.8, Fisher p = 0.007). The odds ratio stays between 2.3 and 4.6 within method families, after dropping low-confidence codings, with each catalogue bullet counted once, and whichever way the 25 unknowns are assigned.
-- *Those failures are mostly gaming, not capture.* Of the 27, only 6 are capture in the strict sense, meaning a lenient rating of the payer: the 2008 credit ratings, the BBB, the ACICS accreditor and the FDA's Aduhelm approval. Eleven are manipulation by the rated party or outsiders (fake reviews, falsified rankings data, leaked tests); the rest concern validity or data quality. Capture is rare overall (7 of 154), too rare to test on its own.
+- *Those failures are mostly gaming, not capture.* Of the 27, only 6 are capture in the strict sense, meaning a lenient rating of the payer: the 2008 credit ratings, the BBB, the ACICS accreditor and the FDA's Aduhelm approval. Eleven are manipulation by the rated party or outsiders (fake reviews, falsified rankings data, leaked tests); the rest concern validity or data quality. Capture and evaluator misconduct together are rare (7 of 154), too rare to test on their own.
 
 **Caveats.** Treat this as weak evidence.
 - *Selection.* A failure is counted only if someone documented it. Firms paid by the parties they rate attract regulators, litigants and journalists, so "none found" means "not found in a targeted search".

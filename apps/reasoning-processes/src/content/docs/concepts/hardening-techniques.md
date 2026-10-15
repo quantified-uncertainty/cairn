@@ -46,7 +46,7 @@ Sorting the families by the *threats* they close shows both the coverage and, mo
 | **Correlated error** | Independence (weakly); common-cause-failure models | **no clean AI-specific defense yet** |
 | Goodhart-after-publication | Deterrence, externally-grounded families | style-mimicry of high-tier forms |
 
-The standout is **correlated error**. Every aggregation, ensemble and panel defense assumes independence, and shared training pipelines erode it. Engineering has met this problem before: independently written software versions failed together far more often than independence predicts ([Knight & Leveson 1986](https://doi.org/10.1109/TSE.1986.6312924)), and nuclear risk assessment prices the residual with common-cause models such as the beta factor (see the Delegation Risk wiki's [research connections](https://delegation-risk.quantifieduncertainty.org/entanglements/research/research-connections/)). Those models measure correlation; they do not remove it. No family here removes it for AI reasoners, which makes this row a research priority.
+The standout is **correlated error**. Every aggregation, ensemble and panel defense assumes independence, and shared training pipelines erode it. Engineering has met this before, in N-version programming ([Knight & Leveson 1986](https://doi.org/10.1109/TSE.1986.6312924)), and prices it with common-cause models such as the beta factor ([Independence](/concepts/hardening-independence/) has the details). Those models measure correlation; they do not remove it. No family here removes it for AI reasoners, which makes this row a research priority.
 
 ## Composition: families stack, but how?
 
