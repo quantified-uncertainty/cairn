@@ -227,7 +227,7 @@ The total is about 3.5–4 hours. Most of it is spent in steps 6 and 8, which ar
 
 ### Worked example: causal inference for a forecaster
 
-A forecaster wants to judge causal claims in the questions they forecast (does this policy change the base rate?). Causal inference has three traditions with different vocabularies: graphical and structural models, potential outcomes, and design-based econometrics. That characterization is mine, though standard. A first harvest from syllabi and expert lists typically yields the titles below. I resolved each against Open Library on October 15, 2026.
+A forecaster wants to judge causal claims in the questions they forecast (does this policy change the base rate?). Causal inference has three traditions with different vocabularies: graphical and structural models, potential outcomes, and design-based econometrics. That characterization is mine, though standard. The titles below are the kind a first harvest returns. I chose them from my own knowledge of the field, not by running the full method, so treat the list as illustrative. I resolved each against Open Library on October 15, 2026.
 
 | Title | Tradition | LCC class in Open Library | Free legal full text (Oct 2026) |
 |---|---|---|---|
@@ -237,7 +237,7 @@ A forecaster wants to judge causal claims in the questions they forecast (does t
 | Imbens & Rubin, *Causal Inference for Statistics, Social, and Biomedical Sciences* (2015) | Potential outcomes | H62 (social science methods) | No; print-disabled only |
 | Hernán & Robins, *Causal Inference: What If* (2020) | Potential outcomes, epidemiology | Q175.32 | **Yes**: [free PDF](https://miguelhernan.org/whatifbook) from the authors |
 | Morgan & Winship, *Counterfactuals and Causal Inference* (2007; 2nd ed. 2015) | Potential outcomes and graphs, sociology | H62 | No; print-disabled only |
-| Angrist & Pischke, *Mostly Harmless Econometrics* (2009) | Design-based | HB139 (econometrics) | No |
+| Angrist & Pischke, *Mostly Harmless Econometrics* (2009) | Design-based | HB139 (econometrics) | No free edition found |
 | Cunningham, *Causal Inference: The Mixtape* (2021) | Design-based | H61.3 | **Yes**: [readable online](https://mixtape.scunning.com/) (2nd edition in progress) |
 | Huntington-Klein, *The Effect* (2021) | Design-based | none returned | **Yes**: [free web edition](https://theeffectbook.net/) |
 
