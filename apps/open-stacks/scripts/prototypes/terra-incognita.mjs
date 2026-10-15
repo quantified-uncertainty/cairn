@@ -505,7 +505,7 @@ for (let gi = 0; gi < GROUPS.length; gi++) {
   let have = [...readGroup.values()].filter((g) => g === gi).length;
   const pool = catalog
     .map((w, i) => ({ w, i }))
-    .filter(({ w, i }) => !read.has(i) && groupOf(w) === gi && latinTitle(w.t) && !KEEP_UNREAD.has(w.id) && (w.rl || 0) < 5000 && (w.ed || 0) >= 1);
+    .filter(({ w, i }) => !read.has(i) && groupOf(w) === gi && latinTitle(w.t) && !KEEP_UNREAD.has(w.id) && !selfHelp(w) && (w.rl || 0) < 5000 && (w.ed || 0) >= 1);
   const weight = (w) => Math.pow((w.rl || 0) + 1, 0.75) * Math.pow((w.ed || 0) + 1, 0.25);
   while (have < G.n && pool.length) {
     const tot = pool.reduce((a, p) => a + weight(p.w), 0);

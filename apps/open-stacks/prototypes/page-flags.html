@@ -234,6 +234,11 @@ a { color: inherit; }
   position: absolute; z-index: 5; pointer-events: none; transform: translate(-50%, -100%); white-space: nowrap;
   background: var(--ink); color: var(--paper); font-size: 10.5px; line-height: 1.2; padding: 3px 6px; border-radius: 2px; max-width: 320px; overflow: hidden; text-overflow: ellipsis;
 }
+.nohits {
+  position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%); z-index: 4; max-width: min(460px, 86%);
+  background: var(--raise); border: 1px solid var(--rule); box-shadow: var(--shadow); padding: 10px 14px; font-size: 13px; color: var(--ink-2); text-align: center;
+}
+.nohits b { color: var(--ink); }
 .axis { display: grid; grid-template-columns: 168px minmax(0, 1fr) 78px; font-size: 10.5px; color: var(--muted); padding-top: 6px; }
 .axis .ticks { display: flex; justify-content: space-between; border-top: 1px solid var(--rule); padding-top: 3px; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: var(--ink-2); margin-top: 8px; align-items: center; }
@@ -276,8 +281,9 @@ a { color: inherit; }
   border-radius: 1px 3px 3px 1px;
   background: var(--card) repeating-linear-gradient(0deg, var(--rule-2) 0 1px, transparent 1px 2.5px);
 }
-.edge.sealed { border-style: dashed; background: repeating-linear-gradient(135deg, var(--hatch) 0 3px, transparent 3px 7px); }
-.edge .note { position: absolute; left: 40px; top: -1px; font: 500 10px/10px "Spline Sans Mono", monospace; color: var(--muted); white-space: nowrap; letter-spacing: .02em; }
+.edge.sealed { border-style: dashed; border-color: var(--rule); background: none; top: 24px; height: 2px; border-width: 0 0 1px; }
+.kwic { position: absolute; left: 40px; right: 6px; top: 6px; font-size: 12px; line-height: 16px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+.slip.down ~ .kwic { top: 4px; }
 .flag {
   position: absolute; width: 7px; height: 12px; transform: translateX(-50%); bottom: 30px; border-radius: 1.5px 1.5px 0 0;
   box-shadow: inset -2px 0 0 rgba(0, 0, 0, .14); cursor: pointer; opacity: .93;
@@ -507,6 +513,7 @@ mark.ab { background: var(--both-wash); box-shadow: inset 0 -2px 0 var(--both); 
         <div class="record" id="record">
           <div id="wallRows"></div>
           <div class="hoverlab mono" id="hoverLab" hidden></div>
+          <div class="nohits" id="noHits" hidden></div>
           <div class="axis" aria-hidden="true"><span></span><div class="ticks mono"><span>start</span><span>¼</span><span>½</span><span>¾</span><span>end of book</span></div><span></span></div>
         </div>
         <div class="legend" id="wallLegend"></div>
@@ -1094,6 +1101,14 @@ function sortWall() {
   [...S.books].sort((x, y) => val(x) - val(y) || x.y - y.y).forEach((b) => host.appendChild(b.row));
 }
 function renderWallTotals() {
+  const nh = $('#noHits');
+  const done = S.books.every((b) => b.st) && ['a', 'b'].filter(penActive).every((k) => S.books.every((b) => b.res?.[k]));
+  const tot = (k) => S.books.reduce((n, b) => n + (b.res?.[k]?.total || 0), 0);
+  const empties = ['a', 'b'].filter((k) => penActive(k) && done && tot(k) === 0);
+  if (empties.length && !(penActive('a') && penActive('b') && empties.length === 1)) {
+    nh.innerHTML = `No hits for <b>${empties.map((k) => esc(penLabel(k))).join('</b> or <b>')}</b> in the nine full texts (1748–1923). Try a period synonym above${empties.some((k) => S.pens[k].concept) ? ', or look at the flag shelf for modern books that use the phrase' : ''}.`;
+    nh.hidden = false;
+  } else nh.hidden = true;
   for (const b of S.books) {
     const ra = b.res?.a, rb = b.res?.b;
     const cell = b.row.querySelector('.tot');
@@ -1642,17 +1657,21 @@ function renderAC() {
   const exact = conceptByText(q);
   AC.items = [];
   let h = '';
-  if (norm(q) && !exact) {
+  const free = () => {
+    const i = AC.items.length;
     AC.items.push({ free: q });
-    h += `<li role="option" class="free" id="ac-0">Trace “${esc(q.trim())}” in the nine full texts (any term or /regex/; no flags)</li>`;
-  }
-  if (!norm(q)) h += '<li class="head" aria-hidden="true">Precomputed concepts · wall hits · scanned volumes</li>';
-  for (const x of cands) {
+    h += `<li role="option" class="free" id="ac-${i}">Trace “${esc(q.trim())}” in the nine full texts (any term or /regex/; flags only for listed concepts)</li>`;
+  };
+  if (!norm(q)) h += '<li class="head" aria-hidden="true">Precomputed concepts · hits on the wall · scanned volumes with the phrase</li>';
+  const strong = cands.length && cands[0].s >= 80;
+  if (norm(q) && !exact && !strong) free();
+  cands.forEach((x, ci) => {
     const i = AC.items.length;
     AC.items.push({ concept: x.c.id });
     const w = S.counts[x.c.id];
-    h += `<li role="option" id="ac-${i}"><span class="lab">${esc(x.c.label)}${x.via ? ` <small>· ${esc(x.via)}</small>` : ''}</span><span class="w mono">wall <b>${w == null ? '…' : fmt(w)}</b></span><span class="f mono">flags <b>${fmt(x.c.siTotal)}</b> vols</span></li>`;
-  }
+    h += `<li role="option" id="ac-${i}"><span class="lab">${esc(x.c.label)}${x.via ? ` <small>· ${esc(x.via)}</small>` : ''}</span><span class="w mono">wall <b>${w == null ? '…' : fmt(w)}</b></span><span class="f mono">flags <b>${x.c.siTotal == null ? '…' : fmt(x.c.siTotal)}</b> vols</span></li>`;
+    if (ci === 0 && strong && norm(q) && !exact) free();
+  });
   ul.innerHTML = h;
   AC.sel = Math.min(AC.sel, AC.items.length - 1);
   ul.hidden = !AC.items.length;
@@ -1843,7 +1862,8 @@ function shelfRow(r, two) {
   };
   const sealed = !(r.A?.flags || r.B?.flags);
   const nA = r.A?.flags?.length || 0, nB = r.B?.flags?.length || 0;
-  const note = sealed ? 'page not disclosed for lending scans' : '';
+  const firstSn = sealed ? (r.A?.sn?.[0] || r.B?.sn?.[0] || '') : '';
+  const note = firstSn ? `<span class="kwic snip">${snipHTML(firstSn)}</span>` : '';
   const accTitle = ACC_LABEL[r.acc];
   const open = S.shelf.open.has(r.key);
   return `<div class="srow" data-k="${esc(r.key)}">
@@ -1851,7 +1871,7 @@ function shelfRow(r, two) {
       <div class="t" title="${esc(r.t)}">${esc(r.t)}</div>
       <div class="m">${esc(surname(r.au) || 'Unknown')}${r.y ? ' · ' + r.y : ''}${r.call ? ` · <span class="call">${esc(r.call)}</span>` : ''}${r.scans > 1 ? ` · ${r.scans} scans` : ''}${r.cat ? ' · in catalog' : ''}${r.fit === 0 ? '<span class="ff">false friend</span>' : ''}</div>
     </div></div>
-    <div class="strip"><div class="edge${sealed ? ' sealed' : ''}">${note ? `<span class="note">${note}</span>` : ''}</div>${flagsOf(r.A, 0, pA, r.B)}${flagsOf(r.B, 1, pB, r.A)}</div>
+    <div class="strip"><div class="edge${sealed ? ' sealed' : ''}"></div>${note}${flagsOf(r.A, 0, pA, r.B)}${flagsOf(r.B, 1, pB, r.A)}</div>
     <button type="button" class="more" data-more="${esc(r.key)}" aria-expanded="${open}" aria-label="List ${nA + nB || 'the'} passages in ${esc(r.t)}">${open ? '−' : '+'}</button>
     ${open ? shelfDetail(r) : ''}
   </div>`;
