@@ -28,7 +28,7 @@ These questions come from the [State of the evidence](/concepts/what-is-a-strong
 - **Does forecasting parity transfer?** AI forecasters now roughly match strong humans on binary questions that resolve within months. We do not know whether that predicts anything about long-horizon or unresolvable judgment, or how to find out without waiting.
 - **What is the right baseline?**
   - On market questions, forecasters see the price. One analysis finds that, after correcting for multiple comparisons, no entry, AI or superforecaster, significantly beats simply submitting that price.
-  - We do not know which baseline a judge should use when deciding how much weight a forecaster deserves.
+  - A forecaster deserves weight only for information beyond the judge's existing sources, which [forecast-encompassing tests](/concepts/what-is-a-strong-reasoner/#a-working-definition) measure on resolved questions. We do not know how to measure it for judgments that never resolve.
 - **Do audit channels survive optimization?**
   - Chain-of-thought monitoring works, and it degrades when it is trained against.
   - The same may hold for every legible channel these notes propose, including consistency checks, track records and trace logs.

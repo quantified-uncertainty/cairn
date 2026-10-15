@@ -11,7 +11,7 @@ The [components](/concepts/components/) are the parts; these are ways to wire th
 
 *Status: tested.*
 
-Ask predictors to forecast a large set of items, say 10,000, and announce that a random subset, say 50, will be resolved by an expensive, trusted [evaluation](/concepts/evaluation-methods/). Reward accuracy on that subset. Because no predictor knows which items will be graded, each must treat every item as if it might be. A small evaluation budget then calibrates forecasts across the whole set.
+Ask predictors to forecast a large set of items, say 10,000, and announce that a random subset, say 50, will be resolved by an expensive, trusted [evaluation](/concepts/evaluation-methods/). Reward accuracy on that subset. Because no predictor knows which items will be graded, each must treat every item as if it might be. A small evaluation budget then calibrates forecasts across the whole set. What gets calibrated is agreement with the evaluator, errors included: predictors are paid to model the evaluator, not the truth.
 
 The incentive thins as the set grows: with 50 of 10,000 resolved, each item has a 1-in-200 chance of counting. A proper scoring rule stays proper under random resolution, but the reward for effort on any one item falls by that factor.
 

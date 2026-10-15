@@ -33,7 +33,7 @@ Examples:
 - What is the probability that we live in a simulation?
 - How much did organization X reduce existential risk from 2000 to 2020?
 
-Evaluation leans on epistemology, sociology, survey methodology, and the "soft" sciences.
+Evaluation leans on psychometrics, survey methodology, sociology and epistemology.
 
 Program evaluation draws the line differently, and more sharply. Scriven defines evaluation as determining the "merit, worth, or significance" of something, which requires value premises (criteria and standards) as well as facts ([Key Evaluation Checklist](https://files.wmich.edu/s3fs-public/attachments/u1105/2023/kec-scriven.pdf)). On that definition the simulation question above is a hard *estimate*, not an evaluation. This wiki's split is mainly about verifiability and trust, and the two criteria usually coincide: the questions hardest to verify are usually the ones that embed contested values.
 

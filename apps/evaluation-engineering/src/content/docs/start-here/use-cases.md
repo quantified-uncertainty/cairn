@@ -9,7 +9,7 @@ The point of an evaluation system is end-to-end value: resources in, better deci
 
 ## Cases with real systems behind them
 
-**Grant portfolios.** Most funders evaluate only the grants a program officer has time to read; the rest are renewed on momentum. The [worked example](/concepts/worked-example/) prices four designs for a funder with 1,000 grants a year and shows what a 50-item audit can and cannot establish.
+**Grant portfolios.** Many funders read closely only the grants a program officer has time for; the rest are renewed on momentum. The [worked example](/concepts/worked-example/) prices four designs for a funder with 1,000 grants a year and shows what a 50-item audit can and cannot establish.
 
 **Research triage.** DARPA's SCORE program priced the replicability of claims from about 3,000 papers and validated the forecasts against a small replicated subset; human forecasts carried real signal and AI imitators did not ([Lineage](/start-here/lineage/#outside-precedents-for-the-core-pattern)). A cheap replicability prior over a literature is useful to funders, reviewers and meta-analysts even when it is wrong on many individual claims.
 

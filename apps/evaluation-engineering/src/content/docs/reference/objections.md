@@ -13,13 +13,13 @@ Granted: the area is vague. There are no crisp boundaries between evaluation sys
 
 ## "Scaled evaluations can never be accurate enough"
 
-A common reaction is that these proposals are AGI-complete — usually resting on the assumption that the outputs must be *highly accurate*. They don't. The estimates and evaluations only have to be **better than what people would have done otherwise**. People already make enormous numbers of informal evaluations and judgments; these are typically noisy, overconfident, and inaccurate. The bar is to beat that baseline cheaply, not to be correct in absolute terms.
+A common reaction is that these proposals are AGI-complete, because the outputs would have to be highly accurate. They need only beat what people would otherwise have done, cheaply. Where outcomes can be scored, simple statistical models have matched or beaten expert judgment in most studies comparing the two ([Lineage](/start-here/lineage/#outside-precedents-for-the-core-pattern)).
 
-The response is weaker than it looks. The baseline is usually an existing process, not informal guessing, and a scaled evaluator's errors differ in kind: they are systematic, repeated across every item, and learnable by those it rates, where informal judgments are noisy but scattered. Beating the baseline on average is necessary, not sufficient; see the Goodhart and monoculture objections below.
+The response is weaker than it looks. Most questions this wiki targets have no scorable outcome, the baseline is usually an existing process, and a scaled evaluator's errors differ in kind: they are systematic, repeated across every item, and learnable by those it rates, where informal judgments are noisy but scattered. Beating the baseline on average is necessary, not sufficient; see the Goodhart and monoculture objections below.
 
 ## "Why invent so much terminology instead of engaging the literature?"
 
-The work spans many fields, and one has to stop somewhere. The most conspicuous gap is the established academic field of **Evaluation** (program evaluation): the bet is that the bulk of this cause area lies where that field has shown little interest, but that's a bet, not a verdict. Recommendations and pointers are genuinely wanted. The decision-automation literature is also relevant and under-engaged.
+Partly fair. The founding drafts under-engaged program evaluation, psychometrics and the clinical-versus-statistical prediction literature, each of which has studied part of the problem for decades; [Adjacent Fields](/reference/adjacent-fields/) now maps them. The remaining bet is that audited, high-throughput systems for judging grants, organizations and policies are a gap none of them fills. Pointers showing otherwise are wanted.
 
 ## "Why write theory instead of just building?"
 

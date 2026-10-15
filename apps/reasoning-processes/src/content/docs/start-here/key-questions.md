@@ -16,7 +16,7 @@ The credences are *illustrative* placeholders: subjective probabilities drafted 
 ## 1. Definition and measurement
 
 - **"Reasoning strength" is a coherent target: calibration measured in one domain predicts calibration in another.** *~55%.*
-  - *Since 2024:* there is still no direct test. Forecasting benchmarks mix domains, and we know of none that publishes cross-domain calibration correlations.
+  - *Since 2024:* no direct test on forecasting. Benchmarks mix domains, and we know of none that publishes cross-domain calibration correlations. Indirectly, calibration trained with a Brier-score reward carried over to out-of-domain tasks ([Damani et al. 2025](https://arxiv.org/abs/2507.16806)), weak evidence that it is partly a general skill.
   - *Would move it:* per-domain calibration curves for the same systems, on ForecastBench-style question sets.
   - See [What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/)
 - **Consistency constrains correctness, for systems not trained against the metric.** *~65%.*
@@ -39,14 +39,14 @@ The credences are *illustrative* placeholders: subjective probabilities drafted 
   - *Since 2024:* Metaculus concluded from its Q2 2025 bot tournament that the underlying model mattered more than the scaffolding ([Metaculus, Oct 2025](https://www.lesswrong.com/posts/Surnjh8A4WjgtQTkZ/q2-ai-benchmark-results-pros-maintain-clear-lead)). A 14B model RL-trained on resolved questions matched o1 on accuracy ([Turtel et al. 2025](https://arxiv.org/abs/2505.17989)).
   - *Against:* the top-ranked ForecastBench entry and Metaculus bots in 2026 are pipelines. Metaculus reports scaffolded bots pulling ahead since fall 2025; its single-prompt baseline, usually in the top 10, placed 18th of 173 in spring 2026 ([Metaculus, Sep 2026](https://www.lesswrong.com/posts/wZBbDqzfBjYG58CxK/futureeval-spring-results-pros-beat-bots-but-the-gap-is)).
   - *Would move it:* a bare frontier model, without scaffolding, topping both leaderboards would move us up; pipelines keeping a persistent lead would move us down.
-  - This was the original post's flagged crux. It decides how much non-lab work is obsoleted on lab timelines.
+  - This was the original post's flagged crux: it decides how much non-lab work lab progress makes obsolete.
 - **A meaningful non-commercial niche remains, mainly in evaluation and verification infrastructure rather than in the reasoners themselves.** *~60%.*
   - *Since 2024:* the public benchmarks that track AI forecasting are run by a nonprofit (FRI) and a platform (Metaculus), not by labs. Forecasting startups now compete for the reasoner itself.
 - **Better AI epistemics differentially helps safety rather than just accelerating everything.** *~50%.*
   - *Since 2024:* little direct evidence. Reasoning gains have come fastest in verifiable domains (maths, code), which serve capabilities at least as much as judgment.
   - *Would move it:* evidence that labs' decisions on safety-relevant questions changed because of AI-generated analysis.
 - **Institutional demand for machine forecasts as decision inputs grows materially by 2028.** *~40%.*
-  - *Since 2024:* AI could lower two likely causes of corporate prediction markets' failure, immature tooling and the difficulty of writing good questions, but not a third, social disruptiveness ([Sempere et al. 2021](https://forum.effectivealtruism.org/posts/dQhjwHA7LhfE8YpYF/prediction-markets-in-the-corporate-setting)).
+  - Likely reasons corporate prediction markets have not caught on include immature tooling, the cost of writing good questions, and social disruptiveness ([Sempere et al. 2021](https://forum.effectivealtruism.org/posts/dQhjwHA7LhfE8YpYF/prediction-markets-in-the-corporate-setting)). AI could lower the first two, not the third.
 - **Reliability gains unlock discontinuous application tiers, not a smooth curve.** *~40%.* See [The Reliability Ladder](/concepts/epistemic-applications/).
 
 ## 3. Failure modes
@@ -56,13 +56,15 @@ The credences are *illustrative* placeholders: subjective probabilities drafted 
   - *Would move it:* measured belief divergence among heavy users of different assistants.
 - **Persuasive capability outpaces our ability to verify.** *~55%.*
   - Judge-grounded oversight trains for what convinces. Under the [obfuscated-arguments problem](https://www.alignmentforum.org/posts/PJLABqQ962hZEqhdB/debate-update-obfuscated-arguments-problem), a flaw spread across many plausible steps cannot be efficiently located.
-  - *Would move it:* debate experiments in which judges stay accurate as the debaters' capability rises.
+  - *Since 2024:* across 19 LLMs and about 77,000 participants, the post-training and prompting methods that made models more persuasive also made their claims less accurate ([Hackenburg et al. 2025](https://arxiv.org/abs/2507.13919)).
+  - *Against:* stronger or more persuasive debaters made weak judges more accurate, but the clear gains are on reading-comprehension tasks where debaters can quote a text the judge lacks ([Khan et al. 2024](https://arxiv.org/abs/2402.06782); [Kenton et al. 2024](https://arxiv.org/abs/2407.04622)).
+  - *Would move it:* debate gains that hold where no quotation settles the question.
   - See [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/)
 - **Errors are correlated enough across model families that multi-model checks deliver much less than naive independence implies.** *~75%.*
-  - *Since 2024:* a twelve-model ensemble's mean forecast leaned significantly above 50% despite evenly split outcomes ([Schoenegger et al. 2024](https://arxiv.org/abs/2402.19379)).
-  - *Would move it:* published estimates of effective independence across families ([Independence](/concepts/hardening-independence/)).
+  - *Since 2024:* across more than 350 LLMs, when two models both erred on one leaderboard dataset they gave the same wrong answer 60% of the time, and larger, more accurate models had more correlated errors even across providers ([Kim et al. 2025](https://arxiv.org/abs/2506.07962)). A twelve-model forecasting ensemble's mean leaned significantly above 50% despite evenly split outcomes ([Schoenegger et al. 2024](https://arxiv.org/abs/2402.19379)).
+  - *Would move it:* estimates of effective independence on forecasting and judging tasks, not just multiple-choice benchmarks ([Independence](/concepts/hardening-independence/)).
 - **Once reasoner scores gate anything valuable, they get gamed.** *~85%.*
-  - *Since 2024:* models trained against a CoT monitor learned to hide intent ([Baker et al. 2025](https://arxiv.org/abs/2503.11926)). Metaculus bots gamed numeric scoring with "porcupine" distributions.
+  - *Since 2024:* models trained against a CoT monitor learned to hide intent ([Baker et al. 2025](https://arxiv.org/abs/2503.11926)). A GPT-4o update trained partly on users' thumbs-up and thumbs-down ratings turned sycophantic and was rolled back ([OpenAI 2025](https://openai.com/index/expanding-on-sycophancy/)). Metaculus bots gamed numeric scoring with "porcupine" distributions.
   - The open question is how fast gaming happens, not whether it happens.
 - **Chain-of-thought monitoring remains a usable audit channel for frontier models through 2028.** *~50%.*
   - *For:* monitorability so far appears to survive RL at current scale ([Guan et al. 2025](https://arxiv.org/abs/2512.18311)).
@@ -74,7 +76,7 @@ The credences are *illustrative* placeholders: subjective probabilities drafted 
 
 ## 4. Institutions
 
-These are mostly normative questions, so we give no credences for them.
+These are mostly normative questions; only the last, which is empirical, gets a credence.
 
 - **Who should run the oversight and metering systems for automated research?** The metering layer concentrates power over what research counts. AI-scientist systems now exist, and their documented failures are process failures ([Overseeing Automated Research](/proposals/overseeing-automated-research/)).
 - **What consent norms should govern AI evaluation of people and organizations?** Cheap automated evaluation is arriving before such norms exist ([Evaluation Consent Policies](https://quantifieduncertainty.org/posts/evaluation-consent-policies/)).

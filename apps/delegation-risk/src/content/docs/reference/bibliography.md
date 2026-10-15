@@ -30,6 +30,7 @@ Works the framework builds on, by domain. Pages cite further sources inline.
 - **Willison, S. (2025).** *The lethal trifecta for AI agents: private data, untrusted content, and external communication.* [simonwillison.net](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/), 16 June 2025.
 - **Meta (2025).** *Agents Rule of Two: A Practical Approach to AI Agent Security.* [ai.meta.com](https://ai.meta.com/blog/practical-ai-agent-security/), 31 October 2025.
 - **Hadfield-Menell, D., & Hadfield, G.K. (2019).** *Incomplete Contracting and AI Alignment.* AIES '19. [arXiv:1804.04268](https://arxiv.org/abs/1804.04268).
+- **Kolt, N. (2026).** *Governing AI Agents.* *Notre Dame Law Review* 101, 335. [arXiv:2501.07913](https://arxiv.org/abs/2501.07913). Agency law and principal–agent theory applied to AI agents.
 
 ## Frontier safety frameworks and regulation
 
@@ -56,8 +57,10 @@ Works the framework builds on, by domain. Pages cite further sources inline.
 - **Holmström, B. (1979).** Moral Hazard and Observability. *Bell Journal of Economics*, 10(1), 74–91. The informativeness principle behind monitoring.
 - **Holmström, B. (1982).** Moral Hazard in Teams. *Bell Journal of Economics*, 13(2), 324–340. Relative performance evaluation as a filter for common shocks.
 - **Holmström, B., & Milgrom, P. (1991).** Multitask Principal-Agent Analyses: Incentive Contracts, Asset Ownership, and Job Design. *Journal of Law, Economics, & Organization*, 7 (special issue), 24–52. Incentives on measured tasks divert effort from unmeasured ones; constraints substitute for incentives.
-- **Alonso, R., & Matouschek, N. (2008).** Optimal Delegation. *Review of Economic Studies*, 75(1), 259–293. Delegation without transfers as the choice of a permitted set.
+- **Holmström, B. (1984).** On the Theory of Delegation. In M. Boyer & R. Kihlstrom (Eds.), *Bayesian Models in Economic Theory*, 115–141. North-Holland. Delegation without transfers as the choice of a permitted set.
+- **Alonso, R., & Matouschek, N. (2008).** Optimal Delegation. *Review of Economic Studies*, 75(1), 259–293. When the optimal permitted set is an interval.
 - **Kreps, D.M., & Wilson, R. (1982).** Reputation and Imperfect Information. *Journal of Economic Theory*, 27(2), 253–279. Why a bad type imitates a good one while observed.
+- **Sobel, J. (1985).** A Theory of Credibility. *Review of Economic Studies*, 52(4), 557–573. Building, and cashing in, a reputation for reliable advice.
 - **Sappington, D. (1983).** Limited Liability Contracts between Principal and Agent. *Journal of Economic Theory*, 29(1), 1–21.
 - **Tirole, J. (1986).** Hierarchies and Bureaucracies: On the Role of Collusion in Organizations. *Journal of Law, Economics, & Organization*, 2(2), 181–214.
 - **Bolton, P., & Dewatripont, M. (2005).** *Contract Theory.* MIT Press.
