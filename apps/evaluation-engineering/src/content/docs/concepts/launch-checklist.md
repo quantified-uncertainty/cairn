@@ -10,7 +10,7 @@ Written for a system with a cheap evaluator (an LLM, a crowd, junior raters) sta
 ## Before building
 
 1. **Name the decision.** Which decision the score feeds, who acts on it, and what an error costs in each direction. If no decision changes, stop. ([Design space](/concepts/the-systems-view/#the-design-space))
-2. **Fix the payer and the metric owner.** Write down who funds the system, who can change the rubric, and every conflict of interest; publish them. Rated-party funding is the best-documented route to capture. ([Patterns §3](/concepts/patterns-and-failure-modes/#3-incentives-and-funding-decide-trustworthiness--more-than-method-does))
+2. **Fix the payer and the metric owner.** Write down who funds the system, who can change the rubric, and every conflict of interest; publish them. In this wiki's catalogue, systems paid by the rated party had about three times the odds of a documented failure. ([Patterns §3](/concepts/patterns-and-failure-modes/#3-incentives-and-funding-decide-trustworthiness--more-than-method-does))
 3. **Budget the expensive layer as a recurring cost.** Audits, re-validation and the reference panel run for the life of the system, not once at setup. ([Worked example](/concepts/worked-example/))
 4. **Version the rubric.** Every score records the rubric, prompt and model version that produced it.
 

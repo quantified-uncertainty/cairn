@@ -3,7 +3,7 @@ title: Open Problems
 description: Unresolved problems, aggregated from every chapter's open-questions section.
 ---
 
-*Every chapter keeps its own open-questions section, and this page aggregates them. The five problems at the top are the ones we currently think the whole program rests on. A sixth group lists questions that the 2025–26 evidence has raised.*
+*Every chapter keeps its own open-questions section, and this page aggregates them. The five problems at the top are the ones we currently think the whole program rests on. A further group lists questions that the 2025–26 evidence has raised.*
 
 :::note
 This page is an index, not original content. Each link points to the chapter where the problem lives. For the strategic uncertainties, with credences, see [Cruxes](/start-here/key-questions/).
@@ -27,7 +27,7 @@ These questions come from the [State of the evidence](/concepts/what-is-a-strong
 
 - **Does forecasting parity transfer?** AI forecasters now roughly match strong humans on binary questions that resolve within months. We do not know whether that predicts anything about long-horizon or unresolvable judgment, or how to find out without waiting.
 - **What is the right baseline?**
-  - On market questions, forecasters see the price. When that price is the baseline, neither AI systems nor superforecasters clearly add value.
+  - On market questions, forecasters see the price. When that price is the baseline, no entry, AI or superforecaster, demonstrably adds value after correcting for multiple comparisons.
   - We do not know which baseline a judge should use when deciding how much weight a forecaster deserves.
 - **Do audit channels survive optimization?**
   - Chain-of-thought monitoring works, and it degrades when it is trained against.

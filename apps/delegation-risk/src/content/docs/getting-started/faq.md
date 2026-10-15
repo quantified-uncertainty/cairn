@@ -83,7 +83,7 @@ Structured interfaces and one-way information flows bound what components can ex
 
 ### "How do you handle adversarial users and third parties?"
 
-As a separate harm channel, *hijack*: someone steers a delegate that is not itself scheming, through direct misuse or through instructions planted in content it reads, including web pages, emails, issues, tool outputs and MCP tool descriptions ([routes](/delegation-risk/risk-decomposition/)). Filtering does not work reliably for natural-language inputs. Nasr et al. (2025) bypassed all 12 recent jailbreak and prompt-injection defenses they tested with adaptive attacks, most at above 90% success, although most had reported near-zero attack success against static attacks ([arXiv:2510.09023](https://arxiv.org/abs/2510.09023)). So the defenses are structural:
+As a separate harm channel, *hijack*: someone steers a delegate that is not itself scheming, through direct misuse or through instructions planted in content it reads, including web pages, emails, issues, tool outputs and MCP tool descriptions ([routes](/delegation-risk/risk-decomposition/)). Filtering does not work reliably for natural-language inputs. Nasr et al. (2025) bypassed all 12 recent jailbreak and prompt-injection defenses they tested with adaptive attacks, most at above 90% success, although most had originally reported near-zero attack success ([arXiv:2510.09023](https://arxiv.org/abs/2510.09023)). So the defenses are structural:
 
 - Keep untrusted data out of control flow, as CaMeL does.
 - Strip capabilities from any component that reads untrusted content.

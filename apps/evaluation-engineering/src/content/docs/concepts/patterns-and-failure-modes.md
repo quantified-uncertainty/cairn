@@ -5,7 +5,7 @@ sidebar:
   order: 4
 ---
 
-*Status: early draft, synthesized from a June 2026 literature sweep. This is the analytical companion to [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/): the catalogue lists ~100 systems; this page asks what is **provably and repeatedly true** across them. Each pattern names a mechanism, the key papers, and the real systems that illustrate it.*
+*Status: early draft, synthesized from a June 2026 literature sweep. This is the analytical companion to [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/): the catalogue lists about 160 systems; this page asks what is **provably and repeatedly true** across them. Each pattern names a mechanism, the key papers, and the real systems that illustrate it.*
 
 :::caution
 Citations and key figures were checked against their sources (June 2026, with spot corrections in October 2026). Interpretive glosses, including the design implications, are this wiki's, not the cited authors'. A "~" denotes a rounded or pooled value (e.g. a meta-analytic mean); check the original for exact numbers and confidence intervals.
@@ -53,9 +53,11 @@ Even setting aside gaming, the raw ratings entering a system are not a clean sam
 
 > **Design implication.** Never treat the mean of self-selected ratings as the quality signal. Verify *who* is evaluating, model the selection process, and prefer distribution-aware metrics.
 
-## 3. Incentives and funding decide trustworthiness — more than method does
+## 3. Incentives and funding shape trustworthiness
 
-The economics of quality disclosure explains why the [catalogue's](/concepts/evaluation-systems-in-the-wild/) most-trusted and most-failed systems differ by *funding structure*, not technique. (This is the formal backbone of the [audit & ratings](/reference/adjacent-fields/) section.)
+<a id="3-incentives-and-funding-decide-trustworthiness--more-than-method-does"></a>
+
+The economics of quality disclosure predicts that who pays a certifier shapes what it certifies. (This is the formal backbone of the [audit & ratings](/reference/adjacent-fields/) section.) A [coding of the catalogue](/concepts/evaluation-systems-in-the-wild/#does-who-pays-predict-failure) gives partial support. Systems whose rated party pays the evaluator had about three times the odds of a documented failure, but most of those failures were gaming by the rated party, not lenient certification. A finer payer typology predicted nothing, and neither did method.
 
 - **Quality information is valuable because of adverse selection.** When buyers can't tell quality, good sellers exit and markets collapse to "lemons" ([Akerlof, *QJE* 1970](https://academic.oup.com/qje/article-abstract/84/3/488/1896241)). Evaluation systems exist to restore those lost gains from trade.
 - **A signal works only if it's differentially costly** to fake for low-quality types ([Spence, *QJE* 1973](https://academic.oup.com/qje/article-abstract/87/3/355/1909092)). The design question is always: *can a bad type cheaply mimic this?*
@@ -65,7 +67,7 @@ The economics of quality disclosure explains why the [catalogue's](/concepts/eva
 - **Too many labels destroy a label's value** — the "Groucho effect": small uncertainty about what a label *means* makes consumers infer the labeled product is marginal ([Harbaugh, Maxwell & Roussillon, *Mgmt Sci* 2011](https://pubsonline.informs.org/doi/abs/10.1287/mnsc.1110.1412)).
 - **Gatekeepers fail in correlated, predictable ways** when they rent their reputation to the issuer who pays them ([Coffee, *Gatekeepers* 2006](https://global.oup.com/academic/product/gatekeepers-9780199288090)) — Enron, WorldCom, the 2008 ratings.
 
-**Seen in the wild:** credit ratings (issuer-pays → inflation); LEED/B-Corp/ISO (fee-for-cert → threshold-gaming, label proliferation); hospital report cards (cream-skimming); restaurant hygiene (independent inspector + hard-to-game metric → it works).
+**Seen in the wild:** credit ratings (issuer-pays → inflation); LEED (fee-for-cert; certified buildings showed no collective energy savings); hospital report cards (cream-skimming); restaurant hygiene (independent inspector + hard-to-game metric → LA grade cards worked, though NYC's inspections proved inconsistent).
 
 > **Design implication.** Credible evaluation needs (a) a non-gameable, differentially-costly signal, (b) an independent payer or strong reputational stake, (c) skeptical receivers, and (d) a clear standard. Mandatory, standardized, risk-adjusted, hard-to-game disclosure beats voluntary issuer-paid coarse certification.
 
@@ -103,7 +105,7 @@ How you collect and combine ratings changes the answer — there is no neutral d
 Pulling the five families together:
 
 1. **Deploying an evaluation is world-making, not world-describing.** Reactivity and Goodhart guarantee the rated parties will optimize the proxy. A system that ignores its own feedback loop will be gamed into uselessness. Design for invariance to everything but the truth.
-2. **Funding structure seems to predict trustworthiness better than methodology.** The candidate master lever is *who pays the evaluator and who controls the metric's definition*. The certification economics here predicts it, and the [catalogue's](/concepts/evaluation-systems-in-the-wild/) clearest contrasts fit it, but nobody has coded the catalogue to test it. [Evaluation as a System](/concepts/the-systems-view/#technical-and-institutional-design-variables) takes up what it implies for design.
+2. **Whether the rated party pays the evaluator is the funding variable with evidence behind it.** Theory predicts lenient certification when the rated party pays. The [catalogue coding](/concepts/evaluation-systems-in-the-wild/#does-who-pays-predict-failure) finds roughly threefold odds of documented failure in such systems, but mostly through gaming, and no signal in the broader payer typology. The data are thin and the selection into "documented" is uneven, so treat the payer as a design variable worth controlling, not as a proven master lever. [Evaluation as a System](/concepts/the-systems-view/#technical-and-institutional-design-variables) takes up what it implies for design.
 3. **Raw ratings are a biased, gameable sample;** verification of *who evaluates* and distribution-aware aggregation are not optional polish — they are the difference between signal and noise.
 4. **Every output format and aggregation rule embeds a choice** with predictable, different failure modes. None is neutral.
 5. **The hard problems are old and partly solved.** Adverse selection, signaling, unraveling, reputation inflation, Wilson/Bayesian aggregation, the reactivity of public measures — these have decades of theory and evidence. An automated, LLM-powered evaluation system should treat this literature as its spec sheet, not rediscover it.

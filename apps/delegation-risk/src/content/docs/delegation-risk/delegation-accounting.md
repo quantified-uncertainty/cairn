@@ -50,7 +50,7 @@ Bob has his own sheet, one per option.
 | Deliver | \$50 fee; an accidental loss falls on Alice, whose sheet already books it | **\$50** |
 | Steal | 20% he gets away with \$1,000; 80% he is caught, returns the gem and pays a \$1,000 fine: 0.2 × \$1,000 − 0.8 × \$1,000 | **−\$600** |
 
-Theft carries a *contingent liability*: a cost that materializes only if he is caught. It makes stealing a losing option, and a courier who reasons this way delivers. Alice's 1% theft row is her estimate that Bob is not that courier.
+Theft carries a *contingent liability*: a cost that materializes only if he is caught. It makes stealing a losing option, and a courier who reasons this way delivers. Alice's 1% theft row allows for the chance that Bob is not that courier.
 
 When Alice delegates through a manager who is liable for his couriers, the \$30 of expected loss on Bob's deliveries moves onto the manager's books. Alice's sheet then holds only the manager's own failure modes, plus the chance that he cannot pay. Liability moves delegation risk between books. It does not remove it.
 

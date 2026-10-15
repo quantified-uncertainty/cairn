@@ -36,7 +36,7 @@ flowchart LR
 
 ### Step 1: the harm table
 
-Each row is a harm mode, tagged with its [channel](/delegation-risk/risk-decomposition/). An *accident* is a failure at the task. *Defection* is the delegate pursuing something else, including reward hacking. A *hijack* is a third party, or the user, steering a delegate that is not itself scheming, most often through instructions injected into content or tools it reads.
+Each row is a harm mode, tagged with its [channel](/delegation-risk/risk-decomposition/). An *accident* is a failure at the task. *Defection* is the delegate pursuing something else, including reward hacking. A *hijack* is a third party, or the user, steering a delegate that is not itself scheming, often through instructions injected into content or tools it reads.
 
 | Component | Harm mode | Channel | P per month | Damage | Risk per month |
 |---|---|---|---|---|---|

@@ -1,6 +1,6 @@
 ---
 title: Evaluation Systems in the Wild
-description: A catalogue of about 160 real-world evaluation systems, from RTINGS and IMDb to credit ratings, Michelin and LMArena, coded by who pays and documented failure, and what they teach about building evaluation systems.
+description: A catalogue of about 160 real-world evaluation systems, from RTINGS and IMDb to credit ratings, Michelin and the Arena LLM leaderboard, coded by who pays and documented failure, and what they teach about building evaluation systems.
 sidebar:
   order: 3
 ---
@@ -24,7 +24,7 @@ Every entry names **what it evaluates**, its **output format**, its **method**, 
 2. **Affiliate / ad-funded editorial** (Wirecutter, RTINGS, CNET) — recommendation-revenue conflict.
 3. **Rated party pays** — issuer-pays ratings, fee-for-certification, award-licensing (Moody's/S&P, UL, ISO, LEED, J.D. Power, DXOMARK).
 
-How much this matters is tested [below](#does-who-pays-predict-failure); the answer is less than this page used to claim.
+How much this matters is tested [below](#does-who-pays-predict-failure); the answer is: less than the hand-picked contrasts suggested.
 
 **Recurring failure modes.** Fake reviews / astroturfing / review bombing · gaming and Goodharting (citations, ratings) · capture (credit ratings in 2008; the World Bank's *Doing Business* scandal) · pay-to-play · grade inflation · self-declaration abuse · snapshot-in-time validity · reciprocal retaliation in two-sided systems · opaque weighting.
 
@@ -93,7 +93,7 @@ How much this matters is tested [below](#does-who-pays-predict-failure); the ans
 
 ## Health, safety, standards & certification
 
-- **Hospital ratings** — **[CMS star ratings](https://www.medicare.gov/care-compare/)** (1–5, federal), **[Leapfrog](https://www.hospitalsafetygrade.org/)** (A–F safety), **[US News Best Hospitals](https://health.usnews.com/best-hospitals)**, **[Healthgrades](https://www.healthgrades.com/)**. *Weakness:* CMS criticized for penalizing complex/teaching hospitals; Healthgrades and Leapfrog charge hospitals to license their grades for marketing. In March 2026 a federal judge ruled that Leapfrog's method "has no scientific basis, unfairly penalizes nonparticipating hospitals" and ordered grades for five Florida hospitals withdrawn; Leapfrog is appealing ([WUSF](https://www.wusf.org/health-news-florida/2026-09-10/leapfrog-appeals-judges-ruling-for-south-florida-hospitals-over-safety-grades)).
+- **Hospital ratings** — **[CMS star ratings](https://www.medicare.gov/care-compare/)** (1–5, federal), **[Leapfrog](https://www.hospitalsafetygrade.org/)** (A–F safety), **[US News Best Hospitals](https://health.usnews.com/best-hospitals)**, **[Healthgrades](https://www.healthgrades.com/)**. *Weakness:* CMS criticized for penalizing complex/teaching hospitals; Healthgrades and Leapfrog charge hospitals to license their grades for marketing. In March 2026 a federal judge found that Leapfrog's changed method, which scored five hospitals that declined its voluntary survey, violated Florida consumer-protection law, and ordered their grades removed; Leapfrog is appealing ([WUSF](https://www.wusf.org/health-news-florida/2026-09-10/leapfrog-appeals-judges-ruling-for-south-florida-hospitals-over-safety-grades)).
 - **Restaurant hygiene** — **[NYC letter grades](https://www.nyc.gov/site/doh/business/food-operators/letter-grading-for-restaurants.page)** (A/B/C), **[UK Food Hygiene Rating Scheme](https://www.food.gov.uk/safety-hygiene/food-hygiene-rating-scheme)** (0–5). Unannounced inspections; municipal, no fee-for-grade. *Weakness:* snapshot validity; inspection inconsistency.
 - **Drug/device** — **[FDA](https://www.fda.gov/)**, **[EMA](https://www.ema.europa.eu/)**, **[NICE](https://www.nice.org.uk/)** (cost-per-QALY HTA). Approve/not. Expert regulatory review. *Weakness:* user-fee funding criticized as "cozy"; QALY thresholds called arbitrary.
 - **Crash tests** — **[IIHS](https://www.iihs.org/)** (Good–Poor + Top Safety Pick; insurer-funded, independent of makers), **[Euro NCAP](https://www.euroncap.com/)** (0–5 stars), **[NHTSA 5-Star](https://www.nhtsa.gov/ratings)** (most cluster at 4–5★). *Weakness:* limited scenario set; "test to the test".
@@ -170,13 +170,44 @@ How much this matters is tested [below](#does-who-pays-predict-failure); the ans
 - **[Manifold](https://manifold.markets/)** — user-created markets. Play-money market maker. *Weakness:* play money weakens incentives; creator-resolved miscalibration.
 - **[PredictIt](https://www.predictit.org/)** — US politics. Real-money, academic project. *Weakness:* position/withdrawal caps distort prices.
 
+## AI models & public information
+
+- **[Arena](https://arena.ai/)** (Chatbot Arena, then LMArena; [renamed](https://arena.ai/blog/lmarena-is-now-arena/) January 2026) — LLMs. Bradley–Terry/Elo leaderboard from crowd pairwise votes. Venture-funded; since 2025 it also sells evaluations to model labs and enterprises. *Weakness:* labs can test private variants and publish the best; in April 2025 a lab topped the board with a non-public chat-tuned model, which the operator said did not match its policy ([TechCrunch](https://techcrunch.com/2025/04/11/metas-vanilla-maverick-ai-model-ranks-below-rivals-on-a-popular-chat-benchmark); [Singh et al. 2025](https://arxiv.org/abs/2504.20879)).
+- **X Community Notes** (formerly Birdwatch) — context notes on posts. A matrix-factorisation "bridging" algorithm favours notes rated helpful across groups of raters who usually disagree, so one faction cannot carry a note alone ([Wojcik et al. 2022](https://arxiv.org/abs/2210.15723)). Meta replaced US third-party fact-checking with the same model in 2025 ([Meta](https://about.fb.com/news/2025/01/meta-more-speech-fewer-mistakes/)).
+- **[The Unjournal](https://unjournal.org/)** — economics, policy and social-science research. Commissions paid, public expert evaluations with ratings. Grant-funded nonprofit; charges authors nothing.
+
+## Does who pays predict failure?
+
+This page and [Patterns §3](/concepts/patterns-and-failure-modes/#3-incentives-and-funding-shape-trustworthiness) used to say that funding structure predicts trustworthiness better than method does. In October 2026 the catalogue was coded to test that. The data and script are in the repository ([`data/systems.csv`, `data/analyze.py`](https://github.com/quantified-uncertainty/cairn/tree/main/apps/evaluation-engineering/data)).
+
+**Coding.** Each named system is one row (161; "Also" mentions excluded). Each row records:
+- the primary payer: the evaluated party, users, a third party (advertisers, affiliate retailers, insurers, donors), the public, or mixed;
+- whether the evaluated party pays the evaluator anything material, such as fees, commissions, advertising, or logo or award licences;
+- the method family;
+- any documented major failure. A failure counts as *established* when a regulator, court, official audit, peer-reviewed study, the operator itself or a named investigation found the outputs materially distorted. It counts as *alleged* when the system has only been criticised. Fakes that a platform merely removed do not count, and neither do single disputed ratings.
+
+The result was 43 established failures, each sourced in the CSV, 18 alleged, and 100 with none found.
+
+**Results.** 154 systems have a known payer, and 42 of them have an established failure.
+- *The payer typology predicts nothing detectable.* Failure rates run from 19% (user-paid) to 34% (paid by the evaluated party), well within noise (permutation test p = 0.71). In leave-one-out prediction, knowing the payer category does slightly worse than ignoring it.
+- *Method does little better.* Testing and inspection have the lowest failure rate (12%) and crowd systems the highest (39%), but p = 0.25 and the predictive gain is nil. Across bootstrap resamples of catalogue entries, payer came out ahead of method in 28%: no clear winner either way.
+- *One contrast does hold up: does the rated party pay at all?* Where it does, 27 of 67 systems (40%) have an established failure; where it does not, 11 of 62 (18%). That is an odds ratio of 3.1 (90% CI 1.5–6.8, Fisher p = 0.007). The odds ratio stays between 2.3 and 4.6 within method families, after dropping low-confidence codings, with each catalogue bullet counted once, and whichever way the 25 unknowns are assigned.
+- *Those failures are mostly gaming, not capture.* Of the 27, only 6 are capture in the strict sense, meaning a lenient rating of the payer: the 2008 credit ratings, the BBB, the ACICS accreditor and the FDA's Aduhelm approval. Eleven are manipulation by the rated party or outsiders (fake reviews, falsified rankings data, leaked tests); the rest concern validity or data quality. Capture is rare overall (7 of 154), too rare to test on its own.
+
+**Caveats.** Treat this as weak evidence.
+- *Selection.* A failure is counted only if someone documented it. Firms paid by the parties they rate attract regulators, litigants and journalists, so "none found" means "not found in a targeted search".
+- *Coder bias.* One coder, not blind: payer and failure were coded from the same reading.
+- *Stakes as a confounder.* A rated party pays for a rating when the rating is worth a lot to it, and high stakes are what drive gaming ([Patterns §1](/concepts/patterns-and-failure-modes/#1-the-measure-reshapes-the-measured)). Because most failures in the paying group are gaming by the rated party rather than leniency by the evaluator, the data fit "payment marks high-stakes ratings" at least as well as "payment buys the evaluator".
+
+The claim as stated is not supported. What survives is narrower: when the rated party pays the evaluator, documented failure is roughly three times as likely in odds terms, and the mechanism is unresolved.
+
 ## Lessons for evaluation engineering
 
 These five patterns are the headlines; [Patterns & Failure Modes](/concepts/patterns-and-failure-modes/) develops each one rigorously, with the academic literature (reactivity, Goodhart's law, certification economics, reputation inflation, aggregation theory) behind it.
 
 Patterns the catalogue makes hard to ignore:
 
-1. **Funding structure seems to predict trustworthiness better than methodology does.** The most-trusted systems (Consumer Reports, Which?, Stiftung Warentest, IIHS) share a model — independent, buys its own units, refuses ads — not a method. The clearest failures (2008 credit ratings, *Doing Business*, BBB pay-for-grade) are capture stories, not technique stories. This is the [trust-network](/concepts/techniques/) and [candidness](/concepts/epistemic-culture/) problem in the wild, and it matches the [audit/ratings literature](/reference/adjacent-fields/). It rests on hand-picked contrasts; coding all the entries by payer and failure type would test it.
+1. **Whether the rated party pays matters; the finer funding story did not survive coding.** The [coding above](#does-who-pays-predict-failure) found no signal in the payer typology and little in method. Systems in which the evaluated party pays the evaluator had about three times the odds of a documented failure, mostly through gaming rather than leniency. The [certification economics](/concepts/patterns-and-failure-modes/#3-incentives-and-funding-shape-trustworthiness) predicts the leniency channel; the catalogue is too thin to confirm it separately.
 2. **Every output format is gameable, differently.** Binary fresh/rotten invites bombing; 100-point scales inflate and compress; reciprocal two-sided ratings breed retaliation and inflation; self-declared certifications get faked. Choosing the [output format](/concepts/the-systems-view/) is choosing your failure mode.
 3. **Crowd systems converge on the same arms race** — fakes, astroturfing, review bombing — and the same defenses: purchase/stay verification, Bayesian/credibility weighting, recency weighting, and ML fraud detection. Verification of *who is evaluating* is the recurring fix.
 4. **Composite indices live or die on weighting**, which is inherently contested (HDI's three dimensions, ESG divergence, ranking methodology churn). The [OECD composite-indicators handbook](/reference/adjacent-fields/) exists precisely because this is hard.

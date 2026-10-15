@@ -10,7 +10,7 @@ sidebar:
 :::note
 The question set descends from Ozzie Gooen's [Claims & Cruxes on LLM Forecasting & Epistemics](https://forum.effectivealtruism.org/posts/EykCuXDCFAT5oGyux/my-current-claims-and-cruxes-on-llm-forecasting-and) (2024), a preliminary personal post.
 
-The credences are working subjective probabilities, drafted in October 2026 and still under review by the maintainers. They are not elicited from a panel or derived from a model. Read them as "where we lean, and roughly how hard"; the second digit is noise. The evidence they lean on is summarized in [What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/#state-of-the-evidence-october-2026).
+The credences are *illustrative* placeholders: subjective probabilities drafted in October 2026 by an AI assistant from the evidence cited, not yet reviewed or endorsed by the maintainers, and not elicited from a panel or derived from a model. They show the shape of a position, not QURI's position; nothing on this site rests on them. The evidence they lean on is summarized in [What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/#state-of-the-evidence-october-2026).
 :::
 
 ## 1. Definition and measurement
@@ -59,7 +59,7 @@ The credences are working subjective probabilities, drafted in October 2026 and 
   - *Would move it:* debate experiments in which judges stay accurate as the debaters' capability rises.
   - See [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/)
 - **Errors are correlated enough across model families that multi-model checks deliver much less than naive independence implies.** *~75%.*
-  - *Since 2024:* a twelve-model ensemble shared one directional bias ([Schoenegger et al. 2024](https://arxiv.org/abs/2402.19379)). Leading forecasting systems ensemble the same few frontier models.
+  - *Since 2024:* a twelve-model ensemble's mean forecast leaned significantly above 50% despite evenly split outcomes ([Schoenegger et al. 2024](https://arxiv.org/abs/2402.19379)).
   - *Would move it:* published estimates of effective independence across families ([Independence](/concepts/hardening-independence/)).
 - **Once reasoner scores gate anything valuable, they get gamed.** *~85%.*
   - *Since 2024:* models trained against a CoT monitor learned to hide intent ([Baker et al. 2025](https://arxiv.org/abs/2503.11926)). Metaculus bots gamed numeric scoring with "porcupine" distributions.

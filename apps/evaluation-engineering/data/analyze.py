@@ -23,6 +23,23 @@ test on the 2x2 tables; leave-one-out log loss of smoothed per-category rates
 logistic model; cluster bootstrap over catalogue entries (bullets) for the
 difference in predictive skill.
 
+Codebook for systems.csv (one coder, October 2026, not blind):
+  unit            each system named in a main catalogue bullet; "Also:" mentions excluded.
+                  entry_group = the catalogue bullet it came from (used for clustering).
+  payer           main revenue source funding the evaluation; "mixed" when two classes are
+                  both substantial; "n/a" for bare formulas (Elo, h-index); "unknown" if unchecked.
+  evaluated_party_pays_any
+                  yes if the rated party pays the evaluator anything material: fees,
+                  commissions, advertising, logo/award licences, products sold to the rated.
+  failure_status  established = a regulator, court, official audit, peer-reviewed study,
+                  the operator itself, or a named investigation found the outputs materially
+                  distorted (not a single disputed rating; platform removal counts of fakes
+                  do not count). alleged = criticised without such a finding.
+                  none_found = nothing found in a targeted search (not "did not fail").
+  failure_type    capture (lenient to payer/owner), evaluator_misconduct, manipulation (gaming
+                  or faking by rated parties or outsiders), validity, data_quality, bias, harm.
+  *_confidence    coder's confidence; "low" rows are dropped in one sensitivity run.
+
 Run: python3 analyze.py  (numpy + scipy only). Seeded; output is deterministic.
 """
 import csv

@@ -15,7 +15,7 @@ A crux is a question where a confident answer would redirect effort. Each entry 
 ## On estimation vs. evaluation
 
 3. **How much can be demoted from evaluation to estimation?** Divide and conquer is only as good as the fraction of judgment-bound questions that can be turned into model-bound ones. No one has estimated that fraction for any real portfolio.
-4. **Can LLMs do trustworthy evaluation, or only cheap evaluation?** Agreement with human panels is now measured for chat responses, essays, clinical rubrics and paper review, and at AAAI-26 every main-track paper received an AI review that authors rated useful ([LLMs as Evaluators](/concepts/llm-evaluators/#what-the-judge-literature-measures)). None of that measures normative, long-horizon judgment, and none of it measures trust in the accountability sense: whether people accept an unappealable model verdict.
+4. **Can LLMs do trustworthy evaluation, or only cheap evaluation?** Agreement with human panels is now measured for chat responses, essays, clinical rubrics and paper review, and at AAAI-26 every main-track paper received an AI review, which surveyed authors and committee members found useful ([LLMs as Evaluators](/concepts/llm-evaluators/#what-the-judge-literature-measures)). None of that measures normative, long-horizon judgment, and none of it measures trust in the accountability sense: whether people accept an unappealable model verdict.
 
 ## On the components
 
@@ -31,7 +31,7 @@ A crux is a question where a confident answer would redirect effort. Each entry 
 ## On the environment
 
 10. **Is culture the real adoption bottleneck?** Documented cases show the evaluated exiting (the 2022 US News law-school boycott) and an inspectorate losing its coarsest output (Ofsted's single-word grades, removed in 2024) ([Epistemic Culture](/concepts/epistemic-culture/)). Whether such pushback binds harder than technical limits, and whether it is more tractable, is unknown.
-11. **Do institutional variables predict trustworthiness better than method?** The wiki's working hypothesis, from certification economics and hand-picked contrasts ([Evaluation as a System](/concepts/the-systems-view/#technical-and-institutional-design-variables)). Testable by coding the ~100 catalogued systems by payer and documented failure. If true, the main work is designing payer and governance; if false, the technical programme stands on its own.
+11. **Does payment buy the evaluator, or mark high stakes?** A coding of 161 catalogued systems found that neither payer type nor method predicted documented failure, but systems paid by the parties they rate had about three times the odds of one ([catalogue](/concepts/evaluation-systems-in-the-wild/#does-who-pays-predict-failure)). Most of those failures were gaming by the rated party rather than lenient rating, which fits either reading. If payment buys the evaluator, the main work is designing payer and governance; if it marks stakes, the main work is robustness to gaming.
 
 ## On the field itself
 

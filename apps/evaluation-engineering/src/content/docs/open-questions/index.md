@@ -7,7 +7,7 @@ description: The unresolved problems in evaluation engineering, grouped by chapt
 
 ## The systems view
 
-- **Code the catalogue.** Tag the ~100 systems in [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/) by payer model, method and documented failure, and publish the cross-tab. This would turn "funding predicts trustworthiness better than method" ([crux 11](/start-here/key-questions/#on-the-environment)) from a set of contrasts into a count.
+- **Separate payment from stakes.** The [catalogue coding](/concepts/evaluation-systems-in-the-wild/#does-who-pays-predict-failure) links rated-party payment to documented failure but cannot say why ([crux 11](/start-here/key-questions/#on-the-environment)). A second, blind coder and a stakes measure for each system would separate capture from gaming.
 - **Test the capability ladder.** The [v0 ladder](/concepts/capability-ladder/#open-questions) grades eight hand-picked systems. Grading the whole catalogue would show whether the rungs discriminate and whether rung predicts documented failure.
 - **Measuring legitimacy.** Accuracy and cost have standard measures; legitimacy does not. Candidate proxies include exit rates of the evaluated, appeal and reversal rates, and whether audiences act on the outputs.
 - **Automatic consistency and propagation.** Detecting contradictions across thousands of outputs, and re-deriving downstream estimates when an input changes, cheaply enough to be the default.

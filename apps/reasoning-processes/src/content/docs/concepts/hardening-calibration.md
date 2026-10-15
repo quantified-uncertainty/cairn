@@ -27,6 +27,8 @@ Calibration is **necessary, not sufficient**, and the gap is exactly where the a
 | Self-insurance pricing | premium demanded $=$ stated error probability **[heuristic]** | unstated overconfidence | quote an honest premium, never pay out absent escrow (≈ free) | speculative · — |
 | Reverse-Brier bounty | score $=$ adversary's confident-error-find-rate **[heuristic]** | confident errors an honest test misses | retreat to evasive vagueness; or bounty-hunter collusion (low) | speculative · — |
 
+Priced abstention depends on the scoring rule. [Kalai et al. (2025)](https://arxiv.org/abs/2509.04664) argue that language models keep hallucinating partly because most benchmarks grade "I don't know" the same as a wrong answer, so guessing scores better than abstaining. Their proposed remedy is to change the scoring of the leaderboards that already dominate, not to add more hallucination evaluations. Under this family's framing, any evaluation used to certify a process should give abstention a stated, nonzero value.
+
 ## Worked bounds
 
 **Tail-calibration certification.** Let $\varepsilon$ be the tail's *excess* error, so $P(\text{false}\mid\text{asserts}\ge c)\le(1-c)+\varepsilon$. Certify $\varepsilon$, and acting only on assertions above $c$ caps the confident-wrong rate at $(1-c)+\varepsilon$ **[heuristic]**. With $c=0.99$ and a measured $\varepsilon=0.005$, the judge's confident-wrong rate is $\le1.5\%$ — a number it can insure against. The catch is in the limit above: $\varepsilon$ is hardest to estimate precisely exactly where it matters, since assertions $\ge0.99$ are rare.

@@ -21,7 +21,7 @@ $$\kappa = \frac{p_o - p_e}{1 - p_e}$$
 
 so that chance scores 0 and perfect agreement 1 ([Cohen 1960](https://doi.org/10.1177/001316446002000104)). The relatives:
 
-- **Fleiss' κ** extends the idea to many raters, each item rated by a possibly different set of raters ([Fleiss 1971](https://doi.org/10.1037/h0031619)).
+- **Fleiss' κ** extends the idea to many raters: each item gets the same number of ratings, possibly from different raters ([Fleiss 1971](https://doi.org/10.1037/h0031619)).
 - **Weighted κ** gives partial credit for near-misses on an ordinal scale. The quadratic-weighted version is the standard in automated essay scoring, whose acceptance test ([LLMs as Evaluators](/concepts/llm-evaluators/#what-the-judge-literature-measures)) compares machine–human against human–human weighted κ.
 - **Krippendorff's α** works for any number of raters, any level of measurement (nominal, ordinal, interval, ratio), and missing ratings ([Hayes & Krippendorff 2007](https://doi.org/10.1080/19312450709336664)). That makes it the default when the design is messy, as audit designs usually are.
 - **ICC** (the intraclass correlation) plays the same role for continuous scores.
@@ -31,14 +31,14 @@ Kappa has two well-known paradoxes ([Feinstein & Cicchetti 1990](https://doi.org
 | 2×2 table (yes-yes, yes-no, no-yes, no-no) | $p_o$ | $p_e$ | κ |
 |---|---|---|---|
 | 40, 9, 6, 45 (balanced) | 0.85 | 0.50 | 0.70 |
-| 80, 10, 5, 5 (80% yes) | 0.85 | 0.78 | 0.32 |
+| 80, 10, 5, 5 (raters' "yes" rates 90% and 85%) | 0.85 | 0.78 | 0.32 |
 | 45, 15, 25, 15 (raters' "yes" rates 60% and 70%) | 0.60 | 0.54 | 0.13 |
 | 25, 35, 5, 35 (raters' "yes" rates 60% and 30%) | 0.60 | 0.46 | 0.26 |
 
-- **Prevalence.** The first two rows have identical raw agreement. Kappa falls by more than half when the base rate moves to 80%, because chance agreement is already high.
+- **Prevalence.** The first two rows have identical raw agreement. Kappa falls by more than half when both raters say "yes" to most items, because chance agreement is already high.
 - **Bias.** In the last two rows, raters who disagree *more* about the base rate get the *higher* kappa, because their marginals predict less chance agreement.
 
-Neither paradox is an error in kappa. Each is a reason not to report kappa alone. [Byrt, Bishop & Carlin (1993)](https://doi.org/10.1016/0895-4356(93)90018-V) recommend reporting the prevalence and bias indices next to κ, along with the prevalence- and bias-adjusted kappa, PABAK $= 2p_o - 1$. [Gwet's AC1](https://doi.org/10.1348/000711006X126600) is an alternative coefficient that is more stable at extreme prevalence. The minimum honest report for a binary judge is the full 2×2 table, or equivalently $p_o$, each rater's "yes" rate, and κ. A judge that says "yes" more often than the experts do is lenient. That is a bias worth knowing about even when κ looks acceptable. Leniency is among the failure modes that [Thakur et al. (2024)](https://arxiv.org/abs/2406.12624) found in LLM judges, and their judges with high percent agreement still assigned scores far from the human ones.
+Neither paradox is an error in kappa. Each is a reason not to report kappa alone. [Byrt, Bishop & Carlin (1993)](https://doi.org/10.1016/0895-4356(93)90018-V) recommend reporting prevalence and bias indices next to κ; the prevalence- and bias-adjusted kappa, PABAK $= 2p_o - 1$, is usually credited to them. [Gwet's AC1](https://doi.org/10.1348/000711006X126600) is an alternative coefficient that is more stable at extreme prevalence. The minimum honest report for a binary judge is the full 2×2 table, or equivalently $p_o$, each rater's "yes" rate, and κ. A judge that says "yes" more often than the experts do is lenient. That is a bias worth knowing about even when κ looks acceptable. Leniency is among the failure modes that [Thakur et al. (2024)](https://arxiv.org/abs/2406.12624) found in LLM judges, and their judges with high percent agreement still assigned scores far from the human ones.
 
 ## The human-panel baseline
 
@@ -47,9 +47,9 @@ Agreement with a human is only interpretable next to agreement *between* humans.
 Two details make the comparison fair:
 
 - **Compare like with like.** A judge scored against a panel's majority vote is being compared with an aggregate that is less noisy than any single member. The matching human baseline is one held-out panelist against the rest of the panel, not panelist against panelist. The *alternative annotator test* formalizes this ([Calderon, Reichart & Dror 2025](https://arxiv.org/abs/2501.10970)). It drops each human annotator in turn and asks whether the LLM agrees with the remaining annotators at least as well as the dropped human does. The comparison allows a margin ε for the human's higher cost; the authors suggest 0.2 for experts and 0.1 for crowd workers. The LLM passes if it beats at least half the annotators. The authors recommend at least three annotators and 50–100 items.
-- **Measure per task, not per model.** Across 20 annotated NLP datasets, the same LLM judges were reliable on some properties and poor on others; the variation depended on the property judged, the expertise of the human raters, and whether the text was human- or model-written ([Bavaresco et al. 2025](https://arxiv.org/abs/2406.18403)). In expert-graded finance questions, judges agreed with experts mainly on questions the judges could answer themselves. Supplying an expert-written reference answer largely closed the gap ([Krumdick et al. 2025](https://arxiv.org/abs/2503.05061)). Agreement measured on easy items does not transfer to hard ones.
+- **Measure per task, not per model.** The same judge can be reliable on one property and poor on another, and agreement measured on easy items does not transfer to hard ones ([evidence](/concepts/llm-evaluators/#what-the-judge-literature-measures)).
 
-HealthBench's grader validation is a large-scale instance of the baseline done properly. On rubric criteria that physicians also graded, the GPT-4.1 grader's macro-F1 against physicians was above the average physician's in five of seven themes and above the 33rd percentile of physicians in all seven ([Arora et al. 2025](https://arxiv.org/abs/2505.08775)). The comparison is grader against physicians, scored the same way physicians are scored against each other, which is exactly the shape a deployed evaluator needs.
+HealthBench's grader validation is a large-scale instance. On consensus rubric criteria graded by several physicians, each physician was scored against the others, and the GPT-4.1 grader was scored against the physicians the same way. Its macro-F1 was above the average physician's in five of seven themes and above the 33rd percentile of physicians in all seven ([Arora et al. 2025](https://arxiv.org/abs/2505.08775)).
 
 ## Calibration
 
@@ -62,11 +62,11 @@ Calibration matters operationally because escalation rules run on it. "Send item
 Every number above is an estimate from a sample of items, and the sample is usually small because labels are expensive. [Miller (2024)](https://arxiv.org/abs/2411.00640) sets out the practice for LLM evals, and it applies unchanged to judges:
 
 - treat the items as a draw from a larger population and report standard errors;
-- cluster the standard errors when items come in related groups (several criteria from one document, several questions from one passage); in Miller's examples clustered errors were over three times the naive ones;
+- cluster the standard errors when items come in related groups (several criteria from one document, several questions from one passage); in Miller's example clustered errors were up to three times the naive ones;
 - compare two judges on the *same* items using paired differences;
 - run a power analysis before collecting labels.
 
-For a proportion near $p$, a 95% interval of half-width $h$ needs $n \approx 1.96^2\, p(1-p)/h^2$ items. That is 246 items for ±5 points at $p = 0.8$, and 62 for ±10. Kappa is far noisier than the proportion it is built from. With both raters at an 80% "yes" rate, a κ estimated from 50 items has a 95% sampling spread of about ±0.3 whether the true value is 0.17 or 0.4. At the true κ ≈ 0.17 typical of peer review, about 300 double-rated items are needed for 80% power to distinguish the judge from chance. These figures come from simulating the 2×2 table and are reproduced in the [worked example](/concepts/worked-example/#what-50-audits-buy). Bootstrap the interval for κ or α rather than trusting a normal approximation at these sizes.
+For a proportion near $p$, a 95% interval of half-width $h$ needs $n \approx 1.96^2\, p(1-p)/h^2$ items. That is 246 items for ±5 points at $p = 0.8$, and 62 for ±10. Kappa is far noisier than the proportion it is built from. With both raters at an 80% "yes" rate, a κ estimated from 50 items has a 95% sampling spread of about ±0.3 whether the true value is 0.17 or 0.4. At the true κ ≈ 0.17 typical of peer review, about 300 double-rated items are needed for 80% power to distinguish the judge from chance with the standard test of κ = 0. These figures come from simulating the 2×2 table and are reproduced in the [worked example](/concepts/worked-example/#what-50-audits-buy). Bootstrap the interval for κ or α rather than trusting a normal approximation at these sizes.
 
 ## Prediction-powered inference
 
@@ -74,13 +74,13 @@ The audit design in [LLMs as Evaluators](/concepts/llm-evaluators/#the-design-pa
 
 $$\hat\theta_{\text{PP}} = \frac{1}{N}\sum_{i=1}^{N} f_i \;-\; \frac{1}{n}\sum_{j=1}^{n} (f_j - y_j)$$
 
-The result is unbiased whatever the judge's quality. Its variance is roughly $\mathrm{Var}(f)/N + \mathrm{Var}(f - y)/n$, so the interval narrows as the judge's errors shrink ([Angelopoulos et al. 2023](https://arxiv.org/abs/2301.09633)). PPI++ adds a tuning weight on $f$, chosen from the data, so the interval is never wider than the gold-labels-only one ([Angelopoulos, Duchi & Zrnic 2023](https://arxiv.org/abs/2311.01453)). Several refinements fit audit design directly:
+The result is unbiased whatever the judge's quality. Its variance is roughly $\mathrm{Var}(f)/N + \mathrm{Var}(f - y)/n$, so the interval narrows as the judge's errors shrink ([Angelopoulos et al. 2023](https://arxiv.org/abs/2301.09633)). PPI++ adds a tuning weight on $f$, chosen from the data, so that, asymptotically, the interval is never wider than the gold-labels-only one ([Angelopoulos, Duchi & Zrnic 2023](https://arxiv.org/abs/2311.01453)). Several refinements fit audit design directly:
 
 - **Stratification.** Stratified PPI helps when the judge is better on some kinds of item than others ([Fisch et al. 2024](https://arxiv.org/abs/2406.04291)). This is also the principled form of "oversample near the decision boundary, then reweight".
 - **Active selection.** Active inference spends the label budget on the items where the model is least certain, while keeping valid intervals ([Zrnic & Candès 2024](https://arxiv.org/abs/2403.03208)).
 - **Model evaluation.** Applied to evaluating ML models with GPT-4 labels, these methods raised the effective human-labelled sample size by up to 50% ([Boyeau et al. 2024](https://arxiv.org/abs/2403.07008)).
 
-The gains are real but bounded, and the bound is worth knowing before promising a funder a cheap audit. When the judge is no more accurate than the model being evaluated, no debiasing method can cut the number of gold labels needed by more than half ([Dorner, Nastl & Hardt 2025](https://arxiv.org/abs/2410.13341)). In practice the savings were smaller. The snippet below shows the same thing. A judge with κ ≈ 0.78 against the expert narrows the interval on the renewal rate by about 30%, worth roughly twice the audits. A judge at κ ≈ 0.37 narrows it by about 10%. PPI makes a weak judge *safe* to use, because the estimate stays valid; it does not make a weak judge *useful*.
+The gains are real but bounded, and the bound is worth knowing before promising a funder a cheap audit. When the judge is no more accurate than the model being evaluated, no debiasing method can cut the number of gold labels needed by more than half ([Dorner, Nastl & Hardt 2025](https://arxiv.org/abs/2410.13341)). In their experiments the savings were smaller. The illustrative simulation below agrees: a judge with κ ≈ 0.78 against the expert narrows the interval on the renewal rate by about 30%, worth roughly twice the audits. A judge at κ ≈ 0.37 narrows it by about 10%. PPI makes a weak judge *safe* to use, because the estimate stays valid; it does not make a weak judge *useful*.
 
 ```python
 import numpy as np

@@ -28,7 +28,7 @@ Large language models are a plausible candidate for the missing executor: cheap 
 
 ## Outside precedents for the core pattern
 
-QURI's [*Prediction-Augmented Evaluation Systems*](https://www.lesswrong.com/posts/kMmNdHpQPcnJgnAQF/prediction-augmented-evaluation-systems) (2018) proposed letting cheap predictors forecast an expensive evaluator on many items and checking them on a random few. Other fields reached the same pattern independently, and most have more evidence than QURI's own experiments.
+Ozzie Gooen's [*Prediction-Augmented Evaluation Systems*](https://www.lesswrong.com/posts/kMmNdHpQPcnJgnAQF/prediction-augmented-evaluation-systems) (2018) proposed letting cheap predictors forecast an expensive evaluator on many items and checking them on a random few. Other fields reached the same pattern independently, and most have more evidence than QURI's own experiments.
 
 **Automated essay scoring.** Large testing programs have scored essays by machine for years and validated the machine against human raters. The usual acceptance criterion, attributed to [Williamson, Xi & Breyer (2012)](https://doi.org/10.1111/j.1745-3992.2011.00223.x), compares machine–human agreement with human–human agreement and accepts the machine if its quadratic-weighted kappa is no more than 0.10 below the human–human figure ([ACT 2023](https://www.act.org/content/dam/act/unsecured/documents/R2304-CRASE-Essay-Scoring-Model-Performance-02-2023.pdf) applies it). That is the panel–panel baseline this wiki recommends, already an industry standard ([Measuring an Evaluator](/concepts/measuring-an-evaluator/)).
 

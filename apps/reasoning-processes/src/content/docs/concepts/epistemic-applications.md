@@ -11,7 +11,7 @@ sidebar:
 The tier boundaries are a first cut, not a settled taxonomy.
 :::
 
-What would [strong reasoners](/concepts/what-is-a-strong-reasoner/) actually be *for*? The applications are not interchangeable: they demand very different amounts of warranted trust. We organize them here as a **reliability ladder** — each tier requires more trust than the last, and we conjecture a tier's applications become defensible to deploy once its verification machinery exists *and survives systems optimized to pass it*. Lower tiers are running today; upper tiers should not run unsupervised until [oversight protocols](/concepts/oversight-protocols/) can carry their weight.
+What would [strong reasoners](/concepts/what-is-a-strong-reasoner/) actually be *for*? The applications are not interchangeable: they demand very different amounts of warranted trust. We organize them as a **reliability ladder**. Tiers 1, 2, 4 and 5 each require more trust than the one before; tier 3 is placed by argument rather than shown, and may be harder to verify than tier 4 (see open questions), so read the ladder as a partial order. We conjecture that a tier's applications become defensible once its verification machinery exists *and survives systems optimized to pass it*. Lower tiers run today; upper tiers should not run unsupervised until [oversight protocols](/concepts/oversight-protocols/) can carry their weight.
 
 ## Tier 1: Error-checking and critique
 
@@ -45,7 +45,7 @@ Each tier becomes deployable when [verification](/concepts/oversight-protocols/)
 
 ## Open questions
 
-- Are the tiers real? Faithfulness (tier 3) might be *harder* to verify than valuation (tier 4); the ordering needs argument, not assertion.
+- Are the tiers real? Faithfulness (tier 3) might be *harder* to verify than valuation (tier 4): a valuation can eventually be scored against outcomes, while faithfulness of a personalized text has no outcome to score against. If so, tiers 3 and 4 swap or sit side by side.
 - Tier 2's resolution machinery assumes trustworthy resolvers *and* unambiguous questions (AI resolvers amplify underspecified wording) — do Epistemic Selection Protocols actually bottom out anywhere, or just defer the trust question?
 - What is the minimal verification standard for tier 5? "Better than current human institutions" is a much lower bar than "verified," and possibly the right one.
 - Can lower tiers bootstrap the upper ones — e.g., tier-1 critique tools auditing tier-4 valuation models?

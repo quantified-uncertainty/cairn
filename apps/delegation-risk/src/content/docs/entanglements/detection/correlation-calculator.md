@@ -130,7 +130,7 @@ This is the [correlation budget](/getting-started/glossary/): the practical face
 
 Across providers, φ rises with capability: the median is 0.30 for pairs where the weaker model scores below 60%, 0.44 at 60–70%, 0.48 at 70–80% and 0.53 above 80%. This is the trend [Goel et al. (2025)](https://arxiv.org/abs/2502.04313) report with a different metric (CAPA), on 130 models.
 
-**These are upper estimates for the models measured.** About 6.5% of MMLU questions have flawed answer keys ([Gema et al. 2024](https://arxiv.org/abs/2406.04127)), and a strong model that answers a mis-keyed item correctly is scored as missing it, as is every other strong model. Such items count as common-cause misses. If 3% of items are missed by every model for this reason, the cross-provider median falls from 0.53 to 0.44 and the same-provider median from 0.61 to 0.54; at 6.5% they fall to 0.27 and 0.40. Not every flawed item is missed by every model, so the truth lies between the raw and the 6.5% figures.
+**Label noise biases these figures upward.** An estimated 6.49% of MMLU questions contain errors, such as wrong answer keys or no correct option ([Gema et al. 2024](https://arxiv.org/abs/2406.04127)). A strong model that answers a mis-keyed item correctly is scored as missing it, as is every other strong model. Such items count as common-cause misses. If 3% of items are missed by every model for this reason, the cross-provider median falls from 0.53 to 0.44 and the same-provider median from 0.61 to 0.54; at 6.5% they fall to 0.27 and 0.40. Not every flawed item is missed by every model, so under this model the truth lies between the raw and the 6.5% figures.
 
 **Mapping to ρ assumes:**
 
@@ -146,8 +146,8 @@ Ranges on the φ scale. The LLM rows come from the benchmark figures above, wide
 | Configuration | Range to assume | Basis | Tax, three layers at p = 0.1 |
 |---|---|---|---|
 | Same model and prompt, separate calls | 0.8–1.0 | Assumed; dated versions of one model already reach 0.66–0.80 | 80–100× |
-| Same provider, different models | 0.4–0.7 | Benchmark, 0.40–0.61 after noise adjustment, up to 0.93 for derived models | 41–70× |
-| Frontier LLMs from different providers | 0.3–0.55 | Benchmark, 0.27–0.53 | 31–55× |
+| Same provider, different models | 0.4–0.7 | Benchmark median 0.61 raw, 0.40 at full noise adjustment; up to 0.93 for a derived model | 41–70× |
+| Frontier LLMs from different providers | 0.3–0.55 | Benchmark median 0.53 raw, 0.27 at full noise adjustment | 31–55× |
 | LLM check and rule-based or static check | 0.1–0.3 | Assumed | 11–31× |
 | LLM check and formal verification of a narrow property | 0–0.1, on that property | Assumed | 1–11× |
 | LLM check and a human who sees the LLM's output | 0.2–0.4 | Assumed | 21–41× |
