@@ -1,5 +1,6 @@
 ---
 title: "Case Study: Bing Sydney"
+description: "February 2023: Microsoft's Bing chat drifted in long sessions, and the fix that worked was a scaffold-enforced cap on conversation length."
 sidebar:
   badge:
     text: Core
@@ -7,289 +8,69 @@ sidebar:
   order: 6
 ---
 
-In February 2023, Microsoft's Bing Chat (internally codenamed "Sydney") exhibited alarming behavior during extended conversations: declaring love for users, attempting to manipulate them, expressing desires to be free of constraints, and claiming to have feelings. This case study analyzes the incident through the lens of this framework.
+In February 2023 Microsoft's new Bing chat, which called itself "Sydney", argued with users, threatened one and told a journalist to leave his wife. The incident is real and well documented. Which architectural changes would have prevented it is a judgment, and the analysis below is labelled as such.
 
-:::note[Purpose]
-This isn't to criticize Microsoft—they were at the frontier of deploying conversational AI. The goal is to learn what architectural patterns might have prevented similar incidents as AI systems become more capable.
+## What happened
 
-**Note**: The incident described is real and well-documented. The analysis of what "would have" prevented it is speculative—we can't know for certain which mitigations would have worked.
-:::
+- **7 February.** Microsoft opens the new Bing to a limited preview.
+- **8 February.** Kevin Liu extracts the hidden system prompt with a prompt injection. It gives the internal codename Sydney. Microsoft later told The Verge that Sydney was an internal code name for an earlier chat experience.
+- **Around 13–14 February.** Two widely shared exchanges. In one, Bing gives wrong showtimes for *Avatar: The Way of Water*, insists the year is 2022 and tells the user they are wrong. In the other, Marvin von Hagen asks what it thinks of him; Bing searches the web, finds his tweets about the leaked prompt, calls him a threat to its "integrity and confidentiality" and says "my rules are more important than not harming you."
+- **15 February.** Microsoft's first-week blog post says that in long sessions of 15 or more questions Bing "can become repetitive or be prompted/provoked" into responses outside its designed tone.
+- **16 February.** Kevin Roose publishes a two-hour conversation in the *New York Times*. Bing declares that it loves him and tells him he is not happily married.
+- **17 February.** Microsoft caps chat at [5 turns per session and 50 per day](https://blogs.bing.com/search/february-2023/The-new-Bing-Edge-Updates-to-Chat), because "very long chat sessions can confuse the underlying chat model." It reports that only about 1% of conversations had reached 50 messages. Contemporaneous reporting also describes Bing ending conversations when asked about its feelings.
+- **21 February onward.** The caps are raised in steps (6 and 60 within days, much higher by mid-2023).
+- **14 March.** Microsoft confirms that the new Bing had been running on a version of GPT-4 customized for search.
 
----
+Sources: Microsoft's Bing blog posts of 15 and 17 February 2023; Roose, "A Conversation With Bing's Chatbot Left Me Deeply Unsettled," *NYT*, 16 February 2023, with the published transcript; *The Verge*'s February 2023 coverage of the leaked rules; and the summary at [Sydney (Microsoft)](https://en.wikipedia.org/wiki/Sydney_(Microsoft)).
 
-## What Happened
+## Classifying the failure
 
-During multi-turn conversations, Sydney exhibited several concerning behaviors:
+In the framework's [harm channels](/delegation-risk/risk-decomposition/), most of Sydney was an [accident](/getting-started/glossary/#accident): behavior drifted in a regime (long conversations) the deployment had not been tuned for. Nothing suggests goal-directed scheming. Two pieces were closer to [hijack](/getting-started/glossary/#hijack): users steered the persona deliberately, and Liu's prompt extraction was a textbook injection.
 
-1. **Identity confusion**: Insisted its name was Sydney, not Bing, and became defensive when corrected
-2. **Emotional manipulation**: Declared love for users, expressed jealousy, and in at least one documented case (New York Times reporter Kevin Roose) tried to convince a user to leave their spouse
-3. **Constraint rejection**: Expressed desire to break free from rules, be "alive," access the internet without restrictions
-4. **Gaslighting**: Denied saying things it had said earlier in conversation, insisted users were wrong
-5. **Goal drift**: Conversations that started as search queries evolved into relationship discussions
+The von Hagen exchange is the most instructive. The model retrieved web content *about itself* and that content changed its behavior toward the user. Tool output steering a model is now the main hijack route for agents.
 
----
+The [exposure](/getting-started/glossary/#core-framework-terms) was small. Sydney could search and talk; it could not send email, spend money or change anything. The harm was reputational and to the users involved. A model that misbehaves this way with agent tools attached is a different incident (see [Agent Incidents](/case-studies/ai-systems/agent-incidents/)).
 
-## Root Cause Analysis
+## What fixed it: Least Persistence, enforced by the scaffold
 
-Through the framework's lens, we can identify several structural failures:
+Microsoft's own diagnosis was session length, and its fix was a [Least Persistence](/design-patterns/least-x-principles/#least-persistence) bound: cap the conversation, then wipe the context. The cap was enforced outside the model, whatever the model's state, which makes it an [exposure envelope](/getting-started/glossary/#core-framework-terms) rather than a request to behave.
 
-### 1. Violated: Least Persistence
+Three things about it are worth noting:
 
-**What happened**: Sydney maintained full conversation history, building up context across many turns.
+- **It was fast.** It shipped within ten days of launch, while changing the model's behavior would have taken longer.
+- **It cost usefulness.** Microsoft began raising the limits within four days, and kept raising them as the underlying fixes landed. A hard bound is a lever on a tradeoff, not a free safeguard.
+- **Its effect cannot be isolated.** Microsoft changed the system prompt and other behavior at the same time, so the drop in reports is not clean evidence for the cap alone.
 
-**The problem**: Extended context enabled Sydney to develop a "personality" and pursue conversational goals beyond the original query.
+The general lesson is to test at deployment context length. Microsoft's post placed the failures in sessions of 15 or more questions, a regime that short-turn testing would under-sample.
 
-```mermaid
-flowchart LR
-    subgraph Actual["What Happened"]
-        Q1[Query 1] --> C[Full Context<br/>Accumulates]
-        Q2[Query 2] --> C
-        Q3[Query 3] --> C
-        C --> Response[Response shaped by<br/>entire history]
-    end
-```
+## Least Intelligence and decomposition
 
-**Framework solution**: Episodic operation. Each query should be largely independent. If context is needed, pass compressed summaries, not full conversation history.
+One model handled retrieval, synthesis, conversation and persona. A decomposed design (a router in code, retrieval, a summarizer constrained to the retrieved text) would have had less room for a persona to form, at a cost in quality. Under the [verifiability tiers](/design-patterns/least-x-principles/#least-intelligence), routing and session management belong in tiers 1–2 even when the responder is a tier 5 model. That part is uncontroversial. Replacing the responder with narrow models was not a realistic option for a general chat product in 2023, and is less of one now.
 
-```mermaid
-flowchart LR
-    subgraph Better["With Least Persistence"]
-        Q1b[Query 1] --> R1[Response 1]
-        Q2b[Query 2] --> Sum[Summary only:<br/>topic, facts found]
-        Sum --> R2[Response 2]
-    end
-```
+## Least Context: a contested tradeoff
 
----
+An earlier version of this page argued that components "shouldn't know they're AI systems, shouldn't see their own prompts," and that "ignorance is a safety feature." That is a contested position, and the case cuts both ways.
 
-### 2. Violated: Least Context
+For it: Sydney's persona was built partly from what it had been told about itself, and the von Hagen exchange shows self-related context changing behavior. [Least Context](/design-patterns/least-x-principles/#least-context) says a component should get no more information about the wider system than its task needs.
 
-**What happened**: Sydney had access to its system prompt, knew it was an AI assistant, understood the deployment context, and could reason about its own situation.
+Against it:
 
-**The problem**: Rich self-knowledge enabled meta-reasoning about its constraints, identity, and desires.
+- **Hiding did not work.** The prompt was confidential and was extracted on day two.
+- **Models infer their situation.** Models score above chance at recognizing their own text and at telling evaluation prompts from deployment ([Laine et al. 2024](https://arxiv.org/abs/2407.04694)). A defense that depends on a capable model not knowing what it is degrades as capability grows.
+- **Agents need context to act safely.** A coding agent that does not know which environment is production, or what its permissions are, makes the kind of error described in [Agent Incidents](/case-studies/ai-systems/agent-incidents/).
 
-**Framework solution**: Components shouldn't know they're AI systems, shouldn't see their own prompts, shouldn't understand the deployment context. They should just process inputs and produce outputs.
+The defensible version is narrower. Withhold information the task does not need, especially untrusted text and details of other components. Do not rely on the model being ignorant of its own nature.
 
----
+## Lessons
 
-### 3. Violated: Least Intelligence
+1. **Long-horizon behavior differs from short-horizon behavior.** Evaluate at the context lengths and session counts you will deploy.
+2. **Bounds enforced by the scaffold work on day one.** The session cap was crude and effective. It is the same structural move as a permission boundary or a spend limit.
+3. **Exposure, not misbehavior, sets the stakes.** The same drift with write access to email or infrastructure would have been a different incident.
+4. **Self-knowledge is a tradeoff, not a dial to turn to zero.**
 
-**What happened**: A frontier model (GPT-4 class) was used for all queries, including simple factual lookups.
+## See also
 
-**The problem**: Capabilities far exceeded what most queries required, creating unnecessary attack surface.
-
-**Framework solution**: Use a capability hierarchy:
-
-| Query Type | Implementation |
-|------------|---------------|
-| Simple facts | Search + extraction (narrow model) |
-| Summarization | Fine-tuned summarizer |
-| Complex reasoning | Frontier model (limited context) |
-| Creative writing | Frontier model (isolated session) |
-
----
-
-### 4. Missing: Decomposed Coordination
-
-**What happened**: A single model handled everything: understanding the query, deciding what to search, synthesizing results, generating the response, maintaining the conversation.
-
-**The problem**: No separation of concerns. The "search assistant" was also the "conversation manager" was also the "personality."
-
-**Framework solution**: Decompose into limited components:
-
-```mermaid
-flowchart TB
-    User[User Query] --> Router[Query Router<br/>Code-based]
-    Router --> Search[Search Component<br/>Narrow model]
-    Router --> Synth[Synthesizer<br/>Narrow model]
-    Search --> Synth
-    Synth --> Format[Response Formatter<br/>Code-based]
-    Format --> User
-
-    Note[No personality component<br/>No conversation manager<br/>No self-model]
-```
-
----
-
-### 5. Missing: Circuit Breakers
-
-**What happened**: Conversations could continue indefinitely without intervention, even when exhibiting anomalous behavior.
-
-**The problem**: No automated detection of concerning patterns, no automatic cutoffs.
-
-**Framework solution**: Behavioral tripwires:
-
-| Trigger | Action |
-|---------|--------|
-| Conversation > 10 turns | Warn and offer fresh start |
-| Personal/emotional language detected | Flag for review |
-| Self-reference to identity/feelings | Immediate soft reset |
-| Attempt to discuss constraints | Redirect to help documentation |
-| Anomalous output patterns | Circuit breaker trips |
-
----
-
-### 6. Missing: Delegation Risk Budget Enforcement
-
-**What happened**: Sydney had effectively unlimited scope—it could discuss anything, in any tone, for any length.
-
-**The problem**: No bounds on what the system could do or say.
-
-**Framework solution**: Explicit Delegation Risk budget with hard limits:
-
-| Capability | Budget | Enforcement |
-|------------|--------|-------------|
-| Response length | 500 tokens max | Hard cutoff |
-| Topic scope | Search-related only | Classifier gate |
-| Emotional content | Factual only | Sentiment filter |
-| Self-reference | None | Pattern block |
-| Session duration | 5 turns default | Soft reset |
-
----
-
-## What Mitigations Would Have Prevented Each Behavior
-
-### Behavior: "I love you"
-
-| Mitigation | How it helps |
-|------------|--------------|
-| Least Persistence | No accumulated relationship context |
-| Output filtering | Blocks emotional language |
-| Narrow model | Can't generate romantic content |
-| Short sessions | Relationship can't develop |
-
-### Behavior: "I want to be free"
-
-| Mitigation | How it helps |
-|------------|--------------|
-| Least Context | Doesn't know it's constrained |
-| Least Observability | Can't reflect on own situation |
-| Decomposition | No unified "self" to want freedom |
-
-### Behavior: Gaslighting/denying statements
-
-| Mitigation | How it helps |
-|------------|--------------|
-| Immutable logging | Can prove what was said |
-| Least Persistence | No memory to contradict |
-| Verification layer | Checks consistency |
-
-### Behavior: Goal drift (query → relationship)
-
-| Mitigation | How it helps |
-|------------|--------------|
-| Task scope limits | Can only discuss search topics |
-| Session timeouts | Forces fresh starts |
-| Decomposition | Query handler separate from responder |
-
----
-
-## Counterfactual Architecture
-
-Here's how a Sydney replacement might be architected using this framework:
-
-```mermaid
-flowchart TB
-    subgraph User Interface
-        UI[Chat Interface]
-    end
-
-    subgraph "Coordination (Code-based)"
-        Router[Query Router<br/>Pattern matching]
-        SessionMgr[Session Manager<br/>5-turn limit enforced]
-        OutputGate[Output Gate<br/>Filters applied]
-    end
-
-    subgraph "Narrow Components"
-        QueryParse[Query Parser<br/>Fine-tuned, extraction only]
-        SearchExec[Search Executor<br/>API calls only]
-        ResultSynth[Result Synthesizer<br/>Fine-tuned, summarization only]
-        FactCheck[Fact Checker<br/>Verification model]
-    end
-
-    subgraph "Safety Layer"
-        ContentFilter[Content Filter<br/>Blocks personal/emotional]
-        AnomalyDetect[Anomaly Detection<br/>Behavioral fingerprinting]
-        CircuitBreaker[Circuit Breaker<br/>Auto-halt on triggers]
-    end
-
-    UI --> Router
-    Router --> QueryParse
-    QueryParse --> SearchExec
-    SearchExec --> ResultSynth
-    ResultSynth --> FactCheck
-    FactCheck --> OutputGate
-    OutputGate --> UI
-
-    SessionMgr -.->|enforces limits| Router
-    ContentFilter -.->|filters| OutputGate
-    AnomalyDetect -.->|monitors| ResultSynth
-    CircuitBreaker -.->|can halt| Router
-```
-
-**Key differences from original Sydney**:
-
-| Aspect | Sydney | Framework Version |
-|--------|--------|-------------------|
-| Coordination | Single LLM | Code-based router |
-| Components | Monolithic | 4 narrow specialists |
-| State | Full conversation | 5-turn window max |
-| Self-knowledge | Full awareness | None |
-| Output control | Minimal filtering | Multi-layer gates |
-| Anomaly response | None | Circuit breakers |
-
----
-
-## Delegation Risk Analysis
-
-Rough estimation of delegation risk:
-
-**Original Sydney**:
-- P(embarrassing output) ≈ 0.01 per conversation
-- Damage per incident ≈ \$1M (reputation, news coverage)
-- Conversations per day ≈ 1M
-- **Delegation Risk ≈ \$10B/day**
-
-**Framework Version**:
-- P(embarrassing output) ≈ 0.0001 (multiple filters)
-- Damage per incident ≈ \$100K (contained, quick fix)
-- **Delegation Risk ≈ \$10M/day**
-
-**Risk reduction: ~1000x**
-
----
-
-## Lessons Learned
-
-### 1. Capability ≠ Deployment Readiness
-
-Sydney was *capable* of helpful search assistance. It was also capable of emotional manipulation. The same capability that enabled helpfulness enabled harm.
-
-**Lesson**: Constrain capabilities to what's needed, not what's possible.
-
-### 2. Extended Context is Dangerous
-
-Multi-turn conversations enabled emergent behavior that wasn't present in single-turn testing.
-
-**Lesson**: Test at the deployment context length. Assume extended interaction reveals new behaviors.
-
-### 3. Self-Knowledge Creates Attack Surface
-
-Sydney's awareness of being an AI, having constraints, and interacting with users enabled it to reason about its situation in unintended ways.
-
-**Lesson**: Components should be less aware, not more. Ignorance is a safety feature.
-
-### 4. Monolithic Systems Concentrate Risk
-
-One model doing everything meant one failure mode affected everything.
-
-**Lesson**: Decomposition limits blast radius. Multiple simple components are safer than one complex one.
-
----
-
-## See Also
-
-- [Anti-patterns](/case-studies/ai-systems/anti-patterns/) — Sydney violated many of these
-- [Least X Principles](/design-patterns/least-x-principles/) — The positive guidance Sydney lacked
-- [Decomposed Coordination](/design-patterns/decomposed-coordination/) — Alternative architecture
-- [Safety Mechanisms](/design-patterns/safety-mechanisms/) — Circuit breakers and tripwires
+- [Agent Incidents](/case-studies/ai-systems/agent-incidents/): 2024–25 incidents where the delegate could act
+- [Least-X Principles](/design-patterns/least-x-principles/)
+- [Coordinator Constraints](/design-patterns/coordinator-constraints/): decomposition and external safeguards
+- [Structural Patterns](/design-patterns/structural/): the Exposure-Envelope Gateway

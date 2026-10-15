@@ -42,7 +42,7 @@ The **background** modules (epistemic foundations, [epistemic culture](/concepts
 
 ## Prediction
 
-Quantifiable prediction in the [*Superforecasting*](https://www.goodreads.com/book/show/23995360-superforecasting) sense: the emphasis is on **calibration, scorability, and aggregation**. This is the component that keeps the larger system honest. If outputs can be scored against eventual outcomes, the system has a feedback signal; if predictors can be aggregated, it has a way to combine many cheap judgments.
+Quantifiable prediction in the sense of Tetlock & Gardner's *Superforecasting* (2015): the emphasis is on **calibration, scorability, and aggregation**. This is the component that keeps the larger system honest. If outputs can be scored against eventual outcomes, the system has a feedback signal; if predictors can be aggregated, it has a way to combine many cheap judgments.
 
 A prediction component *without* calculation is limited to what people can intuit in their heads — fine for a few hundred hand-written questions, useless at scale.
 
@@ -78,4 +78,4 @@ The system-level [techniques](/concepts/techniques/) are mostly about wiring the
 
 ## A note on separating them
 
-As with [estimation vs. evaluation](/start-here/estimation-vs-evaluation/), the point of naming four components is not bureaucratic. Each is a distinct research cluster with its own literature, its own tooling needs, and its own failure modes. Keeping them separate is what makes the field tractable; combining them is a comparatively thin integration layer on top.
+As with [estimation vs. evaluation](/start-here/estimation-vs-evaluation/), the point of naming four components is not bureaucratic. Each is a distinct research cluster with its own literature, its own tooling needs, and its own failure modes. Separating them makes the research tractable. Combining them is not a thin layer on top: keeping thousands of outputs consistent across components, and propagating updates between them, is where large systems fail ([Evaluation as a System](/concepts/the-systems-view/#consistency-and-propagation)).

@@ -1,772 +1,186 @@
 ---
 title: "Solutions & Mitigations"
-description: "Nine approaches to reducing correlated failures and managing entanglement"
+description: "How to reduce entanglement and when it is worth paying for: diversity of method, independent context, isolation, a correlation budget, stress tests, circuit breakers and rotation"
 sidebar:
-  order: 5
+  order: 1
 ---
 
-This page presents nine approaches to reducing pattern interconnection, from architectural changes to software engineering patterns.
+A correlated stack of defenses has a floor: $P(\text{all miss}) \geq \rho \cdot \min_i p_i$ ([Formal Definitions](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax)). Every mitigation on this page does one of four things: lowers ρ, lowers the best layer's miss rate, limits what a joint miss can do, or detects ρ rising. The last section covers when the cost is worth paying.
 
----
+## 1. Diversity of method
 
-## 1. Architectural Diversity Requirements
+The main lever on ρ is a check that fails for different reasons: one that uses a different method or sees different information.
 
-**Principle**: Ensure patterns use genuinely independent mechanisms.
-
-### Dimensions of Diversity
-
-| Dimension | How to Diversify | Why It Helps |
-|-----------|------------------|--------------|
-| **Provider** | Different LLM providers for different layers | Different training, different biases |
-| **Methodology** | Mix rule-based, statistical, learned, formal | Different fundamental approaches |
-| **Training data** | Ensure models trained on different datasets | Different blind spots |
-| **Timing** | Pre-execution, concurrent, post-execution, delayed | Different temporal coverage |
-| **Personnel** | Different teams own different components | Different human blind spots |
-| **Architecture** | Transformers, RNNs, symbolic, hybrid | Different failure modes |
-
-### Implementation Checklist
-
-```
-□ No single provider handles >50% of verification
-□ At least one non-ML verification method
-□ Redundant components have different codebases
-□ Human oversight doesn't bottleneck through single team
-□ Monitoring systems independent from monitored systems
-□ At least 3 fundamentally different methodologies
-```
-
-### Cost-Benefit Consideration
-
-Diversity has real costs:
-- Multiple vendor relationships
-- Diverse expertise required
-- Integration complexity
-- Potential inconsistency
-
-Balance against risk level. Low-stakes systems may not need maximum diversity.
-
----
-
-## 2. Explicit Correlation Audits
-
-**Principle**: Regularly assess and document inter-pattern correlations.
-
-### Audit Process
-
-```python
-class CorrelationAudit:
-    def __init__(self, patterns: list[Pattern]):
-        self.patterns = patterns
-        self.correlation_matrix = self._initialize_matrix()
-
-    def audit(self) -> AuditReport:
-        findings = []
-
-        # Check infrastructure sharing
-        infra = self._analyze_infrastructure_overlap()
-        if infra.overlap_score > 0.5:
-            findings.append(Finding(
-                severity="HIGH",
-                type="shared_infrastructure",
-                details=infra
-            ))
-
-        # Check conceptual similarity
-        conceptual = self._analyze_methodology_similarity()
-        if conceptual.similarity_score > 0.7:
-            findings.append(Finding(
-                severity="MEDIUM",
-                type="methodology_correlation",
-                details=conceptual
-            ))
-
-        # Check information flow
-        info_flow = self._analyze_context_contamination_risk()
-        for path in info_flow.risky_paths:
-            findings.append(Finding(
-                severity="MEDIUM",
-                type="context_contamination",
-                details=path
-            ))
-
-        return AuditReport(
-            correlation_matrix=self.correlation_matrix,
-            findings=findings,
-            recommended_actions=self._generate_recommendations(findings)
-        )
-```
-
-### Audit Components
-
-| What to Audit | How | Frequency |
-|---------------|-----|-----------|
-| Infrastructure dependencies | Dependency graph analysis | Quarterly |
-| Methodology similarity | Expert review | Annually |
-| Information flows | Data flow analysis | After changes |
-| Historical correlation | Incident analysis | After incidents |
-| Empirical correlation | Red team testing | Semi-annually |
-
-### Audit Triggers
-
-Beyond regular schedule, audit after:
-- Any architectural change
-- New component added
-- Correlated failure incident
-- Performance optimization
-- Vendor/provider change
-- Team reorganization
-
----
-
-## 3. Stress Testing for Coupling
-
-**Principle**: Test under conditions designed to reveal hidden correlations.
-
-### Test Types
-
-| Test Type | What It Reveals | How to Run |
-|-----------|-----------------|------------|
-| **Load testing** | Do components degrade together? | Ramp load until failure |
-| **Chaos engineering** | Does one failure cascade? | Inject faults randomly |
-| **Adversarial red team** | Can crafted inputs evade multiple layers? | Hire attackers |
-| **Partial outage simulation** | What happens when shared dependencies fail? | Kill shared services |
-| **Timing attacks** | Race conditions between components? | Vary latencies |
-
-### Correlation Stress Test Protocol
-
-```
-1. Baseline
-   - Measure individual component failure rates
-   - Document normal-condition correlation
-
-2. Generate Correlated Attack Set
-   - Craft inputs designed to evade multiple layers
-   - Include adversarial examples with transferability
-   - Target known shared weaknesses
-
-3. Measure Joint Failure
-   - Run attack set through full system
-   - Record which components fail on which inputs
-
-4. Calculate
-   - Fraction evading ALL layers vs ANY layer
-   - Empirical correlation coefficient
-   - Correlation tax under attack
-
-5. Compare
-   - Attack correlation vs normal correlation
-   - Actual vs assumed independence
-
-6. Alert Thresholds
-   - Correlation tax > 10× → Urgent action needed
-   - Correlation tax > 5× → Investigation required
-   - Correlation tax > 2× → Monitor closely
-```
-
-### What Good Stress Testing Looks Like
-
-- Tests specifically designed to find correlation
-- Multiple simultaneous failures injected
-- Adversarial inputs that transfer across models
-- Resource exhaustion of shared pools
-- Timeout cascades triggered deliberately
-
----
-
-## 4. Isolation Boundaries
-
-**Principle**: Create hard boundaries that prevent correlation propagation.
-
-### Before and After
-
-```mermaid
-flowchart LR
-    subgraph Before["Before (coupled)"]
-        SC["Shared context"]
-        CA["Check A"] --- EB["Exec B"]
-        SC --> CA
-        SC --> EB
-    end
-    subgraph After["After (isolated)"]
-        subgraph ZoneA["Zone A"]
-            CXA["Context A"]
-            CKA["Check A"]
-            CXA --> CKA
-        end
-        BOUND["||<br/>Hard<br/>boundary<br/>(no shared<br/>state)<br/>||"]
-        subgraph ZoneB["Zone B"]
-            CXB["Context B"]
-            EXB["Exec B"]
-            CXB --> EXB
-        end
-    end
-
-    style Before fill:#ffcccc
-    style After fill:#ccffcc
-    style BOUND fill:#ffff99
-```
-
-### Isolation Mechanisms
-
-| Mechanism | What It Isolates | Implementation |
-|-----------|------------------|----------------|
-| **Process separation** | Memory, crash propagation | Separate containers |
-| **Database separation** | Data, query contention | Different DB instances |
-| **Network segmentation** | Traffic, outages | Separate subnets |
-| **Credential scoping** | Access, compromise blast radius | Different API keys per component |
-| **Context sanitization** | Information flow | Re-derive context at each boundary |
-| **Resource pools** | Contention, exhaustion | Dedicated resources per component |
-
-### Isolation Design Principles
-
-1. **Default deny**: Components cannot communicate unless explicitly allowed
-2. **Minimal interface**: Only pass what's absolutely necessary
-3. **Sanitize at boundaries**: Don't trust input from other components
-4. **Independent reconstruction**: Verifiers construct context independently
-5. **Failure independence**: One component's crash doesn't crash others
-
-### Trade-offs
-
-| Benefit | Cost |
-|---------|------|
-| Correlation reduction | Latency (cross-boundary calls) |
-| Blast radius limitation | Complexity (more infrastructure) |
-| Clear failure domains | Resource inefficiency (duplication) |
-| Easier auditing | Coordination overhead |
-
----
-
-## 5. Correlation-Aware Risk Budgeting
-
-**Principle**: Budget for actual (correlated) risk, not idealized (independent) risk.
-
-### Traditional vs. Correlation-Aware
-
-```
-Traditional budgeting:
-"We need 99.9% reliability, so three 90% layers suffice"
-
-Correlation-aware budgeting:
-"We need 99.9% reliability"
-"Estimated ρ (phi-scale): 0.5"
-"P(all miss) ≈ 0.5×0.001 + 0.5×0.1 = 5.05% → ~95% protection, not 99.9%"
-"Entanglement tax: ~50× the residual risk you thought you had"
-```
-
-### Why Adding Layers Barely Helps Once ρ Is Significant
-
-The mixture formula $P(\text{all miss}) = (1-\rho)\prod p_i + \rho \cdot \min p_i$ has two terms. At $\rho = 0.5$ with $p = 0.1$ per layer, the common-cause term $\rho \cdot \min(p_i) = 0.05$ is a floor that no number of layers can push below—every additional layer only shrinks the independent term $(1-\rho)\prod p_i$, which is already small. Concretely:
-
-| Layers | P(all miss) at ρ=0.5 | Effective protection |
-|--------|----------------------|----------------------|
-| 2 | 5.50% | 94.5% |
-| 3 | 5.05% | ~95% |
-| 5 | 5.00% | ~95% |
-| 10 | 5.00% | ~95% |
-
-The second layer still buys a little (the independent term is shrinking), but going from 3 to 10 layers buys less than 0.05 percentage points — by then the floor dominates entirely. The floor is $\rho \cdot p = 5\%$, and 99.9% protection is unreachable at this correlation regardless of layer count.
-
-See [The Canonical Example](/entanglements/#the-canonical-example) for the worked arithmetic.
-
-### The Lever That Actually Moves the Floor
-
-The floor is $\rho \cdot \min(p_i)$. To lower it, reduce $\rho$:
-
-| Intervention | Typical ρ reduction | New floor (p=0.1) |
+| Dimension | Diversify by | Note |
 |---|---|---|
-| Different LLM provider | ~0.2 | ~3% |
-| Add rule-based layer | ~0.3 | ~2% |
-| Add formal verification | ~0.4 | ~1% |
-| Fundamentally different paradigm | ~0.5 | ~0% |
+| **Method** | Mixing tiers of the [verifiability hierarchy](/getting-started/core-concepts/#verifiability-hierarchy): formally verified code, deterministic tests and rule-based checks, narrow learned models, LLMs | The strongest lever. A test suite and an LLM reviewer fail for different reasons |
+| **Information** | Giving checks different inputs: the raw diff, the execution trace, the network log | Two checks reading the same text share its blind spots |
+| **Model family** | Using different providers or families for LLM checks | Helps, but is not sufficient: accurate models have correlated errors across providers ([Kim et al. 2025](https://arxiv.org/abs/2506.07962)) |
+| **People** | Having different teams write prompts, rules and escalation paths | Organizational uniformity re-correlates technical diversity |
+| **Timing** | Checking before execution, during it and after it | Different moments see different evidence |
 
-Methodological diversity—different providers, rule-based checks, non-LLM layers, human review—is what lowers $\rho$ and moves the floor. Adding more of the same kind of layer does not.
+A workable **correlation budget** for a consequential action: no two checks share a model family, and at least one check sits at tier 1 or 2 of the hierarchy. The [measurement page](/entanglements/detection/correlation-calculator/#the-threshold-set-a-correlation-budget) turns a risk target into a numeric bound, ρ_max.
 
-### Budgeting Worksheet
+Diversity costs vendor relationships, expertise, integration work and latency, and different methods will sometimes disagree. Decide in advance which disagreements escalate to a human.
+
+## 2. Independent context
+
+Active entanglement mostly travels through context. Three rules cut it:
+
+- **Verifiers build their own context** from raw inputs. A check that reads only the agent's summary of its work inherits the agent's framing and omissions.
+- **Untrusted content is data, never instructions.** Anything read from a web page, file, email or tool output can carry an injected instruction to every component that reads it, including the checks. Architectures that keep untrusted data out of control flow remove this channel rather than making it less likely ([Debenedetti et al. 2025](https://arxiv.org/abs/2503.18813)).
+- **Untrusted monitors see less.** Paraphrase what they see with a trusted model, and redact context they do not need ([Channel Integrity](/design-patterns/channel-integrity/#design-responses)).
+
+## 3. Isolation boundaries
+
+| Mechanism | Isolates | Implementation |
+|---|---|---|
+| Process separation | Memory, crash propagation | Separate containers or sandboxes |
+| Separate state | Data, cross-component signals | Separate databases, caches and memory stores per component |
+| Network segmentation | Traffic, outages | Separate subnets, egress allow-lists |
+| Credential scoping | Blast radius of a compromise | A distinct key per component, scoped to its task |
+| Resource pools | Contention, fail-together under load | Separate rate limits and quotas for checks and actors |
+
+Default to deny: components cannot communicate unless a channel is sanctioned, and sanctioned channels pass a logging gateway. Make checks fail *closed*, so that a timed-out check blocks the action rather than passing it. Isolation costs latency, infrastructure and duplicated resources.
+
+## 4. Budget for correlated risk
+
+The naive calculation and the honest one:
 
 ```
-1. Define risk target: _______
-2. List verification layers: _______
-3. Estimate individual effectiveness: _______
-4. Estimate ρ (phi-scale; see /delegation-risk/risk-propagation/#what-ρ-means-and-how-to-estimate-it)
-5. Compute floor: ρ × min(pᵢ) = _______
-6. Is target achievable above this floor? If not:
-   □ Reduce ρ (diversify providers, add non-LLM layers)
-   □ Improve best individual layer (lowers min(pᵢ), lowers floor proportionally)
-   □ Accept higher risk
-   □ Reduce scope of delegation
-7. Calculate actual P(all miss) using the mixture formula
-8. Gap from target: _______
+Naive:     three 90% layers → P(all miss) = 0.1³ = 0.1% → "99.9% protection"
+Corrected: assumed ρ = 0.5 (phi scale)
+           P(all miss) = 0.5 × 0.001 + 0.5 × 0.1 = 5.05% → about 95% protection
+           entanglement tax ≈ 50×
 ```
 
----
+Once ρ is significant, more layers of the same kind buy almost nothing, because they only shrink the independent term:
 
-## 6. Circuit Breakers for Correlation
+| Layers | P(all miss) at ρ = 0.5, p = 0.1 |
+|---|---|
+| 2 | 5.50% |
+| 3 | 5.05% |
+| 5 | 5.00% |
+| 10 | 5.00% |
 
-**Principle**: Detect when correlation is manifesting and respond dynamically.
+At this correlation the floor is 5%, and 99.9% protection is unreachable at any layer count. The budget question becomes how to reduce ρ, or how to improve the strongest layer, since the floor scales with min pᵢ. How much a given intervention reduces ρ is an empirical question. Measure φ before and after rather than assuming a reduction.
 
-### Implementation
+**Worksheet:**
+
+1. Set the target P(all miss) for the action class.
+2. List the layers and estimate each miss rate pᵢ.
+3. Estimate ρ on the phi scale ([recipe and priors](/entanglements/detection/correlation-calculator/)).
+4. Compute the floor ρ · min pᵢ and the full mixture.
+5. If the target is below the floor: reduce ρ, improve the best layer, accept more risk explicitly, or narrow what is delegated.
+
+**Against adaptive adversaries the budget is different.** For the defection and hijack [channels](/delegation-risk/risk-decomposition/), count the stack as its best single layer until a control evaluation measures the joint miss rate under attack ([Risk Propagation](/delegation-risk/risk-propagation/#adversarial-inputs)). There, the useful defenses are those whose guarantee does not depend on ρ: a hard [exposure envelope](/getting-started/glossary/) that blocks out-of-bounds actions whatever the input, and rollback for what gets through.
+
+## 5. Stress testing for coupling
+
+| Test | What it reveals |
+|---|---|
+| Load testing | Whether checks degrade together, and whether any fail open |
+| Fault injection | Whether one failure cascades to others |
+| Adversarial red teaming | Whether single inputs evade several layers ("master keys") |
+| Shared-dependency outage | What happens when a common provider, database or rate limit goes down |
+| Latency injection | Race conditions between a check and the action it gates |
+
+Measure φ and P(all miss) under each condition and compare them with normal operation and with the correlation budget. Conditional correlation, which appears only under stress, is invisible to every other method.
+
+## 6. Correlation circuit breakers
+
+A circuit breaker watches the joint behavior of checks and tightens the system when correlation rises. In production you only know a check missed when the item is later audited or caught downstream, so run it on that audited stream:
 
 ```python
+from collections import deque
+import numpy as np
+
 class CorrelationCircuitBreaker:
-    def __init__(self, components: list[Component], threshold: float):
-        self.components = components
-        self.threshold = threshold
-        self.failure_window = deque(maxlen=100)
+    """Trips when the max pairwise phi of recent audited misses exceeds the budget."""
 
-    def record_outcome(self, outcomes: dict[str, bool]):
-        """Record success/failure for each component on same input"""
-        self.failure_window.append(outcomes)
+    def __init__(self, n_layers: int, rho_max: float, window: int = 500):
+        self.rho_max = rho_max
+        self.window = deque(maxlen=window)
+        self.n_layers = n_layers
 
-        # Check for correlated failures
-        if len(self.failure_window) >= 20:
-            correlation = self._calculate_correlation()
-            if correlation > self.threshold:
-                self._trigger_correlation_alert(correlation)
-
-    def _calculate_correlation(self) -> float:
-        """Calculate empirical failure correlation from recent window"""
-        joint_failures = sum(
-            1 for o in self.failure_window
-            if all(not v for v in o.values())
-        )
-        any_failures = sum(
-            1 for o in self.failure_window
-            if any(not v for v in o.values())
-        )
-
-        if any_failures == 0:
-            return 0.0
-
-        return joint_failures / any_failures
-
-    def _trigger_correlation_alert(self, correlation: float):
-        """Respond to detected correlation"""
-        alert(f"Correlation detected: {correlation:.2f}")
-
-        # Graduated response
-        if correlation > 0.8:
-            self._emergency_response()
-        elif correlation > 0.6:
-            self._elevated_response()
-        else:
-            self._monitoring_response()
-
-    def _emergency_response(self):
-        # Options:
-        # 1. Require human approval for all actions
-        # 2. Activate backup verification path
-        # 3. Halt non-critical operations
-        # 4. Alert security team
-        pass
-
-    def _elevated_response(self):
-        # 1. Increase sampling rate for human review
-        # 2. Enable additional verification layer
-        # 3. Reduce autonomy levels
-        pass
-
-    def _monitoring_response(self):
-        # 1. Log for analysis
-        # 2. Increase monitoring granularity
-        # 3. Schedule investigation
-        pass
+    def record(self, misses: list[bool]) -> bool:
+        """misses[i] is True if layer i missed this audited harmful item."""
+        self.window.append(misses)
+        if len(self.window) < self.window.maxlen:
+            return False
+        m = np.array(self.window, dtype=bool)
+        worst = np.nanmax([
+            phi(m[:, i], m[:, j])          # phi() from the measurement page
+            for i in range(self.n_layers)
+            for j in range(i + 1, self.n_layers)
+        ])
+        return worst > self.rho_max      # True: escalate
 ```
 
-### Response Options
+Use φ, not the share of joint failures among all failures. That share is a Jaccard index, not a correlation: it is about 0.05 even for independent layers at p = 0.1. Expect noise: from 500 items the standard error of φ is roughly 0.045, so require the excess to persist before tripping. When the breaker trips, respond in proportion: raise the human review rate, route the action class to a stricter path, or pause autonomous execution of it.
 
-| Correlation Level | Response |
-|-------------------|----------|
-| 0.0 - 0.3 | Normal operation |
-| 0.3 - 0.5 | Increase monitoring |
-| 0.5 - 0.7 | Elevate human oversight |
-| 0.7 - 0.9 | Activate backup verification |
-| 0.9+ | Emergency: halt or require human approval for all |
+## 7. Re-verify independence
 
-### What to Monitor
+Independence decays as systems are optimized. Re-check it after any change to models, prompts, infrastructure or team ownership, and on a schedule:
 
-- Joint failure rate over sliding window
-- Correlation coefficient changes
-- Deviation from historical baseline
-- Specific threat types causing correlated failures
+- **Ablation:** disable one layer on a test set. If the stack's miss rate barely changes, that layer was covering the same items as the others.
+- **Transfer:** take inputs that defeat one layer and measure how often they defeat each other layer, relative to that layer's base miss rate.
+- **Fresh measurement:** recompute the φ matrix on a refreshed challenge set ([Audit Guide](/entanglements/mitigation/audit-guide/)).
 
----
+## 8. Rotation against capture
 
-## 7. Regular Independence Verification
-
-**Principle**: Continuously verify that assumed independence holds.
-
-### Independence Tests
-
-```
-1. Input Perturbation Test:
-   - Take inputs that pass all layers
-   - Perturb slightly
-   - Independent layers should fail independently
-   - Correlated layers fail together
-
-   Independence Score = (independent failures) / (total failures)
-
-2. Ablation Test:
-   - Remove one layer
-   - Measure change in overall failure rate
-   - Independent: Change matches layer's individual rate
-   - Correlated: Change is smaller (other layers covered same threats)
-
-   Redundancy Score = (actual change) / (expected change)
-
-3. Cross-Validation Test:
-   - Train/test each layer on different data splits
-   - Independent: Performance uncorrelated across splits
-   - Correlated: Performance moves together
-
-   Correlation Coefficient across splits
-
-4. Adversarial Transfer Test:
-   - Generate adversarial examples for one component
-   - Test if they transfer to other components
-   - High transfer rate = high correlation
-
-   Transfer Rate = (adversarial for A that also fool B) / (adversarial for A)
-```
-
-### Verification Schedule
-
-| Test | Frequency | Trigger |
-|------|-----------|---------|
-| Perturbation test | Weekly | Automated |
-| Ablation test | Monthly | After changes |
-| Cross-validation | Quarterly | Regular schedule |
-| Adversarial transfer | Semi-annually | Red team exercise |
-| Full independence audit | Annually | Comprehensive review |
-
-### Continuous Verification Pipeline
-
-```mermaid
-flowchart LR
-    PT[Production Traffic] --> SA["Sampler<br/>(1%)"] --> IT[Independence Tests]
-    IT --> MA["Metrics &<br/>Alerts"]
-
-    style PT fill:#e6f3ff
-    style SA fill:#ffffcc
-    style IT fill:#ccffcc
-    style MA fill:#ffe6cc
-```
-
----
-
-## Summary: Interconnection Risk Checklist
-
-Before deploying composed patterns, verify:
-
-```
-Infrastructure Independence:
-□ No single provider handles majority of verification
-□ No shared databases between verify and execute paths
-□ Credentials scoped per component
-□ Monitoring independent from monitored systems
-□ Separate failure domains (no shared timeouts, rate limits)
-
-Methodological Diversity:
-□ At least 3 fundamentally different detection approaches
-□ Not all ML-based (include rule-based, formal, dynamic)
-□ Different training data sources
-□ Different research lineages / intellectual traditions
-
-Organizational Independence:
-□ Different teams own different verification components
-□ No single approval chain for all components
-□ Diverse backgrounds in design team
-□ External review by parties with different incentives
-□ Prompt templates / configurations developed independently
-
-Information Flow:
-□ Context sanitized at each boundary
-□ Verifiers don't inherit framing from verified component
-□ No circular dependencies in context
-□ Summaries don't lose safety-relevant information
-
-Failure Mode Analysis:
-□ Correlation matrix documented (pairwise)
-□ Higher-order correlations considered (3-way+)
-□ Common cause failures identified
-□ Cascade paths mapped
-□ Correlation tax estimated and budgeted for
-
-Fundamental Limits Acknowledged:
-□ Identified capabilities that no current AI can verify
-□ Human oversight at points beyond AI verification capability
-□ Documented irreducible correlation sources
-□ Clear statement of what the system CANNOT catch
-
-Testing:
-□ Adversarial testing targets multiple layers simultaneously
-□ Load testing checks for correlated degradation
-□ Chaos engineering includes correlated failures
-□ Correlation circuit breakers deployed
-□ Regular red team exercises with correlation-finding mandate
-
-Monitoring:
-□ Joint failure rates tracked (not just individual)
-□ Correlation metrics dashboarded
-□ Alerts for correlation spikes
-□ Regular independence audits scheduled
-□ Drift detection for emerging correlations over time
-```
-
----
-
-## 8. Temporal Dynamics Management
-
-**Principle**: Entanglements evolve over time. What starts as passive correlation can become active influence and eventually adversarial capture. Design for the temporal dimension.
-
-### The Capture Timeline
-
-Entanglements typically evolve through predictable stages:
-
-```mermaid
-flowchart LR
-    subgraph Timeline["Entanglement Evolution"]
-        direction LR
-        T1["Day 1:<br/>Independent<br/>(designed isolation)"]
-        T2["Month 3:<br/>Familiar<br/>(patterns recognized)"]
-        T3["Month 6:<br/>Adapted<br/>(behavior optimized)"]
-        T4["Year 1:<br/>Entangled<br/>(co-dependent)"]
-        T5["Year 2:<br/>Captured<br/>(aligned interests)"]
-        T1 --> T2 --> T3 --> T4 --> T5
-    end
-
-    style T1 fill:#ccffcc
-    style T2 fill:#ffffcc
-    style T3 fill:#ffe6cc
-    style T4 fill:#ffcccc
-    style T5 fill:#ff9999
-```
-
-### Temporal Warning Signs
-
-| Stage | Warning Signs | Intervention Window |
-|-------|---------------|---------------------|
-| **Familiar** | Components show consistent patterns with each other | Easiest to intervene |
-| **Adapted** | One component's behavior changes based on which partner it works with | Moderate difficulty |
-| **Entangled** | Approval rates, latencies, or outputs show correlation trends | Significant redesign needed |
-| **Captured** | Component defends or excuses partner's behavior | May require replacement |
-
-### Temporal Mitigation Strategies
-
-#### Relationship Rotation
-
-Prevent entanglements from forming by rotating which components work together:
+Repeated pairings let components adapt to each other, and capture develops gradually. Rotate verifiers across agents, weighted against recent pairings:
 
 ```python
-class RelationshipRotator:
-    def __init__(self, max_interactions: int = 100):
-        self.pair_counts = defaultdict(int)
-        self.max_interactions = max_interactions
+import random
+from collections import defaultdict
 
-    def should_rotate(self, agent_id: str, verifier_id: str) -> bool:
-        pair = (agent_id, verifier_id)
-        self.pair_counts[pair] += 1
-        return self.pair_counts[pair] >= self.max_interactions
-
-    def select_verifier(self, agent_id: str, available_verifiers: list[str]) -> str:
-        # Weight by inverse of interaction count
-        weights = [
-            1.0 / (1 + self.pair_counts[(agent_id, v)])
-            for v in available_verifiers
-        ]
-        return random.choices(available_verifiers, weights=weights)[0]
-```
-
-#### Trust Decay Implementation
-
-Apply the [Trust Decay](/design-patterns/temporal/#trust-decay) pattern to component relationships:
-
-```
-Component Relationship Trust:
-- Starts at 0 (no established trust)
-- Increases with successful interactions (max 1.0)
-- Decays over time without verification
-- Resets to baseline after rotation
-
-Trust(pair, t) = Trust(pair, t-1) × decay_rate + recent_performance × learning_rate
-```
-
-#### Periodic Independence Audits
-
-Schedule regular checks for emerging entanglements:
-
-| Audit Type | Frequency | Focus |
-|------------|-----------|-------|
-| **Correlation drift** | Weekly | Are component failure rates becoming more correlated? |
-| **Influence testing** | Monthly | Does A's framing affect B's decisions? |
-| **Capture indicators** | Quarterly | Are approval rates trending up? Language aligning? |
-| **Full independence** | Annually | Comprehensive multi-method assessment |
-
-### The Bureaucrat Perspective
-
-Human institutions have centuries of experience with temporal dynamics:
-
-- **Auditor rotation requirements**: Accounting firms must rotate partners every 5-7 years to prevent capture
-- **Judicial recusal**: Judges must withdraw when relationships develop with parties
-- **Term limits**: Regulators have maximum tenure to prevent regulatory capture
-- **Sabbaticals**: Periodic breaks allow fresh perspective
-
-**Lesson**: Assume that any long-term relationship between components will drift toward entanglement. Design for it.
-
-### Integration with Channel Integrity
-
-Temporal dynamics connect closely to [Channel Integrity Patterns](/design-patterns/channel-integrity/):
-
-| Channel Integrity Concern | Temporal Dimension |
-|---------------------------|-------------------|
-| **Side-channel detection** | Channels may develop gradually (not suddenly appear) |
-| **Boundary enforcement** | Boundaries erode over time without maintenance |
-| **Influence isolation** | Influence patterns strengthen with repeated interaction |
-
-**Key insight**: Channel integrity is not a one-time design choice—it requires ongoing maintenance. Components that were properly isolated at deployment may develop side-channels through optimization, shared caching, or emergent coordination.
-
-### Temporal Entanglement Checklist
-
-```
-□ Maximum interaction limits between component pairs
-□ Scheduled rotation of component relationships
-□ Trust decay applied to verification relationships
-□ Trend monitoring for correlation drift
-□ Regular independence audits scheduled
-□ Capture warning signs documented and monitored
-□ Clear escalation path when capture detected
-□ Historical data on relationship health retained
-□ Periodic "fresh eyes" review by new components
-```
-
----
-
-## Summary: Entanglement Management Lifecycle
-
-Effective entanglement management spans the full system lifecycle:
-
-```mermaid
-flowchart TB
-    subgraph Design["Design Phase"]
-        D1["Diversity requirements"]
-        D2["Isolation boundaries"]
-        D3["Independence targets"]
-    end
-    subgraph Deploy["Deployment Phase"]
-        DE1["Initial audit"]
-        DE2["Baseline metrics"]
-        DE3["Monitoring setup"]
-    end
-    subgraph Operate["Operation Phase"]
-        O1["Continuous monitoring"]
-        O2["Periodic audits"]
-        O3["Rotation schedules"]
-    end
-    subgraph Respond["Response Phase"]
-        R1["Circuit breakers"]
-        R2["Escalation protocols"]
-        R3["Architectural revision"]
-    end
-
-    Design --> Deploy --> Operate --> Respond
-    Respond -->|"lessons learned"| Design
-
-    style Design fill:#ccffcc
-    style Deploy fill:#cce6ff
-    style Operate fill:#ffffcc
-    style Respond fill:#ffcccc
-```
-
----
-
-## 9. Software Engineering Dependency Patterns
-
-**Principle**: Software engineering has developed 50 years of patterns for managing dependencies. These translate directly to entanglement management.
-
-### Core Patterns
-
-| Software Pattern | Entanglement Application |
-|------------------|-------------------------|
-| **Dependency Injection** | Components receive dependencies from above, don't choose their own |
-| **Interface Segregation** | Small, focused trust interfaces instead of broad capability grants |
-| **Inversion of Control** | Principal defines trust contracts; agents conform |
-| **Acyclic Dependencies** | No circular trust relationships; detect and break cycles |
-| **Stable Dependencies** | High-stakes delegations route through stable infrastructure |
-
-### Dependency Injection for Delegation
-
-Don't let agents choose their sub-agents. Inject dependencies from the coordinator:
-
-```python
-# BAD: Agent chooses its own dependencies
-class ResearchAgent:
+class PairingRotator:
     def __init__(self):
-        self.search = SomeSearchProvider()  # Hidden choice!
-        self.verifier = SomeVerifier()       # Hidden choice!
+        self.pair_counts = defaultdict(int)
 
-# GOOD: Dependencies injected from above
-class ResearchAgent:
-    def __init__(self, search_provider, verifier):
-        self.search = search_provider  # Principal controls
-        self.verifier = verifier       # Principal controls
+    def select_verifier(self, agent_id: str, verifiers: list[str]) -> str:
+        weights = [1.0 / (1 + self.pair_counts[(agent_id, v)]) for v in verifiers]
+        choice = random.choices(verifiers, weights=weights)[0]
+        self.pair_counts[(agent_id, choice)] += 1
+        return choice
 ```
 
-**Benefit**: The principal sees and controls all relationships. No hidden entanglements.
+Add periodic review by a verifier the agent has never met, and track approval-rate drift per pair ([Detecting Influence](/entanglements/detection/detecting-influence/#5-drift-and-capture-indicators)).
 
-### Circular Dependency Prevention
+## 9. Dependency hygiene
 
-Just as software tools detect circular imports, detect circular trust:
+Three habits from software engineering transfer directly:
 
-```
-BAD:  Principal → Agent → Verifier → Agent  (circular!)
+- **Inject dependencies from above.** The coordinator assigns each agent its tools, subagents and checks. An agent that chooses its own verifier has chosen its own oversight.
+- **Keep the dependency graph acyclic.** No check may depend on the output of the thing it checks, and no agent may supervise its own supervisor.
+- **Segregate interfaces.** Give each task the narrowest tool interface it needs, such as read-only file access or a sandboxed executor, rather than a general agent with every permission.
 
-GOOD: Principal → Agent
-      Principal → Verifier
-      Agent → Verifier (outputs only)
-      Verifier → Principal (reports only)
-```
+## When independence is worth paying for
 
-**Implementation**: Build a dependency graph checker that fails if cycles exist.
+Delegation risk is an expected loss: Σ P(harm) × damage. For an AND-structured stack, the relevant term is the number of harmful actions that reach the stack, times P(all miss), times the damage per unblocked action. An intervention is worth its cost when the reduction in that term over the planning period exceeds the cost. The calculation needs the volume of harmful attempts and the damage estimate as much as ρ; without them, a lower tax is not a reason to spend.
 
-### Interface Segregation = Least Capability
+Accepting correlation is reasonable when:
 
-Instead of granting broad capabilities, define narrow trust interfaces:
+- **stakes are low and reversible**, such as drafts and internal tools (reassess when a prototype becomes production);
+- **no diverse method exists** for the check. Correlated protection beats none, but document the gap and revisit it;
+- **compensating controls bound the damage**: a hard envelope, rollback or insurance;
+- **the residual risk is accepted explicitly** by someone accountable, in writing.
 
-```python
-# Fat interface (risky)
-class GeneralAgent:
-    def read_files(self): ...
-    def write_files(self): ...
-    def execute_code(self): ...
-    def access_network(self): ...
+It is not reasonable when:
 
-# Segregated interfaces (safer)
-class FileReader:
-    def read_file(self, path): ...
+- **the action is irreversible**: deletions, payments, public communications, physical actions;
+- **an adversary is expected**. Assume attackers will find the shared blind spot, and budget with ρ = 1;
+- **the target is valuable enough** that finding a master key is worth an attacker's effort;
+- **regulation or contract requires** demonstrable independence.
 
-class SafeExecutor:
-    def execute_sandboxed(self, code): ...
-```
-
-Each task uses only the narrow interface it needs.
-
-### For Full Details
-
-See [Software Dependency Patterns](/entanglements/cross-domain/software-dependency-patterns/) for comprehensive coverage of:
-- The DI container as trust broker
-- Package management lessons for delegation
-- Microservices patterns for decomposed coordination
-- Practical implementation code
+When you cannot estimate ρ, treat "unknown" as "correlated" (ρ ≥ 0.5 for shared provider, training or context) and invest in measuring it once stakes are more than low. With limited resources, start with the highest-stakes action classes and the most correlated pairs, take the cheap interventions first (independent context, separate prompts and teams, fail-closed checks), and remember that monitoring a correlation does not reduce it.
 
 ---
 
 See also:
-- [Types of Entanglement](/entanglements/fundamentals/types/) - Understanding passive, active, and adversarial entanglements
-- [Detecting Influence](/entanglements/detection/detecting-influence/) - Methods for detecting active entanglements
-- [Challenge Categories](/entanglements/fundamentals/challenges/) - What to mitigate
-- [Decision Framework](/entanglements/mitigation/decision-framework/) - When to invest in mitigation
-- [Worked Examples](/entanglements/case-studies/examples/) - Mitigations in practice
-- [Channel Integrity Patterns](/design-patterns/channel-integrity/) - Preventing boundary violations
-- [Software Dependency Patterns](/entanglements/cross-domain/software-dependency-patterns/) - Lessons from software engineering
-- [Organizational Isolation](/entanglements/cross-domain/organizational-isolation/) - Isolation as organizational strategy
-- [Legibility and Control](/entanglements/cross-domain/legibility-and-control/) - When explicit interfaces help vs. hurt
+- [Types of Entanglement](/entanglements/fundamentals/types/): what you are mitigating
+- [Measuring Entanglement](/entanglements/detection/correlation-calculator/): φ, thresholds and priors
+- [Audit Guide](/entanglements/mitigation/audit-guide/): the assessment protocol
+- [Worked Examples](/entanglements/case-studies/examples/): redesigns end to end
+- [Channel Integrity](/design-patterns/channel-integrity/): the design-pattern view

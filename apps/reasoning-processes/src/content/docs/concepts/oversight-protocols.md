@@ -7,10 +7,6 @@ sidebar:
 
 *Scalable-oversight protocols are best organized by what their incentives ground out in: a judge's verdict, external resolution, internal coherence, or peer agreement. No grounding dominates — they cover different claim classes and fail differently — which is why the natural design is a composition, and why the field still lacks an economics of which claims to verify at what price.*
 
-:::note[Status]
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Positions here are exploratory, not settled.
-:::
-
 ## The problem
 
 Scalable oversight ([DeepMind's term](https://arxiv.org/abs/2504.01849): *amplified oversight*) asks: how does a weaker principal extract honest, high-quality information from a more capable agent — essentially the [ELK problem](https://www.alignmentforum.org/posts/qHCDysDnvhteW7kRd/arc-s-first-technical-report-eliciting-latent-knowledge) restated? The incentive-based proposals — debate, market-making, prover-verifier games, recursive reward modeling — share a structure: each is a mechanism for making honesty the agent's best strategy. Non-incentive approaches — [AI control](https://arxiv.org/abs/2312.06942), interpretability, weak-to-strong generalization — sit outside this taxonomy by design.

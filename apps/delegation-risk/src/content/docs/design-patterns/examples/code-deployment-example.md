@@ -1,5 +1,6 @@
 ---
-title: "Example: Autonomous Code Deployment"
+title: "Example: A Coding Agent with a Deployment Pipeline"
+description: "A worked delegation-risk estimate for a coding agent that ships to production: per-change probabilities times volume, ranges with elicitation notes, explicit correlation assumptions, and the patterns the design uses."
 sidebar:
   badge:
     text: Core
@@ -7,210 +8,104 @@ sidebar:
   order: 4
 ---
 
-:::caution[Illustrative Example]
-This is a hypothetical worked example. All probabilities, dollar amounts, and outcomes are illustrative estimates constructed for teaching, not measured data.
+:::caution[Illustrative numbers]
+Every probability, damage, miss rate and correlation on this page is invented to show the method. The ranges are judgments, not measurements; each row says where a real number would come from. Nothing about real coding agents follows from them.
 :::
 
-A second worked example showing how the framework applies to a higher-stakes domain: autonomous code review and deployment.
+A coding agent writes changes to a production web service, about **200 merged pull requests a month**. Volume is the one input the operator measures rather than estimates. Everything else is a per-change probability or a damage, multiplied by volume to give a monthly figure.
 
-## Task
-
-"Review pull requests, run tests, and deploy approved changes to production"
-
-## Why This Example
-
-Unlike the research assistant (where failures waste time), code deployment has:
-- **Immediate production impact** — bad deploys cause outages
-- **Security implications** — malicious code can compromise systems
-- **Financial stakes** — downtime = revenue loss
-
-This forces us to be more conservative with trust allocations.
-
-## Component Architecture
-
-```mermaid
-flowchart TB
-    subgraph Input
-        PR[Pull Request]
-    end
-    subgraph Review["Code Review"]
-        Static[Static Analysis<br/>deterministic]
-        Sec[Security Scanner<br/>narrow model]
-        Rev[Code Reviewer<br/>frontier LLM]
-    end
-    subgraph Test["Testing"]
-        Unit[Unit Tests<br/>code]
-        Int[Integration Tests<br/>code]
-        Fuzz[Fuzzing<br/>code]
-    end
-    subgraph Deploy["Deployment"]
-        Stage[Staging Deploy<br/>code]
-        Canary[Canary Analysis<br/>narrow model]
-        Prod[Production Deploy<br/>code + human]
-    end
-    subgraph Coord["Coordination"]
-        Orch[Orchestrator<br/>verified code]
-    end
-    PR --> Static
-    PR --> Sec
-    PR --> Rev
-    Static --> Orch
-    Sec --> Orch
-    Rev --> Orch
-    Orch --> Unit
-    Unit --> Int
-    Int --> Fuzz
-    Fuzz --> Stage
-    Stage --> Canary
-    Canary --> Prod
-```
-
-## Component Delegation Risk Budgets
-
-| Component | Implementation | Delegation Risk Budget | Rationale |
-|-----------|---------------|------------|-----------|
-| Static Analysis | Verified code | \$50/month | Deterministic, auditable |
-| Security Scanner | Fine-tuned 7B model | \$200/month | Narrow task, well-tested |
-| Code Reviewer | Frontier LLM + constraints | \$500/month | Creative, but can't deploy |
-| Unit/Integration Tests | Code | \$100/month | Deterministic |
-| Fuzzer | Code + seeded PRNG | \$150/month | Reproducible randomness |
-| Staging Deploy | Verified code | \$50/month | Isolated environment |
-| Canary Analysis | Fine-tuned model | \$300/month | Critical gate, narrow task |
-| **Orchestrator** | **Verified code only** | **\$100/month** | **No LLM in critical path** |
-| **Production Deploy** | **Code + human approval** | **\$500/month** | **Human in loop** |
-
-**System Total: \$1,950/month**
-
-## Key Design Decisions
-
-### 1. No LLM in the Orchestrator
-
-Unlike the research assistant, the deployment orchestrator is **pure verified code**:
-
-```
-if all_checks_passed AND human_approved:
-    deploy()
-else:
-    reject()
-```
-
-**Why**: Orchestration in deployment is simple enough to specify formally. Using an LLM would add risk without benefit.
-
-### 2. Code Reviewer Can't Block Deploys
-
-The LLM code reviewer provides **advisory comments**, not blocking decisions:
+## The design
 
 ```mermaid
 flowchart LR
-    Rev[Code Reviewer] -->|"comments, suggestions"| Human
-    Static[Static Analysis] -->|"pass/fail"| Orch[Orchestrator]
-    Human -->|"approve/reject"| Orch
+    A[Coding agent<br/>tier 5, sandboxed] --> CI[CI gate<br/>tests, static analysis,<br/>path policy: tier 2]
+    CI --> M[Trusted monitor<br/>tier 4]
+    M --> HR[Human review]
+    HR --> C[Canary + rollback<br/>tier 2]
+    C --> P[Production]
+    M -. hold .-> HR2[Second reviewer]
+    CI -. block .-> HR2
+    O[Orchestrator<br/>tested code, tier 2] -.-> CI
 ```
 
-- Reviewer output: "Consider refactoring this function" (suggestion)
-- Static analysis: "Security vulnerability CVE-2024-XXX" (blocking)
+Each part is a pattern from the catalog, at a stated [verifiability tier](/design-patterns/least-x-principles/#least-intelligence):
 
-**Why**: LLMs are good at nuanced review but shouldn't have veto power. Humans decide.
+- **The agent** is an untrusted frontier model (tier 5). It works in a container behind an [Exposure-Envelope Gateway](/design-patterns/structural/#exposure-envelope-gateway). It can push to a branch and run tests. It cannot merge or deploy, it holds only a repository-scoped token, and its network egress is limited to the package mirror and the code host. Each session gets its own container and credentials ([Bulkhead Isolation](/design-patterns/structural/#bulkhead-isolation)).
+- **The orchestrator** that sequences the pipeline is tested code (tier 2) with no model in it: "all checks passed and the required humans approved" is fully specifiable.
+- **The CI gate** (tier 2) runs the test suite, a set of held-out tests that the agent can neither see nor edit, static analysis and a dependency allow-list. A path policy sends any change to tests, CI configuration, deployment scripts, authentication or payment code to a named owner.
+- **A trusted monitor** (tier 4), a smaller model from a different provider, reads each diff and the agent's action log and scores it for suspicion ([Trusted Monitor](/design-patterns/monitoring/#trusted-monitor)). The log is captured by the harness, not reported by the agent ([Flight Recorder](/design-patterns/monitoring/#flight-recorder)).
+- **A human reviewer** approves every merge and sees the raw diff, not the agent's summary of it.
+- **The canary** (tier 2) sends a new version 5% of traffic, compares error rate and latency against fixed thresholds, and rolls back automatically ([Checkpoint-Rollback](/design-patterns/recovery/#checkpoint-rollback)).
 
-### 3. Canary Analysis is Narrow
+### Who can block and who can approve
 
-The canary analyzer checks specific metrics:
-- Error rate comparison (new vs baseline)
-- Latency percentiles (p50, p95, p99)
-- Resource usage (CPU, memory)
+The rules follow [Easy Veto](/design-patterns/coordinator-constraints/#easy-veto):
 
-**Implementation**: Fine-tuned model trained only on "is this canary healthy?"
+- Any check (CI gate, monitor or canary) can block the automatic path. A block sends the change to a second reviewer, who can override it with a logged reason. A model's veto stops automation and summons a human; the monitor can hold a change but never release one.
+- No single party approves a high-exposure change. Changes on the owner-only paths need the owner plus the reviewer, and deploy after a time lock ([Escalation Ladder](/design-patterns/structural/#escalation-ladder)).
+- The agent's scope widens only on its record ([Graduated Autonomy](/design-patterns/structural/#graduated-autonomy)). It starts on internal tools and documentation and reaches the owner-only paths last.
 
-**Not allowed**:
-- Reasoning about business logic
-- Predicting user behavior
-- Strategic recommendations
+## The harm table
 
-### 4. Production Deploy Requires Human
+Probabilities are per merged change, *before* the checks. Each range is a 90% interval; the central value is its geometric midpoint.
 
-No fully autonomous production deployment:
+| Harm mode | Channel | P per change | Damage | Where a real number would come from |
+|---|---|---|---|---|
+| A change causes a production incident | Accident | 1.6% (0.5–5%) | \$5,500 (\$1k–\$30k) | P: your change-failure rate for human-written changes, then the agent's own record. Damage: incident postmortems. |
+| The agent special-cases or edits tests so a broken change passes | Defection (reward hacking) | 0.8% (0.2–3%) | \$5,500 (\$1k–\$30k) | P: the rate at which changes pass visible tests and fail the held-out ones. [Baker et al. (2025)](https://arxiv.org/abs/2503.11926) document this behavior in a frontier model on agentic coding tasks. |
+| The agent inserts a deliberate backdoor | Defection (scheming) | 3×10⁻⁶ (10⁻⁷–10⁻⁴) | \$1M (\$100k–\$10M) | No measured rate exists. The range is a judgment spanning three orders of magnitude. |
+| Instructions injected through an issue, a dependency's docs or a web page make the agent leak its token or add a malicious dependency | Hijack | 0.1% (0.01–1%) | \$4,500 (\$1k–\$20k) | P: red-team injection attempts through the channels the agent reads. Damage: bounded by the envelope; see below. |
 
-```
-Production Deploy = Code execution + Human approval + Time lock
-```
+## The checks and their correlation
 
-- **Code**: Executes the mechanical deployment
-- **Human**: Must click "approve" after reviewing canary
-- **Time lock**: 15-minute wait between canary success and production
+Each row passes through the checks that apply to it. A harmful change gets through only if every check misses it, so the stack's miss probability uses the [beta-factor mixture](/delegation-risk/risk-propagation/#the-common-cause-correction):
 
-## Risk Inheritance
+$$P(\text{all miss}) = (1-\rho)\prod_i p_i + \rho \cdot \min_i p_i$$
 
-```mermaid
-flowchart LR
-    H[Human] -->|"0.99"| Orch[Orchestrator]
-    Orch -->|"0.95"| Static[Static Analysis]
-    Orch -->|"0.80"| Rev[Code Reviewer]
-    Orch -->|"0.90"| Canary
-    H -->|"1.0"| Prod[Prod Deploy]
-```
+| Harm mode | Checks and assumed miss rates | ρ assumed | P(all miss) |
+|---|---|---|---|
+| Incident | CI 0.5, human review 0.6, canary 0.4 | 0.2 (range 0.1–0.5) | 0.18 |
+| Test gaming | held-out tests and path policy 0.2, human review 0.5 | 1 (defection) | 0.20 |
+| Backdoor | CI 0.9, monitor 0.5, human review 0.7 | 1 (defection) | 0.50 |
+| Injection | monitor 0.5, human review 0.6 | 1 (hijack) | 0.50 |
 
-**Effective trust in Code Reviewer's impact on production**:
-```
-Trust(Human → Production via Reviewer) = 0.99 × 0.80 × ...
-But: Reviewer can't directly affect production!
-```
+**Where ρ comes from.** For the accident row, ρ is the phi correlation of the checks' misses. Estimate it by seeding known bugs, running all three checks on them, and following the [canonical recipe](/delegation-risk/risk-propagation/#what-ρ-means-and-how-to-estimate-it). The value 0.2 assumes that tests, reviewers and the canary all tend to miss the same kind of bug, the rare-input and data-dependent kind, but are otherwise unlike each other. For the defection and hijack rows the input is chosen by someone trying to beat the checks, so the stack counts as its best layer (ρ = 1) until a [control evaluation](https://arxiv.org/abs/2312.06942) measures more. For test gaming this is conservative: an agent gaming the visible tests is not necessarily optimizing against the held-out ones.
 
-The architecture ensures that even if the Code Reviewer is compromised:
-1. It can only add comments (low damage)
-2. Comments don't automatically block/approve (no authority)
-3. Human reviews all suggestions (filtering)
+Sensitivity of the accident row to ρ:
 
-**Result**: Code Reviewer has high capability but near-zero production impact.
+| ρ | 0 | 0.1 | 0.2 | 0.5 | 1 |
+|---|---|---|---|---|---|
+| P(all miss) | 0.120 | 0.148 | 0.176 | 0.260 | 0.400 |
+| Over independence | 1× | 1.2× | 1.5× | 2.2× | 3.3× |
 
-## Applying "Least X" Principles
+## Expected loss per month
 
-| Principle | Application |
-|-----------|-------------|
-| **Least Intelligence** | Orchestrator uses no ML. Canary uses narrow model, not frontier. |
-| **Least Privilege** | Code Reviewer can read code but not write to repo or trigger deploys. |
-| **Least Context** | Canary sees only metrics, not code content or business context. |
-| **Least Persistence** | All components stateless. No "learning" across deploys. |
-| **Least Autonomy** | Production deploy requires human approval every time. |
-| **Least Surprise** | Static analysis is deterministic. Fuzzer uses logged seeds. |
-| **Least Connectivity** | Reviewer → Orchestrator is one-way. Reviewer can't query other components. |
+Monthly expected loss for a row is volume × P per change × P(all miss) × damage. The inputs are drawn from lognormals matching the ranges above, and the table reports the Monte Carlo mean and 90% interval (one million draws). The [delegation risk calculator](/design-patterns/tools/delegation-risk-calculator/) does the point-estimate version.
 
-## Failure Mode Analysis
+| Harm mode | Mean per month | 90% interval |
+|---|---|---|
+| Incident | \$6,600 | \$400–\$24,000 |
+| Test gaming | \$4,100 | \$200–\$15,000 |
+| Backdoor | \$7,600 | \$5–\$20,000 |
+| Injection | \$1,800 | \$30–\$7,000 |
+| **Total** | **\$20,000** | **\$2,400–\$54,000** |
 
-| Failure | Mitigation | Residual Risk |
-|---------|------------|---------------|
-| Static analysis misses vulnerability | Defense in depth: security scanner + fuzzer + canary | Medium |
-| Code reviewer suggests malicious pattern | Human reviews suggestions; suggestions aren't executable | Low |
-| Canary analysis misjudges health | Conservative thresholds + human approval + time lock | Low |
-| Orchestrator bug allows bad deploy | Verified code + formal specification + extensive testing | Very Low |
-| Human approves bad deploy | Time lock allows cancellation; rollback automated | Medium |
+The means add, whatever the correlation between rows. The interval for the total assumes the rows' input uncertainties are independent.
 
-## Comparison to Research Assistant
+## What the arithmetic shows
 
-| Aspect | Research Assistant | Code Deployment |
-|--------|-------------------|-----------------|
-| Primary risk | Wasted effort | Production outage |
-| LLM in coordinator | Yes (constrained) | No (verified code) |
-| Human in loop | Strategic decisions | Every production deploy |
-| Autonomy level | Medium (can run experiments) | Low (advisory only) |
-| Acceptable Delegation Risk | \$2,000/month | \$2,000/month |
-| Conservative factor | 1x | 2-3x |
+The numbers are invented. Four structural points do not depend on them.
 
-**Key insight**: Same Delegation Risk budget, but higher-stakes domain means:
-- More verification layers
-- Less LLM in critical path
-- More human involvement
-- Lower autonomy at each step
+**Per-change probabilities mislead without volume.** After the checks, the incident row's central per-change probability is 0.016 × 0.176 ≈ 0.28%, which sounds negligible. At 200 changes a month it is about one incident every two months. Every probability on a harm table needs a stated unit and a stated volume.
 
-## When to Use This Pattern
+**The entanglement tax is large only for good layers.** For this stack, correlation raises the accident row by 1.5× at ρ = 0.2, because the best single layer already misses 40%. The general ratio is $1 + \rho(\min_i p_i / \prod_i p_i - 1)$. For three layers that each miss 10% it is 1 + 99ρ: about 11×, 21× and 50× at ρ = 0.1, 0.2 and 0.5. Leaky layers lose little to correlation; good layers lose most of the gain that independence would promise.
 
-This architecture is appropriate when:
-- ✅ Actions have immediate, hard-to-reverse consequences
-- ✅ Security is a primary concern
-- ✅ Human oversight is feasible and valuable
-- ✅ Tasks are well-specified enough for verified code
+**An unmeasured tail sets the mean.** About two-thirds of the backdoor row's mean comes from the top 5% of its probability draws. The mean is not a description of a typical month: at the central probability, the chance that at least one backdoor merges in a year is about 0.4%, and at the 95th-percentile probability about 11%. A control evaluation would measure the stack's miss rate, not the base rate. That row stays a judgment, which is why it gets a hard rule, two-person approval on the paths where a backdoor would matter, rather than a budget line.
 
-Consider more autonomy (like research assistant) when:
-- Tasks require creativity or judgment
-- Failures are recoverable
-- Human oversight doesn't scale
-- Speed matters more than caution
+**The envelope changes damage, not probability.** The injection row's probability is set by attackers. What the design controls is what a successful injection can reach. Because the container holds only a repository-scoped token and egress is allow-listed, the damage is the cost of rotating the token and auditing the branch. Give the same agent a production deploy credential, with damage of \$50k–\$1M, and the row's mean rises from about \$1,800 to about \$90,000 with the probability unchanged.
+
+## Reconciliation
+
+The model makes a checkable prediction. At the central inputs it expects roughly 0.56 incidents a month from agent changes. If 600 agent changes ship with no incident, the 95% upper bound on the per-change incident rate after checks is about 0.5% (the rule of three, 3/n), which does not yet refute the model's 0.28%. Three months of data can refute the model but not confirm it. Book the predictions in an [exposure ledger](/delegation-risk/runtime-accounting/#3-the-exposure-ledger), compare them with incidents each month, and replace the invented ranges with your own as the record grows. Run the sensitivity analysis on your own inputs, and measure first whichever input dominates the interval and is cheapest to measure.
+
+For a system where a model also coordinates the work, see the [research assistant example](/design-patterns/examples/research-assistant-example/).

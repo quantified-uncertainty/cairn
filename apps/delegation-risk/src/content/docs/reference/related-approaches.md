@@ -1,200 +1,91 @@
 ---
 title: "Relationship to Existing Approaches"
+description: "Where delegation engineering sits relative to AI Control, frontier safety frameworks, FAIR, safety cases, agent-security patterns and other neighbours, and what it actually adds."
 ---
 
-## vs CAIS ([Drexler, 2019](https://www.fhi.ox.ac.uk/reframing/))
+Most of this framework is borrowed: expected-loss accounting from risk management and insurance, the propagation correction from reliability engineering's beta-factor model, the adversarial methodology from AI Control, and least privilege from security engineering. This page says where each neighbour sits and what this site adds, limited to what its pages actually show. For several neighbours the honest answer is "little".
 
-**[CAIS](https://www.fhi.ox.ac.uk/wp-content/uploads/Reframing_Superintelligence.pdf) proposed**: Build superintelligence as ecosystem of narrow services, avoid monolithic agents
+## Positioning
 
-**Challenge**: The foundation model era changed the landscape—"train from scratch for each task" is less practical now. Also, pure tool AI faces economic pressure to add agency ([Gwern, 2016](https://gwern.net/tool-ai)).
+| Approach | What it does | What this framework adds | Relationship |
+|---|---|---|---|
+| **AI Control** | Protocols that stay safe if the model is deliberately subverting them, evaluated quantitatively on safety–usefulness curves under an auditing budget | An accounting layer around the protocols. It extends to the accident and hijack channels, which Control sets aside, and adds a correlation budget across checks. The adversarial methodology is not added: it is borrowed | Highly complementary |
+| **Frontier safety frameworks** (Anthropic RSP, OpenAI Preparedness, Google DeepMind FSF) | Capability thresholds that trigger required safeguards for a model before and during deployment | A deployment-time view: per-delegate, per-action accounting inside one operator's agent system | Different layer; complementary |
+| **EU GPAI Code of Practice** | A voluntary code (July 2025) for meeting the AI Act's obligations on general-purpose models; its Safety and Security chapter applies to systemic-risk models | Little. The code binds model providers, not the operators who deploy agents on their models | Upstream of this framework |
+| **NIST AI RMF** | Voluntary guidance (2023; generative-AI profile 2024) organized as Govern, Map, Measure, Manage | A concrete metric for "Measure" when the system is a delegation structure; the RMF prescribes none | Fits inside it |
+| **FAIR** | Quantitative information-risk analysis: loss event frequency × loss magnitude in money, estimated as ranges and simulated | Delegation structure (who delegates to whom), composition of checks with correlation, and runtime accounting. FAIR's ranges and Monte Carlo are ahead of most of this site's point estimates | Closest precedent for Σ P × D in dollars |
+| **Safety cases** | Structured arguments that a system is safe enough to deploy | Quantitative inputs a safety case could cite, and a reconciled ledger as post-deployment evidence | Complementary |
+| **Guaranteed Safe AI** | A world model, a safety specification, and a verifier producing an auditable proof certificate | Probabilistic budgets where proofs are out of reach. The exposure envelope is the small part that can be specified and verified | Complementary; proofs for the envelope, budgets for the rest |
+| **CaMeL and agent-security patterns** | Defenses against prompt injection built into the system design | Accounting around these defenses, not a better defense. They are the best current answer to the hijack channel and the closest prior art for the envelope | Use them |
+| **Common-cause failure analysis** | The beta-factor model of redundant components failing together | Applying it to stacks of AI checks, plus a phi-scale estimation recipe | Same math |
+| **CAIS** | General capability built as a system of bounded services | Accepts agentic coordinators and adds accounting | Shares the decomposition intuition |
+| **Principal-agent theory** | Agency costs, moral hazard, monitoring | Applies the vocabulary to AI delegates, which lack the stable utilities the theory assumes | Source vocabulary |
 
-**This proposal**: Accept agency, but try to structure it through modularity. Agentic coordinators over narrow components, not passive services waiting for calls.
+## AI Control
 
-:::note[Key Difference]
-We're not trying to avoid agency—we're trying to make agency *safer* through architecture. Whether this actually works is an empirical question.
-:::
+Greenblatt et al. ([arXiv:2312.06942](https://arxiv.org/abs/2312.06942); ICML 2024) study protocols that use an untrusted strong model, a trusted weaker model and a limited budget of trusted human labor. In their setting, that budget covers 2% of problems. The work is explicitly quantitative: protocols are compared on safety and usefulness, measured against a red team that plays the scheming model. The line has since moved to agents:
 
-## [AI Control](https://arxiv.org/abs/2312.06942) ([Redwood Research](https://www.redwoodresearch.org/), 2024)
+- **Ctrl-Z** (Bhatt et al. 2025, [arXiv:2504.10374](https://arxiv.org/abs/2504.10374)) ran the first control evaluation in an agent environment. Its best resampling protocol cut attack success from 58% to 7% at a 5% cost to a benign agent's performance.
+- **AI Control Levels** (Korbak et al. 2025, [arXiv:2504.05259](https://arxiv.org/abs/2504.05259)) scale red-team affordances to a model's capabilities.
+- **A control safety case sketch** (Korbak et al. 2025, [arXiv:2501.17315](https://arxiv.org/abs/2501.17315)) argues from a control evaluation to a deployment decision.
+- **Factor(T,U)** (Sandoval & Rushing 2025, [arXiv:2512.02157](https://arxiv.org/abs/2512.02157)) found that adding factored cognition to trusted monitoring raised safety from 41% to 63% in the APPS setting. The same paper reports that factoring made backdoors no harder to write, and that its protocols had low usefulness.
 
-**[AI Control](https://arxiv.org/abs/2312.06942)** (Greenblatt, Shlegeris, Sachan, Roger, arXiv:2312.06942, ICML 2024): Assume models might be scheming, build protocols that maintain safety regardless. Core vocabulary: *trusted model, untrusted model, control protocol, control evaluation, trusted/untrusted monitoring, trusted editing, auditing budget* (~2% of actions), *usefulness cost* (their term for the safety-usefulness tradeoff). **Scope note**: Control addresses the defection/scheming channel specifically — concentrated failures where a model actively tries to subvert oversight. The accident channel (non-intentional failures, diffuse harms) is outside their stated scope; see Shlegeris & Greenblatt, ["The case for ensuring that powerful AIs are controlled,"](https://blog.redwoodresearch.org/p/the-case-for-ensuring-that-powerful) Redwood blog, May 2024 on concentrated vs. diffuse failures.
+**Mapping the vocabularies.** Control's *auditing budget* limits how many actions humans can inspect. This site's *risk budget* limits tolerated expected loss. They are related but not equivalent. Control's tradeoff term is *usefulness cost*, and "control tax" is not their term.
 
-**This proposal**: Architectural foundation that makes scheming harder + forecasting-based navigation. Control supplies the adversarial methodology for the defection channel; this framework is the accounting/architecture layer it deploys in.
+Control's stated scope is the defection channel, especially concentrated failures. A model that behaves well under evaluation in order to be deployed is the case where every pre-deployment estimate of P(defection) is unreliable. In the literature this is *deceptive alignment* (Hubinger et al. 2019, [arXiv:1906.01820](https://arxiv.org/abs/1906.01820)); alignment faking has been demonstrated experimentally (Greenblatt et al. 2024, [arXiv:2412.14093](https://arxiv.org/abs/2412.14093)). This framework's answer to that case is not a better estimate. It is the envelope, which bounds damage regardless of intent, together with Control's runtime protocols.
 
-**Honest mapping**:
-- Their *auditing budget* (~2% of actions) is a capacity constraint on the fraction of actions humans can inspect. This framework's *risk budget* is probabilistic accounting — expected-loss headroom. Related concepts, not equivalent: one governs inspection rate, the other governs tolerated expected harm.
-- Their scope is the defection/concentrated-failure channel. This framework's harm-surface decomposition also covers the accident/diffuse channel, which Control does not claim to address.
+**Combining them.** The natural deployment combines a modular architecture, Control protocols on untrusted components, and per-delegate budgets with an envelope. Do not multiply these layers' failure rates as if independent: they share blind spots when they share a model, and a scheming component picks its moment. Measure the combination with a control evaluation.
 
-**The combination** (obviously you'd do both):
+## Frontier safety frameworks and regulation
 
-### 1. Trusted Monitoring
+Anthropic's Responsible Scaling Policy, OpenAI's Preparedness Framework (version 2, April 2025) and Google DeepMind's Frontier Safety Framework (first published May 2024, revised in 2025) each tie capability thresholds to required safeguards. Anthropic, for example, activated ASL-3 protections with the release of Claude Opus 4 in May 2025. These frameworks govern models; this site is about how an operator deploys agents built on them.
 
-- Use control's trusted monitoring on all LLM components
-- Smaller, trusted models check outputs of larger untrusted components
-- Modular architecture makes monitoring easier (each component has narrow output format)
-- Fine-tuned narrow models are easier to trust than frontier models
+The EU's General-Purpose AI Code of Practice was published on 10 July 2025, with chapters on transparency, copyright, and safety and security. NIST's AI Risk Management Framework (January 2023) and its generative-AI profile, NIST AI 600-1 (July 2024), are voluntary guidance. The code binds providers of models, so an operator building agents on those models sits downstream of it. The RMF does not prescribe a metric. A delegation-risk estimate could serve as one input to its "Measure" function, but no regulator has endorsed one.
 
-### 2. Honeypots
+## Quantitative risk analysis: FAIR
 
-- Inject fake vulnerabilities to detect scheming
-- Examples: Fake high-privilege components that coordinators shouldn't invoke
-- Fake data that tempts misbehavior
-- Decomposed coordination makes honeypots more effective (each layer can be tested)
+FAIR (published by The Open Group as the Open FAIR risk taxonomy and risk analysis standards) expresses information risk as the frequency and magnitude of loss in money. It estimates each factor as a calibrated range and simulates the result. That is the obvious precedent for "Σ P × Damage in dollars", and its practice of ranges plus simulation is better than the point estimates on many pages of this site. What FAIR does not model is delegation structure: chains of delegates, stacks of checks with correlated misses, and the per-action accounting a harness could keep.
 
-### 3. Control Evaluations
+## Safety cases and Guaranteed Safe AI
 
-- Red-team adversarial testing against the entire modular system
-- Try to make coordinators scheme despite architectural constraints
-- Test if decomposition actually prevents scheming or just obscures it
-- This is how you validate the architecture works
+A safety case is a structured argument that a system is unlikely to cause a catastrophe; Clymer et al. (2024, [arXiv:2403.10462](https://arxiv.org/abs/2403.10462)) group the arguments as inability, control, trustworthiness and deference. Delegation-risk estimates and a reconciled ledger are evidence such an argument could cite.
 
-### 4. Defer-to-Resample
+Guaranteed Safe AI (Dalrymple et al. 2024, [arXiv:2405.06624](https://arxiv.org/abs/2405.06624)) asks for a world model, a safety specification and a verifier that produces an auditable proof certificate. The stronger claim that provable safety is the only path to controllable AGI comes from Tegmark & Omohundro (2023, [arXiv:2309.01933](https://arxiv.org/abs/2309.01933)). Full specifications for open-ended agent behavior are out of reach today. The exposure envelope (file scope, egress, spend) is the part small enough to specify and verify, which is why it sits at the top of the [verifiability hierarchy](/getting-started/core-concepts/#verifiability-hierarchy).
 
-- If component output looks suspicious, resample with different component
-- Modular architecture enables this: can swap components easily
-- Redundant coordinators mean you can defer suspicious coordination to backup
-- Bhatt et al., ["Ctrl-Z: Controlling AI Agents via Resampling,"](https://arxiv.org/abs/2504.10374) arXiv:2504.10374 (2025), provides the first agentic control evaluation (BashBench); resample protocols cut attack success from 58% to 7% at roughly 5% usefulness cost — quantifying the tradeoff in agentic settings.
+## Agent security: CaMeL and design patterns
 
-### 5. Audit Trails
+CaMeL (Debenedetti et al. 2025, [arXiv:2503.18813](https://arxiv.org/abs/2503.18813)) extracts the control and data flows from the trusted user query, so that untrusted data the model later retrieves cannot change which tools are called. It enforces capability-based policies on tool calls to stop exfiltration. On the AgentDojo benchmark it solved 77% of tasks with provable security, against 84% for an undefended system. Beurer-Kellner et al. (2025, [arXiv:2506.08837](https://arxiv.org/abs/2506.08837)) give a set of design patterns for agents with provable resistance to prompt injection and analyse their utility trade-offs.
 
-- Control requires immutable logging of all decisions
-- Our architecture already includes this for coordinators
-- Extend to all LLM components
-- Decomposition makes logs more analyzable (narrow scope per component)
+These are the strongest current defenses for the hijack channel; this site's patterns that separate context from capability apply them. The framework's contribution is to price what remains: the exposure an agent keeps after such a design, and how correlated its remaining checks are.
 
-### 6. Rate Limiting
+## Reliability engineering: common-cause failure
 
-- Control limits how fast systems can take actions
-- Apply to coordinators: can't make rapid sequence of strategic decisions
-- Apply to components: max invocations per time window
-- Prevents fast takeoff scenarios
+The closest prior art for the entanglement tax is common-cause failure analysis. The beta-factor model and its successors are documented in NUREG/CR-4780 (Mosleh et al. 1988). Knight & Leveson (1986) showed the same effect in software: independently written versions of one program failed together far more often than independence predicts.
 
-### The Agentic Control Line (2025–2026)
+The propagation rule used across this site, (1−ρ)·∏pᵢ + ρ·min pᵢ, *is* the beta-factor mixture. What [Risk Propagation](/delegation-risk/risk-propagation/) adds is narrow:
 
-The original AI Control paper studied code-review tasks. A growing body extends it to agentic settings:
+- applying the mixture to stacks of AI checks;
+- the observation that correlation biases serial chains and parallel checks in opposite directions;
+- a recipe for estimating ρ on the failure-indicator scale.
 
-- **Ctrl-Z** (Bhatt et al., arXiv:2504.10374, 2025) — first agentic control eval; resampling as a recovery-style protocol.
-- **AI Control Levels (ACLs)** (Korbak, Balesni, Shlegeris, Irving, arXiv:2504.05259, 2025) — a graduated framework for evaluating control measures for LLM agents.
-- **Safety case sketch** (Korbak, Clymer, Hilton, Shlegeris, Irving, arXiv:2501.17315, 2025) — how to argue a system is controlled well enough to deploy.
-- **Overview of control measures** (Greenblatt, Redwood blog, Apr 2025) — practical catalogue of current techniques.
+AI delegation also has failure modes that CCF analysis does not model. One component can create the common cause, for example by biasing what downstream checks see. And components can scheme or collude. The site does not yet model either quantitatively. Its operating rule is to treat any channel an adversary can probe as fully correlated (ρ near 1) unless a control evaluation shows otherwise ([research connections](/entanglements/research/research-connections/)).
 
-### Why They're Complementary
+## CAIS
 
-```mermaid
-flowchart TB
-    subgraph "Defense in Depth"
-        Arch[Modular Architecture<br/>May reduce scheming] --> Control[AI Control<br/>Catches if happens]
-        Control --> Budget[Limited Budgets<br/>Bounds damage]
-        Budget --> Forecast[Forecasting<br/>Predicts problems]
-        Forecast --> Human[Human Review<br/>Final check]
-    end
-```
+Drexler's *Reframing Superintelligence* ([report](https://www.futureofhumanityinstitute.org/s/2019-1.pdf), 2019) argues that general capability can be delivered as a system of bounded services, with agents as one class of service and broader systems coordinating narrower ones. It is sometimes summarized as "train a new narrow model from scratch for each task". That is wrong: the report argues that components are best learned with cross-task generality and reused or fine-tuned. Deployment has since moved toward general agents, as Gwern ([2016](https://gwern.net/tool-ai)) predicted on economic grounds; this framework accepts agentic coordinators and tries to bound them.
 
-**Modular architecture alone**: Might limit scheming opportunities, but not proven
-**AI Control alone**: Handles scheming but doesn't reduce its probability
-**Combined**: Architecture may reduce scheming probability + Control catches it if it happens
+## Training-time oversight: IDA, debate, weak-to-strong
 
-**Concrete example - Research Assistant**:
+These methods aim to make an overseer's judgments better. Iterated amplification (Christiano et al. 2018, [arXiv:1810.08575](https://arxiv.org/abs/1810.08575)) and debate (Irving, Christiano & Amodei 2018, [arXiv:1805.00899](https://arxiv.org/abs/1805.00899), written at OpenAI) are proposals of this kind. There is empirical work on debate. Khan et al. (2024, [arXiv:2402.06782](https://arxiv.org/abs/2402.06782)) found that it raised non-expert accuracy to 76% for models and 88% for humans, against naive baselines of 48% and 60%. Kenton et al. (2024, [arXiv:2407.04622](https://arxiv.org/abs/2407.04622)) found debate beat consultancy across tasks but had mixed results against direct question-answering. Weak-to-strong generalization (Burns et al. 2023, [arXiv:2312.09390](https://arxiv.org/abs/2312.09390)) found that weakly supervised strong models outperform their supervisors but fall well short of their full capability.
 
-- Architecture: Decomposed coordination, fine-tuned narrow models, limited budgets
-- Control layer 1: Trusted monitor checks all hypothesis generation outputs
-- Control layer 2: Honeypot includes fake "high-impact but dangerous" research direction
-- Control layer 3: Strategy Module outputs audited for consistency with stated goals
-- Control layer 4: If Tactical Coordination acts suspiciously, defer to backup coordinator (resample protocol)
-- Control layer 5: All decisions logged immutably for post-hoc analysis
+This framework treats any overseer as a check with a miss rate, and asks how correlated that miss rate is with the failures it oversees. Goel et al. (2025, [arXiv:2502.04313](https://arxiv.org/abs/2502.04313)) report that model mistakes grow more similar as capability increases, which would raise that correlation.
 
-This is **defense in depth**:
+## Principal-agent theory
 
-- If architecture fails to prevent scheming → Control catches it
-- If Control misses scheming instance → Limited budgets bound damage
-- If both fail → Forecasting should predict bad outcomes → Human review
-- If all fail → Worst case limited by component scope and privilege
+The vocabulary is economics': agency cost (Jensen & Meckling 1976), moral hazard and the value of informative monitoring (Holmström 1979). Delegation risk is roughly the expected-loss part of an agency cost; defection is hidden action; a check is a monitoring signal. The theory assumes agents with stable, known utilities, which a scheming model does not offer. Incentive schemes therefore bind the operators and vendors around a model better than the model itself. [The Insurer's Dilemma](/delegation-risk/insurers-dilemma/) works through moral hazard and adverse selection in this setting.
 
-**Key insight**: Modular architecture makes Control easier and more effective
+## What this framework does not claim
 
-- Narrow components easier to monitor than monolithic models
-- Decomposed coordination has more checkpoints for honeypots
-- Audit trails more analyzable with structured component interactions
-- Fine-tuned models more predictable for control evaluations
-
-:::note
-You don't choose "architecture OR control"—you obviously use both. They're complementary, not competing.
-:::
-
-## vs [IDA](https://arxiv.org/abs/1810.08575) ([Christiano](https://paulfchristiano.com/), 2018)
-
-**[IDA (Iterated Distillation and Amplification)](https://arxiv.org/abs/1810.08575)**: Recursively amplify human judgment—human + AI assistants decompose hard problems, distill back into faster model, iterate
-
-**This proposal**: Use forecasting-based navigation with AI self-evaluation, not human amplification
-
-**Key difference**: IDA assumes human judgment is the ground truth to amplify. This assumes forecasting + evaluation by AI itself is sufficient if you prevent scheming.
-
-**Why different**: IDA requires enormous human effort in the loop. Forecasting-based navigation offloads evaluation to AI, reserving human oversight for high-level decisions and verification that forecasting remains calibrated.
-
-## vs Pure Capability Limitation
-
-**Capability limitation**: Boxing, restricted action spaces, oracle AI—prevent dangerous capabilities entirely
-
-**This proposal**: Allow full capabilities (including agency), but allocate and structure them carefully
-
-**Key difference**: You can build transformatively useful AI with this approach. Pure limitation fails [Gwern's economic test](https://gwern.net/tool-ai)—limited AI gets outcompeted.
-
-## Why This Might Actually Work
-
-Three reasons for cautious optimism:
-
-**1. Decomposition has precedent**
-Software engineering, security engineering, and system design all rely on modularity for safety. The principle isn't new—the application to AI is.
-
-**2. Agency is inevitable anyway**
-If we're going to have agentic AI (and economic pressures suggest we will), better to structure it safely than fight the tide.
-
-**3. We only need this for ~5 years**
-Not claiming this solves superintelligence alignment. Claiming it might keep human-level AI safe long enough for that AI to help solve harder problems.
-
-**4. Defense in depth**
-Not relying on single mechanism—combining 10+ principles, multiple safety layers, continuous monitoring, diverse redundancy. Many points of failure before catastrophe.
-
-**5. Builds on established techniques**
-Borrowing from security engineering ([least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege), [defense in depth](https://en.wikipedia.org/wiki/Defense_in_depth_(computing))), software engineering (modularity, testing), distributed systems ([Byzantine fault tolerance](https://en.wikipedia.org/wiki/Byzantine_fault)), formal methods (verification). Not inventing from scratch—though the AI-specific application is novel.
-
----
-
-## vs Reliability Engineering / Common-Cause Failure Analysis
-
-**CCF analysis** (beta-factor model, NUREG/CR-4780, Mosleh's alpha-factor extension) is the closest prior art to this framework's central model. Nuclear safety engineers have been applying the beta-factor formula — the same formula this site uses for the entanglement tax — to redundant safety systems since the 1970s. Knight & Leveson's 1986 experiment confirmed the same failure mode in redundant software: independently developed programs had statistically correlated failures on the same inputs.
-
-**This framework adds**: CCF analysis models *passive* correlation — shared causes that make hardware or software components fail together without intent. The AI delegation context introduces two failure modes CCF analysis does not cover: **active influence** (a component directionally biases what downstream verifiers see, creating the common cause rather than merely suffering it) and **adversarial coordination** (components that can scheme or collude, exploiting the architecture rather than simply sharing a failure mode). These extensions are what make the framework AI-specific rather than a direct import.
-
-See [Reliability Engineering & CCF — the closest prior art](/entanglements/research/research-connections/#reliability-engineering--common-cause-failure-the-closest-prior-art) for the full literature survey and lineage.
-
----
-
-## Comparison Table
-
-| Approach | Core Idea | Strengths | Limitations | Compatibility |
-|----------|-----------|-----------|-------------|---------------|
-| **This Framework** | Decomposed components with delegation risk budgets | Quantified risk, works with agency, adapts established cross-domain methods | Implementation overhead, uncertain AI-specific evidence, untested at scale | — |
-| **CAIS** | Narrow AI services, no agents | Avoids agency risk entirely | Economically uncompetitive, obsolete with foundation models | Complementary (we accept agency) |
-| **AI Control** | Assume scheming, design for safety anyway | Adversarial mindset, practical protocols | Doesn't reduce scheming probability | Highly complementary |
-| **IDA** | Amplify human judgment recursively | Human values preserved | Enormous human effort required | Partially compatible |
-| **[Constitutional AI](https://arxiv.org/abs/2212.08073)** | Train model on principles | Scalable, built into weights | Doesn't guarantee constraint following | Use for base models in components |
-| **[RLHF](https://en.wikipedia.org/wiki/Reinforcement_learning_from_human_feedback)** | Optimize for human preference | Effective for helpfulness | Doesn't solve deception, [reward hacking](https://en.wikipedia.org/wiki/Reward_hacking) | Use for component fine-tuning |
-| **Boxing/Containment** | Restrict AI capabilities | Simple conceptually | Economically unviable, breaks usefulness | Apply within components |
-| **Interpretability** | Understand model internals | Could provide ground truth | Far from deployment-ready | Would enhance verification |
-
-### When to Use What
-
-| Situation | Recommended Approaches |
-|-----------|----------------------|
-| Building production AI systems now | This framework + AI Control + RLHF |
-| Research on alignment foundations | Interpretability + Constitutional AI |
-| Extremely high-stakes deployment | All of the above + human oversight |
-| Internal tools, low risk | Light application of this framework |
-
----
-
-## See Also
-
-- [Core Concepts](/getting-started/core-concepts/) — Framework fundamentals
-- [FAQ](/getting-started/faq/) — Common objections addressed
-- [Empirical Tests](/design-patterns/tools/empirical-tests/) — Validating the approach
+- That it is the first to compose risks across AI systems, or that its coordinator constraints are formally verified. Earlier versions of this site claimed both, and neither is shown on the site.
+- That architecture reduces the probability of scheming. Decomposition limits what a schemer can reach; whether it changes propensity is untested.
+- That its numbers are calibrated. Most are illustrative; see [About This Site](/reference/about-this-site/).

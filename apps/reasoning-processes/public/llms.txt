@@ -1,26 +1,26 @@
 # Robust Reasoning Processes
 
-> A small textbook for a proposed field: the study and engineering of reasoning processes — peer review, prediction markets, audits, LLM judge pipelines, debate protocols — that deliver trustworthy conclusions at known cost and resist corruption. Maintained by QURI (quantifieduncertainty.org) as part of the CAIRN project. Everything is a dated, versioned working draft; formalisms are graded [exact] / [standard shape] / [heuristic].
+> A research exploration: working notes toward reasoning processes — peer review, prediction markets, audits, LLM judge pipelines, debate protocols — that deliver trustworthy conclusions at known cost and resist corruption. Exploratory and brainstorm-heavy, not a textbook. Maintained by QURI (quantifieduncertainty.org) as part of the CAIRN project. Formalisms are graded [exact] / [standard shape] / [heuristic].
 
-Core quantities: epistemic weight (a process's likelihood-ratio profile), cost per validated bit, and the corruption cost curve (minimum adversary spend to distort output by a given amount). The field's central empirical project is replacing qualitative ratings with measurements of these quantities. Sibling wiki: Evaluation Engineering (https://evaluation-engineering.quantifieduncertainty.org), on producing evaluations at scale and known cost.
+Core quantities: epistemic weight (a process's likelihood-ratio profile), cost per validated bit, and the corruption cost curve (minimum adversary spend to distort output by a given amount). The central empirical project is replacing qualitative ratings with measurements of these quantities. Sibling wiki: Evaluation Engineering (https://evaluation-engineering.quantifieduncertainty.org), on producing evaluations at scale and known cost.
 
 
 ## Start Here
 
-- [1. Robust Reasoning Processes](https://reasoning-processes.quantifieduncertainty.org/start-here/introduction/): A small textbook for a new field — the study and engineering of reasoning processes that deliver trustworthy conclusions at known cost and resist corruption.
+- [1. Robust Reasoning Processes](https://reasoning-processes.quantifieduncertainty.org/start-here/introduction/): A research exploration — working notes toward reasoning processes that deliver trustworthy conclusions at known cost and resist corruption.
 - [2. Cruxes](https://reasoning-processes.quantifieduncertainty.org/start-here/key-questions/): The central uncertainties this wiki is organized around — the questions whose answers would most change what we work on.
 
 ## Part I — The Judge
 
-- [3. The Core Model](https://reasoning-processes.quantifieduncertainty.org/concepts/core-model/): The field's basic quantities — epistemic weight, the loss pipeline, unit economics, the corruption cost curve, and prospective information pricing — each graded by how much to trust it.
+- [3. The Core Model](https://reasoning-processes.quantifieduncertainty.org/concepts/core-model/): Candidate basic quantities — epistemic weight, the loss pipeline, unit economics, the corruption cost curve, and prospective information pricing — each graded by how much to trust it.
 - [4. Epistemic Impact Analysis](https://reasoning-processes.quantifieduncertainty.org/proposals/epistemic-impact-analysis/): A framework for quantifying the value of information by how it improves a calibrated AI agent's beliefs.
 - [5. Constructing Utility Functions](https://reasoning-processes.quantifieduncertainty.org/concepts/constructing-utility-functions/): Methods for building the weighted question portfolios that Epistemic Impact Analysis and Overseeing Automated Research treat as utility functions — formats, elicitation, empirical results, and the LLM upgrade.
 - [6. Untrustworthy Sources](https://reasoning-processes.quantifieduncertainty.org/concepts/untrustworthy-sources/): Most of the defense against being lied to happens before the liar speaks. A security-games model of strategic information — reduce the attack surface at design-time, then on the few channels that won't close, trust a message only as far as a liar couldn't have cheaply faked it.
-- [Interlude: The Funding Effect](https://reasoning-processes.quantifieduncertainty.org/case-studies/the-funding-effect/): The cleanest measured instance of corruption moving a process's epistemic weight — what learning that research was funded by an interested party does to the likelihood ratio of its conclusions.
+- [Interlude: The Funding Effect](https://reasoning-processes.quantifieduncertainty.org/case-studies/the-funding-effect/): A measured case of distortion by an interested party — what learning that research was funded by one does to the likelihood ratio of its conclusions.
 
 ## Part II — The Processes
 
-- [7. The Process Catalogue](https://reasoning-processes.quantifieduncertainty.org/concepts/process-catalogue/): Reasoning processes compared on the field's two axes — cost to extract validated information, and cost to corrupt — with scope and built-in biases per process.
+- [7. The Process Catalogue](https://reasoning-processes.quantifieduncertainty.org/concepts/process-catalogue/): Reasoning processes compared on two axes — cost to extract validated information, and cost to corrupt — with scope and built-in biases per process.
 - [8. What Grounds an Oversight Protocol?](https://reasoning-processes.quantifieduncertainty.org/concepts/oversight-protocols/): A taxonomy of scalable oversight protocols — debate, market-making, prediction games, consistency — by what their incentives ground out in.
 - [9. Consistency Evaluations](https://reasoning-processes.quantifieduncertainty.org/proposals/consistency-evals/): Evaluating AI estimation agents by whether they can be arbitraged, not just whether they are accurate.
 - [10. What Is a Strong Reasoner?](https://reasoning-processes.quantifieduncertainty.org/concepts/what-is-a-strong-reasoner/): A working definition of "strong reasoner" — an AI system whose judgments deserve substantial weight, in the limit deference, within its domain.
@@ -33,24 +33,22 @@ Core quantities: epistemic weight (a process's likelihood-ratio profile), cost p
 - [14. Independence & Decorrelation](https://reasoning-processes.quantifieduncertainty.org/concepts/hardening-independence/): Manufacture genuinely independent signals so corruption must defeat all of them and herding cannot collapse them.
 - [15. Invariance & Low Sensitivity](https://reasoning-processes.quantifieduncertainty.org/concepts/hardening-invariance/): Make the output a function of truth-relevant variables and near-invariant to whatever an adversary controls; rate processes by their breakdown point.
 - [16. Incentive-Compatibility](https://reasoning-processes.quantifieduncertainty.org/concepts/hardening-incentives/): Make honest reporting the agent's best strategy through scoring rules and markets, so distortion costs the producer.
-- [17. Deterrence](https://reasoning-processes.quantifieduncertainty.org/concepts/hardening-deterrence/): Off-equilibrium penalties that cost almost nothing on the honest path and a great deal to an adversary — the only family that reaches the empty quadrant.
-- 18. Certification and Gyms (planned) — planned, not yet written
+- [17. Deterrence](https://reasoning-processes.quantifieduncertainty.org/concepts/hardening-deterrence/): Off-equilibrium penalties that cost little on the honest path and a great deal to an adversary — the most promising route to the empty quadrant.
 
 ## Part IV — The Environment
 
-- [19. Identity & Track Records](https://reasoning-processes.quantifieduncertainty.org/environment/identity-and-track-records/): The institution every incentive scheme in this book silently assumes — identities that make penalties stick and make "n independent reports" mean n, and track records that cost time to fake — and what changes when the reporters are copyable AI processes.
-- 20–22. Markets, Law, Culture (planned) — planned, not yet written
+- [19. Identity & Track Records](https://reasoning-processes.quantifieduncertainty.org/environment/identity-and-track-records/): The institution every incentive scheme in these notes silently assumes — identities that make penalties stick and make "n independent reports" mean n, and track records that cost time to fake — and what changes when the reporters are copyable AI processes.
 
 ## Part V — Applications
 
 - [23. The Reliability Ladder](https://reasoning-processes.quantifieduncertainty.org/concepts/epistemic-applications/): What strong reasoners could be used for — five application tiers, each requiring more warranted trust than the last.
 - [24. Overseeing Automated Research](https://reasoning-processes.quantifieduncertainty.org/proposals/overseeing-automated-research/): Output-metered oversight — managing research you cannot check, by marking its epistemic impact to market.
 - [25. LLM Epistemics in Production](https://reasoning-processes.quantifieduncertainty.org/case-studies/llm-epistemics-in-production/): QURI's deployed systems — RoastMyPost, Squiggle AI, and an LLM-judged Fermi competition — as small working instances of this wiki's abstractions.
-- [26. Open Problems](https://reasoning-processes.quantifieduncertainty.org/open-questions/): The field's unresolved problems, aggregated from every chapter's open-questions section.
+- [26. Open Problems](https://reasoning-processes.quantifieduncertainty.org/open-questions/): Unresolved problems, aggregated from every chapter's open-questions section.
 
 ## Reference
 
-- [Glossary & Notation](https://reasoning-processes.quantifieduncertainty.org/reference/glossary/): Index of the field's terms and symbols, with the page where each is defined.
+- [Glossary & Notation](https://reasoning-processes.quantifieduncertainty.org/reference/glossary/): Index of the terms and symbols used in these notes, with the page where each is defined.
 
 ## Optional
 

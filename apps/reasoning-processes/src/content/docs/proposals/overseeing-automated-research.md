@@ -7,8 +7,8 @@ sidebar:
 
 *How to manage research you cannot check: don't audit the process, meter the output's validated epistemic impact against a weighted question portfolio — mark the book the way a trading desk marks positions. Oversight capacity then scales with producer capability for whatever fraction of the portfolio nature resolves.*
 
-:::note[Status]
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Agenda sketch, more speculative than the other proposals. Positions here are exploratory, not settled.
+:::note
+An agenda sketch, more speculative than the other proposals.
 :::
 
 ## The problem

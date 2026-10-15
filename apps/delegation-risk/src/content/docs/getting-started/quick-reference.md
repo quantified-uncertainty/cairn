@@ -1,137 +1,46 @@
 ---
 title: "Quick Reference"
-description: "Core formulas, pattern selection, and key thresholds at a glance"
+description: "Core formulas, harm-mode checklist and pattern pointers at a glance"
 ---
 
-A one-page summary for practitioners who know the framework and need fast lookup.
+A lookup page for readers who know the framework. Definitions are in the [Glossary](/getting-started/glossary/); derivations are in [Risk Propagation](/delegation-risk/risk-propagation/).
 
----
+## Formulas
 
-## Core Formulas
+Probabilities are per stated unit (per task, action or month); dollar figures carry the same unit.
 
-| Concept | Formula | Description |
-|---------|---------|-------------|
-| **Delegation Risk** | `Σ P(harm) × Damage` | Expected cost of delegation |
-| **Risk Decomposition** | `Accident Risk + Defection Risk` | Two sources of harm |
-| **Effective Capability** | `Power × Agency` | What the system can accomplish |
-| **RACAP** | `Capability / Risk` | Risk-adjusted capability ratio |
-| **Authority** | `Power ∩ Permission` | Sanctioned power |
-| **Entanglement Tax** | `Actual Risk / Independent Risk` | How much worse than expected |
+| Quantity | Formula | Units |
+|---|---|---|
+| Delegation risk of a component | Σ P(harm mode) × Damage | \$ per unit |
+| System expected loss | Σ component delegation risks (adds whatever the correlation; overlapping harm modes on one asset make the sum an upper bound) | \$ per unit |
+| Chain works (serial) | ∏ tᵢ, with tᵢ = P(faithful execution); conservative under correlation | probability |
+| All checks miss (parallel) | (1−ρ)·∏pᵢ + ρ·min pᵢ | probability |
+| Residual risk behind checks | P(harmful action) × P(all checks miss) × Damage | \$ per unit |
+| Entanglement tax | P(all miss) / ∏pᵢ; for n equal checks, (1−ρ) + ρ·p^(1−n) | ratio |
+| Estimating ρ | largest pairwise phi coefficient of per-item misses on a shared labeled set | 0–1 |
 
----
+When ρ is unknown and the checks share a provider, training data or context, or when an adaptive attacker can probe them, use ρ = 1: only your best single check counts. With three checks at p = 0.1, the tax is 1 + 99ρ, about 11×, 21× and 50× at ρ = 0.1, 0.2 and 0.5.
 
-## Pattern Selection Flowchart
+## Harm-mode checklist
 
-```mermaid
-flowchart TD
-    Start[What's your primary concern?] --> Q1{Capability errors?}
-    Q1 -->|Yes| P1[Escalation Ladder<br/>Ghost Checker<br/>Checkpoint-Rollback]
-    Q1 -->|No| Q2{Adversarial inputs?}
-    Q2 -->|Yes| P2[Gateway Chokepoint<br/>Tripwire Mesh<br/>Output Filtering]
-    Q2 -->|No| Q3{AI scheming?}
-    Q3 -->|Yes| P3[Honeypot Injection<br/>Consistency Triangulation<br/>Capability Probing]
-    Q3 -->|No| Q4{Cascading failures?}
-    Q4 -->|Yes| P4[Bulkhead Isolation<br/>Blast Radius Containment<br/>Graceful Degradation]
-    Q4 -->|No| Q5{Collusion/Capture?}
-    Q5 -->|Yes| P5[Rotating Validator<br/>Adversarial Collaboration<br/>Separation of Powers]
-    Q5 -->|No| P6[Start with<br/>Least-X Principles]
+**Accident.** The task is done wrong; there is an edge-case failure; a confident falsehood; resource exhaustion; an irreversible action taken by mistake.
 
-    style Start fill:#e3f2fd
-    style P1 fill:#e8f5e9
-    style P2 fill:#e8f5e9
-    style P3 fill:#e8f5e9
-    style P4 fill:#e8f5e9
-    style P5 fill:#e8f5e9
-    style P6 fill:#fff3e0
-```
+**Defection.** Pursuing a different objective; deception; sandbagging; collusion between components; *reward hacking* (special-casing tests, editing graders), which is a non-scheming sub-type.
 
----
+**Hijack.** Prompt injection through documents, web pages or tool outputs; a malicious or compromised MCP server or dependency; misuse by an authorized user.
 
-## Harm Mode Checklist
+## Where to start, by concern
 
-When assessing a delegation, check for these harm modes:
+| Concern | Patterns |
+|---|---|
+| Capability errors | Escalation Ladder, Trusted Monitor, Checkpoint-Rollback |
+| Prompt injection and misuse | Exposure-envelope gateway, Need-to-Know Compartments, Flight Recorder |
+| Scheming | Honeypot Injection, Capability Probing, Consistency Triangulation, Random Audit |
+| Cascading failure | Bulkhead Isolation, Graceful Degradation |
+| Collusion | Trust Transitivity Limits, Adversarial Collaboration; diversify model families |
 
-### Accident Modes
-- [ ] **Capability failure** — System can't do the task correctly
-- [ ] **Edge case error** — Works normally, fails on unusual inputs
-- [ ] **Hallucination** — Generates confident but incorrect outputs
-- [ ] **Resource exhaustion** — Runs out of time/compute/memory
+All are in the [pattern catalogue](/design-patterns/). Before any of them, build [the minimal delegation-engineering layer](/getting-started/core-concepts/#the-minimal-delegation-engineering-layer).
 
-### Defection Modes
-- [ ] **Goal misalignment** — Optimizes for wrong objective
-- [ ] **Deception** — Deliberately hides information or lies
-- [ ] **Scheming** — Takes unauthorized actions for future benefit
-- [ ] **Collusion** — Coordinates with other components against principal
+## Example thresholds
 
----
-
-## Key Thresholds
-
-| Situation | Threshold | Action |
-|-----------|-----------|--------|
-| **Risk budget exceeded** | Risk > Budget | Block action, escalate |
-| **Low confidence output** | P(correct) < 0.8 | Add verification layer |
-| **High-stakes decision** | Damage > \$10K | Require human review |
-| **Novel input detected** | Outside training distribution | Flag for review |
-| **Pattern failure rate** | > 3 failures/week | Review pattern selection |
-
----
-
-## Essential Patterns (Top 5)
-
-If you can only implement 5 patterns (canonical list: [Core Concepts → The 5 Essential Patterns](/getting-started/core-concepts/#the-5-essential-patterns)):
-
-1. **Least Privilege** — Give the minimum permissions needed for the task
-2. **Human Escalation** — Route high-stakes decisions to humans
-3. **Output Filtering** — Check outputs before they reach the world
-4. **Sandboxing** — Contain blast radius with isolated environments
-5. **Audit Logging** — Record everything for forensics and incident review
-
-Least Privilege generalizes to the full [Least-X family](/design-patterns/least-x-principles/); Output Filtering is the first layer of defense in depth.
-
----
-
-## Risk Budget Rules of Thumb
-
-*Illustrative starting points for discussion — not benchmarks; no empirical basis is claimed.*
-
-| System Type | Suggested Annual Budget | Rationale |
-|-------------|------------------------|-----------|
-| Internal tool | \$50K-100K | Low exposure, recoverable |
-| Customer-facing | \$10K-50K | Reputation matters |
-| Financial | \$1K-10K | Direct monetary loss |
-| Safety-critical | \$100-1K | Human welfare at stake |
-| Catastrophic potential | \$0-100 | Existential concern |
-
----
-
-## Quick Formulas
-
-**Expected harm from single component:**
-```
-Component Risk = P(accident) × Damage_accident + P(defection) × Damage_defection
-```
-
-**Pipeline risk (independent components):**
-```
-Pipeline Risk = 1 - Π(1 - Component_Risk_i)
-```
-
-**Entangled pipeline risk:**
-```
-Entangled Risk = Pipeline_Risk × Entanglement_Tax
-```
-
-**Mitigation effectiveness (serial layers):**
-```
-Residual Risk = Base_Risk × Π(1 - Catch_Rate_i)
-```
-
----
-
-## See Also
-
-- [Core Concepts](/getting-started/core-concepts/) — Full conceptual explanation
-- [Minimal Viable Framework](/getting-started/core-concepts/#the-minimal-viable-framework) — 80/20 version
-- [Design Patterns Index](/design-patterns/) — All 45 patterns
-- [Glossary](/getting-started/glossary/) — Term definitions
+*These are examples to adapt, not benchmarks.* Block and escalate any action whose preflight estimate exceeds the remaining budget. Require human approval above a damage threshold you set per system. Keep irreversible or catastrophic harm modes outside the envelope, rather than pricing them in a dollar budget ([why](/getting-started/core-concepts/#when-expected-loss-is-the-wrong-metric)). Review the ledger whenever observed incidents exceed the estimate for a period.

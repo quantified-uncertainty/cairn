@@ -1,154 +1,57 @@
 ---
 title: "For Engineers"
-description: "The practitioner's path through the framework"
+description: "The practitioner's path: the minimal delegation-engineering layer, where it lives in a 2026 agent stack, and the three mistakes specific to this framework."
 ---
 
-You want to build safe AI systems. Here's the fastest path to implementation.
+The fastest route: read the [Five-Minute Intro](/getting-started/five-minute-intro/), build [the minimal delegation-engineering layer](/getting-started/core-concepts/#the-minimal-delegation-engineering-layer), and follow [the Core Path](/getting-started/reading-order/#the-core-path) when you want the reasons. The [Quick Start](/design-patterns/tools/quick-start/) checklist walks through a first assessment.
 
-If you're in a hurry, read the [Quick Reference](/getting-started/quick-reference/), then the [Quick Start Guide](/design-patterns/tools/quick-start/), then implement the [Minimal Viable Framework](/getting-started/core-concepts/#the-minimal-viable-framework) — about 15 minutes total, and you can stop there. If you want to understand why the patterns work before you build, follow [The Core Path](/getting-started/reading-order/#the-core-path).
+## Where the layer lives in an agent stack
 
----
+Put every limit in the harness, not in the model. A system prompt is not a security boundary: an instruction in the prompt is one more input the model may fail to follow or be talked out of, including by text it reads in a tool result.
 
-## Pattern Categories for Engineers
+| Layer element | Where it lives in a current agent stack |
+|---|---|
+| **Harm surface** | An inventory of what the agent can touch: each MCP server and the tools it exposes, credentials and their scopes, writable paths, network destinations, and anything that sends messages or moves money. |
+| **Exposure envelope** | Enforced outside the model. Run code in a sandbox (container or VM, scoped filesystem). Use an egress allow-list, tool allow/deny lists per MCP server, spend and rate caps, and scoped, short-lived credentials. |
+| **Risk preflight** | Pre-tool-use hooks that can block a call, require approval or rewrite arguments. Use permission modes that decide which tools run unattended. The estimator sits at a lower [verifiability tier](/getting-started/core-concepts/#verifiability-hierarchy) than the agent: rules or a narrow classifier, not a sibling of the agent's model. |
+| **Correlation budget** | Guard models and monitors from a different model family than the agent, plus at least one rule-based check per consequential action. |
+| **Hijack defenses** | Keep untrusted content (web pages, documents, tool outputs) away from control flow. CaMeL extracts the control and data flows from the trusted query, so data retrieved later cannot change which tools are called (Debenedetti et al. 2025, [arXiv:2503.18813](https://arxiv.org/abs/2503.18813)). Beurer-Kellner et al. 2025 catalogue design patterns for agents that resist prompt injection ([arXiv:2506.08837](https://arxiv.org/abs/2506.08837)). |
+| **Ledger** | Post-tool-use hooks and tracing that record each consequential action with its preflight estimate, per delegate. Reconcile monthly against incidents and near misses. |
 
-### Structural Patterns (How you architect)
-| Pattern | What It Does | When to Use |
-|---------|--------------|-------------|
-| [Least-X Principles](/design-patterns/least-x-principles/) | Minimize permissions, context, autonomy | Always (default) |
-| [Structural Patterns](/design-patterns/structural/) | Bulkheads, firewalls, blast radius containment | Multi-component systems |
-| [Decomposed Coordination](/design-patterns/decomposed-coordination/) | Separation of powers, rotating validators | High-stakes decisions |
+Harnesses already provide much of the first four rows. What they do not provide is the accounting: a preflight that estimates expected damage rather than asking a yes/no question, and a ledger whose estimates are checked against outcomes. [Runtime Accounting](/delegation-risk/runtime-accounting/) describes both.
 
-### Verification Patterns (How you check)
-| Pattern | What It Does | When to Use |
-|---------|--------------|-------------|
-| [Verification Patterns](/design-patterns/verification/) | Ghost checker, consistency triangulation | Output validation |
-| [Multi-Agent Verification](/design-patterns/multi-agent/) | Cross-validation, adversarial collaboration | AI-on-AI verification |
-| [Monitoring Patterns](/design-patterns/monitoring/) | Tripwires, anomaly detection | Runtime safety |
+## Patterns and examples
 
-### Recovery Patterns (When things go wrong)
-| Pattern | What It Does | When to Use |
-|---------|--------------|-------------|
-| [Recovery Patterns](/design-patterns/recovery/) | Checkpoint-rollback, graceful degradation | Any production system |
-| [Safety Mechanisms](/design-patterns/safety-mechanisms/) | Kill switches, capability sunset | High-autonomy systems |
+The [pattern catalogue](/design-patterns/) has about twenty AI-specific patterns. The ones most engineers reach for first:
 
----
+- **[Structural](/design-patterns/structural/)**: Escalation Ladder (approval modes), the exposure-envelope gateway, Task Decomposition Pipeline, Bulkhead Isolation.
+- **[Monitoring](/design-patterns/monitoring/)**: Trusted Monitor, Random Audit, Flight Recorder.
+- **[Verification](/design-patterns/verification/)**: Capability Probing, Honeypot Injection, Consistency Triangulation.
+- **[Information](/design-patterns/information/)**: Need-to-Know Compartments, which separate untrusted context from capabilities.
+- **[Recovery](/design-patterns/recovery/)**: Checkpoint-Rollback and Graceful Degradation.
 
-## Implementation Checklist
+There are two worked examples: a [code-deployment agent](/design-patterns/examples/code-deployment-example/) and a [research assistant](/design-patterns/examples/research-assistant-example/). [Composing Patterns](/design-patterns/composing-patterns/) covers how patterns interact.
 
-### Phase 1: Risk Assessment (Day 1)
+## Three mistakes specific to this framework
 
-```
-[ ] List all AI components in your system
-[ ] For each component, identify:
-    - What data can it access?
-    - What actions can it take?
-    - What's the worst-case outcome?
-[ ] Calculate rough risk budget (see Quick Reference)
-[ ] Classify as Low / Medium / High risk
-```
+Generic engineering advice (threat-model before copying patterns, don't over-engineer low-stakes tools) applies here as everywhere. These three are the ones the framework is specifically about.
 
-### Phase 2: Essential Safety (Week 1)
+### 1. Multiplying miss rates as if checks were independent
 
-```
-[ ] Implement Least Privilege
-    - Restrict file access to workspace only
-    - Remove unnecessary API permissions
-    - Use read-only where possible
+"Three checks, each catching 90%, so we miss 0.1%." That holds only if the checks fail independently. Checks built on one model family, trained on overlapping data or reading the same context tend to miss the same items. With common-cause weight ρ, three such checks miss (1−ρ)·0.001 + ρ·0.1 of harmful actions: about 11× the naive figure at ρ = 0.1, 21× at ρ = 0.2 and 50× at ρ = 0.5 (the [entanglement tax](/entanglements/)). We know of no measurement of ρ for same-provider stacks on this scale, so treat these values as assumptions.
 
-[ ] Implement Human Escalation
-    - Define escalation thresholds ($, sensitivity, confidence)
-    - Build approval workflow
-    - Test the escalation path
+These figures describe benign, common-cause failure. Against an adaptive attacker, such as an injected prompt or a scheming component searching for an input that defeats every layer, assume ρ near 1, so that only your single best check counts, unless a [control evaluation](/research/trust-behavior/empirical-scheming-reduction/) shows otherwise.
 
-[ ] Implement Output Filtering
-    - PII detection
-    - Policy violation checks
-    - Harmful content filtering
+To avoid this mistake, give each consequential action at least one check from a different tier or provider. Measure ρ where you can, using the phi coefficient of per-item misses on a shared labeled challenge set ([recipe](/delegation-risk/risk-propagation/)).
 
-[ ] Implement Sandboxing
-    - Containerized execution
-    - Network isolation
-    - Resource limits
+### 2. Letting the wrong party set the risk budget
 
-[ ] Implement Audit Logging
-    - All inputs and outputs
-    - Decision traces
-    - Timestamps and versions
-```
+If the team that ships the agent sets its risk budget but users or third parties bear the harm, the team will tend to accept more risk than the people exposed would. In other words, it will overestimate how much risk is acceptable. This is moral hazard, the problem [The Insurer's Dilemma](/delegation-risk/insurers-dilemma/) works through. Have the risk-bearers, or someone accountable to them, set the budget. Get the estimates reviewed by someone who is not paid to ship.
 
-### Phase 3: Enhanced Safety (Month 1)
+### 3. Estimates that are never reconciled
 
-```
-[ ] Add verification layer (if high-risk)
-[ ] Set up monitoring and alerting
-[ ] Create incident response runbook
-[ ] Schedule quarterly risk reviews
-```
+A risk budget built from guesses and never compared with outcomes is fake precision with bookkeeping aesthetics. The probabilities also go stale: a model upgrade, a new tool or a widened use case changes the harm surface. Keep the ledger, and compare predicted against observed incidents and near misses on a schedule and after every capability or tool change. When they diverge, revise the estimates, not the incident log.
 
----
+### A reading mistake
 
-## Code-Adjacent Examples
-
-The framework includes worked examples you can reference:
-
-| Example | Type | Key Patterns |
-|---------|------|--------------|
-| [Research Assistant](/design-patterns/examples/research-assistant-example/) | Multi-step task | Escalation, checkpoints |
-| [Trading System](/design-patterns/examples/trading-system-example/) | High-stakes, autonomous | Risk budgets, circuit breakers |
-| [Healthcare Bot](/design-patterns/examples/healthcare-bot-example/) | Safety-critical | Output filtering, human review |
-| [Code Deployment](/design-patterns/examples/code-deployment-example/) | Infrastructure | Sandboxing, rollback |
-
----
-
-## Integration Points
-
-### With Existing Frameworks
-
-| If You Use | Integration Point |
-|------------|------------------|
-| LangChain | Add verification as chain step, use callbacks for monitoring |
-| OpenAI Functions | Wrap function calls with permission checks |
-| Anthropic Claude | Use system prompts for least-context, implement tool restrictions |
-| AutoGPT-style | Add checkpoints between action cycles, implement kill switches |
-
-### With CI/CD
-
-```
-Suggestion: Add safety layer tests to your pipeline
-- Unit tests for output filters
-- Integration tests for escalation paths
-- Chaos testing for failure modes
-```
-
----
-
-## Debugging Safety Layers
-
-### Common Issues
-
-| Symptom | Likely Cause | Fix |
-|---------|--------------|-----|
-| Too many escalations | Thresholds too tight | Adjust based on false positive rate |
-| Missed harmful outputs | Filter gaps | Review missed cases, expand rules |
-| Slow responses | Heavy verification | Add caching, async verification |
-| Verification false positives | Overfitting to training data | Diversify verifier inputs |
-
----
-
-## What Engineers Often Skip (But Shouldn't)
-
-1. **[Entanglements](/entanglements/)** — If you use the same model in multiple places, failures correlate. Your 3 "independent" 90% verifiers at ρ ≈ 0.5 might only give you ~95%, not 99.9% — a [~50× entanglement tax](/entanglements/#the-canonical-example).
-
-2. **[Insurer's Dilemma](/delegation-risk/insurers-dilemma/)** — If you set the risk budget but users bear the harm, you'll systematically underestimate acceptable risk.
-
-3. **[Capability Probing](/design-patterns/monitoring/)** — Systems can hide capabilities. Periodic probing detects capability drift before it causes harm.
-
----
-
-## See Also
-
-- [Quick Reference](/getting-started/quick-reference/) — Formulas at a glance
-- [Examples Catalog](/getting-started/examples-catalog/) — All worked examples
-- [Composing Patterns](/design-patterns/composing-patterns/) — Combining patterns
-- [Common Mistakes](/getting-started/common-mistakes/) — What to avoid
-
+Skipping [Entanglements](/entanglements/). Two components that share a model are enough to pay the tax; you do not need a large system.

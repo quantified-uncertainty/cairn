@@ -35,24 +35,32 @@ Calling it engineering is a deliberate move away from two adjacent framings:
 
 The mental models that fit best come from systems disciplines: **lean manufacturing, software architecture, engineering management**. The questions are throughput, cost-per-item, latency, consistency, failure modes, and how local changes propagate through a network of dependent estimates. When you produce evaluations at scale, optimizing any single evaluation is usually the wrong objective; you optimize the system.
 
+Part of the system is institutional: who pays the evaluator, who controls the metric, whether the evaluated can appeal. The evidence in Part III suggests these choices predict trustworthiness better than method does, so this wiki counts them as design variables alongside the technical ones ([Evaluation as a System](/concepts/the-systems-view/#technical-and-institutional-design-variables)).
+
 The system-level questions (who staffs it, what data it stands on, how updates propagate, how ten thousand outputs stay consistent, what keeps it from being captured) are laid out in [Evaluation as a System](/concepts/the-systems-view/#the-questions-that-define-a-system).
 
 ## The core split: estimation vs. evaluation
 
 The field's foundational distinction is between **estimation** (numbers you'd trust a careful quantitative analyst to produce — Fermi estimates, models, sums) and **evaluation** (messy judgments you'd want trusted experts for — "how good a president was Obama?", "how much did this org reduce existential risk?"). The design heuristic that falls out of this is *divide and conquer*: handle as much as possible as cheap, verifiable estimation, and sequester the genuinely judgment-bound evaluation into a separate, more expensive layer. This is important enough to get [its own page](/start-here/estimation-vs-evaluation/).
 
-## Why evaluation, specifically? ("all you need")
+## Why evaluation, specifically?
 
-The sharper, more provocative version of the thesis is that **highly optimized evaluations are (almost) all you need.** Two claims sit behind it:
+The founding draft states the thesis provocatively: highly optimized evaluations are "(almost) all you need." Two claims sit behind it:
 
-- **Evaluation may be the bulk of the desired output.** Forecasting discourse has under-weighted evaluation; you can get a long way on clean estimation and then hit a wall. Many of the highest-stakes processes we run are evaluation problems in disguise — courts, grantmaking, hiring, impact assessment, policy choice. It's plausible that *more* of civilization's resources flow into evaluation than into estimation, which would make optimizing it unusually valuable.
+- **Evaluation may be the bulk of the desired output.** Forecasting discourse has under-weighted evaluation; you can get a long way on clean estimation and then hit a wall. Many of the highest-stakes processes we run are evaluation problems in disguise — courts, grantmaking, hiring, impact assessment, policy choice. It's plausible that *more* of civilization's resources flow into evaluation than into estimation, which would make optimizing it unusually valuable. Nobody has measured this.
 - **The accuracy bar is lower than it looks.** A common objection is that scaled evaluation is AGI-complete. But the outputs don't need to be accurate in any absolute sense — only **better than what people would otherwise have done**, and cheap enough to actually get used. People already make vast numbers of noisy, overconfident informal judgments; beating that baseline is a far more modest target. (See [Objections & FAQ](/reference/objections/).)
 
-"Highly optimized" is doing real work in that slogan: the value comes not from any single brilliant evaluation but from *engineering the whole system* to a good point on the [accuracy × quantity × cost](/concepts/the-systems-view/) frontier.
+"Highly optimized" is doing the work in that slogan: the value would come from engineering the whole system to a good point in its [design space](/concepts/the-systems-view/#the-design-space), not from any single brilliant evaluation.
 
 ## A capability ladder
 
-The field has no shared way to *grade* an evaluation system, the way self-driving has "Level 4." Building one is open work; see [Evaluation as a System](/concepts/the-systems-view/#grading-systems-a-capability-ladder).
+The field has no shared way to *grade* an evaluation system, the way self-driving has "Level 4." This wiki does not have one yet either; a draft is planned. See [Evaluation as a System](/concepts/the-systems-view/#grading-systems-a-capability-ladder).
+
+## Not AI model evals, though they overlap
+
+In current AI usage, "evals" means test suites and LLM judges that measure AI models or AI products: benchmark suites, frameworks such as the UK AI Security Institute's [Inspect](https://inspect.aisi.org.uk/), and rubric-based testing of LLM applications. This wiki uses "evaluation" in the older sense: judging grants, organizations, policies and research, where an AI is a possible evaluator rather than the thing evaluated.
+
+The two meet wherever an LLM is the judge. Validating a judge against humans, putting error bars on evaluation results ([Miller 2024](https://arxiv.org/abs/2411.00640)), and watching a leaderboard get gamed (selective disclosure of privately tested model variants biased Chatbot Arena scores; [Singh et al. 2025](https://arxiv.org/abs/2504.20879)) are problems for both communities, and the [LLM chapter](/concepts/llm-evaluators/) draws on the AI-evals literature for them. Whether the name should change is [crux 12](/start-here/key-questions/#on-the-field-itself).
 
 ## Why this is worth a field
 

@@ -19,7 +19,7 @@ export default defineConfig({
 		mermaid(),
 		starlight({
 			title: 'Robust Reasoning Processes',
-			description: 'A small textbook for a new field — the study and engineering of reasoning processes that deliver trustworthy conclusions at known cost and resist corruption.',
+			description: 'A research exploration — working notes toward reasoning processes that deliver trustworthy conclusions at known cost and resist corruption.',
 			customCss: ['./src/styles/global.css'],
 			head: [
 				{
@@ -77,7 +77,6 @@ export default defineConfig({
 						{ label: '15. Invariance & Low Sensitivity', slug: 'concepts/hardening-invariance' },
 						{ label: '16. Incentive-Compatibility', slug: 'concepts/hardening-incentives' },
 						{ label: '17. Deterrence', slug: 'concepts/hardening-deterrence' },
-						{ label: '18. Certification and Gyms (planned)', link: '/#the-book' },
 					],
 				},
 				{
@@ -85,7 +84,6 @@ export default defineConfig({
 					collapsed: false,
 					items: [
 						{ label: '19. Identity & Track Records', slug: 'environment/identity-and-track-records' },
-						{ label: '20–22. Markets, Law, Culture (planned)', link: '/#the-book' },
 					],
 				},
 				{

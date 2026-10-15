@@ -1,9 +1,9 @@
 ---
 title: Robust Reasoning Processes
-description: A small textbook for a new field — the study and engineering of reasoning processes that deliver trustworthy conclusions at known cost and resist corruption.
+description: A research exploration — working notes toward reasoning processes that deliver trustworthy conclusions at known cost and resist corruption.
 template: splash
 hero:
-  tagline: A small textbook for a new field — reasoning processes that deliver trustworthy conclusions at known cost and resist corruption.
+  tagline: A research exploration — working notes toward reasoning processes that deliver trustworthy conclusions at known cost and resist corruption.
   actions:
     - text: Start with Chapter 1
       link: /start-here/introduction/
@@ -16,13 +16,13 @@ hero:
 
 import ProcessMap from '@/components/ProcessMap.astro';
 
-## The field in one paragraph
+## The idea in one paragraph
 
-**Robust reasoning processes (RRP)** is the study and engineering of procedures that turn effort and evidence into trustworthy conclusions — *and keep doing so when interested parties try to corrupt them*. Its objects are processes, not people or models: peer review, prediction markets, audits, expert panels, LLM judge pipelines, debate protocols. Its central activity is measurement: what does a process deliver, what does it cost, and what does it cost to corrupt? Civilization runs on reasoning processes that were never benchmarked; AI has just made them studyable — an LLM-based process can be re-run, perturbed, versioned, and attacked on purpose — and made the problem urgent, because the cost of producing plausible reasoning has collapsed while the cost of verifying it has not.
+**Robust reasoning processes (RRP)** is our working name for procedures that turn effort and evidence into trustworthy conclusions — *and keep doing so when interested parties try to corrupt them*. The objects are processes, not people or models: peer review, prediction markets, audits, LLM judge pipelines, debate protocols. The questions are about measurement: what does a process deliver, what does it cost, and what does it cost to corrupt? Many processes society relies on were never benchmarked. AI makes them easier to study — an LLM-based process can be re-run, perturbed, and attacked on purpose — and more urgent, because plausible reasoning is now cheap to produce and still costly to verify. These pages are exploratory and brainstorm-heavy: a synthesis of mechanism design, scalable oversight, forecasting science, and security economics, plus conjectures, not a settled discipline.
 
 ## The map
 
-Every process gets two headline numbers: the cost of extracting validated information from it, and the cost an adversary pays to bend its output. Plotting the field's [Process Catalogue](/concepts/process-catalogue/) on that plane is our version of a periodic table — and the most important feature is the quadrant that is still empty.
+Every process gets two headline numbers: the cost of extracting validated information from it, and the cost an adversary pays to bend its output. Plotting the [Process Catalogue](/concepts/process-catalogue/) on that plane gives a rough map. The coordinates are our qualitative judgments, so the quadrant it shows as empty is a conjecture to test, not a finding.
 
 <ProcessMap />
 
@@ -32,53 +32,51 @@ Every process gets two headline numbers: the cost of extracting validated inform
 - **The Processes** — the procedures themselves: their anatomy, what their verdicts ground out in, their measured properties, and the attack-and-hardening cycle that makes them robust.
 - **The Environment** — the game the processes live inside: producers, resolvers, accreditors, adversaries; the identity and track-record infrastructure every incentive scheme silently assumes; and the market, legal, and cultural constraints.
 
-## The book
+## Contents
 
-| # | Chapter | Status |
-|---|---------|--------|
-| 1 | [Robust Reasoning Processes](/start-here/introduction/) | draft |
-| 2 | [Cruxes](/start-here/key-questions/) | draft |
-| **I** | **The Judge** | |
-| 3 | [The Core Model](/concepts/core-model/) | draft |
-| 4 | [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/) | draft |
-| 5 | [Constructing Utility Functions](/concepts/constructing-utility-functions/) | draft |
-| 6 | [What Can You Use from an Untrustworthy Source?](/concepts/untrustworthy-sources/) | draft |
-| — | [Interlude: The Funding Effect](/case-studies/the-funding-effect/) | draft |
-| **II** | **The Processes** | |
-| 7 | [The Process Catalogue](/concepts/process-catalogue/) | draft (v0) |
-| 8 | [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/) | draft |
-| 9 | [Consistency Evaluations](/proposals/consistency-evals/) | draft |
-| 10 | [What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/) | draft |
-| **III** | **Hardening** | |
-| 11 | [Hardening: Overview](/concepts/hardening-techniques/) | draft |
-| 12 | [Calibration](/concepts/hardening-calibration/) | draft |
-| 13 | [Verifiability Asymmetry](/concepts/hardening-verifiability/) | draft |
-| 14 | [Independence & Decorrelation](/concepts/hardening-independence/) | draft |
-| 15 | [Invariance & Low Sensitivity](/concepts/hardening-invariance/) | draft |
-| 16 | [Incentive-Compatibility](/concepts/hardening-incentives/) | draft |
-| 17 | [Deterrence](/concepts/hardening-deterrence/) | draft |
-| 18 | Certification and Gyms | planned |
-| **IV** | **The Environment** | |
-| 19 | [Identity and Track-Record Infrastructure](/environment/identity-and-track-records/) | draft |
-| 20 | The Market for Truth | planned |
-| 21 | Law, Liability, and Private Deliberation | planned |
-| 22 | Culture, Consent, and Adoption | planned |
-| **V** | **Applications** | |
-| 23 | [The Reliability Ladder](/concepts/epistemic-applications/) | draft |
-| 24 | [Overseeing Automated Research](/proposals/overseeing-automated-research/) | draft |
-| 25 | [LLM Epistemics in Production](/case-studies/llm-epistemics-in-production/) | draft |
-| 26 | [Open Problems](/open-questions/) | aggregated |
+| # | Chapter |
+|---|---------|
+| 1 | [Robust Reasoning Processes](/start-here/introduction/) |
+| 2 | [Cruxes](/start-here/key-questions/) |
+| **I** | **The Judge** |
+| 3 | [The Core Model](/concepts/core-model/) |
+| 4 | [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/) |
+| 5 | [Constructing Utility Functions](/concepts/constructing-utility-functions/) |
+| 6 | [What Can You Use from an Untrustworthy Source?](/concepts/untrustworthy-sources/) |
+| — | [Interlude: The Funding Effect](/case-studies/the-funding-effect/) |
+| **II** | **The Processes** |
+| 7 | [The Process Catalogue](/concepts/process-catalogue/) |
+| 8 | [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/) |
+| 9 | [Consistency Evaluations](/proposals/consistency-evals/) |
+| 10 | [What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/) |
+| **III** | **Hardening** |
+| 11 | [Hardening: Overview](/concepts/hardening-techniques/) |
+| 12 | [Calibration](/concepts/hardening-calibration/) |
+| 13 | [Verifiability Asymmetry](/concepts/hardening-verifiability/) |
+| 14 | [Independence & Decorrelation](/concepts/hardening-independence/) |
+| 15 | [Invariance & Low Sensitivity](/concepts/hardening-invariance/) |
+| 16 | [Incentive-Compatibility](/concepts/hardening-incentives/) |
+| 17 | [Deterrence](/concepts/hardening-deterrence/) |
+| **IV** | **The Environment** |
+| 19 | [Identity and Track-Record Infrastructure](/environment/identity-and-track-records/) |
+| **V** | **Applications** |
+| 23 | [The Reliability Ladder](/concepts/epistemic-applications/) |
+| 24 | [Overseeing Automated Research](/proposals/overseeing-automated-research/) |
+| 25 | [LLM Epistemics in Production](/case-studies/llm-epistemics-in-production/) |
+| 26 | [Open Problems](/open-questions/) |
 
-A [Glossary & Notation](/reference/glossary/) page indexes the field's terms and symbols.
+Every chapter is a draft. A [Glossary & Notation](/reference/glossary/) page indexes terms and symbols.
 
-## How this book reasons about itself
+## Planned
 
-Three norms, applied throughout:
+Not yet written, and numbered where they would sit: **18** Certification and Gyms (one hardened stack, measured end to end); **20** The Market for Truth; **21** Law, Liability, and Private Deliberation; **22** Culture, Consent, and Adoption.
 
-1. **Formalisms are graded.** Every equation carries an explicit grade — **[exact]** (correct by construction), **[standard shape]** (precedent in an adjacent rigorous field), or **[heuristic]** (a deliberately simple decomposition, not a law). A field about robust reasoning should grade its own reasoning first. See [The Core Model](/concepts/core-model/).
-2. **Failures are published.** The deployment write-ups in [LLM Epistemics in Production](/case-studies/llm-epistemics-in-production/) report false-positive rates, overconfidence, and a miscounted competition alongside the wins. Documented corruption and documented failure are the best data the field has.
-3. **Positions are dated and versioned.** Every page carries a status line; everything here is a working draft of a field that does not exist yet, stated so it can be argued with and eventually replaced by measurement.
+## Norms these notes try to follow
+
+1. **Formalisms are graded.** Every equation carries a grade — **[exact]** (correct by construction), **[standard shape]** (precedent in an adjacent rigorous field), or **[heuristic]** (a deliberately simple decomposition, not a law). See [The Core Model](/concepts/core-model/).
+2. **Failures are published.** The deployment write-ups in [LLM Epistemics in Production](/case-studies/llm-epistemics-in-production/) report false-positive rates, overconfidence, and a miscounted competition alongside the wins.
+3. **Claims are provisional.** Everything here is a working draft, stated so it can be argued with. The measurements these notes propose are mostly still to come: the catalogue's ratings are qualitative judgments, and no incentive audit has been run.
 
 ## Status
 
-This wiki is in an early, exploratory stage. Pages are working notes, not settled positions. It is part of the [CAIRN](https://github.com/quantified-uncertainty/cairn) project by [QURI](https://quantifieduncertainty.org/).
+A research exploration at an early stage: working notes and brainstorming, not settled positions. Part of the [CAIRN](https://github.com/quantified-uncertainty/cairn) project by [QURI](https://quantifieduncertainty.org/).

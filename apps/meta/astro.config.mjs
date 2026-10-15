@@ -1,66 +1,60 @@
+// @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import react from '@astrojs/react';
-import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://cairn-meta.vercel.app',
+  // Pages removed in the October 2026 rebuild (they documented the old
+  // apps/longterm, which now lives in the standalone longterm-wiki repo).
+  redirects: {
+    '/getting-started/introduction/': '/',
+    '/architecture/': '/build-and-tooling/',
+    '/components/': '/build-and-tooling/',
+    '/content-database/': '/build-and-tooling/',
+    '/automation-tools/': '/build-and-tooling/',
+    '/mermaid-diagrams/': '/adding-a-wiki/',
+    '/workflows/': '/review-workflow/',
+    '/enhancement-queue/': '/review-workflow/',
+    '/cause-effect-diagrams/': '/',
+    '/content-formats/': '/',
+    '/knowledge-base/': '/',
+    '/models/': '/',
+    '/research-reports/': '/',
+    '/reports/': '/',
+    '/reports/causal-diagram-visualization/': '/',
+    '/project-roadmap/': '/',
+  },
   integrations: [
     starlight({
-      title: 'LongtermWiki Meta',
-      description: 'How to build LongtermWiki-like knowledge bases',
+      title: 'CAIRN Handbook',
+      description: 'How QURI builds and maintains CAIRN, its monorepo of LLM-assisted research wikis.',
       components: {
-        // Custom footer with version display
         Footer: './src/components/starlight/Footer.astro',
       },
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/quantified-uncertainty/cairn' },
       ],
+      // Explicit { label, slug } entries: scripts/generate-llm-files.mjs reads
+      // this sidebar to build public/llms.txt and public/llms-full.txt.
       sidebar: [
         {
-          label: 'Start Here',
+          label: 'Handbook',
+          collapsed: false,
           items: [
-            { label: 'Introduction', slug: 'getting-started/introduction' },
-            { label: 'Workshop: Research Websites', slug: 'workshop' },
-            { label: 'Guide: Claude Code Web App', slug: 'claude-code-web-app' },
+            { label: 'Adding a Wiki', slug: 'adding-a-wiki' },
+            { label: 'Build & Tooling', slug: 'build-and-tooling' },
+            { label: 'Review Workflow', slug: 'review-workflow' },
           ],
         },
         {
-          label: 'Core Concepts',
+          label: 'Workshop',
+          collapsed: false,
           items: [
-            { label: 'Architecture', slug: 'architecture' },
-            { label: 'Content Formats', slug: 'content-formats' },
-            { label: 'Knowledge Base', slug: 'knowledge-base' },
-            { label: 'Models', slug: 'models' },
+            { label: 'Building Research Websites', slug: 'workshop' },
+            { label: 'Claude Code on the Web', slug: 'claude-code-web-app' },
           ],
-        },
-        {
-          label: 'Components',
-          items: [
-            { label: 'Overview', slug: 'components' },
-            { label: 'Mermaid Diagrams', slug: 'mermaid-diagrams' },
-            { label: 'Cause-Effect Diagrams', slug: 'cause-effect-diagrams' },
-          ],
-        },
-        {
-          label: 'LLM Workflows',
-          items: [
-            { label: 'Overview', slug: 'workflows' },
-            { label: 'Research Reports', slug: 'research-reports' },
-            { label: 'Content Database', slug: 'content-database' },
-            { label: 'Automation Tools', slug: 'automation-tools' },
-            { label: 'Enhancement Queue', slug: 'enhancement-queue' },
-          ],
-        },
-        {
-          label: 'Reports',
-          autogenerate: { directory: 'reports' },
         },
       ],
     }),
-    react(),
   ],
-  vite: {
-    plugins: [tailwindcss()],
-  },
 });

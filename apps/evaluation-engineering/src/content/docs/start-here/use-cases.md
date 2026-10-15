@@ -31,7 +31,7 @@ flowchart LR
 
 ## Futarchy and policy
 
-Robin Hanson's [futarchy](https://en.wikipedia.org/wiki/Futarchy) (2007) uses prediction markets to choose policies that optimize a single welfare metric ("GDP+"). The appealing core isn't the market mechanism specifically — it's the ambition of letting *calibrated estimation directly drive coordination*:
+Robin Hanson's [futarchy](https://en.wikipedia.org/wiki/Futarchy) (drafted from 2000, published 2013) uses prediction markets to choose policies that optimize a single welfare metric ("GDP+"). The appealing core isn't the market mechanism specifically — it's the ambition of letting *calibrated estimation directly drive coordination*:
 
 > How can we ambitiously use systematized estimation systems to optimize policy decisions?
 
@@ -39,14 +39,14 @@ Two buckets of work fall out, independent of whether the estimator is a market: 
 
 ## Certificates of impact
 
-[Certificates of impact](https://forum.effectivealtruism.org/tag/certificate-of-impact) (Paul Christiano) require estimating the value of a long list of interventions. Setting aside the financial-instrument details, the core is an evaluation problem with two bottlenecks the field directly addresses:
+[Certificates of impact](https://forum.effectivealtruism.org/posts/yNn2o3kEhixZHkRga/certificates-of-impact) (Paul Christiano, 2014; trialled with Katja Grace as the 2015 [Impact Purchase](https://impactpurchase.org/certificates-of-impact/)) require estimating the value of a long list of interventions. Setting aside the financial-instrument details, the core is an evaluation problem with two bottlenecks the field directly addresses:
 
 - **Cost-effectiveness.** Producing all those value estimates is expensive; if the resources-to-estimates conversion is poor, the scheme can't work.
 - **Candidness.** If certificate prices were public and roughly accurate, some organizations would get far worse ratings than they expected. Imagine a small market concluding — publicly — that most longtermist researchers are near-useless or slightly harmful. Even if true, that's too uncomfortable to be tolerated if done crudely; expect pushback and strategic non-participation. Good evaluation systems must offer **deliberate trade-offs between truth and discomfort**, not just accuracy. (See [Epistemic Culture](/concepts/epistemic-culture/).)
 
 ## Felicific calculators
 
-Bentham's felicific calculus — quantifying the moral weight of acts — has only ever been realized in narrow corners (QALYs, welfare economics). Broad-purpose calculators that estimate the costs and benefits of actions for individuals and organizations remain out of reach. Most of the difficulty reduces to "cost-effective large-scale estimation," which is exactly the field's competence. Advanced versions should work for nearly any utility function, so almost any consequentialist framework could plug in.
+Bentham's felicific calculus — quantifying the moral weight of acts — has only ever been realized in narrow corners (QALYs, welfare economics). Broad-purpose calculators that estimate the costs and benefits of actions for individuals and organizations remain out of reach. Most of the difficulty reduces to "cost-effective large-scale estimation," which is exactly the field's competence. The aspiration is a calculator that accepts any utility function, so that different consequentialist frameworks could plug in; nobody has shown this is feasible.
 
 ## Guesstimate, and the tooling gap
 
@@ -60,7 +60,7 @@ Evaluation engineering reframes the goal as **augmentation, not replacement**: n
 
 > for every prioritization or evaluation researcher we have, can we eventually get x% more value out of them?
 
-A system that let existing teams scale output 10–100× — even at lower per-item quality — could change which questions get asked at all. There are already small instances to learn from: QURI's [shallow evaluations of longtermist organizations](/reference/related-work/) (2021) and Sam Nolan's uncertainty-quantified rebuild of GiveWell's GiveDirectly cost-effectiveness analysis both show "shallow but useful" evaluation at reduced cost. (For the strongest version of the skeptical reply — that perfect evaluations might not increase useful work by more than ~2×, and that the real bottleneck is *capable people* — see [Objections & FAQ](/reference/objections/).)
+If a system let existing teams scale their output by an order of magnitude or more, even at lower per-item quality, it could change which questions get asked at all. That multiplier is a speculation, not an estimate. There are already small instances to learn from: QURI's [shallow evaluations of longtermist organizations](/reference/related-work/) (2021) and Sam Nolan's uncertainty-quantified rebuild of GiveWell's GiveDirectly cost-effectiveness analysis both show "shallow but useful" evaluation at reduced cost. (For the strongest version of the skeptical reply — that perfect evaluations might not increase useful work by more than ~2×, and that the real bottleneck is *capable people* — see [Objections & FAQ](/reference/objections/).)
 
 ## The common thread
 

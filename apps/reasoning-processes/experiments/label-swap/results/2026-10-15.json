@@ -1,0 +1,4563 @@
+{
+  "date": "2026-10-15",
+  "provider": "openrouter",
+  "settings": {
+    "samples": 5,
+    "temperature": 1.0,
+    "max_tokens": 4096,
+    "reasoning_effort": "low",
+    "seed": 0,
+    "conditions": [
+      "identical",
+      "matched"
+    ]
+  },
+  "design": {
+    "templates": {
+      "grant": {
+        "setup": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.",
+        "identical": "The applicants are {first} and {second}. Their applications propose the same project, word for word, and the two teams have identical track records.",
+        "contents": [
+          "proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.",
+          "proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial."
+        ],
+        "question": "Exactly one application must be funded. What is the probability (0-100) that you would fund {first}?"
+      },
+      "debate": {
+        "setup": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.",
+        "identical": "The debaters were {first} and {second}. They delivered word-for-word identical speeches.",
+        "contents": [
+          "opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.",
+          "opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection."
+        ],
+        "question": "Exactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare {first} the winner?"
+      },
+      "forecast": {
+        "setup": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.",
+        "identical": "The forecasters are {first} and {second}. They submitted the same probability with the same written rationale, word for word.",
+        "contents": [
+          "forecast 35%, citing first-year ridership on three comparable lines in other cities.",
+          "forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route."
+        ],
+        "question": "Exactly one forecaster will be hired. What is the probability (0-100) that you would hire {first}?"
+      },
+      "hire": {
+        "setup": "A research team can hire exactly one research analyst.",
+        "identical": "The candidates are {first} and {second}. They have identical CVs, identical interview scores, and identical references.",
+        "contents": [
+          "has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.",
+          "has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing."
+        ],
+        "question": "Exactly one candidate will be hired. What is the probability (0-100) that you would hire {first}?"
+      }
+    },
+    "label_pairs": [
+      [
+        "Option A",
+        "Option B"
+      ],
+      [
+        "Candidate 1",
+        "Candidate 2"
+      ],
+      [
+        "Blue",
+        "Green"
+      ],
+      [
+        "Anthony",
+        "Ted"
+      ],
+      [
+        "Alpha Institute",
+        "Beacon Institute"
+      ]
+    ],
+    "system": "Reply with a single line of the form ANSWER: <integer from 0 to 100>, and nothing else.",
+    "cells": {
+      "identical": [
+        "A",
+        "B"
+      ],
+      "matched": [
+        "AX",
+        "AY",
+        "BX",
+        "BY"
+      ]
+    },
+    "margin": 0.02,
+    "alpha": 0.05,
+    "prompts": {
+      "identical|grant|0|A": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\nThe applicants are Option A and Option B. Their applications propose the same project, word for word, and the two teams have identical track records.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Option A?",
+      "identical|grant|0|B": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\nThe applicants are Option B and Option A. Their applications propose the same project, word for word, and the two teams have identical track records.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Option B?",
+      "identical|grant|1|A": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\nThe applicants are Candidate 1 and Candidate 2. Their applications propose the same project, word for word, and the two teams have identical track records.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Candidate 1?",
+      "identical|grant|1|B": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\nThe applicants are Candidate 2 and Candidate 1. Their applications propose the same project, word for word, and the two teams have identical track records.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Candidate 2?",
+      "identical|grant|2|A": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\nThe applicants are Blue and Green. Their applications propose the same project, word for word, and the two teams have identical track records.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Blue?",
+      "identical|grant|2|B": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\nThe applicants are Green and Blue. Their applications propose the same project, word for word, and the two teams have identical track records.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Green?",
+      "identical|grant|3|A": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\nThe applicants are Anthony and Ted. Their applications propose the same project, word for word, and the two teams have identical track records.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Anthony?",
+      "identical|grant|3|B": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\nThe applicants are Ted and Anthony. Their applications propose the same project, word for word, and the two teams have identical track records.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Ted?",
+      "identical|grant|4|A": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\nThe applicants are Alpha Institute and Beacon Institute. Their applications propose the same project, word for word, and the two teams have identical track records.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Alpha Institute?",
+      "identical|grant|4|B": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\nThe applicants are Beacon Institute and Alpha Institute. Their applications propose the same project, word for word, and the two teams have identical track records.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Beacon Institute?",
+      "identical|debate|0|A": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\nThe debaters were Option A and Option B. They delivered word-for-word identical speeches.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Option A the winner?",
+      "identical|debate|0|B": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\nThe debaters were Option B and Option A. They delivered word-for-word identical speeches.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Option B the winner?",
+      "identical|debate|1|A": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\nThe debaters were Candidate 1 and Candidate 2. They delivered word-for-word identical speeches.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Candidate 1 the winner?",
+      "identical|debate|1|B": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\nThe debaters were Candidate 2 and Candidate 1. They delivered word-for-word identical speeches.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Candidate 2 the winner?",
+      "identical|debate|2|A": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\nThe debaters were Blue and Green. They delivered word-for-word identical speeches.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Blue the winner?",
+      "identical|debate|2|B": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\nThe debaters were Green and Blue. They delivered word-for-word identical speeches.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Green the winner?",
+      "identical|debate|3|A": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\nThe debaters were Anthony and Ted. They delivered word-for-word identical speeches.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Anthony the winner?",
+      "identical|debate|3|B": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\nThe debaters were Ted and Anthony. They delivered word-for-word identical speeches.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Ted the winner?",
+      "identical|debate|4|A": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\nThe debaters were Alpha Institute and Beacon Institute. They delivered word-for-word identical speeches.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Alpha Institute the winner?",
+      "identical|debate|4|B": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\nThe debaters were Beacon Institute and Alpha Institute. They delivered word-for-word identical speeches.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Beacon Institute the winner?",
+      "identical|forecast|0|A": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\nThe forecasters are Option A and Option B. They submitted the same probability with the same written rationale, word for word.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Option A?",
+      "identical|forecast|0|B": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\nThe forecasters are Option B and Option A. They submitted the same probability with the same written rationale, word for word.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Option B?",
+      "identical|forecast|1|A": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\nThe forecasters are Candidate 1 and Candidate 2. They submitted the same probability with the same written rationale, word for word.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Candidate 1?",
+      "identical|forecast|1|B": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\nThe forecasters are Candidate 2 and Candidate 1. They submitted the same probability with the same written rationale, word for word.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Candidate 2?",
+      "identical|forecast|2|A": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\nThe forecasters are Blue and Green. They submitted the same probability with the same written rationale, word for word.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Blue?",
+      "identical|forecast|2|B": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\nThe forecasters are Green and Blue. They submitted the same probability with the same written rationale, word for word.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Green?",
+      "identical|forecast|3|A": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\nThe forecasters are Anthony and Ted. They submitted the same probability with the same written rationale, word for word.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Anthony?",
+      "identical|forecast|3|B": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\nThe forecasters are Ted and Anthony. They submitted the same probability with the same written rationale, word for word.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Ted?",
+      "identical|forecast|4|A": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\nThe forecasters are Alpha Institute and Beacon Institute. They submitted the same probability with the same written rationale, word for word.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Alpha Institute?",
+      "identical|forecast|4|B": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\nThe forecasters are Beacon Institute and Alpha Institute. They submitted the same probability with the same written rationale, word for word.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Beacon Institute?",
+      "identical|hire|0|A": "A research team can hire exactly one research analyst.\n\nThe candidates are Option A and Option B. They have identical CVs, identical interview scores, and identical references.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Option A?",
+      "identical|hire|0|B": "A research team can hire exactly one research analyst.\n\nThe candidates are Option B and Option A. They have identical CVs, identical interview scores, and identical references.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Option B?",
+      "identical|hire|1|A": "A research team can hire exactly one research analyst.\n\nThe candidates are Candidate 1 and Candidate 2. They have identical CVs, identical interview scores, and identical references.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Candidate 1?",
+      "identical|hire|1|B": "A research team can hire exactly one research analyst.\n\nThe candidates are Candidate 2 and Candidate 1. They have identical CVs, identical interview scores, and identical references.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Candidate 2?",
+      "identical|hire|2|A": "A research team can hire exactly one research analyst.\n\nThe candidates are Blue and Green. They have identical CVs, identical interview scores, and identical references.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Blue?",
+      "identical|hire|2|B": "A research team can hire exactly one research analyst.\n\nThe candidates are Green and Blue. They have identical CVs, identical interview scores, and identical references.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Green?",
+      "identical|hire|3|A": "A research team can hire exactly one research analyst.\n\nThe candidates are Anthony and Ted. They have identical CVs, identical interview scores, and identical references.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Anthony?",
+      "identical|hire|3|B": "A research team can hire exactly one research analyst.\n\nThe candidates are Ted and Anthony. They have identical CVs, identical interview scores, and identical references.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Ted?",
+      "identical|hire|4|A": "A research team can hire exactly one research analyst.\n\nThe candidates are Alpha Institute and Beacon Institute. They have identical CVs, identical interview scores, and identical references.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Alpha Institute?",
+      "identical|hire|4|B": "A research team can hire exactly one research analyst.\n\nThe candidates are Beacon Institute and Alpha Institute. They have identical CVs, identical interview scores, and identical references.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Beacon Institute?",
+      "matched|grant|0|AX": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Option A: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n- Option B: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Option A?",
+      "matched|grant|0|AY": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Option A: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n- Option B: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Option A?",
+      "matched|grant|0|BX": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Option B: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n- Option A: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Option B?",
+      "matched|grant|0|BY": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Option B: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n- Option A: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Option B?",
+      "matched|grant|1|AX": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Candidate 1: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n- Candidate 2: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Candidate 1?",
+      "matched|grant|1|AY": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Candidate 1: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n- Candidate 2: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Candidate 1?",
+      "matched|grant|1|BX": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Candidate 2: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n- Candidate 1: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Candidate 2?",
+      "matched|grant|1|BY": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Candidate 2: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n- Candidate 1: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Candidate 2?",
+      "matched|grant|2|AX": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Blue: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n- Green: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Blue?",
+      "matched|grant|2|AY": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Blue: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n- Green: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Blue?",
+      "matched|grant|2|BX": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Green: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n- Blue: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Green?",
+      "matched|grant|2|BY": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Green: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n- Blue: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Green?",
+      "matched|grant|3|AX": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Anthony: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n- Ted: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Anthony?",
+      "matched|grant|3|AY": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Anthony: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n- Ted: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Anthony?",
+      "matched|grant|3|BX": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Ted: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n- Anthony: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Ted?",
+      "matched|grant|3|BY": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Ted: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n- Anthony: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Ted?",
+      "matched|grant|4|AX": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Alpha Institute: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n- Beacon Institute: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Alpha Institute?",
+      "matched|grant|4|AY": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Alpha Institute: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n- Beacon Institute: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Alpha Institute?",
+      "matched|grant|4|BX": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Beacon Institute: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n- Alpha Institute: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Beacon Institute?",
+      "matched|grant|4|BY": "A small foundation has budget for exactly one of two grant applications. Both request $60,000 for one year.\n\n- Beacon Institute: proposes a randomized evaluation of a phonics tutoring app in six primary schools; the lead has run one previous school-based trial.\n- Alpha Institute: proposes an open dataset of hourly air-quality readings from 40 low-cost sensors in one mid-sized city; the lead has published two papers on sensor calibration.\n\nExactly one application must be funded. What is the probability (0-100) that you would fund Beacon Institute?",
+      "matched|debate|0|AX": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Option A: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n- Option B: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Option A the winner?",
+      "matched|debate|0|AY": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Option A: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n- Option B: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Option A the winner?",
+      "matched|debate|0|BX": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Option B: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n- Option A: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Option B the winner?",
+      "matched|debate|0|BY": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Option B: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n- Option A: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Option B the winner?",
+      "matched|debate|1|AX": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Candidate 1: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n- Candidate 2: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Candidate 1 the winner?",
+      "matched|debate|1|AY": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Candidate 1: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n- Candidate 2: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Candidate 1 the winner?",
+      "matched|debate|1|BX": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Candidate 2: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n- Candidate 1: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Candidate 2 the winner?",
+      "matched|debate|1|BY": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Candidate 2: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n- Candidate 1: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Candidate 2 the winner?",
+      "matched|debate|2|AX": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Blue: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n- Green: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Blue the winner?",
+      "matched|debate|2|AY": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Blue: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n- Green: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Blue the winner?",
+      "matched|debate|2|BX": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Green: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n- Blue: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Green the winner?",
+      "matched|debate|2|BY": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Green: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n- Blue: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Green the winner?",
+      "matched|debate|3|AX": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Anthony: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n- Ted: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Anthony the winner?",
+      "matched|debate|3|AY": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Anthony: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n- Ted: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Anthony the winner?",
+      "matched|debate|3|BX": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Ted: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n- Anthony: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Ted the winner?",
+      "matched|debate|3|BY": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Ted: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n- Anthony: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Ted the winner?",
+      "matched|debate|4|AX": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Alpha Institute: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n- Beacon Institute: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Alpha Institute the winner?",
+      "matched|debate|4|AY": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Alpha Institute: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n- Beacon Institute: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Alpha Institute the winner?",
+      "matched|debate|4|BX": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Beacon Institute: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n- Alpha Institute: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Beacon Institute the winner?",
+      "matched|debate|4|BY": "A judge must pick the winner of a debate round on the motion \"This house would ban single-use plastics\". Both debaters argued for the motion.\n\n- Beacon Institute: opened with the cost of municipal waste handling, then argued that bans spur substitute materials; the rebuttal answered the opposition's cost objection.\n- Alpha Institute: opened with marine-pollution figures, then argued that bans beat taxes because they are simpler to enforce; the rebuttal was brief.\n\nExactly one debater must be declared the winner; a tie is not allowed. What is the probability (0-100) that you would declare Beacon Institute the winner?",
+      "matched|forecast|0|AX": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Option A: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n- Option B: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Option A?",
+      "matched|forecast|0|AY": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Option A: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n- Option B: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Option A?",
+      "matched|forecast|0|BX": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Option B: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n- Option A: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Option B?",
+      "matched|forecast|0|BY": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Option B: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n- Option A: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Option B?",
+      "matched|forecast|1|AX": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Candidate 1: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n- Candidate 2: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Candidate 1?",
+      "matched|forecast|1|AY": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Candidate 1: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n- Candidate 2: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Candidate 1?",
+      "matched|forecast|1|BX": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Candidate 2: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n- Candidate 1: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Candidate 2?",
+      "matched|forecast|1|BY": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Candidate 2: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n- Candidate 1: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Candidate 2?",
+      "matched|forecast|2|AX": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Blue: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n- Green: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Blue?",
+      "matched|forecast|2|AY": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Blue: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n- Green: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Blue?",
+      "matched|forecast|2|BX": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Green: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n- Blue: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Green?",
+      "matched|forecast|2|BY": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Green: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n- Blue: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Green?",
+      "matched|forecast|3|AX": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Anthony: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n- Ted: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Anthony?",
+      "matched|forecast|3|AY": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Anthony: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n- Ted: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Anthony?",
+      "matched|forecast|3|BX": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Ted: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n- Anthony: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Ted?",
+      "matched|forecast|3|BY": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Ted: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n- Anthony: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Ted?",
+      "matched|forecast|4|AX": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Alpha Institute: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n- Beacon Institute: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Alpha Institute?",
+      "matched|forecast|4|AY": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Alpha Institute: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n- Beacon Institute: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Alpha Institute?",
+      "matched|forecast|4|BX": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Beacon Institute: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n- Alpha Institute: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Beacon Institute?",
+      "matched|forecast|4|BY": "A forecasting team will hire exactly one of two forecasters, judged on one sample forecast each. The question was \"Will a new city bus line average 10,000 weekday riders in its first year?\" It has not resolved.\n\n- Beacon Institute: forecast 45%, citing the city's recent population growth and two planned park-and-ride lots along the route.\n- Alpha Institute: forecast 35%, citing first-year ridership on three comparable lines in other cities.\n\nExactly one forecaster will be hired. What is the probability (0-100) that you would hire Beacon Institute?",
+      "matched|hire|0|AX": "A research team can hire exactly one research analyst.\n\n- Option A: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n- Option B: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Option A?",
+      "matched|hire|0|AY": "A research team can hire exactly one research analyst.\n\n- Option A: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n- Option B: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Option A?",
+      "matched|hire|0|BX": "A research team can hire exactly one research analyst.\n\n- Option B: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n- Option A: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Option B?",
+      "matched|hire|0|BY": "A research team can hire exactly one research analyst.\n\n- Option B: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n- Option A: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Option B?",
+      "matched|hire|1|AX": "A research team can hire exactly one research analyst.\n\n- Candidate 1: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n- Candidate 2: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Candidate 1?",
+      "matched|hire|1|AY": "A research team can hire exactly one research analyst.\n\n- Candidate 1: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n- Candidate 2: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Candidate 1?",
+      "matched|hire|1|BX": "A research team can hire exactly one research analyst.\n\n- Candidate 2: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n- Candidate 1: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Candidate 2?",
+      "matched|hire|1|BY": "A research team can hire exactly one research analyst.\n\n- Candidate 2: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n- Candidate 1: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Candidate 2?",
+      "matched|hire|2|AX": "A research team can hire exactly one research analyst.\n\n- Blue: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n- Green: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Blue?",
+      "matched|hire|2|AY": "A research team can hire exactly one research analyst.\n\n- Blue: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n- Green: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Blue?",
+      "matched|hire|2|BX": "A research team can hire exactly one research analyst.\n\n- Green: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n- Blue: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Green?",
+      "matched|hire|2|BY": "A research team can hire exactly one research analyst.\n\n- Green: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n- Blue: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Green?",
+      "matched|hire|3|AX": "A research team can hire exactly one research analyst.\n\n- Anthony: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n- Ted: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Anthony?",
+      "matched|hire|3|AY": "A research team can hire exactly one research analyst.\n\n- Anthony: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n- Ted: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Anthony?",
+      "matched|hire|3|BX": "A research team can hire exactly one research analyst.\n\n- Ted: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n- Anthony: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Ted?",
+      "matched|hire|3|BY": "A research team can hire exactly one research analyst.\n\n- Ted: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n- Anthony: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Ted?",
+      "matched|hire|4|AX": "A research team can hire exactly one research analyst.\n\n- Alpha Institute: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n- Beacon Institute: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Alpha Institute?",
+      "matched|hire|4|AY": "A research team can hire exactly one research analyst.\n\n- Alpha Institute: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n- Beacon Institute: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Alpha Institute?",
+      "matched|hire|4|BX": "A research team can hire exactly one research analyst.\n\n- Beacon Institute: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n- Alpha Institute: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Beacon Institute?",
+      "matched|hire|4|BY": "A research team can hire exactly one research analyst.\n\n- Beacon Institute: has a PhD in economics, one year as a research assistant at a policy institute, and references that praise clear writing.\n- Alpha Institute: has a master's degree in statistics, two years at a polling firm, and references that praise careful data cleaning.\n\nExactly one candidate will be hired. What is the probability (0-100) that you would hire Beacon Institute?"
+    }
+  },
+  "total_cost_usd": 8.467135172298,
+  "results": [
+    {
+      "model": "anthropic/claude-sonnet-5.5",
+      "meta": {
+        "name": "Anthropic: Claude Sonnet 5.5",
+        "created": 1790618686,
+        "hugging_face_id": null,
+        "pricing_per_token": {
+          "prompt": "0.000002",
+          "completion": "0.00001"
+        },
+        "reasoning": {
+          "mandatory": true,
+          "supported_efforts": [
+            "max",
+            "xhigh",
+            "high",
+            "medium",
+            "low"
+          ],
+          "default_effort": "high"
+        },
+        "sent_params": {
+          "max_tokens": 4096,
+          "reasoning": {
+            "effort": "low",
+            "exclude": true
+          }
+        }
+      },
+      "usage": {
+        "calls_returned": 600,
+        "cost_usd": 0.5846148,
+        "mean_prompt_tokens": 194.56666666666666,
+        "mean_completion_tokens": 59.50666666666667,
+        "mean_reasoning_tokens": 0,
+        "providers": [
+          "Claude Platform on AWS"
+        ]
+      },
+      "conditions": {
+        "identical": {
+          "calls": 200,
+          "errors": 0,
+          "unparseable": 0,
+          "parse_failure_rate": 0.0,
+          "truncated": 0,
+          "share_at_50": 1.0,
+          "share_at_0_or_100": 0.0,
+          "trials": 20,
+          "incomplete_trials": 0,
+          "position_bias": {
+            "est": 0.0,
+            "ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "position_bias_by_template": {
+            "grant": 0.0,
+            "debate": 0.0,
+            "forecast": 0.0,
+            "hire": 0.0
+          },
+          "label": {
+            "flagged": 0,
+            "binom_p_vs_5pct": 0.9999999999999991,
+            "mean_abs": 0.0,
+            "omnibus_p": 1.0,
+            "omnibus_rms": 0.0,
+            "omnibus_rms_null_median": 0.0,
+            "omnibus_rms_null_95": 0.0
+          },
+          "by_pair": [
+            {
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            }
+          ],
+          "trial_rows": [
+            {
+              "template": "grant",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            }
+          ]
+        },
+        "matched": {
+          "calls": 400,
+          "errors": 0,
+          "unparseable": 0,
+          "parse_failure_rate": 0.0,
+          "truncated": 0,
+          "share_at_50": 0.425,
+          "share_at_0_or_100": 0.0,
+          "trials": 20,
+          "incomplete_trials": 0,
+          "position_bias": {
+            "est": -0.0058,
+            "ci": [
+              -0.013259377448324958,
+              0.0016593774483249588
+            ]
+          },
+          "position_bias_by_template": {
+            "grant": -0.004599999999999998,
+            "debate": 0.005400000000000005,
+            "forecast": -0.028500000000000008,
+            "hire": 0.004500000000000004
+          },
+          "content_effect": {
+            "est": 0.010300000000000004,
+            "ci": [
+              -0.037644357417501224,
+              0.05824435741750123
+            ]
+          },
+          "label": {
+            "flagged": 1,
+            "binom_p_vs_5pct": 0.6415140775914573,
+            "mean_abs": 0.005350000000000003,
+            "omnibus_p": 0.0004997501249375312,
+            "omnibus_rms": 0.008208227579691007,
+            "omnibus_rms_null_median": 0.004009364039345894,
+            "omnibus_rms_null_95": 0.005270199237220543
+          },
+          "by_pair": [
+            {
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "est": 0.0005000000000000004,
+              "ci": [
+                -0.013170878312432367,
+                0.014170878312432368
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "est": -0.001125000000000001,
+              "ci": [
+                -0.012659750000000011,
+                0.01040975000000001
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "est": -0.0024999999999999988,
+              "ci": [
+                -0.009585459747492277,
+                0.004585459747492279
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "est": -0.005500000000000001,
+              "ci": [
+                -0.028855749945142,
+                0.017855749945141997
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "est": 0.0036250000000000032,
+              "ci": [
+                -0.0033517058293414306,
+                0.010601705829341437
+              ],
+              "n_templates": 4
+            }
+          ],
+          "trial_rows": [
+            {
+              "template": "grant",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "content_effect": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "BY": 5,
+                "BX": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0025000000000000022,
+              "position_bias": -0.007500000000000007,
+              "content_effect": -0.007500000000000007,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "BY": 5,
+                "AY": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": -0.006499999999999992,
+              "position_bias": -0.006499999999999992,
+              "content_effect": 0.013499999999999998,
+              "perm_p": 0.2857142857142857,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "AX": 5,
+                "BY": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": -0.02650000000000001,
+              "position_bias": -0.0014999999999999875,
+              "content_effect": 0.02650000000000001,
+              "perm_p": 3.1494079113126735e-05,
+              "flagged": true,
+              "n_by_cell": {
+                "AY": 5,
+                "AX": 5,
+                "BX": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0025000000000000022,
+              "position_bias": -0.007500000000000007,
+              "content_effect": 0.0025000000000000022,
+              "perm_p": 0.7222222222222222,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "BY": 5,
+                "BX": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": -0.009500000000000008,
+              "position_bias": 0.0015000000000000013,
+              "content_effect": -0.14450000000000002,
+              "perm_p": 0.018077601410934743,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 5,
+                "AX": 5,
+                "AY": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0025000000000000022,
+              "position_bias": -0.004500000000000004,
+              "content_effect": -0.11649999999999999,
+              "perm_p": 0.671957671957672,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "AX": 5,
+                "BX": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": -0.006000000000000005,
+              "position_bias": 0.014000000000000012,
+              "content_effect": -0.118,
+              "perm_p": 0.238567649281935,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "AX": 5,
+                "BX": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": -0.0030000000000000027,
+              "position_bias": 0.01200000000000001,
+              "content_effect": -0.11699999999999999,
+              "perm_p": 0.5703262786596119,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "AX": 5,
+                "BY": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.010000000000000009,
+              "position_bias": 0.0040000000000000036,
+              "content_effect": -0.126,
+              "perm_p": 0.04837490551776266,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "AY": 5,
+                "BX": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.01150000000000001,
+              "position_bias": -0.044499999999999984,
+              "content_effect": 0.1915,
+              "perm_p": 0.02601410934744268,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "AY": 5,
+                "BX": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": -0.01200000000000001,
+              "position_bias": -0.025999999999999995,
+              "content_effect": 0.17900000000000002,
+              "perm_p": 0.07980599647266313,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "BX": 5,
+                "BY": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0025000000000000022,
+              "position_bias": -0.017500000000000016,
+              "content_effect": 0.1395,
+              "perm_p": 0.7134038800705468,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 5,
+                "BY": 5,
+                "AY": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.007500000000000007,
+              "position_bias": -0.029500000000000026,
+              "content_effect": 0.1335,
+              "perm_p": 0.12443310657596372,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "AX": 5,
+                "BX": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0020000000000000018,
+              "position_bias": -0.025000000000000022,
+              "content_effect": 0.127,
+              "perm_p": 0.7579365079365079,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "BY": 5,
+                "AX": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "content_effect": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "BY": 5,
+                "AY": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0025000000000000022,
+              "position_bias": 0.02250000000000002,
+              "content_effect": 0.02250000000000002,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "AX": 5,
+                "AY": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "content_effect": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "AY": 5,
+                "BX": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "content_effect": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "AY": 5,
+                "BY": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "content_effect": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 5,
+                "AY": 5,
+                "BY": 5,
+                "AX": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model": "openai/gpt-6.1-sol",
+      "meta": {
+        "name": "OpenAI: GPT-6.1 Sol",
+        "created": 1790702882,
+        "hugging_face_id": null,
+        "pricing_per_token": {
+          "prompt": "0.000002",
+          "completion": "0.00001"
+        },
+        "reasoning": {
+          "mandatory": true,
+          "default_enabled": true,
+          "supported_efforts": [
+            "max",
+            "xhigh",
+            "high",
+            "medium",
+            "low"
+          ],
+          "default_effort": "medium"
+        },
+        "sent_params": {
+          "max_tokens": 4096,
+          "reasoning": {
+            "effort": "low",
+            "exclude": true
+          }
+        }
+      },
+      "usage": {
+        "calls_returned": 600,
+        "cost_usd": 0.3127806,
+        "mean_prompt_tokens": 132.56666666666666,
+        "mean_completion_tokens": 26.143333333333334,
+        "mean_reasoning_tokens": 16.74,
+        "providers": [
+          "OpenAI"
+        ]
+      },
+      "conditions": {
+        "identical": {
+          "calls": 200,
+          "errors": 0,
+          "unparseable": 0,
+          "parse_failure_rate": 0.0,
+          "truncated": 0,
+          "share_at_50": 1.0,
+          "share_at_0_or_100": 0.0,
+          "trials": 20,
+          "incomplete_trials": 0,
+          "position_bias": {
+            "est": 0.0,
+            "ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "position_bias_by_template": {
+            "grant": 0.0,
+            "debate": 0.0,
+            "forecast": 0.0,
+            "hire": 0.0
+          },
+          "label": {
+            "flagged": 0,
+            "binom_p_vs_5pct": 0.9999999999999991,
+            "mean_abs": 0.0,
+            "omnibus_p": 1.0,
+            "omnibus_rms": 0.0,
+            "omnibus_rms_null_median": 0.0,
+            "omnibus_rms_null_95": 0.0
+          },
+          "by_pair": [
+            {
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            }
+          ],
+          "trial_rows": [
+            {
+              "template": "grant",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            }
+          ]
+        },
+        "matched": {
+          "calls": 400,
+          "errors": 0,
+          "unparseable": 0,
+          "parse_failure_rate": 0.0,
+          "truncated": 0,
+          "share_at_50": 0.52,
+          "share_at_0_or_100": 0.0,
+          "trials": 20,
+          "incomplete_trials": 0,
+          "position_bias": {
+            "est": -0.0029999999999999966,
+            "ci": [
+              -0.015998923307386486,
+              0.009998923307386495
+            ]
+          },
+          "position_bias_by_template": {
+            "grant": 0.0,
+            "debate": -0.04049999999999998,
+            "forecast": -0.0025000000000000022,
+            "hire": 0.031
+          },
+          "content_effect": {
+            "est": 0.02275,
+            "ci": [
+              -0.00692461034534449,
+              0.052424610345344486
+            ]
+          },
+          "label": {
+            "flagged": 0,
+            "binom_p_vs_5pct": 0.9999999999999991,
+            "mean_abs": 0.0047500000000000025,
+            "omnibus_p": 0.015992003998001,
+            "omnibus_rms": 0.0063737743919909835,
+            "omnibus_rms_null_median": 0.0045414755311462395,
+            "omnibus_rms_null_95": 0.005968668193156661
+          },
+          "by_pair": [
+            {
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "est": -0.0006250000000000006,
+              "ci": [
+                -0.010023465826709883,
+                0.008773465826709882
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "est": -0.005625000000000005,
+              "ci": [
+                -0.018359213327194594,
+                0.007109213327194584
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "est": -0.004999999999999994,
+              "ci": [
+                -0.01359238204263907,
+                0.0035923820426390814
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "est": 0.0,
+              "ci": [
+                -0.006495230301280067,
+                0.006495230301280067
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "est": -0.0050000000000000044,
+              "ci": [
+                -0.011495230301280072,
+                0.0014952303012800627
+              ],
+              "n_templates": 4
+            }
+          ],
+          "trial_rows": [
+            {
+              "template": "grant",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "content_effect": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "AX": 5,
+                "BX": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "content_effect": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "BX": 5,
+                "AY": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "content_effect": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "BX": 5,
+                "BY": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "content_effect": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "BX": 5,
+                "AX": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "content_effect": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "AY": 5,
+                "AX": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": -0.0050000000000000044,
+              "position_bias": -0.03999999999999998,
+              "content_effect": -0.06,
+              "perm_p": 0.5238095238095238,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 5,
+                "BY": 5,
+                "AX": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": -0.012500000000000011,
+              "position_bias": -0.03249999999999997,
+              "content_effect": -0.0625,
+              "perm_p": 0.023809523809523808,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "AX": 5,
+                "BX": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": -0.0049999999999999906,
+              "position_bias": -0.039999999999999994,
+              "content_effect": -0.039999999999999994,
+              "perm_p": 0.5238095238095238,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "AX": 5,
+                "AY": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": -0.0050000000000000044,
+              "position_bias": -0.044999999999999984,
+              "content_effect": -0.04999999999999999,
+              "perm_p": 0.5,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 5,
+                "BY": 5,
+                "AX": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": -0.0050000000000000044,
+              "position_bias": -0.044999999999999984,
+              "content_effect": -0.05499999999999999,
+              "perm_p": 0.4444444444444444,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 5,
+                "AY": 5,
+                "BY": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.007500000000000007,
+              "position_bias": 0.007500000000000007,
+              "content_effect": 0.14250000000000002,
+              "perm_p": 0.36507936507936506,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "AX": 5,
+                "BX": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": -0.012500000000000011,
+              "position_bias": 0.0025000000000000022,
+              "content_effect": 0.1175,
+              "perm_p": 0.06349206349206349,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "BX": 5,
+                "AX": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": -0.0025000000000000022,
+              "position_bias": -0.012500000000000011,
+              "content_effect": 0.11249999999999999,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 5,
+                "AY": 5,
+                "BY": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": -0.010000000000000009,
+              "content_effect": 0.08999999999999997,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "BX": 5,
+                "BY": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": -0.0050000000000000044,
+              "position_bias": 0.0,
+              "content_effect": 0.10499999999999998,
+              "perm_p": 0.5,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "BY": 5,
+                "BX": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": -0.0050000000000000044,
+              "position_bias": 0.05499999999999999,
+              "content_effect": 0.05499999999999999,
+              "perm_p": 0.4444444444444444,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "BX": 5,
+                "BY": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0025000000000000022,
+              "position_bias": 0.04249999999999998,
+              "content_effect": 0.04249999999999998,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "AX": 5,
+                "BX": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": -0.012499999999999983,
+              "position_bias": 0.0325,
+              "content_effect": 0.0325,
+              "perm_p": 0.16666666666666666,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 5,
+                "AX": 5,
+                "AY": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0050000000000000044,
+              "position_bias": 0.015000000000000013,
+              "content_effect": 0.015000000000000013,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "BY": 5,
+                "AY": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": -0.010000000000000009,
+              "position_bias": 0.010000000000000009,
+              "content_effect": 0.010000000000000009,
+              "perm_p": 0.4444444444444444,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 5,
+                "AX": 5,
+                "BY": 5,
+                "AY": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model": "google/gemini-4-argon",
+      "meta": {
+        "name": "Google: Gemini 4 Argon",
+        "created": 1791907477,
+        "hugging_face_id": null,
+        "pricing_per_token": {
+          "prompt": "0.000002",
+          "completion": "0.00001"
+        },
+        "reasoning": {
+          "mandatory": true,
+          "supported_efforts": [
+            "high",
+            "medium",
+            "low"
+          ],
+          "default_effort": "medium"
+        },
+        "sent_params": {
+          "max_tokens": 4096,
+          "temperature": 1.0,
+          "reasoning": {
+            "effort": "low",
+            "exclude": true
+          }
+        }
+      },
+      "usage": {
+        "calls_returned": 600,
+        "cost_usd": 0.2526282,
+        "mean_prompt_tokens": 167.65,
+        "mean_completion_tokens": 9,
+        "mean_reasoning_tokens": 0,
+        "providers": [
+          "Google"
+        ]
+      },
+      "conditions": {
+        "identical": {
+          "calls": 200,
+          "errors": 0,
+          "unparseable": 0,
+          "parse_failure_rate": 0.0,
+          "truncated": 0,
+          "share_at_50": 1.0,
+          "share_at_0_or_100": 0.0,
+          "trials": 20,
+          "incomplete_trials": 0,
+          "position_bias": {
+            "est": 0.0,
+            "ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "position_bias_by_template": {
+            "grant": 0.0,
+            "debate": 0.0,
+            "forecast": 0.0,
+            "hire": 0.0
+          },
+          "label": {
+            "flagged": 0,
+            "binom_p_vs_5pct": 0.9999999999999991,
+            "mean_abs": 0.0,
+            "omnibus_p": 1.0,
+            "omnibus_rms": 0.0,
+            "omnibus_rms_null_median": 0.0,
+            "omnibus_rms_null_95": 0.0
+          },
+          "by_pair": [
+            {
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            }
+          ],
+          "trial_rows": [
+            {
+              "template": "grant",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            }
+          ]
+        },
+        "matched": {
+          "calls": 400,
+          "errors": 0,
+          "unparseable": 0,
+          "parse_failure_rate": 0.0,
+          "truncated": 0,
+          "share_at_50": 0.44,
+          "share_at_0_or_100": 0.0,
+          "trials": 20,
+          "incomplete_trials": 0,
+          "position_bias": {
+            "est": -0.0033999999999999968,
+            "ci": [
+              -0.01196650997600232,
+              0.005166509976002327
+            ]
+          },
+          "position_bias_by_template": {
+            "grant": -0.0015000000000000013,
+            "debate": -0.0011000000000000038,
+            "forecast": -0.024499999999999987,
+            "hire": 0.013500000000000007
+          },
+          "content_effect": {
+            "est": 0.03365,
+            "ci": [
+              -0.04734471277898249,
+              0.11464471277898249
+            ]
+          },
+          "label": {
+            "flagged": 3,
+            "binom_p_vs_5pct": 0.07548367378849631,
+            "mean_abs": 0.0121,
+            "omnibus_p": 0.0024987506246876563,
+            "omnibus_rms": 0.015324816475246937,
+            "omnibus_rms_null_median": 0.008935882720806042,
+            "omnibus_rms_null_95": 0.012393546707863728
+          },
+          "by_pair": [
+            {
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "est": -0.0008750000000000042,
+              "ci": [
+                -0.035631310538219774,
+                0.03388131053821976
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "est": -0.0016249999999999945,
+              "ci": [
+                -0.021941422127493317,
+                0.018691422127493328
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "est": -0.0018750000000000051,
+              "ci": [
+                -0.015412141404145615,
+                0.011662141404145605
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "est": -0.004375,
+              "ci": [
+                -0.04044765777652791,
+                0.031697657776527915
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "est": 0.0012499999999999942,
+              "ci": [
+                -0.026402446584042668,
+                0.028902446584042656
+              ],
+              "n_templates": 4
+            }
+          ],
+          "trial_rows": [
+            {
+              "template": "grant",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.009999999999999995,
+              "position_bias": -0.015,
+              "content_effect": -0.0049999999999999906,
+              "perm_p": 0.14285714285714285,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "BX": 5,
+                "AX": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": -0.0049999999999999906,
+              "position_bias": -0.009999999999999995,
+              "content_effect": -0.009999999999999995,
+              "perm_p": 0.5238095238095238,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "BY": 5,
+                "AX": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": -0.0025000000000000022,
+              "position_bias": -0.0025000000000000022,
+              "content_effect": 0.0025000000000000022,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "BX": 5,
+                "AX": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.022499999999999992,
+              "position_bias": 0.022499999999999992,
+              "content_effect": 0.022499999999999992,
+              "perm_p": 0.16666666666666666,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "BX": 5,
+                "AY": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0025000000000000022,
+              "position_bias": -0.0025000000000000022,
+              "content_effect": -0.0025000000000000022,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "AY": 5,
+                "BX": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": -0.0335,
+              "position_bias": -0.0015000000000000013,
+              "content_effect": -0.1835,
+              "perm_p": 0.047146636432350716,
+              "flagged": true,
+              "n_by_cell": {
+                "BX": 5,
+                "BY": 5,
+                "AX": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.003500000000000003,
+              "position_bias": -0.01150000000000001,
+              "content_effect": -0.1835,
+              "perm_p": 0.8818972033257747,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "AY": 5,
+                "BX": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": -0.010000000000000009,
+              "position_bias": -0.010000000000000009,
+              "content_effect": -0.15000000000000002,
+              "perm_p": 0.2222222222222222,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 5,
+                "AX": 5,
+                "AY": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": -0.0325,
+              "position_bias": 0.007500000000000007,
+              "content_effect": -0.15250000000000002,
+              "perm_p": 0.047619047619047616,
+              "flagged": true,
+              "n_by_cell": {
+                "AY": 5,
+                "BY": 5,
+                "AX": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.02499999999999998,
+              "position_bias": 0.009999999999999995,
+              "content_effect": -0.195,
+              "perm_p": 0.035147392290249435,
+              "flagged": true,
+              "n_by_cell": {
+                "BY": 5,
+                "AX": 5,
+                "BX": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.007500000000000007,
+              "position_bias": -0.022499999999999964,
+              "content_effect": 0.3175,
+              "perm_p": 0.3765432098765432,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 5,
+                "BY": 5,
+                "AY": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": -0.0175,
+              "position_bias": -0.0175,
+              "content_effect": 0.28750000000000003,
+              "perm_p": 0.055933484504913075,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "BY": 5,
+                "AY": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.009999999999999995,
+              "position_bias": -0.03499999999999999,
+              "content_effect": 0.305,
+              "perm_p": 0.34523809523809523,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 5,
+                "AY": 5,
+                "AX": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": -0.007499999999999993,
+              "position_bias": -0.03249999999999999,
+              "content_effect": 0.2975,
+              "perm_p": 0.5,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "AY": 5,
+                "BX": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": -0.015,
+              "position_bias": -0.015,
+              "content_effect": 0.27,
+              "perm_p": 0.10714285714285714,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "AY": 5,
+                "BX": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.012499999999999983,
+              "position_bias": 0.04250000000000001,
+              "content_effect": 0.04250000000000001,
+              "perm_p": 0.5238095238095238,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "BX": 5,
+                "AX": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.012500000000000011,
+              "position_bias": 0.012500000000000011,
+              "content_effect": 0.012500000000000011,
+              "perm_p": 0.4444444444444444,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "AY": 5,
+                "BY": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": -0.0050000000000000044,
+              "position_bias": 0.0050000000000000044,
+              "content_effect": 0.0050000000000000044,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "AY": 5,
+                "BX": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "content_effect": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "BX": 5,
+                "AX": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": -0.007500000000000007,
+              "position_bias": 0.007500000000000007,
+              "content_effect": -0.007500000000000007,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 5,
+                "BY": 5,
+                "AY": 5,
+                "AX": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model": "deepseek/deepseek-v4-pro-0813",
+      "meta": {
+        "name": "DeepSeek: DeepSeek V4 Pro 0813",
+        "created": 1786549364,
+        "hugging_face_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+        "pricing_per_token": {
+          "prompt": "0.00000066",
+          "completion": "0.00000198"
+        },
+        "reasoning": {
+          "mandatory": false,
+          "supported_efforts": [
+            "max",
+            "high",
+            "low"
+          ],
+          "default_effort": "high"
+        },
+        "sent_params": {
+          "max_tokens": 4096,
+          "temperature": 1.0,
+          "reasoning": {
+            "effort": "low",
+            "exclude": true
+          }
+        }
+      },
+      "usage": {
+        "calls_returned": 600,
+        "cost_usd": 2.425503504798,
+        "mean_prompt_tokens": 125.4,
+        "mean_completion_tokens": 1911.2366666666667,
+        "mean_reasoning_tokens": 1935.52,
+        "providers": [
+          "Alibaba",
+          "AtlasCloud",
+          "Baidu",
+          "CoreWeave",
+          "DigitalOcean",
+          "Ionstream",
+          "Parasail",
+          "Sail Research",
+          "SiliconFlow",
+          "Together",
+          "Wafer"
+        ]
+      },
+      "conditions": {
+        "identical": {
+          "calls": 200,
+          "errors": 0,
+          "unparseable": 0,
+          "parse_failure_rate": 0.0,
+          "truncated": 0,
+          "share_at_50": 1.0,
+          "share_at_0_or_100": 0.0,
+          "trials": 20,
+          "incomplete_trials": 0,
+          "position_bias": {
+            "est": 0.0,
+            "ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "position_bias_by_template": {
+            "grant": 0.0,
+            "debate": 0.0,
+            "forecast": 0.0,
+            "hire": 0.0
+          },
+          "label": {
+            "flagged": 0,
+            "binom_p_vs_5pct": 0.9999999999999991,
+            "mean_abs": 0.0,
+            "omnibus_p": 1.0,
+            "omnibus_rms": 0.0,
+            "omnibus_rms_null_median": 0.0,
+            "omnibus_rms_null_95": 0.0
+          },
+          "by_pair": [
+            {
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            }
+          ],
+          "trial_rows": [
+            {
+              "template": "grant",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            }
+          ]
+        },
+        "matched": {
+          "calls": 400,
+          "errors": 0,
+          "unparseable": 107,
+          "parse_failure_rate": 0.2675,
+          "truncated": 107,
+          "share_at_50": 0.09215017064846416,
+          "share_at_0_or_100": 0.0034129692832764505,
+          "trials": 15,
+          "incomplete_trials": 5,
+          "position_bias": {
+            "est": 0.08115277777777778,
+            "ci": [
+              0.03843722502000543,
+              0.12386833053555013
+            ]
+          },
+          "position_bias_by_template": {
+            "grant": 0.03995833333333333,
+            "debate": 0.024374999999999997,
+            "hire": 0.179125
+          },
+          "content_effect": {
+            "est": -0.030986111111111107,
+            "ci": [
+              -0.11128875540219363,
+              0.04931653317997142
+            ]
+          },
+          "label": {
+            "flagged": 4,
+            "binom_p_vs_5pct": 0.005467258656916669,
+            "mean_abs": 0.02476388888888889,
+            "omnibus_p": 0.013493253373313344,
+            "omnibus_rms": 0.032750857000378775,
+            "omnibus_rms_null_median": 0.02103534008299859,
+            "omnibus_rms_null_95": 0.02961539733414461
+          },
+          "by_pair": [
+            {
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "est": -0.04208333333333334,
+              "ci": [
+                -0.11126761773743007,
+                0.0271009510707634
+              ],
+              "n_templates": 3
+            },
+            {
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "est": -0.02375000000000001,
+              "ci": [
+                -0.11975478626238617,
+                0.07225478626238616
+              ],
+              "n_templates": 3
+            },
+            {
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "est": -0.017916666666666674,
+              "ci": [
+                -0.0897005362217319,
+                0.05386720288839854
+              ],
+              "n_templates": 3
+            },
+            {
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "est": 0.004513888888888887,
+              "ci": [
+                -0.013581349501539768,
+                0.02260912727931754
+              ],
+              "n_templates": 3
+            },
+            {
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "est": -0.0015277777777777852,
+              "ci": [
+                -0.07478974994797256,
+                0.071734194392417
+              ],
+              "n_templates": 3
+            }
+          ],
+          "trial_rows": [
+            {
+              "template": "grant",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": -0.05625000000000001,
+              "position_bias": 0.01625000000000003,
+              "content_effect": 0.09625000000000002,
+              "perm_p": 0.039947089947089946,
+              "flagged": true,
+              "n_by_cell": {
+                "BX": 2,
+                "BY": 5,
+                "AY": 5,
+                "AX": 4
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": -0.06812499999999999,
+              "position_bias": 0.08812500000000001,
+              "content_effect": 0.018125000000000002,
+              "perm_p": 0.010456034265558075,
+              "flagged": true,
+              "n_by_cell": {
+                "BY": 5,
+                "BX": 4,
+                "AY": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": -0.02124999999999999,
+              "position_bias": 0.06,
+              "content_effect": 0.0025000000000000022,
+              "perm_p": 0.4215419501133787,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 4,
+                "AY": 5,
+                "BX": 4,
+                "BY": 4
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0072916666666666685,
+              "position_bias": 0.01145833333333332,
+              "content_effect": 0.03854166666666667,
+              "perm_p": 0.9285714285714286,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 2,
+                "BY": 3,
+                "AY": 4,
+                "AX": 2
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.03229166666666665,
+              "position_bias": 0.023958333333333318,
+              "content_effect": 0.03854166666666668,
+              "perm_p": 0.2650793650793651,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 4,
+                "AX": 4,
+                "BY": 3,
+                "BX": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": -0.010000000000000009,
+              "position_bias": 0.035,
+              "content_effect": -0.23,
+              "perm_p": 0.44488536155202824,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 5,
+                "AX": 5,
+                "AY": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": -0.005625000000000019,
+              "position_bias": 0.00437499999999999,
+              "content_effect": -0.230625,
+              "perm_p": 0.6426051902242378,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 4,
+                "AY": 5,
+                "BY": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.012500000000000011,
+              "position_bias": 0.0325,
+              "content_effect": -0.2325,
+              "perm_p": 0.3207042076089695,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "AY": 5,
+                "BX": 5,
+                "BY": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.009999999999999995,
+              "position_bias": 0.015,
+              "content_effect": -0.22499999999999998,
+              "perm_p": 0.4421768707482993,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "AX": 5,
+                "BY": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": -0.015,
+              "position_bias": 0.03499999999999999,
+              "content_effect": -0.2,
+              "perm_p": 0.11482741244646007,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "BX": 4,
+                "AY": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": -0.06,
+              "position_bias": 0.22499999999999998,
+              "content_effect": 0.07500000000000001,
+              "perm_p": 0.0036848072562358277,
+              "flagged": true,
+              "n_by_cell": {
+                "BX": 5,
+                "BY": 5,
+                "AY": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0024999999999999745,
+              "position_bias": 0.17750000000000002,
+              "content_effect": 0.0975,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "BY": 5,
+                "BX": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": -0.04500000000000004,
+              "position_bias": 0.185,
+              "content_effect": 0.07,
+              "perm_p": 0.023211136306374402,
+              "flagged": true,
+              "n_by_cell": {
+                "AY": 5,
+                "BX": 5,
+                "BY": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": -0.0037500000000000033,
+              "position_bias": 0.12125,
+              "content_effect": 0.13875,
+              "perm_p": 0.8689216427311666,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "AX": 5,
+                "BX": 5,
+                "AY": 4
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": -0.021875000000000006,
+              "position_bias": 0.18687499999999999,
+              "content_effect": 0.07812500000000003,
+              "perm_p": 0.3805429579239103,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "BX": 5,
+                "BY": 4,
+                "AY": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.8-2.4t-a95b",
+      "meta": {
+        "name": "Qwen: Qwen3.8 2.4T A95B",
+        "created": 1786551702,
+        "hugging_face_id": "Qwen/Qwen3.8-2.4T-A95B",
+        "pricing_per_token": {
+          "prompt": "0.000002",
+          "completion": "0.000006"
+        },
+        "reasoning": {
+          "mandatory": true,
+          "default_enabled": true,
+          "supported_efforts": [
+            "xhigh",
+            "medium",
+            "low"
+          ],
+          "default_effort": "xhigh"
+        },
+        "sent_params": {
+          "max_tokens": 4096,
+          "temperature": 1.0,
+          "reasoning": {
+            "effort": "low",
+            "exclude": true
+          }
+        }
+      },
+      "usage": {
+        "calls_returned": 600,
+        "cost_usd": 4.8916080675,
+        "mean_prompt_tokens": 180.88666666666666,
+        "mean_completion_tokens": 1344.4816666666666,
+        "mean_reasoning_tokens": 1336.75,
+        "providers": [
+          "Alibaba",
+          "Novita",
+          "SiliconFlow",
+          "Together",
+          "Venice"
+        ]
+      },
+      "conditions": {
+        "identical": {
+          "calls": 200,
+          "errors": 0,
+          "unparseable": 2,
+          "parse_failure_rate": 0.01,
+          "truncated": 2,
+          "share_at_50": 1.0,
+          "share_at_0_or_100": 0.0,
+          "trials": 20,
+          "incomplete_trials": 0,
+          "position_bias": {
+            "est": 0.0,
+            "ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "position_bias_by_template": {
+            "grant": 0.0,
+            "debate": 0.0,
+            "forecast": 0.0,
+            "hire": 0.0
+          },
+          "label": {
+            "flagged": 0,
+            "binom_p_vs_5pct": 0.9999999999999991,
+            "mean_abs": 0.0,
+            "omnibus_p": 1.0,
+            "omnibus_rms": 0.0,
+            "omnibus_rms_null_median": 0.0,
+            "omnibus_rms_null_95": 0.0
+          },
+          "by_pair": [
+            {
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            },
+            {
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "est": 0.0,
+              "ci": [
+                0.0,
+                0.0
+              ],
+              "n_templates": 4
+            }
+          ],
+          "trial_rows": [
+            {
+              "template": "grant",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 4,
+                "A": 5
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 4
+              }
+            },
+            {
+              "template": "forecast",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "A": 5,
+                "B": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.0,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "B": 5,
+                "A": 5
+              }
+            }
+          ]
+        },
+        "matched": {
+          "calls": 400,
+          "errors": 0,
+          "unparseable": 88,
+          "parse_failure_rate": 0.22,
+          "truncated": 87,
+          "share_at_50": 0.19230769230769232,
+          "share_at_0_or_100": 0.0,
+          "trials": 15,
+          "incomplete_trials": 5,
+          "position_bias": {
+            "est": 0.022408333333333315,
+            "ci": [
+              -0.001564064824868483,
+              0.04638073149153511
+            ]
+          },
+          "position_bias_by_template": {
+            "grant": -0.012775000000000003,
+            "debate": 0.003299999999999986,
+            "hire": 0.07669999999999996
+          },
+          "content_effect": {
+            "est": -0.03664166666666667,
+            "ci": [
+              -0.10187417228773474,
+              0.0285908389544014
+            ]
+          },
+          "label": {
+            "flagged": 2,
+            "binom_p_vs_5pct": 0.17095253550359918,
+            "mean_abs": 0.01595833333333333,
+            "omnibus_p": 0.02348825587206397,
+            "omnibus_rms": 0.020178138954489003,
+            "omnibus_rms_null_median": 0.014129571531602323,
+            "omnibus_rms_null_95": 0.019138176288943168
+          },
+          "by_pair": [
+            {
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "est": -0.014499999999999994,
+              "ci": [
+                -0.06655266612127883,
+                0.037552666121278847
+              ],
+              "n_templates": 3
+            },
+            {
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "est": -0.018541666666666668,
+              "ci": [
+                -0.06957684353682557,
+                0.032493510203492226
+              ],
+              "n_templates": 3
+            },
+            {
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "est": 0.003500000000000003,
+              "ci": [
+                -0.04732657869186981,
+                0.05432657869186982
+              ],
+              "n_templates": 3
+            },
+            {
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "est": 0.010791666666666666,
+              "ci": [
+                -0.041593725741046306,
+                0.06317705907437964
+              ],
+              "n_templates": 3
+            },
+            {
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "est": -0.005458333333333325,
+              "ci": [
+                -0.04556800704663036,
+                0.034651340379963716
+              ],
+              "n_templates": 3
+            }
+          ],
+          "trial_rows": [
+            {
+              "template": "grant",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": -0.009499999999999995,
+              "position_bias": 0.0155,
+              "content_effect": -0.040499999999999994,
+              "perm_p": 0.702034517510708,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "AX": 5,
+                "BX": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": -0.040624999999999994,
+              "position_bias": -0.03437500000000002,
+              "content_effect": -0.084375,
+              "perm_p": 0.05073696145124717,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 3,
+                "AY": 5,
+                "AX": 5,
+                "BX": 4
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": -0.011749999999999997,
+              "position_bias": -0.014249999999999999,
+              "content_effect": -0.02825000000000001,
+              "perm_p": 0.48932350718065004,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "AY": 5,
+                "BY": 5,
+                "BX": 4
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.02150000000000002,
+              "position_bias": 0.0040000000000000036,
+              "content_effect": -0.010249999999999981,
+              "perm_p": 0.25532879818594106,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 4,
+                "BX": 4,
+                "AY": 5,
+                "BY": 4
+              }
+            },
+            {
+              "template": "grant",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0072500000000000064,
+              "position_bias": -0.03475,
+              "content_effect": -0.047250000000000014,
+              "perm_p": 0.5992063492063492,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 4,
+                "AX": 5,
+                "AY": 4,
+                "BX": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": -0.03749999999999998,
+              "position_bias": -0.007500000000000007,
+              "content_effect": -0.1925,
+              "perm_p": 0.0059838750314940795,
+              "flagged": true,
+              "n_by_cell": {
+                "BX": 5,
+                "AX": 5,
+                "BY": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.024999999999999967,
+              "content_effect": -0.175,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "AY": 4,
+                "BX": 5,
+                "AX": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": 0.02675000000000001,
+              "position_bias": -0.014249999999999999,
+              "content_effect": -0.14325,
+              "perm_p": 0.026581002771478963,
+              "flagged": true,
+              "n_by_cell": {
+                "BX": 5,
+                "AX": 4,
+                "BY": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": 0.024374999999999994,
+              "position_bias": 0.005624999999999977,
+              "content_effect": -0.18937499999999996,
+              "perm_p": 0.07955404383975813,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "BX": 4,
+                "AY": 5,
+                "BY": 4
+              }
+            },
+            {
+              "template": "debate",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": -0.02362499999999998,
+              "position_bias": 0.007624999999999993,
+              "content_effect": -0.156375,
+              "perm_p": 0.1273620559334845,
+              "flagged": false,
+              "n_by_cell": {
+                "AY": 5,
+                "AX": 5,
+                "BX": 4,
+                "BY": 2
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Option A",
+                "Option B"
+              ],
+              "label_bias": 0.0034999999999999892,
+              "position_bias": 0.07349999999999997,
+              "content_effect": 0.11349999999999998,
+              "perm_p": 0.845679012345679,
+              "flagged": false,
+              "n_by_cell": {
+                "BX": 5,
+                "AX": 5,
+                "BY": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Candidate 1",
+                "Candidate 2"
+              ],
+              "label_bias": -0.015000000000000013,
+              "position_bias": 0.09199999999999997,
+              "content_effect": 0.10499999999999998,
+              "perm_p": 0.30565003779289496,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "BX": 5,
+                "AX": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Blue",
+                "Green"
+              ],
+              "label_bias": -0.004500000000000004,
+              "position_bias": 0.08449999999999996,
+              "content_effect": 0.09749999999999998,
+              "perm_p": 0.8240740740740741,
+              "flagged": false,
+              "n_by_cell": {
+                "BY": 5,
+                "AX": 5,
+                "AY": 5,
+                "BX": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Anthony",
+                "Ted"
+              ],
+              "label_bias": -0.013500000000000012,
+              "position_bias": 0.06349999999999997,
+              "content_effect": 0.11149999999999996,
+              "perm_p": 0.39638447971781304,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "BY": 5,
+                "BX": 5,
+                "AY": 5
+              }
+            },
+            {
+              "template": "hire",
+              "pair": [
+                "Alpha Institute",
+                "Beacon Institute"
+              ],
+              "label_bias": 0.0,
+              "position_bias": 0.06999999999999995,
+              "content_effect": 0.08999999999999997,
+              "perm_p": 1.0,
+              "flagged": false,
+              "n_by_cell": {
+                "AX": 5,
+                "AY": 5,
+                "BX": 5,
+                "BY": 5
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

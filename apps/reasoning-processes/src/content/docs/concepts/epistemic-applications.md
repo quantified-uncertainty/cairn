@@ -7,8 +7,8 @@ sidebar:
 
 *Applications of strong reasoners arranged as a ladder of five tiers — error-checking, estimation, personalized synthesis, research valuation, institutional mechanisms — where each tier becomes defensible to deploy only when its verification machinery exists and survives systems optimized to pass it.*
 
-:::note[Status]
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). The tier boundaries are a first cut, not a settled taxonomy.
+:::note
+The tier boundaries are a first cut, not a settled taxonomy.
 :::
 
 What would [strong reasoners](/concepts/what-is-a-strong-reasoner/) actually be *for*? The applications are not interchangeable: they demand very different amounts of warranted trust. We organize them here as a **reliability ladder** — each tier requires more trust than the last, and we conjecture a tier's applications become defensible to deploy once its verification machinery exists *and survives systems optimized to pass it*. Lower tiers are running today; upper tiers should not run unsupervised until [oversight protocols](/concepts/oversight-protocols/) can carry their weight.

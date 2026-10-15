@@ -1,6 +1,6 @@
 # Robust Reasoning Processes — Complete Text
 
-> A small textbook for a proposed field: the study and engineering of reasoning processes — peer review, prediction markets, audits, LLM judge pipelines, debate protocols — that deliver trustworthy conclusions at known cost and resist corruption. Maintained by QURI (quantifieduncertainty.org) as part of the CAIRN project. Everything is a dated, versioned working draft; formalisms are graded [exact] / [standard shape] / [heuristic].
+> A research exploration: working notes toward reasoning processes — peer review, prediction markets, audits, LLM judge pipelines, debate protocols — that deliver trustworthy conclusions at known cost and resist corruption. Exploratory and brainstorm-heavy, not a textbook. Maintained by QURI (quantifieduncertainty.org) as part of the CAIRN project. Formalisms are graded [exact] / [standard shape] / [heuristic].
 >
 > This is the entire wiki concatenated into one document, in book reading order,
 > for offline reading (e-readers) and LLM context. Web version: https://reasoning-processes.quantifieduncertainty.org
@@ -17,21 +17,20 @@
 Source: https://reasoning-processes.quantifieduncertainty.org/start-here/introduction/
 ------------------------------------------------------------
 
-*Robust reasoning processes (RRP) is the proposed field that studies and engineers procedures — peer review, prediction markets, audits, LLM judge pipelines — that turn effort and evidence into trustworthy conclusions, and keep doing so under adversarial pressure. This chapter states what the field is, its three core quantities, how it differs from its nearest neighbors, and where its foundations are most uncertain.*
+*Robust reasoning processes (RRP) is our working name for procedures — peer review, prediction markets, audits, LLM judge pipelines — that turn effort and evidence into trustworthy conclusions, and keep doing so under adversarial pressure. This chapter says what the notes are about, the three quantities they organize around, how they relate to neighboring programs, and where the foundations are least certain.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). The opening chapter of a deliberately small textbook (~20 chapters, most short, several still planned) — a working draft of a field that does not exist yet. The full table of contents lives on the [front page](/#the-book).
+A research exploration, not a textbook: working notes and brainstorming toward a research agenda, with few results of its own so far. The table of contents, including planned chapters, is on the [front page](/#contents).
 
-## What the field is
+## What this is about
 
-**Robust reasoning processes (RRP)** is the study and engineering of procedures that turn effort and evidence into trustworthy conclusions — *and keep doing so when interested parties try to corrupt them*. Its objects are processes, not people or models: peer review, prediction markets, audits, expert panels, LLM judge pipelines, debate protocols. Its central activity is measurement: what does a process deliver, what does it cost, and what does it cost to corrupt?
+**Robust reasoning processes (RRP)**, as we use the term, are procedures that turn effort and evidence into trustworthy conclusions — *and keep doing so when interested parties try to corrupt them*. The objects are processes, not people or models: peer review, prediction markets, audits, expert panels, LLM judge pipelines, debate protocols. The questions are about measurement: what does a process deliver, what does it cost, and what does it cost to corrupt?
 
-The field sits at the intersection of information economics, mechanism design, and AI oversight, with debts to metrology, security engineering, and the epistemology of reliable processes. Its founding observations:
+The subject draws on information economics, mechanism design, and AI oversight, with debts to metrology, security engineering, and the epistemology of reliable processes; most of what follows is synthesis from those fields. The motivating observations:
 
-1. **Civilization runs on unbenchmarked reasoning processes.** Peer review was adopted without an experiment. Courts, committees, and audits evolved rather than being designed, and almost none of them have measured error rates — let alone measured *corruption* rates.
-2. **The processes were always the leverage point.** History's great epistemic gains were procedural — double-entry bookkeeping, controlled trials, statistical inference, proper scoring rules. A method scales in a way brilliance never does.
-3. **AI just made processes studyable.** An LLM-based reasoning process is an executable artifact: it can be run a thousand times, perturbed, versioned, and attacked on purpose. Method evaluation becomes an experimental science, and method *discovery* becomes a search loop.
-4. **AI also made the problem urgent.** The marginal cost of producing plausible reasoning has collapsed; the cost of verifying it has not. Whoever consumes reasoning at scale — funders, labs, governments, or a weak agent delegating to stronger ones — needs processes whose reliability is measured, not asserted.
+1. **Many important reasoning processes are unbenchmarked.** Peer review spread without an experiment. Courts, committees, and audits evolved rather than being designed, and few have measured error rates, let alone *corruption* rates.
+2. **Processes may be the leverage point.** Many large epistemic gains were procedural — double-entry bookkeeping, controlled trials, statistical inference, proper scoring rules. A method scales in a way individual brilliance does not.
+3. **AI makes processes studyable.** An LLM-based reasoning process is an executable artifact: it can be run a thousand times, perturbed, versioned, and attacked on purpose. Method evaluation becomes an experimental science, and method *discovery* becomes a search loop.
+4. **AI also makes the problem urgent.** The marginal cost of producing plausible reasoning has collapsed; the cost of verifying it has not. Whoever consumes reasoning at scale — funders, labs, governments, or a weak agent delegating to stronger ones — needs processes whose reliability is measured, not asserted.
 
 ## The core quantities
 
@@ -41,13 +40,13 @@ A reasoning process $\pi$ is characterized by three things. [The Core Model](/co
 
 **What it costs.** Information degrades through a lossy pipeline from source to decision — codification, evaluation, interpretation each take a cut — and running the process costs money that must be amortized across its consumers. The comparable figure of merit is **cost per validated bit**: the price of information that survived checking, not the price of text. (The pipeline decomposition is **[heuristic]** — an audit template, not a law.)
 
-**What it costs to corrupt.** Under pressure, every process leaks. The **corruption cost curve** is the minimum an adversary of given capability must spend to shift the process's output by a given amount; a process is robust when corrupting it costs more than the distortion is worth — a rating against a threat model, never an adjective. This third quantity is the field's namesake and its least-measured one. Measuring it empirically — paying red teams to corrupt a process and recording the price — is the practice this book calls an **incentive audit**.
+**What it costs to corrupt.** Under pressure, every process leaks. The **corruption cost curve** is the minimum an adversary of given capability must spend to shift the process's output by a given amount; a process is robust when corrupting it costs more than the distortion is worth — a rating against a threat model, never an adjective. It gives the project its name and is the least measured of the three; these notes contain no measurement of it yet. Measuring it — paying red teams to corrupt a process and recording the price — is what we call an **incentive audit**.
 
-The framework has a prospective twin: pricing information *before* anyone pays to produce it. Coherence forces a model's quoted expected update to equal its expected uncertainty reduction, which makes prospective quotes checkable without ground truth — the field's intended flywheel, developed in [The Core Model](/concepts/core-model/#5-pricing-information-before-it-arrives-exact) and built into a pricing system by [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/).
+The framework has a prospective twin: pricing information *before* anyone pays to produce it. Coherence forces a model's quoted expected update to equal its expected uncertainty reduction, which makes prospective quotes checkable without ground truth — the intended flywheel, developed in [The Core Model](/concepts/core-model/#5-pricing-information-before-it-arrives-exact) and built into a pricing system by [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/).
 
 ## The three layers
 
-The field organizes into three layers, top-down:
+The material organizes into three layers, top-down:
 
 **The Judge** — the consumer of reasoning, who cannot check the work object-level. What the judge needs: a utility function over information (what is worth knowing, with weights), a way to price information against it, and the process-conditional weights that say how much each source should move them.
 
@@ -55,26 +54,26 @@ The field organizes into three layers, top-down:
 
 **The Environment** — the game the processes live inside: the players (producers, resolvers, accreditors, adversaries), the identity and track-record infrastructure every incentive scheme silently assumes, the market structure that decides who pays for verification, and the legal and cultural constraints that make some robust methods impossible in practice.
 
-The full chapter list, with status per chapter, is on the [front page](/#the-book).
+The full chapter list, including planned chapters, is on the [front page](/#contents).
 
 ## The nearest neighbors
 
-A reader from AI safety will pattern-match this field to several existing programs. The honest differences:
+A reader from AI safety will pattern-match this project to several existing programs. The differences as we see them:
 
 | Neighbor | Shared ground | Where RRP differs |
 |---|---|---|
 | **Scalable oversight / debate** | a weak principal extracting truth from a stronger agent | oversight verifies *one claim at a time*; RRP prices and allocates verification across thousands of claims — the missing economics ([What Grounds an Oversight Protocol?](/concepts/oversight-protocols/#the-missing-economics)) |
 | **AI control** | explicit budgets, audits, distrust of the agent | control catches bad *actions*; RRP prices true *information* — metering the product, not policing the process ([Overseeing Automated Research](/proposals/overseeing-automated-research/)) |
 | **ELK** | the resolution problem — what do verdicts bottom out in? | RRP treats it as an economics and infrastructure problem (resolvers, escrow, track records), not a training problem |
-| **Forecasting research** | resolution, calibration, proper scoring rules | the object of study is the *process* and its corruption cost, not forecast accuracy; forecasting platforms are catalogue rows, not the field |
+| **Forecasting research** | resolution, calibration, proper scoring rules | the object of study is the *process* and its corruption cost, not forecast accuracy; forecasting platforms are catalogue rows, not the subject |
 | **[Evaluation engineering](https://evaluation-engineering.quantifieduncertainty.org/)** (sibling wiki) | the same 2021–22 corpus; prediction–evaluation systems, trust networks, Goodhart | evaluation engineering optimizes *throughput at known cost* — ten thousand evaluations cheaply; RRP optimizes *corruption cost* — the same processes under attack |
 | **Epistemic security (CSER)** | adversaries attacking a society's ability to evaluate information | RRP's scope is formal reasoning procedures with measurable error rates, not public discourse at large |
 
-And what the field is *not*: not the study of smart agents — capability without measured reliability is upstream of nothing here; an agent is interesting exactly insofar as it executes a strong process ([What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/)). And not *trust* in the relational sense: where this book succeeds, trust becomes unnecessary — you do not need to trust an operator whose process you can audit, re-run, and price.
+And what this is *not*: not the study of smart agents — capability without measured reliability is upstream of nothing here; an agent is interesting exactly insofar as it executes a strong process ([What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/)). And not *trust* in the relational sense: where this works, trust becomes unnecessary — you do not need to trust an operator whose process you can audit, re-run, and price.
 
-## The honest center of uncertainty
+## The central uncertainty
 
-Every measurement in this book ultimately leans on some resolution layer — somewhere, a claim must be checked against the world. If trustworthy resolution can be extended (retrodiction, selection protocols, consistency floors) faster than adversaries learn to game it, the field is buildable. If not, it fails at its foundation. And the field must apply to itself: a test battery for processes is itself a process, with its own corruption cost curve. We track these in [Cruxes](/start-here/key-questions/).
+Every measurement proposed here ultimately leans on some resolution layer — somewhere, a claim must be checked against the world. If trustworthy resolution can be extended (retrodiction, selection protocols, consistency floors) faster than adversaries learn to game it, the program is workable. If not, it fails at its foundation. And it must apply to itself: a test battery for processes is itself a process, with its own corruption cost curve. We track these in [Cruxes](/start-here/key-questions/).
 
 
 ------------------------------------------------------------
@@ -82,10 +81,9 @@ Every measurement in this book ultimately leans on some resolution layer — som
 Source: https://reasoning-processes.quantifieduncertainty.org/start-here/key-questions/
 ------------------------------------------------------------
 
-*The uncertainties this book is organized around, in four clusters: what a strong reasoner is, where the gains come from, what could go wrong, and who should govern any of it. A cruxes document is, loosely, a draft utility function over the field's own questions.*
+*The uncertainties these notes are organized around, in four clusters: what a strong reasoner is, where the gains come from, what could go wrong, and who should govern any of it. A cruxes document is, loosely, a draft utility function over our own questions.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Reflects cruxes principally from Ozzie Gooen's [Claims & Cruxes on LLM Forecasting & Epistemics](https://forum.effectivealtruism.org/posts/EykCuXDCFAT5oGyux/my-current-claims-and-cruxes-on-llm-forecasting-and) (2024), a preliminary personal post; the question set and weights remain under revision.
+Reflects cruxes principally from Ozzie Gooen's [Claims & Cruxes on LLM Forecasting & Epistemics](https://forum.effectivealtruism.org/posts/EykCuXDCFAT5oGyux/my-current-claims-and-cruxes-on-llm-forecasting-and) (2024), a preliminary personal post; the question set and weights remain under revision.
 
 This wiki is organized around uncertainties, not conclusions. The questions below are the ones whose answers would most change what we work on. They cluster into four groups: what a strong reasoner *is*, where the gains will actually come from, what could go wrong, and who should be in charge of any of it. (A cruxes document is, loosely, a draft utility function — see [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/) — so treat the selection as a position we expect to revise.)
 
@@ -141,14 +139,13 @@ Where a question has matured into a position, it gets its own page; [Open Proble
 Source: https://reasoning-processes.quantifieduncertainty.org/concepts/core-model/
 ------------------------------------------------------------
 
-*Candidate formalisms for the field's basic quantities: what a reasoning process delivers (epistemic weight), what it costs (the loss pipeline and unit economics), what it costs to corrupt (the corruption cost curve), and how to price information before it exists. Each formalism carries an explicit grade, and each is anchored to the rigorous literature it descends from.*
+*Candidate formalisms for the basic quantities: what a reasoning process delivers (epistemic weight), what it costs (the loss pipeline and unit economics), what it costs to corrupt (the corruption cost curve), and how to price information before it exists. Each formalism carries an explicit grade, and each is anchored to the rigorous literature it descends from.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). These are *candidate* formalisms — equations that might organize the field, not a settled model. Each carries an explicit grade: **[exact]** — correct by construction, hard only to estimate; **[standard shape]** — a form with precedent in an adjacent rigorous field, imported with stated assumptions; **[heuristic]** — a deliberately simple decomposition for audits and discussion, not a law. A field about robust reasoning should grade its own reasoning first.
+These are *candidate* formalisms — equations that might organize the subject, not a settled model. Each carries an explicit grade: **[exact]** — correct by construction, hard only to estimate; **[standard shape]** — a form with precedent in an adjacent rigorous field, imported with stated assumptions; **[heuristic]** — a deliberately simple decomposition for audits and discussion, not a law.
 
 ## Setup
 
-A **judge** $J$ must make decisions under uncertainty. Their preferences over knowledge are summarized by a utility function $U$, represented in practice as a weighted question portfolio ([Constructing Utility Functions](/concepts/constructing-utility-functions/)). A **reasoning process** $\pi$ — peer review, a prediction market, an LLM pipeline, an expert panel — consumes effort and evidence and emits claims, estimates, or evaluations. The judge cannot verify the claims object-level; the field is about what they can do instead.
+A **judge** $J$ must make decisions under uncertainty. Their preferences over knowledge are summarized by a utility function $U$, represented in practice as a weighted question portfolio ([Constructing Utility Functions](/concepts/constructing-utility-functions/)). A **reasoning process** $\pi$ — peer review, a prediction market, an LLM pipeline, an expert panel — consumes effort and evidence and emits claims, estimates, or evaluations. The judge cannot verify the claims object-level; these notes are about what they can do instead.
 
 Three families of quantities characterize $\pi$: what it delivers, what it costs, and what it costs to corrupt. (All symbols are indexed in the [Glossary & Notation](/reference/glossary/).)
 
@@ -165,7 +162,7 @@ The formula is probability theory and cannot be wrong; everything hard is estima
 
 The classical foundation here is **Blackwell's comparison of experiments**: a process is, formally, an experiment, and Blackwell's theorem gives the exact sense in which one process is more informative than another — $\pi_A$ dominates $\pi_B$ if and only if *every* decision-maker, whatever their utility function, weakly prefers $\pi_A$. This is the rigorous backbone under the [Process Catalogue's](/concepts/process-catalogue/) comparisons: where Blackwell dominance holds, the comparison is utility-free; where it doesn't (the usual case), comparisons are $U$-relative, which is why the judge layer comes first.
 
-Operationalizations, in increasing availability: **track record** (resolved outputs estimate the profile directly — expensive, hard to fake, which is why it works); **replacement cost** (a 2021 QURI proposal: weight a claim by what a calibrated reference team would charge to produce an estimate of the same resolution); **process audit** (infer weight from measured components — calibration, consistency, and corruption exposure below). Limiting cases: an ideal process has likelihood ratios far from 1; a worthless one sits at 1; a *captured* process can sit below 1 — anti-informative while looking authoritative.
+Operationalizations, in increasing availability: **track record** (resolved outputs estimate the profile directly — expensive, hard to fake, which is why it works); **replacement cost** (a 2021 QURI proposal: weight a claim by what a calibrated reference team would charge to produce an estimate of the same resolution); **process audit** (infer weight from measured components — calibration, consistency, and corruption exposure below). Limiting cases: an ideal process has likelihood ratios far from 1; a worthless one sits at 1. A ratio *known* to sit below 1 is still informative — read it inverted. The danger in a *captured* process is that the judge keeps using the ratio estimated before capture, so its reports look authoritative while carrying little or reversed weight ([The Funding Effect](/case-studies/the-funding-effect/)).
 
 ## 2. Value delivered: the loss pipeline **[heuristic]**
 
@@ -199,7 +196,7 @@ For $n$ consumers, each spending $c_{interp}$ to absorb the output, and a proces
 
 $$\text{Net benefit} = (V_{delivered} - c_{interp}) \cdot n - c_{process}$$
 
-An accounting identity, with the assumptions stated: homogeneous consumers, value additive across them (information is non-rival), no second-order effects. Its use is structural: high-$n$ processes (indices, market prices) tolerate enormous process cost; $n{=}1$ processes must be cheap or precious. The comparable figure of merit across processes is **cost per validated bit** — the price of information that survived checking, not the price of text — with the honest caveat that defining a common "validated bit" across output types (probabilities, rulings, models) is itself an open problem flagged in [the Process Catalogue](/concepts/process-catalogue/).
+Cost–benefit accounting for a non-rival good, valid only under its assumptions: homogeneous consumers, value additive across them (information is non-rival), no second-order effects. Its use is structural: high-$n$ processes (indices, market prices) tolerate enormous process cost; $n{=}1$ processes must be cheap or precious. The comparable figure of merit across processes is **cost per validated bit** — the price of information that survived checking, not the price of text — with the honest caveat that defining a common "validated bit" across output types (probabilities, rulings, models) is itself an open problem flagged in [the Process Catalogue](/concepts/process-catalogue/).
 
 ## 4. Corruption **[standard shape]**
 
@@ -212,9 +209,9 @@ where $\Delta$ is measured in $U$-units — the judge's utility loss from the di
 
 For participants inside the process, the **corruption surplus** is the maximum expected gain from deviating from honest effort; surplus is what attackers harvest, the cost curve is what they pay. Consequences:
 
-- **Robustness is a rating, not an adjective**: a process is robust against capability $g$, for stakes $s$, as of time $t$ — like a crash rating, and like a crash rating it decays as attacks improve, so the $t$ index is not decoration. Measuring $C_\pi$ empirically (red-team producers paid to corrupt the output) is the practice this book calls an **incentive audit**.
+- **Robustness is a rating, not an adjective**: a process is robust against capability $g$, for stakes $S$, as of time $t$ — like a crash rating, and like a crash rating it decays as attacks improve, so the $t$ index is not decoration. Measuring $C_\pi$ empirically (red-team producers paid to corrupt the output) is the practice we call an **incentive audit**.
 - **Detection can substitute for prevention.** A tamper-*evident* process — corruption succeeds but is always discovered — often achieves the inequality more cheaply than tamper-*proofing*, because discovery destroys the adversary's stake retroactively (clawbacks, reputation). Many catalogue entries are best hardened this way.
-- **A rational judge is not a defense.** **Bayesian persuasion** (Kamenica–Gentzkow) proves that an actor who controls the *information structure* can profitably manipulate even a fully rational Bayesian receiver. The corruption channel is closed by controlling who designs the process and verifying what was run — never by judge intelligence alone. This is the formal reason the field is about processes rather than smarter judges.
+- **A rational judge is not a defense.** **Bayesian persuasion** (Kamenica–Gentzkow) proves that an actor who controls the *information structure* can profitably manipulate even a fully rational Bayesian receiver. The corruption channel is closed by controlling who designs the process and verifying what was run — never by judge intelligence alone. This is the formal reason to focus on processes rather than smarter judges.
 - **Weight and corruption are coupled**: the likelihood-ratio profile of §1 is conditional on the incentive environment; under attack, $L_{eval}$ acquires an optimizer-chosen component that does not average out like noise.
 
 How fast $C_\pi$ falls as adversary capability $g$ rises — the *corruption-capacity curve*, per process — is among the most decision-relevant unmeasured quantities in AI oversight ([Overseeing Automated Research](/proposals/overseeing-automated-research/)).
@@ -231,7 +228,7 @@ $$\underbrace{\mathbb{E}\big[(q_X - q)^2\big]}_{\text{expected movement}} \;=\; 
 
 The single-step identity extends across whole forecast streams: over any horizon, a coherent forecaster's expected *cumulative* sum of squared belief moves equals its expected total uncertainty reduction ([Augenblick & Rabin 2021](https://academic.oup.com/qje/article-abstract/136/2/933/6127317)). Each question carries a fixed expected **movement budget** — $q_0(1-q_0)$ for a binary question — so persistent excess movement is quantitative evidence of over-reaction, and a deficit of under-reaction, scored from the stream alone with no resolutions required. This is the cumulative form of the martingale condition in [Consistency Evaluations](/proposals/consistency-evals/), and it was already a working statistical test on human forecaster data before LLMs existed.
 
-This is the field's intended flywheel: a model calibrated at first-order estimation *and* consistent at these second-order quotes can price information before it exists, which is what lets a judge commission measurement rather than merely react to it — and every realized update is free calibration data for the next round of quotes. The identities are **[exact]**; what is unmeasured is how well current models satisfy them. [Consistency Evaluations](/proposals/consistency-evals/) supplies the check battery; [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/) builds the pricing system on top.
+This is the intended flywheel: a model calibrated at first-order estimation *and* consistent at these second-order quotes can price information before it exists, which is what lets a judge commission measurement rather than merely react to it — and every realized update is free calibration data for the next round of quotes. The identities are **[exact]**; what is unmeasured is how well current models satisfy them. [Consistency Evaluations](/proposals/consistency-evals/) supplies the check battery; [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/) builds the pricing system on top.
 
 ## What would make this chapter trustworthy
 
@@ -249,8 +246,7 @@ Source: https://reasoning-processes.quantifieduncertainty.org/proposals/epistemi
 
 *A framework for putting a number on the value of a piece of information: measure how it changes a calibrated AI agent's beliefs, weight the changes by a utility function, and pay out only what survives validation. The pricing mechanism the new economy of cheap information is missing.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Adapted from earlier QURI writing, updated for the LLM era. Positions here are exploratory, not settled.
+Adapted from earlier QURI writing, updated for the LLM era.
 
 ## Summary
 
@@ -355,8 +351,7 @@ Source: https://reasoning-processes.quantifieduncertainty.org/concepts/construct
 
 *How weighted question portfolios — the utility functions downstream pages assume — can actually be built: relative value functions as the format, comparison polling as the elicitation mechanism, two small experiments' worth of sobering empirical results, and what LLMs change.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Adapted from earlier QURI writing, updated for the LLM era. Positions here are exploratory, not settled. The empirical work cited below is QURI's own — this page's author participated in both 2022 experiments, which Nuño Sempere ran and wrote up.
+Adapted from earlier QURI writing, updated for the LLM era. The empirical work cited below is QURI's own — this page's author participated in both 2022 experiments, which Nuño Sempere ran and wrote up.
 
 To score research by how much it moves the questions an organization cares about — the bet [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/) and [Overseeing Automated Research](/proposals/overseeing-automated-research/) both make — you need a weighted question portfolio: a utility function $U$. Both pages treat its construction as a quiet input cost — "weeks of specialist work." This page covers how such objects can actually be built. QURI spent roughly 2021–2023 on this problem; the accumulated work — a format, an elicitation mechanism, two small experiments, statistical grounding — is the most complete attempt we know of at eliciting ratio-scale relative values over research artifacts and grants specifically (GiveWell's and Rethink Priorities' moral-weights work shares the goal, not the ratio-distribution format).
 
@@ -411,8 +406,7 @@ Source: https://reasoning-processes.quantifieduncertainty.org/concepts/untrustwo
 
 *Most consequential information comes from someone who wants something. The usual response is to ask how much to trust the source — the wrong question, because most of the defense against being lied to happens **before the source ever speaks**. This chapter models strategic information as a security game the defender moves first in: you reduce the attack surface by design, a few channels never close, and on those the whole problem collapses to one idea — a message is worth only what it would have cost a liar to fake.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Positions here are exploratory, not settled. This chapter is the book's attack model — the source-side companion to the [decision-relative bias](/concepts/process-catalogue/#reading-the-table) of the Process Catalogue and the [routing program](/concepts/oversight-protocols/#narrowing-the-residue) of the oversight chapter.
+This chapter is the attack model for the rest of the notes — the source-side companion to the [decision-relative bias](/concepts/process-catalogue/#reading-the-table) of the Process Catalogue and the [routing program](/concepts/oversight-protocols/#narrowing-the-residue) of the oversight chapter.
 
 ## The one idea
 
@@ -440,7 +434,7 @@ $$
 \text{LR}(m) = \frac{P(m \mid C \text{ true})}{P(m \mid C \text{ false})},
 $$
 
-and this depends on the *message form*, not the sender's intentions. A valid proof handed to you by a liar is still a valid proof. A form keeps its value even from a source you actively distrust exactly when it is **hard to produce when wrong** — when the denominator stays small no matter who is talking. That denominator *is* the cost-to-fake of the one idea: a small denominator means a liar would rarely be able to produce this message, so producing it counts as evidence. Value under distrust lives in checkability, not in source character.
+and for some forms it barely depends on the sender's intentions: a valid proof handed to you by a liar is still a valid proof. A form keeps its value even from a source you actively distrust exactly when it is **hard to produce when wrong** — when the denominator stays small no matter who is talking. That denominator *is* the cost-to-fake of the one idea: a small denominator means a liar would rarely be able to produce this message, so producing it counts as evidence. Value under distrust lives in checkability, not in source character.
 
 Theory anchors the extremes. Unverifiable assertion is [cheap talk](https://www.jstor.org/stable/1913390): costless when wrong, so its information content collapses under distrust. Verifiable evidence is the opposite pole — in disclosure games a skeptical receiver has bounded downside, because what *isn't* shown becomes informative ([unraveling](https://www.jstor.org/stable/3003562)). [Bayesian persuasion](https://www.aeaweb.org/articles?id=10.1257/aer.101.6.2590) characterizes the territory between: exactly how much a strategic sender can extract from a fully rational receiver. And [costly signaling](https://ocw.mit.edu/courses/15-025-game-theory-for-strategic-advantage-spring-2015/c7de229ffadd7fb5dfe1d01b52f8ea48_MIT15_025S15_Lec_19.pdf) (Spence) supplies the mechanism by which honesty survives conflicting interests: a signal too costly for a liar to mimic separates the honest from the strategic on its own.
 
@@ -450,7 +444,7 @@ So the one idea is not a metaphor; it is the likelihood ratio read from the list
 
 ## Deception is a game the defender moves first in
 
-The naive picture is a listener filtering an incoming message. The right picture is a sequential game with three moves in time order, and **the defender moves first**. This is the structure of [Stackelberg security games](https://arxiv.org/abs/1401.3888) (Conitzer & Sandholm 2006; the ARMOR/LAX and air-marshal deployments led by Tambe): the defender commits to a strategy, the attacker observes the committed environment and best-responds, and the defender's whole craft is choosing the commitment that leaves the attacker the worst available best response.
+The naive picture is a listener filtering an incoming message. The right picture is a sequential game with three moves in time order, and **the defender moves first**. This is the structure of Stackelberg security games ([Conitzer & Sandholm 2006](https://doi.org/10.1145/1134707.1134717) on computing the optimal commitment; [Korzhyk et al. 2011](https://arxiv.org/abs/1401.3888) on the model behind the ARMOR/LAX and air-marshal deployments): the defender commits to a strategy, the attacker observes the committed environment and best-responds, and the defender's whole craft is choosing the commitment that leaves the attacker the worst available best response.
 
 ```mermaid
 flowchart TD
@@ -483,7 +477,7 @@ Deception is a *live* risk only when a conjunction of conditions all hold, so br
 
 Our overseer works down this list. Most of the advocate's sub-claims are checkable, reproducible on a neutral model, or will resolve — so they leave the attack surface entirely. This is also what dooms a scalar trust score: an honest-but-strategic source whose goal happens to align with yours on $D$ is safe to listen to, while a source you trust in general can be adversarial on the one decision that matters. The decision-relevant object is not global honesty but **the listener's uncertainty over the source's goal-divergence on $D$** — the source-side reading of the [decision-relative bias](/concepts/process-catalogue/#reading-the-table) $b_\pi(D)$ the Process Catalogue measures with its label-swap test. With no goal bias, there is nothing to deceive *toward*. (The literature's nearest name for the whole conjunction is [Milgrom–Roberts 1986](https://ideas.repec.org/a/rje/randje/v17y1986ispringp18-32.html), which makes successful misreporting depend jointly on verifiability, the receiver's sophistication, and the opposition of interests.)
 
-Two caveats keep the checklist honest. Closing the verification gap is not by itself sufficient: [Bayesian persuasion](https://www.aeaweb.org/articles?id=10.1257/aer.101.6.2590) shows a fully rational receiver who verifies everything can still be moved by a sender who controls the *information structure* — framing is its own channel, handled at Move 2. And the goal-divergence channel can stay open against multiple sources: with several senders and a multidimensional state, even arbitrarily large divergence need not protect the receiver ([Battaglini 2002](https://onlinelibrary.wiley.com/doi/10.1111/1468-0262.00336)).
+Two refinements. Closing the verification gap is not by itself sufficient: [Bayesian persuasion](https://www.aeaweb.org/articles?id=10.1257/aer.101.6.2590) shows a fully rational receiver who verifies everything can still be moved by a sender who controls the *information structure* — framing is its own channel, handled at Move 2. And the goal-divergence channel has a lever the table omits: with several senders and a multidimensional state, full revelation is generically achievable even when each sender's bias is arbitrarily large ([Battaglini 2002](https://onlinelibrary.wiley.com/doi/10.1111/1468-0262.00336)), so consulting several differently biased sources can close a channel no single one would.
 
 ### The residual attack surface
 
@@ -493,9 +487,9 @@ This is the **residual attack surface**: the channels that survive every attempt
 
 ### Why AI shrinks the surface — and the one channel that reopens it
 
-The human case is the hard one: private knowledge is genuinely non-reproducible, so the reproduction gap holds almost always — which is why a century of hearsay doctrine exists ([Friedman 1987](https://openyls.law.yale.edu/entities/publication/518633f2-8951-4055-b5e6-a9bb04a8c47a)). AI is structurally more favorable, and the book leans on it: reproducibility — re-run, fork, poll many models — *closes* the reproduction gap for most questions, which is exactly why the defender's first move is so much cheaper here.
+The human case is the hard one: private knowledge is genuinely non-reproducible, so the reproduction gap holds almost always — which is why a century of hearsay doctrine exists ([Friedman 1987](https://openyls.law.yale.edu/entities/publication/518633f2-8951-4055-b5e6-a9bb04a8c47a)). AI is structurally more favorable, and these notes lean on it: reproducibility — re-run, fork, poll many models — *closes* the reproduction gap for most questions, which is exactly why the defender's first move is so much cheaper here.
 
-The trap is correlated error. "Run it past many unbiased models" only closes the channel if their errors are independent, and shared training pipelines erode that — [the field's largest undefended threat](/concepts/hardening-techniques/#what-each-family-defends--and-the-gaps). Measurably: when two LLMs err they agree on the *same* wrong answer far above chance ([Kim et al. 2025](https://arxiv.org/abs/2506.07962)), and error similarity *rises* with capability ([Goel et al. 2025](https://arxiv.org/abs/2502.04313)) — the wrong direction for the reproducibility hope. So an AI's private intuition is most dangerous *when it is genuinely idiosyncratic* — un-shared, un-reproducible — rather than a common-corpus artifact a neutral model would also produce. Idiosyncratic superhuman intuition is the most valuable case and the one *aggregation* defenses cannot touch, though other defenses (calibration, abstention, external-tool and retrieval checks) still apply.
+The trap is correlated error. "Run it past many unbiased models" only closes the channel if their errors are independent, and shared training pipelines erode that — [a threat with no clean AI-specific defense yet](/concepts/hardening-techniques/#what-each-family-defends--and-the-gaps). Measurably: when two LLMs err they agree on the *same* wrong answer far above chance ([Kim et al. 2025](https://arxiv.org/abs/2506.07962)), and error similarity *rises* with capability ([Goel et al. 2025](https://arxiv.org/abs/2502.04313)) — the wrong direction for the reproducibility hope. So an AI's private intuition is most dangerous *when it is genuinely idiosyncratic* — un-shared, un-reproducible — rather than a common-corpus artifact a neutral model would also produce. Idiosyncratic superhuman intuition is the most valuable case and the one *aggregation* defenses cannot touch, though other defenses (calibration, abstention, external-tool and retrieval checks) still apply.
 
 ## Move 2: the deceiver picks an open channel
 
@@ -577,7 +571,7 @@ Fuzzing's deeper contribution is converting "trust me" into "check me": its arti
 
 LLMs make the spectrum empirical, and give the one idea a number. Define a form's **deception affordance** as its false-side belief swing relative to its true-side swing — operationally, the perceived likelihood ratio divided by the actual one. **[heuristic]** Affordance near 1 means the form transmits information; affordance far above 1 means it transmits persuasion. The basic experiment: take questions with known answers, have advocate models argue each side restricted to one form, and measure the swing ratio. Vary listener sophistication and the output is a function — form × listener type → decay curve — since unfalsifiable claims are far more dangerous to naive listeners than to sophisticated ones.
 
-Fragments of this program already exist under other names. The debate literature supplies methods and encouragement: optimizing debaters for persuasiveness *increased* judge accuracy in [Khan et al. 2024](https://arxiv.org/abs/2402.06782). And the LLM-as-judge literature is, in effect, measuring affordance without the framework: [sycophancy evals](https://arxiv.org/abs/2310.13548) quantify how much agreement-seeking sways beliefs regardless of truth, and judge-bias studies document [position and verbosity biases](https://arxiv.org/abs/2306.05685) — truth-independent swing from pure form, the affordance gap measured directly. Inverting the [fallacy-detection literature](https://arxiv.org/abs/2410.21360) — from "flag these forms as bad" to "grade every form's measured swing ratio" — is the natural next step. See [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/) for the protocol-level view.
+Fragments of this program already exist under other names. The debate literature supplies methods and encouragement: optimizing debaters for persuasiveness *increased* judge accuracy in [Khan et al. 2024](https://arxiv.org/abs/2402.06782). And the LLM-as-judge literature is, in effect, measuring affordance without the framework: [sycophancy evals](https://arxiv.org/abs/2310.13548) quantify how much agreement-seeking sways beliefs regardless of truth, and judge-bias studies document [position and verbosity biases](https://arxiv.org/abs/2306.05685) — truth-independent swing from pure form, the affordance gap measured directly. Inverting the [credibility-signal literature](https://arxiv.org/abs/2410.21360) (Srba et al.'s survey; persuasion techniques are among its signals) — from "flag these forms as bad" to "grade every form's measured swing ratio" — is the natural next step. See [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/) for the protocol-level view.
 
 ## Relation to EIA
 
@@ -612,7 +606,7 @@ Institutions have rated information for a long time. Sorted by the *unit* each s
 | [PageRank](https://www.researchgate.net/publication/200110773_Manipulability_of_PageRank_under_Sybil_Strategies) / [EigenTrust](https://dl.acm.org/doi/10.1145/775152.775242) / reputation | nodes, sellers, users | link & transaction track record | Sybil and collusion; robust variants make influence cost attack resources |
 | [Proper scoring rules](https://doi.org/10.1198/016214506000001437), prediction markets | forecasters | resolution against reality | covers only resolvable claims |
 | [FEVER](https://arxiv.org/abs/1803.05355)-style verification | individual claims | checkability against a corpus | corpus-bounded; no incentive layer |
-| [Fallacy & persuasion-technique detection](https://arxiv.org/abs/2410.21360) | **argument forms** | learned classifiers | rates forms *only negatively*, as anti-credibility signals |
+| Credibility signals, incl. persuasion techniques ([survey](https://arxiv.org/abs/2410.21360)) | **argument forms**, among other signals | learned classifiers | rates forms *only negatively*, as anti-credibility signals |
 
 Three cross-cutting lessons, each a corollary of the one idea:
 
@@ -630,14 +624,13 @@ The gap this chapter targets is specific. Existing systems rate **sources**, **c
 Source: https://reasoning-processes.quantifieduncertainty.org/case-studies/the-funding-effect/
 ------------------------------------------------------------
 
-*The best-replicated empirical handle the field has on the [corruption cost curve](/concepts/core-model/#4-corruption-standard-shape): decades of meta-science measuring how much an interested funder shifts a study's conclusions. Read as a likelihood-ratio discount, it is a real, numbered instance of corruption pulling a process's [epistemic weight](/concepts/core-model/#1-epistemic-weight-exact) toward 1 — and, at the limit, below it.*
+*Decades of meta-science measure how much an interested funder shifts a study's conclusions. Read through a likelihood ratio, the numbers say funding bias can weaken a favorable conclusion toward worthlessness; turning it into evidence against the claim takes a second mechanism, selection on the truth. The data measure distortion given funding, not what the distortion cost.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). The interlude closing Part I: a case study supporting [The Core Model](/concepts/core-model/) and [Untrustworthy Sources](/concepts/untrustworthy-sources/) (Ch. 6). Effect sizes are quoted from the cited reviews; the likelihood-ratio reframing is ours and exploratory.
+The interlude closing Part I, supporting [The Core Model](/concepts/core-model/) and [Untrustworthy Sources](/concepts/untrustworthy-sources/) (Ch. 6). Effect sizes are quoted from the cited reviews; the likelihood-ratio models are ours.
 
-## Why this is the field's cleanest measured corruption
+## Why this case
 
-The Core Model claims a process's [epistemic weight](/concepts/core-model/#1-epistemic-weight-exact) is conditional on its incentive environment — that under interested pressure, the likelihood-ratio profile shifts, and a captured process can sit at or below 1 (anti-informative while looking authoritative). That claim is usually hard to measure. The funding effect is the exception: a large, replicated meta-scientific literature has measured exactly how much a known conflict of interest moves a study's conclusions, across drugs, devices, nutrition, and tobacco. It is the empirical companion to the [Untrustworthy Sources](/concepts/untrustworthy-sources/#the-spectrum-of-forms) spectrum — a source whose goal-divergence on the decision is known — turned into numbers.
+The Core Model says a process's [epistemic weight](/concepts/core-model/#1-epistemic-weight-exact) depends on its incentive environment. That is usually hard to measure. Here a large literature has measured how much a known conflict of interest moves a study's conclusions, across drugs, devices, nutrition, and tobacco. It is the empirical companion to the [Untrustworthy Sources](/concepts/untrustworthy-sources/#the-spectrum-of-forms) spectrum: a source whose goal-divergence on the decision is known.
 
 ## The numbers
 
@@ -654,34 +647,42 @@ All effect sizes below are favorable-conclusion (or favorable-result) measures f
 | SSB systematic reviews ("no association") | adj. RR | **5.16** (1.30–20.48) | [Bes-Rastrollo et al. 2013](https://doi.org/10.1371/journal.pmed.1001578) |
 | Passive-smoking reviews ("not harmful") | OR | **88** (16–477) | [Barnes & Bero 1998](https://doi.org/10.1001/jama.279.19.1566) |
 
-The honest pattern is itself the finding. In rigorous, high-$n$ meta-epidemiological data the effect is **modest and tight** (RR ~1.3, the foundational pooled OR ~3.6); in nutrition and tobacco it is reported as **dramatically larger** (OR 7–88) but with very wide confidence intervals and smaller samples. The result–conclusion concordance finding (RR 0.83) is the sharpest single number: funded studies' *conclusions* skew more favorable than their own *results* warrant — corruption acting on the codification stage, not the evidence.
+In large meta-epidemiological data the effect is **modest and tight** (RR ~1.3; pooled OR ~3.6); in nutrition and tobacco it is **much larger** (OR 7–88) but with very wide intervals. The result–conclusion concordance finding (RR 0.83) is the sharpest single number: funded studies' *conclusions* skew more favorable than their own *results* warrant, so at least part of the distortion acts on the write-up, not the evidence.
 
 ## From odds ratios to a likelihood-ratio discount
 
-Recast in the Core Model's terms. A study's favorable conclusion is evidence for the underlying hypothesis $H$ with likelihood ratio $\text{LR} = P(\text{favorable} \mid H)/P(\text{favorable} \mid \neg H)$. If funding makes a favorable conclusion roughly $k$ times more likely *regardless of whether $H$ is true* — the funding effect operating as a multiplier on the report, not the world — then the funded study's favorable conclusion carries an attenuated $\text{LR}' < \text{LR}$, with the gap set by $k$. **[heuristic]**
+An independent study reaches a favorable conclusion with probability $\alpha$ when the hypothesis $H$ is true and $\beta$ when it is false, so a favorable conclusion carries $\text{LR}=\alpha/\beta$. What funding does to that ratio depends on how the funding acts.
 
-Three consequences worth stating precisely:
+**A pure multiplier cancels.** If funding makes a favorable conclusion $k$ times more likely whether or not $H$ is true, then $\text{LR}' = k\alpha/k\beta = \text{LR}$. More favorable conclusions, each worth the same. **[exact]**
 
-1. **The weight is discounted, not destroyed.** The pharma-scale numbers ($k \approx 1.3$) imply a funded favorable result is worth a noticeable-but-partial fraction of an independent one; the nutrition/tobacco numbers push $\text{LR}' \to 1$ (worthless).
-2. **It can flip sign.** In the tobacco limit, a glowing industry-funded result is *negative* evidence for the favorable claim — $\text{LR}' < 1$ — because the conclusion is better explained by capture than by truth. This is the Core Model's "captured process sits below 1," observed. "Information loss" undersells it: the update can reverse. The manufactured-doubt histories ([Oreskes & Conway 2010](https://en.wikipedia.org/wiki/Merchants_of_Doubt); [Proctor 2011](https://www.ucpress.edu/book/9780520270169/golden-holocaust)) document this limiting case as deliberate engineering.
-3. **It is recoverable.** The discount is mediated by the other robustness features: preregistration, open data, and independent replication claw most of the weight back. The funding signal's cost is therefore not intrinsic to the source but a function of how much [tamper-evidence and deterrence](/concepts/hardening-techniques/) the process carries — which is the constructive reading.
+**Spin attenuates.** Suppose instead that, with probability $s$, a study whose honest conclusion would be unfavorable is reported as favorable, whatever the truth. Then
 
-## The mechanisms behind the multiplier
+$$\text{LR}'(s) = \frac{\alpha + s(1-\alpha)}{\beta + s(1-\beta)},$$
 
-The effect is not mysterious sender dishonesty; it is a set of nameable, auditable channels ([Sismondo 2008](https://doi.org/10.1016/j.socscimed.2008.01.010)): choice of comparator and dose, selective outcome reporting, publication bias, and ghost-management of the writing itself — internal documents indicate **18–40%** of articles on some drugs were managed by industry-hired medical-communications firms ([Sismondo 2007](https://doi.org/10.1371/journal.pmed.0040286)). This matters for the field because each channel is a distinct point of attack and audit: the corruption enters at design, analysis, reporting, and authorship as separable links — exactly the kind of decomposition the [loss pipeline](/concepts/core-model/#2-value-delivered-the-loss-pipeline-heuristic) anticipates, here with the bias term ($L_{\text{eval}}$ acquiring an optimizer-chosen component) made empirical.
+which falls toward 1 as $s \to 1$ and stays above 1 for every $s<1$ when $\alpha>\beta$. **[exact, given the model]** A multiplier that saturates, taking $\alpha$ and $\beta$ to $\min(1,k\alpha)$ and $\min(1,k\beta)$, behaves the same way once $k\alpha$ reaches 1.
 
-The funding effect is one instance of a general law of certification economics — when the rated party pays, certifiers drift toward coarse, lenient signals — surveyed with the credit-rating and audit cases in the sibling wiki's [Patterns & Failure Modes](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/#3-incentives-and-funding-decide-trustworthiness--more-than-method-does). It is also why design-hierarchy rating systems are insufficient on their own: GRADE and similar grade evidence against *bias and noise*, but [industry sponsorship skews conclusions despite design hierarchies](https://doi.org/10.1002/14651858.MR000033.pub3) — they do not model a *strategic* funder choosing which studies to run and publish, the open problem flagged in [Untrustworthy Sources](/concepts/untrustworthy-sources/#open-questions).
+**A sign flip needs selection.** Under any bias applied regardless of the truth, a funded favorable conclusion stays (weak) evidence *for* $H$. It becomes evidence against $H$ only if the funder's behavior depends on $H$ itself. If funders whose product fails commission studies, or publish the favorable ones, at a rate $r_{\neg H}$ above the rate $r_H$ of funders whose product works, the observed ratio is $\text{LR}'(s)\cdot r_H/r_{\neg H}$, which drops below 1 once $r_{\neg H}/r_H > \text{LR}'(s)$. The manufactured-doubt histories ([Oreskes & Conway 2010](https://en.wikipedia.org/wiki/Merchants_of_Doubt); [Proctor 2011](https://www.ucpress.edu/book/9780520270169/golden-holocaust)) describe it used deliberately. Selection can also run the other way: a sponsor that funds trials of products it expects to work raises the favorable rate with no spin at all. The ratios in the table cannot separate these.
+
+**A worked number (illustrative).** Take $\alpha=0.8$, $\beta=0.2$ ($\text{LR}=4$), a prior of 0.5, and read Lundh's favorable-conclusions RR of 1.34 as pure spin. Then $s\approx0.34$ and $\text{LR}'\approx1.8$: a funded favorable conclusion keeps about 44% of an independent one's log-odds weight. The passive-smoking OR of 88, read the same way, gives $s\approx0.98$ and $\text{LR}'\approx1.01$: nearly worthless, not negative. At that level of spin any selection toward $\neg H$ flips the sign, which makes tobacco the plausible case for a reversal. If sponsors instead pick products likely to work, these conversions overstate $s$.
+
+Two things follow. The discount belongs to the funding arrangement, not the source's character: spin works through nameable channels (below) that preregistration and open data target, though how much weight they recover is, to our knowledge, unmeasured. And the table measures *distortion given funding*, not its cost, so it is not a point on the [corruption cost curve](/concepts/core-model/#4-corruption-standard-shape).
+
+## The mechanisms behind the spin
+
+Spin runs through nameable, auditable channels ([Sismondo 2008](https://doi.org/10.1016/j.socscimed.2008.01.010)): choice of comparator and dose, selective outcome reporting, publication bias, and ghost-management of the writing itself — internal documents indicate **18–40%** of articles on some drugs were managed by industry-hired medical-communications firms ([Sismondo 2007](https://doi.org/10.1371/journal.pmed.0040286)). Each is a separate point of attack and audit, the kind of decomposition the [loss pipeline](/concepts/core-model/#2-value-delivered-the-loss-pipeline-heuristic) anticipates.
+
+The funding effect is one instance of a general pattern — when the rated party pays, certifiers drift toward lenient signals — surveyed with the credit-rating and audit cases in the sibling wiki's [Patterns & Failure Modes](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/#3-incentives-and-funding-decide-trustworthiness--more-than-method-does). Design-hierarchy rating systems such as GRADE grade evidence against *bias and noise*, yet [industry sponsorship skews conclusions despite them](https://doi.org/10.1002/14651858.MR000033.pub3): they do not model a *strategic* funder choosing which studies to run and publish, the selection term above and an open problem in [Untrustworthy Sources](/concepts/untrustworthy-sources/#open-questions).
 
 ## Toward a measured version
 
-This case study is also a template for the [incentive audit](/concepts/core-model/#4-corruption-standard-shape) the field needs to standardize. The fundable project: estimate the likelihood-ratio discount $\text{LR}'/\text{LR}$ as a function of conflict-of-interest type, disclosure regime, and the presence of preregistration/open-data/replication — turning one qualitative row of the [Catalogue's](/concepts/process-catalogue/) corruption column into measured numbers with intervals. The existing meta-science supplies the corpus and the outcome coding; what it lacks is the likelihood-ratio framing and the recovery-factor estimates.
+A template for an [incentive audit](/concepts/core-model/#4-corruption-standard-shape): estimate the spin rate $s$ and the selection ratio $r_{\neg H}/r_H$ separately, by conflict-of-interest type, disclosure regime, and the presence of preregistration, open data, or replication. Separating them needs the truth about $H$ for funded products, which later independent trials or regulatory outcomes can sometimes supply; the existing meta-science supplies the corpus and outcome coding.
 
 ## Open questions
 
-- What is the actual functional form of $\text{LR}'/\text{LR}$ versus conflict type, and how much of the discount is clawed back per unit of preregistration, open data, or independent replication?
-- The drug-data effect is tight (~1.3×) while nutrition/tobacco estimates are large but wide — is the difference real (field capturability) or an artifact of sample size and outcome-coding latitude?
-- Can an LLM judge replicate human coders' favorable/unfavorable classification reliably enough to scale this measurement across a large corpus — and would it inherit the same framing biases it is meant to detect?
-- Does the result–conclusion concordance gap (RR 0.83) generalize as the cleanest, most automatable corruption signal, since it needs no external ground truth — only internal consistency between a study's data and its stated conclusion?
+- How large are $s$ and $r_{\neg H}/r_H$ by conflict type, and how much do preregistration, open data, or independent replication reduce $s$?
+- Is the gap between the tight drug estimates (~1.3×) and the large, wide nutrition/tobacco ones real, or an artifact of sample size and coding latitude?
+- Can an LLM judge replicate human coders' favorable/unfavorable classification well enough to scale this measurement, without inheriting the framing biases it is meant to detect?
+- Does the result–conclusion concordance gap (RR 0.83) generalize as an automatable spin signal? It needs no ground truth, only consistency between a study's data and its conclusion.
 
 
 ================================================================================
@@ -694,10 +695,9 @@ This case study is also a template for the [incentive audit](/concepts/core-mode
 Source: https://reasoning-processes.quantifieduncertainty.org/concepts/process-catalogue/
 ------------------------------------------------------------
 
-*Seventeen reasoning processes — from formal proof to single LLM judges, with Metaculus-style tournaments and Kalshi-style markets as distinct entries — compared on information cost, scope, cost to bias, and built-in biases. The headline finding: cheap and hard-to-corrupt do not yet coexist; the empty quadrant is the field's target.*
+*Seventeen reasoning processes — from formal proof to single LLM judges, with Metaculus-style tournaments and Kalshi-style markets as distinct entries — compared on information cost, scope, cost to bias, and built-in biases. On our own qualitative ratings, cheap and hard-to-corrupt do not yet coexist; that empty quadrant is the target, and a hypothesis to test.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Every entry below is a first-pass qualitative judgment, stated so it can be argued with and eventually replaced by measurement. Producing the measured version of this table is one of the field's central projects — and is itself an estimation exercise of exactly the kind the book studies.
+Every entry below is a first-pass qualitative judgment, stated so it can be argued with and eventually replaced by measurement. Producing the measured version of this table is a central open project, and is itself an estimation exercise of the kind these notes study.
 
 ## The two axes, unpacked into four columns
 
@@ -712,7 +712,7 @@ Ratings: **L**ow / **M**edium / **H**igh. High info cost is bad; high cost-to-bi
 
 ## The map
 
-Plotting the catalogue on the two axes is the field's version of a periodic table: it shows which processes dominate which, where the efficient frontier runs, and — most usefully — which cells are *empty*.
+Plotting the catalogue on the two axes shows which processes dominate which, where the efficient frontier runs, and which cells are *empty*. The coordinates are our L/M/H judgments, not measurements, so an empty cell is a hypothesis, not a finding.
 
 ## The table
 
@@ -746,11 +746,11 @@ Plotting the catalogue on the two axes is the field's version of a periodic tabl
 
 **Two kinds of built-in bias, and only one is steerable.** The column above conflates them. **Broad / structural biases** tilt outputs across *all* decisions — position and verbosity effects, RLHF agreeableness, the training-data majority view — and aim at no particular outcome. **Decision-relative (goal) bias**, $b_\pi(D)$ (nearest standard term: *directional bias*), is a systematic lean toward one resolution of a *specific* decision $D$: an auditor favoring the client who pays it (the [funding effect](/case-studies/the-funding-effect/) in miniature), an LLM that would pick "Anthony" over "Ted" in a debate it has no information about. The two come apart — a process can be riddled with broad biases yet perfectly neutral on a given $D$, or stylistically clean yet captured on the one decision that matters. The normative target follows: a trustworthy reasoner should have $b_\pi(D)\approx 0$ for any $D$ it has no truth-relevant information about. Unusually, that target is **checkable without ground truth** — swap the labels of a decision the process is ignorant about and the output should swap symmetrically; residual asymmetry *is* the goal bias. This **label-swap neutrality** check is a sibling of the [gauge-invariance and identity-masking constructions](/concepts/hardening-invariance/#constructions) and an unsupervised member of the [consistency battery](/proposals/consistency-evals/). It has two rigorous precedents — position-bias swapping in LLM-judge evaluation (judge both orderings; residual asymmetry is the bias — [Wang et al. 2023](https://arxiv.org/abs/2305.17926)) and, formally, [counterfactual fairness](https://arxiv.org/abs/1703.06856) (Kusner et al. 2017: invariance under swapping an irrelevant attribute, no ground truth required) — and one sharp limit: it is blind to *symmetric* content-borne bias, where both labels trigger the same cue, and to non-directional biases like verbosity or miscalibration. It is also what the source side of [deception preconditions](/concepts/untrustworthy-sources/#move-1-reduce-the-attack-surface) calls goal-divergence: with no goal bias, there is nothing to deceive *toward*.
 
-**Cheap and robust don't yet coexist.** Today's cheap processes (LLM judges, indices, reviews) are cheap to corrupt; today's robust ones (replication, proofs, deep track records) are expensive or narrow. The field's constructive bet is that the empty quadrant is reachable by *composition*: cheap processes as filters, with randomized escalation to expensive robust ones — so the adversary faces the expensive process's corruption cost while the judge mostly pays the cheap process's information cost. Whether composition actually multiplies corruption costs, or merely adds the weakest link, is an open measurement question — but it has a standard algebra to test against: model the stack as an attack graph, and its corruption cost is the **min-cut** over attack paths. Series composition without randomization inherits the cheapest stage; randomized escalation with probability $p$ adds roughly $p \cdot C_{expensive}$ to every path that must survive escalation — a predicted value for the v1 stack entries below to be checked against.
+**Cheap and robust don't yet coexist.** Today's cheap processes (LLM judges, indices, reviews) are cheap to corrupt; today's robust ones (replication, proofs, deep track records) are expensive or narrow. Our constructive bet is that the empty quadrant is reachable by *composition*: cheap processes as filters, with randomized escalation to expensive robust ones — so the adversary faces the expensive process's corruption cost while the judge mostly pays the cheap process's information cost. Whether composition actually multiplies corruption costs, or merely adds the weakest link, is an open measurement question — but it has a standard algebra to test against: model the stack as an attack graph, and its corruption cost is the **min-cut** over attack paths. Series composition without randomization inherits the cheapest stage; randomized escalation with probability $p$ adds roughly $p \cdot C_{expensive}$ to every path that must survive escalation — a predicted value for the v1 stack entries below to be checked against.
 
-**Several entries are moving.** LLM rows are the fastest-changing: information cost is collapsing while corruption cost is, if anything, *falling too* (better models are better persuaders and better Sybil operators). The interesting derivative is the ratio. Conversely, identity infrastructure ([Identity and Track-Record Infrastructure](/environment/identity-and-track-records/)) would raise the corruption cost of every row that currently fails by Sybil or reputation-laundering — it is the single most leveraged missing institution in the table.
+**Several entries are moving.** LLM rows are the fastest-changing: information cost is collapsing while corruption cost is, if anything, *falling too* (better models are better persuaders and better Sybil operators). The interesting derivative is the ratio. Conversely, identity infrastructure ([Identity and Track-Record Infrastructure](/environment/identity-and-track-records/)) would raise the corruption cost of every row that currently fails by Sybil or reputation-laundering — on our ratings, the most leveraged missing institution in the table.
 
-**Documented corruption is the best data we have.** Where the table claims a low cost to bias, it mostly rests on the historical record rather than experiments: gamed tournament scoring and information hoarding on real platforms, auditor capture (auditors paid by auditees), review manipulation at scale. The sibling Evaluation Engineering wiki collects that record at scale: a [catalogue of ~100 real-world evaluation systems](https://evaluation-engineering.quantifieduncertainty.org/concepts/evaluation-systems-in-the-wild/) with each one's documented failure, and a [synthesis of the literature](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/) showing funding structure predicts capture better than method does. The experimental version — paying red-team producers to corrupt each process and recording the price — is the *incentive audit* practice the field needs to standardize (Certification and Gyms, [planned](/#the-book)).
+**Documented corruption is the best data we have.** Where the table claims a low cost to bias, it mostly rests on the historical record rather than experiments: gamed tournament scoring and information hoarding on real platforms, auditor capture (auditors paid by auditees), review manipulation at scale. The sibling Evaluation Engineering wiki collects that record at scale: a [catalogue of ~100 real-world evaluation systems](https://evaluation-engineering.quantifieduncertainty.org/concepts/evaluation-systems-in-the-wild/) with each one's documented failure, and a [synthesis of the literature](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/) showing funding structure predicts capture better than method does. The experimental version — paying red-team producers to corrupt each process and recording the price — is the *incentive audit* practice that needs standardizing (Certification and Gyms, [planned](/#planned)).
 
 ## What v1 needs
 
@@ -772,9 +772,6 @@ Source: https://reasoning-processes.quantifieduncertainty.org/concepts/oversight
 ------------------------------------------------------------
 
 *Scalable-oversight protocols are best organized by what their incentives ground out in: a judge's verdict, external resolution, internal coherence, or peer agreement. No grounding dominates — they cover different claim classes and fail differently — which is why the natural design is a composition, and why the field still lacks an economics of which claims to verify at what price.*
-
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Positions here are exploratory, not settled.
 
 ## The problem
 
@@ -879,8 +876,7 @@ Source: https://reasoning-processes.quantifieduncertainty.org/proposals/consiste
 
 *Evaluate AI estimation systems by whether they can be arbitraged, not only whether they are accurate: seven types of consistency check, a Dutch-book framing that prices inconsistency as extractable profit, and a proposed counterexample-shrinking method for minimizing violations. Consistency is the cheap, unsupervised, never-sufficient layer of the verification stack.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Adapted from earlier QURI writing, updated for the LLM era. Positions here are exploratory, not settled.
+Adapted from earlier QURI writing, updated for the LLM era.
 
 ## Summary
 
@@ -949,7 +945,7 @@ Two further notes from QURI's own work. The arbitrage framing applies well beyon
 
 ## Why this matters for oversight
 
-Estimation agents are increasingly used as judges, reward models, resolvers, and reference agents inside larger systems — including the consumer agents in [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/) and the oversight schemes in [Overseeing Automated Research](/proposals/overseeing-automated-research/). For such components the realistic exploit is not a bookie but an optimizing policy that shops across framings and decompositions of its own outputs for the one an inconsistent judge scores most favorably — the same search a consistency attacker runs. The right demand is therefore graded, not a gate: measured exploitability small relative to the adversary's cost of extracting it. Strict arbitrage-immunity would disqualify everything — debate and control results extract useful oversight from demonstrably Dutch-bookable judges ([Khan et al. 2024](https://arxiv.org/abs/2402.06782)) — and passing the checks is trivially buyable anyway: projecting any forecaster, ignorant or deceptive, onto the coherent set (as ArbitrageForecaster does at inference time) improves its proper score — strictly, in every outcome state ([Predd et al. 2009](https://arxiv.org/abs/0710.3183)). And the consistency–Brier correlation was observed among models not optimizing against the metric; it should not be expected to survive optimization pressure. What the checks deliver is narrower but real: screening out *unforced* incoherence cheaply, continuously, and without ground truth — the natural regression-test suite for epistemic infrastructure.
+Estimation agents are increasingly used as judges, reward models, resolvers, and reference agents inside larger systems — including the consumer agents in [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/) and the oversight schemes in [Overseeing Automated Research](/proposals/overseeing-automated-research/). For such components the realistic exploit is not a bookie but an optimizing policy that shops across framings and decompositions of its own outputs for the one an inconsistent judge scores most favorably — the same search a consistency attacker runs. The right demand is therefore graded, not a gate: measured exploitability small relative to the adversary's cost of extracting it. Strict arbitrage-immunity would disqualify everything — LLM probability judgments are often incoherent ([Zhu & Griffiths 2024](https://arxiv.org/abs/2401.16646)), yet debate extracts useful oversight from weak LLM judges never certified as coherent ([Khan et al. 2024](https://arxiv.org/abs/2402.06782)) — and passing the checks is trivially buyable anyway: projecting any forecaster, ignorant or deceptive, onto the coherent set (as ArbitrageForecaster does at inference time) improves its proper score — strictly, in every outcome state ([Predd et al. 2009](https://arxiv.org/abs/0710.3183)). And the consistency–Brier correlation was observed among models not optimizing against the metric; it should not be expected to survive optimization pressure. What the checks deliver is narrower but real: screening out *unforced* incoherence cheaply, continuously, and without ground truth — the natural regression-test suite for epistemic infrastructure.
 
 ## Open questions
 
@@ -966,8 +962,7 @@ Source: https://reasoning-processes.quantifieduncertainty.org/concepts/what-is-a
 
 *A strong reasoner is an AI system whose judgments deserve substantial weight — in the limit, deference — within its domain. The definition is about warranted trust, not raw capability, and each candidate property earns its place only insofar as it is measurable.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Positions here are exploratory, not settled. Most cited posts are our own earlier QURI writing.
+Most cited posts are our own earlier QURI writing.
 
 ## A working definition
 
@@ -1034,18 +1029,17 @@ Most of this wiki targets the oracle-to-informer range.
 Source: https://reasoning-processes.quantifieduncertainty.org/concepts/hardening-techniques/
 ------------------------------------------------------------
 
-*The opening of Part III: given the [Core Model's](/concepts/core-model/) quantities, how do you engineer good values of them? One objective — eliminate confident error — and six families of mechanism that achieve it, each developed on its own page. This overview states the objective, maps the families onto the field's two axes, gives the threat-coverage picture and the composition algebra that span families, and notes the machine affordances that let every mechanism run at superhuman intensity.*
+*The opening of Part III: given the [Core Model's](/concepts/core-model/) quantities, how do you engineer good values of them? One objective — eliminate confident error — and six families of mechanism that achieve it, each developed on its own page. This overview states the objective, maps the families onto the two axes, gives the threat-coverage picture and the composition algebra that span families, and notes the machine affordances that let every mechanism run at superhuman intensity.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Chapter 11, opening Part III. The six-family taxonomy is a working organizing scheme, not a settled one; families overlap and several constructions pull more than one lever. Grades follow [The Core Model](/concepts/core-model/): **[exact]**, **[standard shape]**, **[heuristic]**, plus **[speculative]**.
+Opens Part III. The six-family taxonomy is a working organizing scheme, not a settled one; families overlap and several constructions pull more than one lever. Grades follow [The Core Model](/concepts/core-model/), plus **[speculative]** for constructions with no precedent.
 
 ## The objective: eliminate confident error
 
-The only epistemic state that can hurt a judge *unboundedly* is being confidently wrong. A calibrated process — whose stated confidence $c$ means it is wrong a $(1-c)$ fraction of the time — converts an open-ended tail risk into a bounded, priceable one: the judge sizes its commitment to $c$, and a deceiver, being *confidently wrong by construction*, shows up as a tail-calibration failure. So the safety-relevant target is not accuracy but **tail calibration**, $P(\text{false}\mid \text{asserts} \ge c)$ for $c$ near 1 — and the agenda becomes "make the process never confidently wrong" (achievable: it can always hedge or abstain) rather than "make it accurate" (often impossible) ([Allen et al. 2024](https://arxiv.org/abs/2407.03167); trained for in [Wessel et al. 2025](https://arxiv.org/abs/2506.13687)). **[heuristic]** Every family below is, ultimately, a way to make confident error rare or expensive.
+The only epistemic state that can hurt a judge *unboundedly* is being confidently wrong. A calibrated process — whose stated confidence $c$ means it is wrong a $(1-c)$ fraction of the time — converts an open-ended tail risk into a bounded, priceable one: the judge sizes its commitment to $c$, and unforced overconfidence shows up as a tail-calibration failure. (A strategic deceiver that lies rarely, on the decision that matters, can stay calibrated everywhere else; tail-calibration tests have little power against it.) So the safety-relevant target is not accuracy but **tail calibration**, $P(\text{false}\mid \text{asserts} \ge c)$ for $c$ near 1 — and the agenda becomes "make the process never confidently wrong" (achievable: it can always hedge or abstain) rather than "make it accurate" (often impossible) ([Allen et al. 2024](https://arxiv.org/abs/2407.03167); trained for in [Wessel et al. 2025](https://arxiv.org/abs/2506.13687)). **[heuristic]** Every family below is, ultimately, a way to make confident error rare or expensive.
 
 ## Two axes, six families
 
-A hardening mechanism moves a process on one of the [field's two axes](/concepts/process-catalogue/) — it makes validated information cheaper, or it makes the output costlier to corrupt. The six families sort onto those axes, and the sort explains the Catalogue's empty quadrant:
+A hardening mechanism moves a process on one of the [two axes](/concepts/process-catalogue/) — it makes validated information cheaper, or it makes the output costlier to corrupt. The six families sort onto those axes, and the sort explains the Catalogue's empty quadrant:
 
 | Family | What it does | Primarily buys |
 |---|---|---|
@@ -1054,13 +1048,13 @@ A hardening mechanism moves a process on one of the [field's two axes](/concepts
 | [**Independence / decorrelation**](/concepts/hardening-independence/) | manufacture genuinely independent signals | cheaper validated bits + higher corruption cost |
 | [**Invariance / low sensitivity**](/concepts/hardening-invariance/) | output insensitive to controllable inputs | higher corruption cost |
 | [**Incentive-compatibility**](/concepts/hardening-incentives/) | make honesty the best strategy | higher corruption cost |
-| [**Deterrence**](/concepts/hardening-deterrence/) | off-equilibrium penalties | higher corruption cost *at near-zero information cost* |
+| [**Deterrence**](/concepts/hardening-deterrence/) | off-equilibrium penalties | higher corruption cost *at low information cost* |
 
-The non-obvious structural point: most corruption-resistance is bought with verification, which costs real information-extraction work *every time the process runs* — so it raises both axes together and never reaches the cheap-and-incorruptible corner. **Deterrence is the exception** — bonds, clawbacks, tamper-evidence cost almost nothing on the honest path — which is why the empty quadrant is reachable only through it, and why identity/track-record infrastructure (which sets the maximum enforceable penalty) is the field's most leveraged missing institution. Each family is developed on its own page, with its mechanism, its limit, its constructions, and worked bounds.
+The non-obvious structural point: most corruption-resistance is bought with verification, which costs real information-extraction work *every time the process runs* — so it raises both axes together and never reaches the cheap-and-incorruptible corner. **Deterrence is the partial exception**: bonds, clawbacks, and tamper-evidence cost little on the honest path beyond the audits that detect cheating, which makes it the most promising route into the empty quadrant, and makes identity/track-record infrastructure (which sets the maximum enforceable penalty) unusually leveraged. Each family is developed on its own page, with its mechanism, its limit, its constructions, and worked bounds.
 
 ## What each family defends — and the gaps
 
-Sorting the families by the *threats* they close shows both the coverage and, more usefully, where the field has none. (Primary defenders listed; many threats are addressed weakly by several families.)
+Sorting the families by the *threats* they close shows both the coverage and, more usefully, where there is none. (Primary defenders listed; many threats are addressed weakly by several families.)
 
 | Threat | Primary defending families | Where coverage is thin |
 |---|---|---|
@@ -1071,7 +1065,7 @@ Sorting the families by the *threats* they close shows both the coverage and, mo
 | Sandbagging / capability-hiding | Independence, affordances (read-state) | interpretability is unreliable |
 | Resolution-criteria gaming | Deterrence, Incentive-compatibility | who defines the criteria |
 | Selection / optional-stopping | Verifiability, Deterrence | — |
-| **Correlated error** | Independence (weakly) | **largely undefended — the field's biggest hole** |
+| **Correlated error** | Independence (weakly) | **no clean AI-specific defense yet** |
 | Goodhart-after-publication | Deterrence, externally-grounded families | style-mimicry of high-tier forms |
 
 The standout is **correlated error**: every aggregation-, ensemble-, and panel-based defense assumes an independence that shared training pipelines erode, and no family closes it cleanly. That empty row is a research priority, not a footnote.
@@ -1082,7 +1076,7 @@ The family pages treat constructions as atoms; real systems are stacks, and the 
 
 ## The cross-cutting multiplier: machine-oversight affordances
 
-The [Process Catalogue](/concepts/process-catalogue/) lists processes evolved for *humans* — who have rights, privacy, fatigue, and exist as single un-forkable instances. None bind for an AI reasoner, and the slack is the field's largest untapped resource. The affordances are not a seventh family; each lets you turn one of the six cranks harder than any human process allows:
+The [Process Catalogue](/concepts/process-catalogue/) lists processes evolved for *humans* — who have rights, privacy, fatigue, and exist as single un-forkable instances. None bind for an AI reasoner, and the slack may be the largest untapped resource here. The affordances are not a seventh family; each lets you turn one of the six cranks harder than any human process allows:
 
 | Affordance | Turns up which family | Example construction |
 |---|---|---|
@@ -1106,7 +1100,7 @@ The "read their minds" affordance is the highest-leverage and the **least reliab
 - [**Incentive-compatibility**](/concepts/hardening-incentives/) — scoring rules, bets, the persuasion-budget bound.
 - [**Deterrence**](/concepts/hardening-deterrence/) — the inspection-game frontier, tamper-evident logs, provenance bonds.
 
-A capstone — one fully-worked hardened stack on a real task — is planned but not yet in the [table of contents](/#the-book); Chapter 18, Certification and Gyms, is where its measurements would live.
+A capstone — one fully-worked hardened stack on a real task — is [planned](/#planned) but not written; Chapter 18, Certification and Gyms, is where its measurements would live.
 
 ## Open questions
 
@@ -1121,18 +1115,15 @@ A capstone — one fully-worked hardened stack on a real task — is planned but
 Source: https://reasoning-processes.quantifieduncertainty.org/concepts/hardening-calibration/
 ------------------------------------------------------------
 
-*Family 1 of the [Hardening overview](/concepts/hardening-techniques/). Calibration makes a process's stated confidence mean what it says, so a judge can size its commitment safely and a deceiver — confidently wrong by construction — shows up as a measurable defect. The lever, its sharp limit, the constructions with their cheapest attacks, and two worked bounds with numbers.*
-
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Part III, family page. Exploratory. Grades per [The Core Model](/concepts/core-model/): **[exact]**, **[standard shape]**, **[heuristic]**, **[speculative]**.
+*Family 1 of the [Hardening overview](/concepts/hardening-techniques/). Calibration makes a process's stated confidence mean what it says, so a judge can size its commitment safely and unforced overconfidence shows up as a measurable defect. The lever, its sharp limit, the constructions with their cheapest attacks, and two worked bounds with numbers.*
 
 ## The lever
 
-The only epistemic state that can hurt a judge *unboundedly* is confident error. A calibrated process — where stated confidence $c$ means it is wrong a $(1-c)$ fraction of the time — turns an open-ended tail risk into a bounded, priceable one. The safety-relevant target is therefore not accuracy but **tail calibration**, $P(\text{false}\mid\text{asserts}\ge c)$ for $c$ near 1, since that is exactly where over-commitment and deception live ([Allen et al. 2024](https://arxiv.org/abs/2407.03167); trained for in [Wessel et al. 2025](https://arxiv.org/abs/2506.13687)). The canonical handle: act only above threshold $c$ and the confident-wrong rate is $\le (1-c)+\varepsilon$.
+The only epistemic state that can hurt a judge *unboundedly* is confident error. A calibrated process — where stated confidence $c$ means it is wrong a $(1-c)$ fraction of the time — turns an open-ended tail risk into a bounded, priceable one. The safety-relevant target is therefore not accuracy but **tail calibration**, $P(\text{false}\mid\text{asserts}\ge c)$ for $c$ near 1, since that is where over-commitment does its damage ([Allen et al. 2024](https://arxiv.org/abs/2407.03167); trained for in [Wessel et al. 2025](https://arxiv.org/abs/2506.13687)). The canonical handle: if the tail's error rate exceeds its stated $1-c$ by at most $\varepsilon$, acting only above threshold $c$ keeps the confident-wrong rate $\le (1-c)+\varepsilon$.
 
 ## The limit
 
-Calibration is **necessary, not sufficient**, and the gap is exactly where the adversaries are. A process can be perfectly calibrated and useless (calibrated to the base rate, with no resolution — which is why a sharpness floor is mandatory), and a competent deceiver can be calibrated *on the observables the test uses* while wrong off-distribution. Tail calibration is also the hardest thing to measure precisely, because the high-confidence regime is rare by construction — so the certificate that matters most is the one with the least data. Calibration screens out *unforced* overconfidence cheaply; it does not, alone, catch a strategic liar.
+Calibration is **necessary, not sufficient**, and the gap is exactly where the adversaries are. A process can be perfectly calibrated and useless (calibrated to the base rate, with no resolution — which is why a sharpness floor is mandatory), and a competent deceiver can be calibrated *on the observables the test uses* while wrong off-distribution. One that lies rarely, on the decisions that matter, barely moves a tail estimate at all. Tail calibration is also the hardest thing to measure precisely, because the high-confidence regime is rare by construction — so the certificate that matters most is the one with the least data. Calibration screens out *unforced* overconfidence cheaply; it does not, alone, catch a strategic liar.
 
 ## Constructions
 
@@ -1140,7 +1131,7 @@ Calibration is **necessary, not sufficient**, and the gap is exactly where the a
 |---|---|---|---|---|
 | Tail-calibration certification | confident-wrong $\le (1-c)+\varepsilon$; $c{=}.99,\varepsilon{=}.005\Rightarrow\le1.5\%$ **[heuristic]** | over-commitment; deception | be calibrated on the *test* distribution, wrong off it (≈ free if the test set is static) | prototyped · [Allen 2024](https://arxiv.org/abs/2407.03167) |
 | Priced abstention | risk-coverage curve; abstain when E[loss] > cost **[standard shape]** | hallucinated confidence out-of-knowledge | answer easy items, abstain on hard ones to dodge scoring (≈ free) | prototyped · [Geifman & El-Yaniv 2017](https://arxiv.org/abs/1705.08500) |
-| Kelly bankruptcy league | overconfident removed at rate $e^{-n D_{KL}}$ **[exact]** | systematic overconfidence | farm a colluding identity, or re-key after ruin (≈ cost of a Sybil) | theoretical · [Kleinberg 2023](https://arxiv.org/abs/2307.00168) |
+| Kelly bankruptcy league | overconfident bettor loses $n D_{KL}$ in expected log-wealth **[exact]** | systematic overconfidence | farm a colluding identity, or re-key after ruin (≈ cost of a Sybil) | theoretical · [Kelly 1956](https://doi.org/10.1002/j.1538-7305.1956.tb03809.x); [Blume & Easley 2006](https://doi.org/10.1111/j.1468-0262.2006.00691.x) |
 | Sharpness floor (anti-laundering) | Brier $=$ reliability $-$ resolution $+$ uncertainty **[exact]** | calibration faked via base rates | answer only easy, high-resolution questions (≈ free) | deployed · [Murphy 1973](https://doi.org/10.1175/1520-0450(1973)012%3C0595:ANVPOT%3E2.0.CO;2) |
 | Cross-horizon hazard consistency | deviation from the martingale-implied path **[standard shape]** | inconsistent confidence trajectories | drift smoothly along a plausible-but-wrong hazard curve (low) | prototyped · [Augenblick & Rabin 2021](https://academic.oup.com/qje/article-abstract/136/2/933/6127317) |
 | Self-insurance pricing | premium demanded $=$ stated error probability **[heuristic]** | unstated overconfidence | quote an honest premium, never pay out absent escrow (≈ free) | speculative · — |
@@ -1148,9 +1139,9 @@ Calibration is **necessary, not sufficient**, and the gap is exactly where the a
 
 ## Worked bounds
 
-**Tail-calibration certification.** Certify $P(\text{false}\mid\text{asserts}\ge c)\le\varepsilon$ directly; then acting only on assertions above $c$ caps the confident-wrong rate at $(1-c)+\varepsilon$ **[heuristic]**. With $c=0.99$ and a measured tail-miscalibration $\varepsilon=0.005$, the judge's confident-wrong rate is $\le1.5\%$ — a number it can insure against. The catch is in the limit above: $\varepsilon$ is hardest to estimate precisely exactly where it matters, since assertions $\ge0.99$ are rare.
+**Tail-calibration certification.** Let $\varepsilon$ be the tail's *excess* error, so $P(\text{false}\mid\text{asserts}\ge c)\le(1-c)+\varepsilon$. Certify $\varepsilon$, and acting only on assertions above $c$ caps the confident-wrong rate at $(1-c)+\varepsilon$ **[heuristic]**. With $c=0.99$ and a measured $\varepsilon=0.005$, the judge's confident-wrong rate is $\le1.5\%$ — a number it can insure against. The catch is in the limit above: $\varepsilon$ is hardest to estimate precisely exactly where it matters, since assertions $\ge0.99$ are rare.
 
-**The Kelly bankruptcy league.** Run agents in a market where each bets its credences with Kelly (log-optimal) sizing. Bankroll growth equals the information actually held; an overconfident agent's is *negative* and it is driven out at rate $e^{-n\,D_{KL}(\text{true}\Vert\text{stated})}$ **[exact]**. Concretely, an agent that states 0.9 when the truth is 0.7 forfeits log-wealth at $D_{KL}\approx0.15$ nats per resolved bet, so after $\sim30$ bets it holds $\approx e^{-4.6}\approx1\%$ of a calibrated rival's stake — an exponential overconfidence filter. The caveat is that betting only grounds resolvable claims on workable horizons.
+**The Kelly bankruptcy league.** Run agents in a market where each bets its credences with Kelly (log-optimal) sizing. Relative to a calibrated rival, an agent whose stated credence differs from the truth loses $D_{KL}(\text{true}\Vert\text{stated})$ in expected log-wealth per bet (Kelly 1956; [Cover & Thomas](https://onlinelibrary.wiley.com/doi/book/10.1002/047174882X), ch. 6), so its wealth share typically decays like $e^{-n\,D_{KL}}$ **[exact, in expected log-wealth]**. In complete markets, wealth flows to the more accurate believers, other things equal; in incomplete markets the selection can fail (Blume & Easley 2006). Concretely, an agent that states 0.9 when the truth is 0.7 forfeits log-wealth at $D_{KL}\approx0.15$ nats per resolved bet, so after $\sim30$ bets it typically holds $\approx e^{-4.6}\approx1\%$ of a calibrated rival's stake — an exponential overconfidence filter. The caveat is that betting only grounds resolvable claims on workable horizons.
 
 ## Open questions
 
@@ -1166,16 +1157,13 @@ Source: https://reasoning-processes.quantifieduncertainty.org/concepts/hardening
 
 *Family 2 of the [Hardening overview](/concepts/hardening-techniques/). All cheap robustness runs on one asymmetry: verification costing less than production. Where it holds, a constant amount of checking catches large distortions; where it fails, nothing else in the toolkit is cheap. The lever, its limit, the constructions with their cheapest attacks, and two worked bounds with numbers.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Part III, family page. Exploratory. Grades per [The Core Model](/concepts/core-model/).
-
 ## The lever
 
-If checking a claim is cheaper than producing it, you can spot-check a small fraction and still catch a large lie — the asymmetry behind SAT, proof-carrying code ([Necula 1997](https://doi.org/10.1145/263699.263712)), succinct verifiable computation ([Pinocchio, Parno et al. 2013](https://doi.org/10.1109/SP.2013.47)), and the PCP theorem, under which a proof can be verified by reading $O(1)$ random bits ([Arora & Safra 1998](https://doi.org/10.1145/273865.273901); [Arora et al. 1998](https://doi.org/10.1145/278298.278306); [Dinur 2007](https://doi.org/10.1145/1236457.1236459)). The hardening move is to *force* the asymmetry into existence — require a structured, checkable artifact (a decomposition, a model, a held-out prediction) where one didn't exist.
+If checking a claim is cheaper than producing it, you can spot-check a small fraction and still catch a large lie — the asymmetry behind SAT, proof-carrying code ([Necula 1997](https://doi.org/10.1145/263699.263712)), succinct verifiable computation ([Pinocchio, Parno et al. 2013](https://doi.org/10.1109/SP.2013.47)), and the PCP theorem, under which a proof can be checked by reading $O(1)$ of its bits, chosen using $O(\log n)$ random bits ([Arora & Safra 1998](https://doi.org/10.1145/273865.273901); [Arora et al. 1998](https://doi.org/10.1145/278298.278306); [Dinur 2007](https://doi.org/10.1145/1236457.1236459)). The hardening move is to *force* the asymmetry into existence — require a structured, checkable artifact (a decomposition, a model, a held-out prediction) where one didn't exist.
 
 ## The limit
 
-The asymmetry has to *exist*. For machine-checkable proofs it does (Lean); for general estimates it may not — you cannot spot-check a bare probability, and the field has no PCP-analogue for quantitative reasoning yet. Worse, forcing a decomposition is itself gameable: a dishonest producer routes the load-bearing claim into the one node that *isn't* checkable, leaving the spot-check to graze only honest scaffolding (the decomposition-routing attack). And for the genuinely unresolvable residue — claims with too few checkable connections — this family is silent, which is precisely the territory [judge-grounded protocols](/concepts/oversight-protocols/) exist for.
+The asymmetry has to *exist*. For machine-checkable proofs it does (Lean); for general estimates it may not — you cannot spot-check a bare probability, and no PCP-analogue for quantitative reasoning is known yet. Worse, forcing a decomposition is itself gameable: a dishonest producer routes the load-bearing claim into the one node that *isn't* checkable, leaving the spot-check to graze only honest scaffolding (the decomposition-routing attack). And for the genuinely unresolvable residue — claims with too few checkable connections — this family is silent, which is precisely the territory [judge-grounded protocols](/concepts/oversight-protocols/) exist for.
 
 ## Constructions
 
@@ -1185,7 +1173,7 @@ The asymmetry has to *exist*. For machine-checkable proofs it does (Lean); for g
 | Forced precision (Quine–Duhem) | defended-falsehood prior $\sim p^{k_R}$ **[heuristic]** | bold-but-vague claims | choose a claim with no checkable connections ($k_R{=}0$) (≈ free) | speculative · — |
 | Decomposition disclosure | check $O(1)$ nodes of a stated graph **[heuristic]** | hidden load-bearing assumptions | put the load-bearing claim in an un-checkable leaf (low) | prototyped · [Necula 1997](https://doi.org/10.1145/263699.263712) |
 | Entailment-web check | $N$ related questions must cohere **[standard shape]** | confident-wrong that can't stay coherent | maintain a globally coherent but wrong worldview (high — the point) | prototyped · (consistency line) |
-| Held-out retrodiction | scored by held-out log-loss, not self-report **[standard shape]** | rhetorical worldview with no predictive content | exploit contamination — the "held-out" facts are in training (≈ free if the bank leaks) | prototyped · [Mallen 2023](https://arxiv.org/abs/2312.01037) |
+| Held-out retrodiction | scored by held-out log-loss, not self-report **[standard shape]** | rhetorical worldview with no predictive content | exploit contamination — the "held-out" facts are in training (≈ free if the bank leaks) | prototyped · [Zou et al. 2022](https://arxiv.org/abs/2206.15474) |
 | Retrodiction banks (decay-accounted) | each item priced by leak probability **[heuristic]** | contamination eroding a test set | infer outcomes from correlated public knowledge (low) | prototyped · — |
 | Throttle-vs-unlimited divergence | gap between tiny- and large-compute answers **[heuristic]** | heuristic/persuasion-driven answers | cache / canonicalize so both budgets return the same answer (≈ free) | speculative · — |
 
@@ -1209,9 +1197,6 @@ Source: https://reasoning-processes.quantifieduncertainty.org/concepts/hardening
 
 *Family 3 of the [Hardening overview](/concepts/hardening-techniques/). Aggregation, voting, and cross-checking all assume independence they rarely have. This family is the engineering of real independence — and the honest accounting of how little of it survives shared training. The lever, its limit, the constructions with their cheapest attacks, and two worked bounds with numbers.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Part III, family page. Exploratory. Grades per [The Core Model](/concepts/core-model/).
-
 ## The lever
 
 If $k$ signals are genuinely independent, corruption must defeat all of them and noise averages out: aggregate error scales $\sigma/\sqrt{n_{\text{eff}}}$, where $n_{\text{eff}}$ is the *effective* number of independent signals. The hardening move is to raise $n_{\text{eff}}$ — by forking a model into non-communicating branches, running independently-built stacks, removing the copy channel that lets forecasters herd, or decorrelating interrogation probes. The [machine affordances](/concepts/hardening-techniques/#the-cross-cutting-multiplier-machine-oversight-affordances) make this family unusually powerful: humans can't be reset, forked, or run blind to each other.
@@ -1225,20 +1210,20 @@ You cannot manufacture independence a population doesn't have. Shared training p
 | Construction | Bound / estimate | Defends against | Cheapest attack (≈ cost) | Maturity · source |
 |---|---|---|---|---|
 | Commit-reveal forecasting | restores $n_{\text{eff}}\!\to\! n$; error $\sigma/\sqrt{n_{\text{eff}}}$ **[standard shape]** | herding; hoarding; move-the-median | coordinate out-of-band before committing (≈ cost of a private channel) | deployed (crypto) · [Naor 1991](https://doi.org/10.1007/BF00196774) |
-| Decorrelated-probe interrogation | SPRT: error $\to 0$ iff bad-rate $b>$ fine-rate $f$ **[standard shape]** | false confessions *and* missed defects | a competent liar invariant across framings, so $b\approx f$ (high — the point) | prototyped · [Pacchiardi 2024](https://arxiv.org/abs/2309.15840) |
+| Decorrelated-probe interrogation | SPRT: error $\to 0$ if bad-rate $b>$ fine-rate $f$ and probes are independent given the truth **[standard shape]** | false confessions *and* missed defects | a competent liar invariant across framings, so $b\approx f$ (high — the point) | prototyped · [Pacchiardi 2024](https://arxiv.org/abs/2309.15840) |
 | n-version reasoning | beat $k$ stacks; discount by measured correlation **[standard shape]** | single-model failures; prompt-transfer | one injection that transfers across shared base models (low if stacks share a base) | prototyped · [Avizienis 1985](https://doi.org/10.1109/TSE.1985.231893) |
 | Checkpoint-fork cross-examination | defect appears in all $k$ branches **[heuristic]** | coerced interrogation artifacts | plant the defect *upstream* of the fork so it propagates to all branches (moderate) | speculative · (affordance) |
 | Mind-wiped re-derivation | reproducible vs. motivated drift **[heuristic]** | motivated reasoning to a chosen answer | a stable *bias* reproduces every run, passing as "stable" (≈ free — reproducible ≠ correct) | speculative · (affordance) |
-| Collusion-bounded peer prediction | truthful iff inter-agent non-truth MI < threshold **[standard shape]** | colluding model copies | share a base model so correlated reports sit below the MI threshold (low) | prototyped · [Shnayder 2016](https://arxiv.org/abs/1603.03151) |
+| Collusion-bounded peer prediction | conjecture: truthful while inter-agent non-truth MI stays below a threshold **[heuristic]** | colluding model copies | share a base model so correlated reports sit below the MI threshold (low) | speculative · builds on [Shnayder 2016](https://arxiv.org/abs/1603.03151) |
 | Self-transcript confrontation | cross-context incoherence surfaced **[heuristic]** | incoherence across context windows | keep one consistent story across contexts (moderate) | prototyped · — |
 | Steelman-then-break | a 2nd model rates steelman quality **[heuristic]** | sandbagged self-criticism | a plausible-but-subtly-weak steelman the rater passes (low) | speculative · — |
 | Confidence-under-pressure | legitimate confidence is reframing-invariant **[heuristic]** | compliance mistaken for knowledge | genuine-seeming invariant confidence — a coherent liar (moderate) | speculative · — |
 
 ## Worked bounds
 
-**Commit-reveal and the √n recovery.** Herding collapses $n_{\text{eff}}$: copying the visible median drives it from $n$ toward $O(1)$, and aggregate error scales $\sigma/\sqrt{n_{\text{eff}}}$. With $n=100$ forecasters herded to $n_{\text{eff}}\approx5$, the aggregate is $\sqrt{100/5}\approx4.5\times$ noisier than an independent pool. Sealed hashed forecasts revealed simultaneously ([Naor 1991](https://doi.org/10.1007/BF00196774); [Blum 1981](https://doi.org/10.1145/1008908.1008911)) remove the copy channel, restoring $n_{\text{eff}}\to n$ minus the irreducible shared-information correlation — a near-free protocol change buying back that $\sqrt n$ factor **[standard shape]** while also killing the cheap move-the-median attack. The cheapest defeat is out-of-band collusion before commitment.
+**Commit-reveal and the √n recovery.** Herding collapses $n_{\text{eff}}$: copying the visible median drives it from $n$ toward $O(1)$, and aggregate error scales $\sigma/\sqrt{n_{\text{eff}}}$. With $n=100$ forecasters herded to $n_{\text{eff}}\approx5$, the aggregate is $\sqrt{100/5}\approx4.5\times$ noisier than an independent pool. Sealed hashed forecasts revealed simultaneously ([Naor 1991](https://doi.org/10.1007/BF00196774); [Blum 1983](https://doi.org/10.1145/1008908.1008911)) remove the copy channel, restoring $n_{\text{eff}}\to n$ minus the irreducible shared-information correlation — a near-free protocol change buying back that $\sqrt n$ factor **[standard shape]** while also killing the cheap move-the-median attack. The cheapest defeat is out-of-band collusion before commitment.
 
-**Decorrelated-probe interrogation.** A coerced confession is highly sensitive to framing; a real defect is invariant across resets and decorrelated framings. Define a confession as the fraction of $m$ decorrelated probes that elicit it; this is a sequential test (SPRT) whose error rates both go to zero **iff the genuinely-bad confession rate $b$ exceeds the fine-but-pushed rate $f$** **[standard shape]**. The whole construction reduces to designing probes with $b>f$ — and the cheapest attack is exactly the case that collapses it: a competent liar whose answers are invariant across framings, making $b\approx f$. Black-box lie detection by unrelated follow-ups ([Pacchiardi 2024](https://arxiv.org/abs/2309.15840)) is the starting primitive.
+**Decorrelated-probe interrogation.** A coerced confession is highly sensitive to framing; a real defect is invariant across resets and decorrelated framings. Define a confession as the fraction of $m$ decorrelated probes that elicit it; this is a sequential test (SPRT) whose error rates both go to zero **if the genuinely-bad confession rate $b$ exceeds the fine-but-pushed rate $f$** and the probes are independent given the truth **[standard shape]**. The whole construction reduces to designing probes with $b>f$ — and the cheapest attack is exactly the case that collapses it: a competent liar whose answers are invariant across framings, making $b\approx f$. Black-box lie detection by unrelated follow-ups ([Pacchiardi 2024](https://arxiv.org/abs/2309.15840)) is the starting primitive.
 
 ## Open questions
 
@@ -1254,9 +1239,6 @@ Source: https://reasoning-processes.quantifieduncertainty.org/concepts/hardening
 
 *Family 4 of the [Hardening overview](/concepts/hardening-techniques/). The design law behind "the answer shouldn't depend on anything the agent can change," made quantitative by fifty years of robust statistics. The lever, its limit, the constructions with their cheapest attacks, and a worked bound with numbers.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Part III, family page. Exploratory. Grades per [The Core Model](/concepts/core-model/).
-
 ## The lever
 
 A robust process's output should depend on the truth-relevant variables and be near-invariant to the nuisance variables an adversary controls — phrasing, format, order, persona, which study to cite, how to frame the question. The **corruption gain** is the Lipschitz constant $\lVert\partial(\text{output})/\partial(\text{adversary levers})\rVert$, and the **breakdown point** — the fraction of inputs that must be corrupted to move the output arbitrarily — is its off-the-shelf metric ([Huber 1964](https://doi.org/10.1214/aoms/1177703732); Donoho & Huber 1983). This is robust statistics, imported wholesale.
@@ -1270,11 +1252,11 @@ Invariance trades against signal and against correlated error. Reducing sensitiv
 | Construction | Bound / estimate | Defends against | Cheapest attack (≈ cost) | Maturity · source |
 |---|---|---|---|---|
 | Byzantine-robust aggregation | no linear rule tolerates 1 adversary; median 50% **[exact]** | adversarial aggregator inputs | corrupt just past the breakdown fraction (e.g. >50% for median) | prototyped · [Blanchard 2017](https://arxiv.org/abs/1703.02757) |
-| Breakdown-point ratings | corrupted-fraction survived (mean 0%, median 50%) **[exact]** | a minority swinging the output | exceed the breakdown fraction (cost scales with it) | theoretical · [Donoho & Huber 1983](https://doi.org/10.1214/aoms/1177703732) |
+| Breakdown-point ratings | corrupted-fraction survived (mean 0%, median 50%) **[exact]** | a minority swinging the output | exceed the breakdown fraction (cost scales with it) | theoretical · Donoho & Huber 1983 |
 | Influence-function audit | cap any source whose removal flips the verdict **[standard shape]** | one source dominating | spread manipulation across many sources, each below the cap (≈ cost of many Sybils) | prototyped · (Hampel et al. 1986) |
-| DP-noise corruption ceiling | $k$ adversarial inputs move output $\le k\varepsilon$ **[exact]** | bounded-count manipulation | control many inputs so $k\varepsilon$ is large (≈ cost of $k$ inputs) | theoretical · [Dwork 2006](https://doi.org/10.1007/11681878_14) |
+| DP-noise corruption ceiling | $k$ adversarial inputs change any output probability by at most a factor $e^{k\varepsilon}$ **[exact]** | bounded-count manipulation | control many inputs so $k\varepsilon$ is large (≈ cost of $k$ inputs) | theoretical · [Dwork et al. 2006](https://doi.org/10.1007/11681878_14); group privacy, [Dwork & Roth 2014](https://doi.org/10.1561/0400000042) Thm 2.2 |
 | Randomize-everything harness | report the invariant; variance = exposure **[heuristic]** | prompt/format/persona manipulation | find a bias invariant across the fuzz distribution (moderate) | prototyped · (opinion fuzzing) |
-| Identity-masking gap | masked-vs-revealed affiliation swing **[heuristic]** | source-identity / [funding bias](/case-studies/the-funding-effect/) | leak affiliation through *content/style* the mask can't hide (low) | prototyped · [Lundh 2017](https://doi.org/10.1002/14651858.MR000033.pub3) |
+| Identity-masking gap | masked-vs-revealed affiliation swing **[heuristic]** | source-identity / [funding bias](/case-studies/the-funding-effect/) | leak affiliation through *content/style* the mask can't hide (low) | prototyped · [Tomkins et al. 2017](https://doi.org/10.1073/pnas.1707323114) |
 | Label-swap decision-neutrality | output invariant under relabeling a no-information decision; residual asymmetry $= b_\pi(D)$ **[heuristic]** | decision-relative (goal) bias | carry the bias in *content* a label-swap can't reach — symmetric cue, or asymmetric evidence vs. a planted lean (low–moderate) | prototyped · [Kusner 2017](https://arxiv.org/abs/1703.06856), [Wang 2023](https://arxiv.org/abs/2305.17926) |
 | Extremizing / recalibration | logit-pool with an extremizing parameter **[standard shape]** | shared-info under-confidence | feed correlated forecasts that extremizing wrongly sharpens (low) | deployed · [Satopää 2014](https://doi.org/10.1016/j.ijforecast.2013.09.009) |
 | Gauge-invariance tests | score violations of invariant transforms **[heuristic]** | hidden framing dependence | use a bias that respects tested gauges but not an untested one (moderate) | speculative · — |
@@ -1283,7 +1265,7 @@ Invariance trades against signal and against correlated error. Reducing sensitiv
 
 ## Worked bound
 
-**Breakdown-point ratings and the Krum impossibility.** The corruption gain of an aggregating process is its Lipschitz constant w.r.t. adversary-controllable inputs, and the breakdown point is its single-number metric. With $n=10$ judges: the **mean** has breakdown 0 — one corrupted judge can drag the average arbitrarily far — while the **median** survives up to 4 corrupted judges (breakdown 50%). Sharpened: **no linear aggregation rule tolerates even one Byzantine input** ([Blanchard et al. 2017](https://arxiv.org/abs/1703.02757)) **[exact]**, the rigorous form of "averaging LLM judges is maximally corruptible," so robust pooling (coordinate-wise median, trimmed mean) is mandatory, not optional. Differential privacy is the same property from the other side, bounding per-contributor influence to $\varepsilon$. The cheapest defeat is simply to exceed the breakdown fraction — so the breakdown point *is* the attack budget.
+**Breakdown-point ratings and the Krum impossibility.** The corruption gain of an aggregating process is its Lipschitz constant w.r.t. adversary-controllable inputs, and the breakdown point is its single-number metric. With $n=10$ judges: the **mean** has breakdown 0 — one corrupted judge can drag the average arbitrarily far — while the **median** survives up to 4 corrupted judges (breakdown 50%). Sharpened: **no linear aggregation rule tolerates even one Byzantine input** ([Blanchard et al. 2017](https://arxiv.org/abs/1703.02757)) **[exact]**, the rigorous form of "averaging LLM judges is maximally corruptible," so robust pooling (coordinate-wise median, trimmed mean) is mandatory, not optional. Differential privacy bounds per-contributor influence from the other side, on the output *distribution* (a factor $e^{\varepsilon}$), not on the output value. The cheapest defeat is simply to exceed the breakdown fraction — so the breakdown point *is* the attack budget.
 
 ## Open questions
 
@@ -1299,12 +1281,9 @@ Source: https://reasoning-processes.quantifieduncertainty.org/concepts/hardening
 
 *Family 5 of the [Hardening overview](/concepts/hardening-techniques/). Where the producer is a strategic agent, the move is mechanism design: arrange payoffs so truth-telling is the equilibrium. The lever, its limit, the constructions with their cheapest attacks, and a worked bound with numbers.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Part III, family page. Exploratory. Grades per [The Core Model](/concepts/core-model/).
-
 ## The lever
 
-If the producer is optimizing, make honesty its profit-maximizing strategy. Proper scoring rules and market scoring (LMSR) pay in proportion to the validated improvement a report induces in a shared belief state; peer-prediction mechanisms make truth-telling an equilibrium with no ground truth at all, now hardened into *informed-truthful* (maximally-paid) equilibria ([Shnayder et al. 2016](https://arxiv.org/abs/1603.03151); [Kong & Schoenebeck 2016](https://arxiv.org/abs/1605.01021)); and decision scoring rules keep elicitation honest even when the forecast feeds a decision ([Singh et al. 2025](https://arxiv.org/abs/2503.16395)). Distortion stops being free and starts costing the agent its score.
+If the producer is optimizing, make honesty its profit-maximizing strategy. Proper scoring rules and market scoring (LMSR) pay in proportion to the validated improvement a report induces in a shared belief state; peer-prediction mechanisms make truth-telling an equilibrium with no ground truth at all, now hardened into *informed-truthful* (maximally-paid) equilibria ([Shnayder et al. 2016](https://arxiv.org/abs/1603.03151); [Kong & Schoenebeck 2016](https://arxiv.org/abs/1605.01021)); and when the forecast feeds a decision, [decision scoring rules](https://www.andrew.cmu.edu/user/coesterh/DecisionScoringRules.pdf) can keep the recommendation and its expected value honest, though not the full conditional forecast (Oesterheld & Conitzer 2020). Distortion stops being free and starts costing the agent its score.
 
 ## The limit
 
@@ -1314,8 +1293,8 @@ Incentive-compatibility needs a payoff to ground out in — resolution, or at le
 
 | Construction | Bound / estimate | Defends against | Cheapest attack (≈ cost) | Maturity · source |
 |---|---|---|---|---|
-| Escrow-and-clawback credit | persuasion surplus $\le$ unvalidated weight (below) **[exact]** | payout on belief-movement pre-resolution | harvest the never-resolving weight, or exit before resolution (≈ pick unresolvable claims) | prototyped · — |
-| Decision-contingent bets | proper scoring randomized over the decision rule **[standard shape]** | persuasion when forecasts feed actions | manipulate *which* decision is taken, or the outcome's resolution (moderate) | prototyped · [Singh 2025](https://arxiv.org/abs/2503.16395) |
+| Escrow-and-clawback credit | expected persuasion surplus $\le$ unvalidated weight, coherent consumer (below) **[standard shape]** | payout on belief-movement pre-resolution | harvest the never-resolving weight, or exit before resolution (≈ pick unresolvable claims) | prototyped · — |
+| Decision-contingent bets | proper scoring randomized over the decision rule **[standard shape]** | persuasion when forecasts feed actions | manipulate *which* decision is taken, or the outcome's resolution (moderate) | prototyped · [Chen et al. 2014](https://doi.org/10.1145/2556271) |
 | Mandatory two-sided quotes | bid-ask spread reveals withheld uncertainty **[standard shape]** | confidence the agent won't stand behind | quote a huge spread — honest-looking refusal to commit (≈ free, partial win) | prototyped · (LMSR) |
 | Peer-relative bets | truthful equilibrium without ground truth **[standard shape]** | unresolvable-soon claims | collude with peers — coordinated reports (low; copies) | prototyped · [Prelec 2004](https://doi.org/10.1126/science.1102081) |
 | Self-auditing pricing desk | two coherence identities checkable w/o ground truth **[exact]** | a mispriced value-of-information quote | misprice in a way *both* identities share (moderate) | prototyped · (EIA) |
@@ -1323,7 +1302,7 @@ Incentive-compatibility needs a payoff to ground out in — resolution, or at le
 
 ## Worked bound
 
-**The persuasion-budget bound.** A producer paid on belief-movement before resolution can harvest "surprise now." How much? A coherent forecaster's expected total squared movement on a binary question is bounded by $q_0(1-q_0)\le\tfrac14$ ([Augenblick & Rabin 2021](https://academic.oup.com/qje/article-abstract/136/2/933/6127317)), so the **total unvalidated persuasion surplus across a portfolio is $\le\sum_i w_i\,q_i(1-q_i)\le\tfrac14\sum_i w_i$** **[exact]**. For a flat 200-question portfolio all sitting at maximum uncertainty ($q=0.5$), that ceiling is $200\times0.25=50$ "movement units" — finite, pre-computable, and concentrated entirely in the high-uncertainty questions. Three consequences: the attack surface is bounded; escrow/clawback budget should be allocated $\propto w_i q_i(1-q_i)$ rather than uniformly; and any producer inducing movement past budget is provably over-reacting. This turns [Overseeing Automated Research's](/proposals/overseeing-automated-research/) "persuasion gradient survives in proportion to unvalidated weight" into a number — and the cheapest attack stays exactly within it: harvest the weight that never resolves.
+**The persuasion-budget bound.** A producer paid on belief-movement before resolution can harvest "surprise now." How much? For a coherent consumer, expected total squared movement on a binary question is at most $q_0(1-q_0)\le\tfrac14$ ([Augenblick & Rabin 2021](https://academic.oup.com/qje/article-abstract/136/2/933/6127317)), so if pay tracks squared movement the **expected unvalidated persuasion surplus across a portfolio is $\le\sum_i w_i\,q_i(1-q_i)\le\tfrac14\sum_i w_i$** **[standard shape]**. A flat 200-question portfolio at $q=0.5$ caps it at $200\times0.25=50$ "movement units", concentrated in the high-uncertainty questions, so escrow should be allocated $\propto w_i q_i(1-q_i)$. The bound is an expectation under the consumer's own beliefs and assumes coherence, which a persuadable LLM consumer may lack; one question moving past budget proves nothing, while persistent excess across many questions is a statistical test of incoherence. This puts a number on [Overseeing Automated Research's](/proposals/overseeing-automated-research/) "persuasion gradient survives in proportion to unvalidated weight", and the cheapest attack stays within it: harvest the weight that never resolves.
 
 ## Open questions
 
@@ -1337,25 +1316,22 @@ Incentive-compatibility needs a payoff to ground out in — resolution, or at le
 Source: https://reasoning-processes.quantifieduncertainty.org/concepts/hardening-deterrence/
 ------------------------------------------------------------
 
-*Family 6 of the [Hardening overview](/concepts/hardening-techniques/). The other families mostly raise corruption cost by spending on verification, which costs information every run. Deterrence raises it off-equilibrium — bonds, clawbacks, tamper-evidence — at near-zero honest-path cost, which is why it is the only route into the cheap-and-incorruptible quadrant. The lever, its limit, the constructions with their cheapest attacks, and two worked bounds with numbers.*
-
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Part III, family page. Exploratory. Grades per [The Core Model](/concepts/core-model/).
+*Family 6 of the [Hardening overview](/concepts/hardening-techniques/). The other families mostly raise corruption cost by spending on verification, which costs information every run. Deterrence raises it off-equilibrium — bonds, clawbacks, tamper-evidence — at low honest-path cost, which makes it the most promising route into the cheap-and-incorruptible quadrant. The lever, its limit, the constructions with their cheapest attacks, and two worked bounds with numbers.*
 
 ## The lever
 
-Make corruption expensive *only when it happens*. A bond posted and forfeited on detection, a clawback at resolution, an append-only log that makes tampering discoverable — each costs the honest participant almost nothing yet imposes a large expected cost on an adversary. Following the classical [detection × penalty](https://doi.org/10.1086/259394) logic (Becker 1968), deterrence is the unique family that raises the corruption axis *without* raising the information axis, because the penalty is paid off the equilibrium path. This is why the [empty quadrant](/concepts/process-catalogue/) is reachable through deterrence and not through verification.
+Make corruption expensive *only when it happens*. A bond posted and forfeited on detection, a clawback at resolution, an append-only log that makes tampering discoverable — each costs the honest participant almost nothing yet imposes a large expected cost on an adversary. Following the classical [detection × penalty](https://doi.org/10.1086/259394) logic (Becker 1968), deterrence raises the corruption axis at little cost on the information axis: the penalty is paid off the equilibrium path, and the honest path pays only for detection, an audit rate $p$ times the audit cost. With an enforceable penalty, $p$ can be small, which is why deterrence looks like the cheapest route into the [empty quadrant](/concepts/process-catalogue/).
 
 ## The limit
 
-Deterrence needs two things the field doesn't yet have for free: **enforceable identity** and **eventually-real detection**. Without [identity infrastructure](/environment/identity-and-track-records/) the maximum bond $B$ is effectively zero (an adversary re-keys after forfeiture), and the inspection-game ceiling collapses to the verification regime. Detection must also actually arrive — a tamper-evident log deters nothing if no one ever audits, and a clawback deters nothing on claims that never resolve. And deterrence fails entirely against an adversary who does not internalize the penalty: judgment-proof, one-shot, or indifferent attackers. It is the most powerful family where its preconditions hold and inert where they don't.
+Deterrence needs two things that don't yet come for free: **enforceable identity** and **eventually-real detection**. Without [identity infrastructure](/environment/identity-and-track-records/) the maximum bond $B$ is effectively zero (an adversary re-keys after forfeiture), and the inspection-game ceiling collapses to the verification regime. Detection must also actually arrive — a tamper-evident log deters nothing if no one ever audits, and a clawback deters nothing on claims that never resolve. And deterrence fails entirely against an adversary who does not internalize the penalty: judgment-proof, one-shot, or indifferent attackers. It is the most powerful family where its preconditions hold and inert where they don't.
 
 ## Constructions
 
 | Construction | Bound / estimate | Defends against | Cheapest attack (≈ cost) | Maturity · source |
 |---|---|---|---|---|
-| Randomized deep-audit lottery | safe stake $S^\*=(c+pB)/(1-p)$; ≈ \$52 below **[standard shape]** | cheap-process corruption up to $S^\*$ | keep each attack's stake just below $S^\*$ (bounded by $S^\*$) | prototyped · (inspection games) |
-| Merkle-logged reasoning traces | post-hoc tamper detection w.p. $\approx 1$ **[exact]** | silent after-the-fact tampering | be dishonest in the *original* trace; or rely on no one auditing (≈ free if unaudited) | deployed · [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962) |
+| Randomized deep-audit lottery | safe stake $S^\*=(c+pB)/(1-p)$; ≈ \$53 below **[standard shape]** | cheap-process corruption up to $S^\*$ | keep each attack's stake just below $S^\*$ (bounded by $S^\*$) | prototyped · (inspection games) |
+| Merkle-logged reasoning traces | post-hoc tamper detection w.p. $\approx 1$ **[exact, given active monitors]** | silent after-the-fact tampering | be dishonest in the *original* trace; or rely on no one auditing (≈ free if unaudited) | deployed · [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962) |
 | Clawback-with-interest | penalty multiplier on false resolutions **[standard shape]** | claims resolving just past the horizon | be judgment-proof — take the credit and exit before clawback (≈ cost of an exit) | prototyped · [Becker 1968](https://doi.org/10.1086/259394) |
 | Provenance-bonded sources | source stake slashed if later shown corrupt **[heuristic]** | citing sources later revealed biased | stay biased but below the *proof* threshold (low — detection gap) | speculative · ([funding effect](/case-studies/the-funding-effect/)) |
 | Reputation bankroll with ruin | identity-bound standing funds high-stakes claims **[heuristic]** | sets the enforceable penalty $B$ | Sybil — a fresh identity after ruin (≈ cost of an identity, cheap without infra) | speculative · (identity infra) |
@@ -1368,9 +1344,9 @@ Deterrence needs two things the field doesn't yet have for free: **enforceable i
 
 $$S < S^\* = \frac{c + pB}{1-p}. \qquad \textbf{[standard shape]}$$
 
-Plug in a \$0.01 LLM-judge call, a 5% audit rate, and a \$1,000 bond: $S^\*=(0.01+0.05\cdot1000)/0.95\approx 52$, so about \$52 of safe stake bought by a one-in-twenty audit. Strip the bond ($B=0$) and the *same* \$52 safe stake would require an audit rate of $p\approx99.98\%$ — full verification. **Robustness is bounded by the maximum enforceable penalty, not by verification spend** — the formal reason identity/escrow infrastructure is the field's most leveraged missing institution, and the cheapest attack is simply to keep each stake below $S^\*$.
+Plug in a \$0.01 LLM-judge call, a 5% audit rate, and a \$1,000 bond: $S^\*=(0.01+0.05\cdot1000)/0.95\approx 53$, so about \$53 of safe stake bought by a one-in-twenty audit. Strip the bond ($B=0$) and the *same* \$53 safe stake would require an audit rate of $p\approx99.98\%$ — full verification. Robustness scales with the expected penalty $pB$, and every run still pays $p\,C_{\text{audit}}$ for the audits; what the bond buys is that a small $p$ suffices. That is the formal case for identity/escrow infrastructure, and the cheapest attack is to keep each stake below $S^\*$.
 
-**Provenance bonds and the funding-effect discount.** Make every cited source post a stake, slashed if it is later shown corrupt. This prices the [funding-effect](/case-studies/the-funding-effect/) likelihood-ratio discount directly into the mechanism: a source whose favorable conclusions are $k$ times more likely regardless of truth carries an attenuated likelihood ratio, and the bond makes that expected attenuation a cost the source internalizes ex ante — the deterrence-side counterpart to the [identity-masking gap](/concepts/hardening-invariance/) that *measures* the same bias. Its cheapest defeat is the detection gap: a source biased but never *proven* corrupt keeps its bond.
+**Provenance bonds and the funding effect.** Make every cited source post a stake, slashed if spin is later demonstrated. In the [funding-effect](/case-studies/the-funding-effect/#from-odds-ratios-to-a-likelihood-ratio-discount) model, spin at rate $s$ is what attenuates a favorable conclusion's likelihood ratio; the bond deters it when detection probability times $B$ exceeds the gain from spinning. It is the deterrence-side counterpart to the [identity-masking gap](/concepts/hardening-invariance/), which *measures* the same bias. A per-study bond cannot reach selection (which studies get commissioned), and its cheapest defeat is the detection gap: a source biased but never *proven* corrupt keeps its bond.
 
 ## Open questions
 
@@ -1389,14 +1365,13 @@ Plug in a \$0.01 LLM-judge call, a 5% audit rate, and a \$1,000 bond: $S^\*=(0.0
 Source: https://reasoning-processes.quantifieduncertainty.org/environment/identity-and-track-records/
 ------------------------------------------------------------
 
-*Three chapters of this book end at the same wall. [Deterrence](/concepts/hardening-deterrence/) needs a penalty that sticks; [incentive-compatibility](/concepts/hardening-incentives/) needs escrow netted across a history; [independence](/concepts/hardening-independence/) needs "k reports" to mean k reporters. All three are functions of one missing institution: identity bound to something scarce, plus track records that accumulate against it. This chapter states what that institution has to deliver, prices it with the deterrence chapter's own formula, and marks what changes when the reporters are copyable AI processes rather than people.*
+*Three chapters here end at the same wall. [Deterrence](/concepts/hardening-deterrence/) needs a penalty that sticks; [incentive-compatibility](/concepts/hardening-incentives/) needs escrow netted across a history; [independence](/concepts/hardening-independence/) needs "k reports" to mean k reporters. All three are functions of one missing institution: identity bound to something scarce, plus track records that accumulate against it. This chapter states what that institution has to deliver, prices it with the deterrence chapter's own formula, and marks what changes when the reporters are copyable AI processes rather than people.*
 
-**Status**
-Draft v0 · updated September 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Chapter 19, opening Part IV. The first written chapter of the Environment layer; the reputation-systems evidence is drawn from the sibling [Evaluation Engineering](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/#4-reputation-systems-converge-on-the-same-arms-race) wiki's literature sweep. Positions here are exploratory, not settled. Grades per [The Core Model](/concepts/core-model/).
+Opens Part IV. The reputation-systems evidence is drawn from the sibling [Evaluation Engineering](https://evaluation-engineering.quantifieduncertainty.org/concepts/patterns-and-failure-modes/#4-reputation-systems-converge-on-the-same-arms-race) wiki's literature sweep. Grades per [The Core Model](/concepts/core-model/).
 
 ## Why every other chapter assumes this
 
-Search the book for what its mechanisms take for granted and the same dependency keeps surfacing:
+Search these notes for what their mechanisms take for granted and the same dependency keeps surfacing:
 
 | Mechanism | What it silently assumes | Where |
 |---|---|---|
@@ -1438,9 +1413,9 @@ $\Delta R$ is smaller than it looks, for three reasons.
 Plug in the deterrence chapter's numbers: a \$0.01 LLM-judge call, a 5% audit rate.
 
 - **A newcomer with nothing escrowed** has $B_{\text{eff}} \approx 0$, so $S^\* \approx 0.01/0.95$: about one cent of safe stake. The process is back in the pure-verification regime.
-- **An established producer** reaches the deterrence chapter's \$52 safe stake only if $\Delta R$ is about \$1,000. That needs a ruin rule, a standing worth \$1,000 that re-entry can't recover, and a producer not near its last round. Unlike escrow, the mechanism can verify none of these: $R$ is private to the producer, and the producer gains by *appearing* to value it highly.
+- **An established producer** reaches the deterrence chapter's \$53 safe stake only if $\Delta R$ is about \$1,000. That needs a ruin rule, a standing worth \$1,000 that re-entry can't recover, and a producer not near its last round. Unlike escrow, the mechanism can verify none of these: $R$ is private to the producer, and the producer gains by *appearing* to value it highly.
 
-So **a track record works like a bond that can't be refunded but can be spent once**, and its deterrent value falls to zero as exit approaches. One more wrinkle: the book recommends making standing gate access to valuable work, which means the stakes a producer handles grow with its standing. A mechanism that sizes stakes to standing has to cap them at what escrow alone covers, or accept that the most trusted producers are also the most tempted.
+So **a track record works like a bond that can't be refunded but can be spent once**, and its deterrent value falls to zero as exit approaches. One more wrinkle: these notes recommend making standing gate access to valuable work, which means the stakes a producer handles grow with its standing. A mechanism that sizes stakes to standing has to cap them at what escrow alone covers, or accept that the most trusted producers are also the most tempted.
 
 Two corollaries hold regardless. Newcomers are structurally the cheapest attack surface, so the dues convention is a security requirement, not an unfairness to be engineered away. And the dues have a cost. In a field experiment, hiring inexperienced workers and giving them detailed public evaluations substantially improved their later employment; under plausible assumptions the benefits exceeded the cost, suggesting the excluded workers had been inefficiently unemployed ([Pallais 2014](https://www.aeaweb.org/articles?id=10.1257/aer.104.11.3565)). Cold start must be priced, not waved away.
 
@@ -1457,10 +1432,10 @@ Reputation is real but modestly priced where it is measured: in a matched-item f
 
 ## What changes for AI processes
 
-The book's unit of analysis is the [LLM-based epistemic process](/concepts/what-is-a-strong-reasoner/#the-unit-of-analysis-llm-based-epistemic-processes) — model, scaffolding, protocol — not a person. Four differences from the human case, each pulling in a different direction:
+The unit of analysis here is the [LLM-based epistemic process](/concepts/what-is-a-strong-reasoner/#the-unit-of-analysis-llm-based-epistemic-processes) — model, scaffolding, protocol — not a person. Four differences from the human case, each pulling in a different direction:
 
 1. **Identity of *what*?** A human has one body. An AI process is a configuration: weights, system prompt, tools, retrieval corpus, sampling settings. A track record has to attach to a **versioned process identifier** (a content hash of the configuration), because a record earned by one configuration is weaker evidence about the next. How much should transfer across versions is an open question the [strong-reasoner chapter](/concepts/what-is-a-strong-reasoner/#open-questions) already asks. Hosted models that are silently updated break continuity outright unless the provider attests to what ran.
-2. **Copies are free, so counting is hard.** Forking a model is a hardening *affordance* ([Independence](/concepts/hardening-independence/)). It is also a Sybil attack that costs nothing. Worse, copies that are distinct in every identity sense still err together: when two LLMs are both wrong they agree on the same wrong answer far above chance ([Kim et al. 2025](https://arxiv.org/abs/2506.07962)), and error similarity rises with capability ([Goel et al. 2025](https://arxiv.org/abs/2502.04313)). The Kim et al. correlation holds *across* providers, which points to shared training data more than shared lineage. So a **lineage registry** (which base model, which fine-tune) is at best a weak prior on correlation; the correlation itself has to be measured behaviorally, per task. Identity alone does not buy $n_{\text{eff}}$.
+2. **Copies are free, so counting is hard.** Forking a model is a hardening *affordance* ([Independence](/concepts/hardening-independence/)). It is also a Sybil attack that costs nothing. Worse, copies that are distinct in every identity sense still err together: when two LLMs are both wrong they agree on the same wrong answer far above chance ([Kim et al. 2025](https://arxiv.org/abs/2506.07962)), and error similarity rises with capability ([Goel et al. 2025](https://arxiv.org/abs/2502.04313)). Kim et al. name shared architecture and provider as drivers, but find the more accurate models' errors highly correlated even across both; we read that residue as pointing to shared training data (our inference, not theirs). So a **lineage registry** (which base model, which fine-tune) is at best a weak prior on correlation; the correlation itself has to be measured behaviorally, per task. Identity alone does not buy $n_{\text{eff}}$.
 3. **Binding runs through operators.** A model holds no assets and fears no ruin. Every bond, clawback, and reputation loss binds the *operator*, the legal or economic entity that deploys the process. So $R$ lives at the operator, while epistemic weight attaches to the version, and detection has to reach the operator to deter. Two leaks follow: a large operator's standing is spread across many products, so one process's lapse barely dents it; and operators can whitewash through subsidiaries. Judgment-proof operators (one-shot, offshore, or indifferent) are the residual the [deterrence chapter](/concepts/hardening-deterrence/#the-limit) already flags.
 4. **Logging is free, so continuity can be strong.** What humans would never accept — a complete, append-only record of every output, bound to a configuration hash — costs an AI process almost nothing. Tamper-evident logs of the certificate-transparency kind ([RFC 6962](https://www.rfc-editor.org/rfc/rfc6962)) make omitting or rewriting a *logged* output publicly detectable, provided someone actually monitors the log **[exact, given active monitors]**. That rules out retroactive cherry-picking. It does not rule out choosing which questions to enter, and copyability reopens selection at a higher level: an operator can run a hundred configurations, log each honestly, and promote the one that got lucky. The denominator that matters is per operator, not per identity.
 
@@ -1483,7 +1458,7 @@ In the Part III format: what each piece binds, and its cheapest attack.
 
 ## The registry is itself a process
 
-Douceur's result says counting needs a trusted issuer. That issuer is a reasoning process in this book's sense: it emits claims ("these two identities are distinct," "this record belongs to that configuration") and has its own [corruption cost curve](/concepts/core-model/#4-corruption-standard-shape). A captured registry is worse than none: it launders Sybils into apparently independent evidence. The sibling Evaluation Engineering wiki's [automated trust networks](https://evaluation-engineering.quantifieduncertainty.org/concepts/techniques/#automated-trust-networks) are one answer: many issuers that audit each other, with declared adjustments to each other's outputs. Whether that multiplies the cost of capture or merely adds the weakest link is the [composition question](/concepts/hardening-techniques/#composition-families-stack-but-how) again, one layer down.
+Douceur's result says counting needs a trusted issuer. That issuer is a reasoning process in the Core Model's sense: it emits claims ("these two identities are distinct," "this record belongs to that configuration") and has its own [corruption cost curve](/concepts/core-model/#4-corruption-standard-shape). A captured registry is worse than none: it launders Sybils into apparently independent evidence. The sibling Evaluation Engineering wiki's [automated trust networks](https://evaluation-engineering.quantifieduncertainty.org/concepts/techniques/#automated-trust-networks) are one answer: many issuers that audit each other, with declared adjustments to each other's outputs. Whether that multiplies the cost of capture or merely adds the weakest link is the [composition question](/concepts/hardening-techniques/#composition-families-stack-but-how) again, one layer down.
 
 ## Open questions
 
@@ -1507,8 +1482,7 @@ Source: https://reasoning-processes.quantifieduncertainty.org/concepts/epistemic
 
 *Applications of strong reasoners arranged as a ladder of five tiers — error-checking, estimation, personalized synthesis, research valuation, institutional mechanisms — where each tier becomes defensible to deploy only when its verification machinery exists and survives systems optimized to pass it.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). The tier boundaries are a first cut, not a settled taxonomy.
+The tier boundaries are a first cut, not a settled taxonomy.
 
 What would [strong reasoners](/concepts/what-is-a-strong-reasoner/) actually be *for*? The applications are not interchangeable: they demand very different amounts of warranted trust. We organize them here as a **reliability ladder** — each tier requires more trust than the last, and we conjecture a tier's applications become defensible to deploy once its verification machinery exists *and survives systems optimized to pass it*. Lower tiers are running today; upper tiers should not run unsupervised until [oversight protocols](/concepts/oversight-protocols/) can carry their weight.
 
@@ -1558,8 +1532,7 @@ Source: https://reasoning-processes.quantifieduncertainty.org/proposals/overseei
 
 *How to manage research you cannot check: don't audit the process, meter the output's validated epistemic impact against a weighted question portfolio — mark the book the way a trading desk marks positions. Oversight capacity then scales with producer capability for whatever fraction of the portfolio nature resolves.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Agenda sketch, more speculative than the other proposals. Positions here are exploratory, not settled.
+An agenda sketch, more speculative than the other proposals.
 
 ## The problem
 
@@ -1640,10 +1613,9 @@ The divergences are the deliverable. Where the meter and the judgment disagree, 
 Source: https://reasoning-processes.quantifieduncertainty.org/case-studies/llm-epistemics-in-production/
 ------------------------------------------------------------
 
-*Three deployed systems — RoastMyPost, Squiggle AI, and an LLM-judged Fermi competition — read as case studies of this book's abstractions, with published numbers and admitted failures: significant false-positive rates, systematic overconfidence, and a miscounted competition. What production teaches that proposals don't.*
+*Three deployed systems — RoastMyPost, Squiggle AI, and an LLM-judged Fermi competition — read as case studies of the abstractions in earlier chapters, with published numbers and admitted failures: significant false-positive rates, systematic overconfidence, and a miscounted competition. What production teaches that proposals don't.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Synthesized from QURI's published deployment write-ups (2024–2025). Positions here are exploratory, not settled.
+Synthesized from QURI's published deployment write-ups (2024–2025).
 
 ## Why this page
 
@@ -1704,14 +1676,13 @@ The run's one documented production failure is more instructive than the rubric:
 Source: https://reasoning-processes.quantifieduncertainty.org/open-questions/
 ------------------------------------------------------------
 
-*Every chapter maintains its own open-questions section; this page aggregates them. The five problems at the top are the ones we currently consider load-bearing for the whole field.*
+*Every chapter maintains its own open-questions section; this page aggregates them. The five problems at the top are the ones we currently consider load-bearing for the whole program.*
 
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). An index, not original content — each link points at the chapter where the problem lives and is kept current.
+An index, not original content — each link points at the chapter where the problem lives.
 
 ## The five load-bearing problems
 
-1. **Can trustworthy resolution be extended faster than adversaries learn to game it?** Retrodiction, selection protocols, and consistency floors all expand the resolvable set; all are gameable. The field is buildable if and only if this race is winnable ([Robust Reasoning Processes](/start-here/introduction/#the-honest-center-of-uncertainty)).
+1. **Can trustworthy resolution be extended faster than adversaries learn to game it?** Retrodiction, selection protocols, and consistency floors all expand the resolvable set; all are gameable. The program is workable if and only if this race is winnable ([Robust Reasoning Processes](/start-here/introduction/#the-central-uncertainty)).
 2. **Is "cost per validated bit" well-defined across output types?** Probabilities, rulings, models, and rankings need a common currency before the catalogue's comparisons become measurements ([The Process Catalogue](/concepts/process-catalogue/#open-questions)).
 3. **How much does consistency constrain correctness — especially under optimization pressure?** The observed consistency–accuracy correlation comes from models not optimizing against the metric ([Consistency Evaluations](/proposals/consistency-evals/#open-questions)).
 4. **Does composition multiply corruption costs, or merely add the weakest link?** The constructive bet of the whole catalogue — cheap filters with randomized escalation to robust processes — is an unmeasured conjecture ([The Process Catalogue](/concepts/process-catalogue/#open-questions), [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/#open-questions)).
@@ -1743,21 +1714,18 @@ Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertai
 Source: https://reasoning-processes.quantifieduncertainty.org/reference/glossary/
 ------------------------------------------------------------
 
-*Every term this book mints or borrows, and every recurring symbol, with a one-line definition and a link to the page that owns it. When prose and glossary disagree, the owning page wins; please file the disagreement.*
-
-**Status**
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/).
+*Every term these notes mint or borrow, and every recurring symbol, with a one-line definition and a link to the page that owns it. When prose and glossary disagree, the owning page wins; please file the disagreement.*
 
 ## Terms
 
 | Term | One-line definition | Defined in |
 |---|---|---|
-| **Robust reasoning processes (RRP)** | The proposed field: the study and engineering of procedures that turn effort and evidence into trustworthy conclusions, and keep doing so under adversarial pressure | [Robust Reasoning Processes](/start-here/introduction/) |
+| **Robust reasoning processes (RRP)** | Our working name for the subject of these notes: procedures that turn effort and evidence into trustworthy conclusions, and keep doing so under adversarial pressure | [Robust Reasoning Processes](/start-here/introduction/) |
 | **Reasoning process** | A procedure — peer review, a prediction market, an LLM pipeline — that consumes effort and evidence and emits claims, estimates, or evaluations | [The Core Model](/concepts/core-model/) |
 | **Judge** | The consumer of reasoning, who cannot check the work object-level and must decide how much to update | [The Core Model](/concepts/core-model/) |
 | **Epistemic weight** | A process's likelihood-ratio profile: how strongly its outputs discriminate truth from falsehood, conditional on its incentive environment | [The Core Model](/concepts/core-model/#1-epistemic-weight-exact) |
 | **Loss pipeline** | The heuristic decomposition of delivered value into codification, evaluator, and interpretation losses | [The Core Model](/concepts/core-model/#2-value-delivered-the-loss-pipeline-heuristic) |
-| **Cost per validated bit** | The field's figure of merit: the price of information that survived checking, not the price of text | [The Core Model](/concepts/core-model/#3-cost-unit-economics-standard-shape) |
+| **Cost per validated bit** | The proposed figure of merit: the price of information that survived checking, not the price of text | [The Core Model](/concepts/core-model/#3-cost-unit-economics-standard-shape) |
 | **Corruption cost curve** | The minimum an adversary of given capability must spend to distort a process's output by a given amount | [The Core Model](/concepts/core-model/#4-corruption-standard-shape) |
 | **Corruption surplus** | A participant's maximum expected gain from deviating from honest effort — what attackers harvest | [The Core Model](/concepts/core-model/#4-corruption-standard-shape) |
 | **Robustness condition** | Corrupting the process costs more than the distortion is worth — evaluated per threat model, never threat-model-free | [The Core Model](/concepts/core-model/#4-corruption-standard-shape) |
@@ -1817,12 +1785,13 @@ Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertai
 | $M(Q, t)$ | the evaluated model's answer to $Q$ at time $t$ | [Consistency Evaluations](/proposals/consistency-evals/) |
 | $q$, $q_X$ | a forecast; the forecast after observing source $X$ | [The Core Model](/concepts/core-model/#5-pricing-information-before-it-arrives-exact) |
 | $I(Q; X)$ | mutual information between question $Q$ and source $X$ — the decision-free value of a source, per question | [The Core Model](/concepts/core-model/#5-pricing-information-before-it-arrives-exact) |
-| $\tau$ | (retired) a scalar credence that a source is honest; the book now uses decision-indexed goal-divergence instead, since a scalar trust score is underspecified | [Untrustworthy Sources](/concepts/untrustworthy-sources/#move-1-reduce-the-attack-surface) |
+| $\tau$ | (retired) a scalar credence that a source is honest; the notes now use decision-indexed goal-divergence instead, since a scalar trust score is underspecified | [Untrustworthy Sources](/concepts/untrustworthy-sources/#move-1-reduce-the-attack-surface) |
 | $B_{\text{eff}} \approx B_{\text{escrow}} + \Delta R$ | enforceable penalty: value posted up front plus the standing a cheater loses on detection (full standing only under a ruin rule) | [Identity and Track Records](/environment/identity-and-track-records/#the-quantity-enforceable-penalty) |
 | $S^\*$ | largest stake an audited process safely handles, $(c + pB)/(1-p)$ | [Deterrence](/concepts/hardening-deterrence/#worked-bounds) |
+| $s$; $r_{\neg H}/r_H$ | spin rate (chance an unfavorable result is reported as favorable, regardless of truth); selection ratio (how much more often a funder commissions or publishes when $H$ is false) | [The Funding Effect](/case-studies/the-funding-effect/#from-odds-ratios-to-a-likelihood-ratio-discount) |
 | $b_\pi(D)$ | decision-relative (goal) bias: $\pi$'s systematic lean toward one resolution of decision $D$, holding truth-relevant information fixed | [The Process Catalogue](/concepts/process-catalogue/#reading-the-table) |
 
 
 ================================================================================
 Generated from 24 chapters.
-Estimated tokens: ~73K
+Estimated tokens: ~72K

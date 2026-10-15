@@ -1,6 +1,6 @@
 ---
 title: Evaluation as a System
-description: Why an evaluation system is a different object from an evaluation, and the accuracy × quantity × cost trade-offs that define its design space.
+description: Why an evaluation system is a different object from an evaluation, the properties that define its design space (accuracy, unit cost, robustness under optimization, legitimacy), and its technical and institutional design variables.
 sidebar:
   order: 1
 ---
@@ -15,17 +15,18 @@ An evaluation is an artifact: a number, a grade, a report. An **evaluation syste
 
 When you optimize a system, optimizing any one evaluation is usually the wrong objective. You accept that some individual outputs are rougher than a bespoke study would be, in exchange for producing thousands of them at a cost that lets the results actually get used. This is the same move lean manufacturing makes against artisanal production, and the right reference disciplines are the systems ones — **lean manufacturing, software architecture, engineering management** — not evaluation philosophy or single-study methodology.
 
-## The design space: accuracy × quantity × cost
+## The design space
 
-Every evaluation system is a point in a three-way trade-off:
+Four properties decide whether a system is worth running:
 
-- **Accuracy** — how close outputs are to what a much more expensive process would conclude.
-- **Quantity** — how many items the system can cover.
-- **Cost** — total resources per item (analyst time, compute, data).
+- **Accuracy**: how close outputs come to what a much more expensive, trusted process would conclude.
+- **Unit cost**: a fixed cost $F$ (design, calibration, tooling, re-validation) plus a marginal cost $c$ per item. Quantity $N$ is the scale the system runs at, not a separate axis: total cost is $F + Nc$.
+- **Robustness under optimization**: whether accuracy survives once the evaluated parties learn what the system rewards. A judge validated at zero optimization pressure is validated only for zero pressure ([LLMs as Evaluators](/concepts/llm-evaluators/#evidence-under-optimization-pressure)).
+- **Legitimacy**: whether the audience trusts the outputs enough to act on them, which is evaluation's [defining requirement](/start-here/estimation-vs-evaluation/#evaluation). Latency matters too in some domains.
 
-You can usually buy more of any two by giving up the third. A hand-curated expert panel is high-accuracy, low-quantity, high-cost. A purely statistical index is low-cost, high-quantity, and accurate only where the metric happens to capture what matters. Most of the interesting engineering is in moving the whole frontier outward — getting more accuracy *and* quantity per dollar — rather than just sliding along it.
+As accounting, a system run over $N$ items is worth roughly $N\bar{v} - (F + Nc)$, where $\bar{v}$ is the average decision value an output adds. Scale pays only when each output adds more than its marginal cost and $N$ is large enough to cover $F$. Accuracy enters through $\bar{v}$. Robustness and legitimacy enter as conditions: a gamed output, or one nobody believes, has $\bar{v}$ near zero. The sibling RRP wiki's [Core Model](https://reasoning-processes.quantifieduncertainty.org/concepts/core-model/) develops the same unit economics, and how to price information before it is produced.
 
-LLMs are interesting precisely because they promise to bend this frontier: they collapse the cost of the labor-intensive steps, which can buy back quantity without (one hopes) surrendering too much accuracy. Whether that hope holds is an open question — see [Cruxes](/start-here/key-questions/).
+An expert panel buys accuracy and legitimacy at a high marginal cost. A statistical index has a low marginal cost, is accurate only where the metric captures what matters, and is among the easiest designs to game. LLMs cut the marginal cost of the labor-intensive steps; whether accuracy, robustness and legitimacy survive the substitution is open (see [Cruxes](/start-here/key-questions/)).
 
 ## The questions that define a system
 
@@ -38,7 +39,13 @@ Designing or critiquing a system means answering, at minimum:
 - **Propagation.** When one input or estimate updates, how does the change flow to everything downstream?
 - **Funding and incentives.** How is the system paid for, and what stops it from being captured or corrupted?
 
-The last two are where systems most often fail in ways a single-evaluation mindset never sees coming. Consistency and propagation are the reason an evaluation system resembles a *database with opinions* more than a stack of reports; funding and incentives are the reason it resembles an *institution* more than a tool.
+Consistency and propagation are the reason an evaluation system resembles a *database with opinions* more than a stack of reports; funding and incentives are the reason it resembles an *institution* more than a tool.
+
+## Technical and institutional design variables
+
+The questions above mix two kinds of variable. Team, data, consistency and propagation are technical: they are set by how the system is built. Who pays, who controls the metric's definition, and whether the evaluated can appeal are institutional: they are set by the contracts and governance around the system.
+
+Part III's strongest pattern is that the institutional variables seem to predict trustworthiness better than method does ([Patterns §3](/concepts/patterns-and-failure-modes/#3-incentives-and-funding-decide-trustworthiness--more-than-method-does)). Issuer-paid credit ratings failed despite elaborate models; independently funded product testers using conventional lab methods kept their reputations. That evidence is a set of contrasts plus the certification-economics theory behind them, not a coded comparison across the catalogue, so treat it as a well-motivated hypothesis. If it holds, the engineering in this wiki's title has to include incentive design: a system is specified by its payer and its governance as much as by its pipeline.
 
 ## Consistency and propagation
 
@@ -48,16 +55,16 @@ Propagation is the dynamic version of the same problem. The world moves; a key i
 
 ## Grading systems: a capability ladder
 
-If the system is the unit of design, we should be able to *grade* systems. Autonomous driving has "Level 4"; evaluation engineering has no equivalent yet, and would benefit from one. A shared capability ladder — backed by a formalization of the inputs and outputs of estimation/evaluation work — would let practitioners say how advanced a given system is, compare two systems, draw historical trends, and project forward.
+If the system is the unit of design, systems should be gradable. Autonomous driving has "Level 4"; evaluation engineering has no equivalent. A shared capability ladder would let practitioners say how advanced a system is, compare two systems, and track trends.
 
-"**Advanced**" evaluation systems, in this sense, just means high on that ladder: great cost-effectiveness, wide generality, and a real ability to create value for the agents that consume their outputs. Note the deliberate separation of *capability* from *implementation* — a system can be advanced whether its internals are [symbolic or not](/concepts/components/). Building the ladder itself is open work; see [Open Problems](/open-questions/).
+This wiki has not written one; a draft is planned, with each level defined by a measurable property (for example, whether the system publishes an error rate measured on a random audit). The sibling RRP wiki's [Reliability Ladder](https://reasoning-processes.quantifieduncertainty.org/concepts/epistemic-applications/), which grades applications of strong reasoners by the trust they require, is a candidate template. The founding notes called systems high on such a ladder "advanced": cost-effective, general, and valuable to the agents that consume their outputs, whether or not their internals are [symbolic](/concepts/components/).
 
 ## How the rest of the wiki hangs off this
 
 The systems view is what makes the other pages cohere:
 
 - [The Four Components](/concepts/components/) are the reusable parts you assemble a system from.
-- [Evaluation Methods](/concepts/evaluation-methods/) are the menu of ways to fill the *evaluation* slot, each with its own accuracy/quantity/cost profile.
+- [Evaluation Methods](/concepts/evaluation-methods/) are the menu of ways to fill the *evaluation* slot, each with its own cost, accuracy and trust profile.
 - [Techniques](/concepts/techniques/) are system-level patterns — most of them ways to get expensive judgment to subsidize cheap judgment, or to keep a large system honest and consistent.
 - [LLMs as Evaluators](/concepts/llm-evaluators/) covers what changes when the cheap labor is a model, and [the worked example](/concepts/worked-example/) prices one system end to end.
 - [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/) and [Patterns & Failure Modes](/concepts/patterns-and-failure-modes/) are the evidence: ~100 standing systems, and what is repeatedly true across them.

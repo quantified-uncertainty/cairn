@@ -5,10 +5,10 @@ sidebar:
   order: 1
 ---
 
-*Three deployed systems — RoastMyPost, Squiggle AI, and an LLM-judged Fermi competition — read as case studies of this book's abstractions, with published numbers and admitted failures: significant false-positive rates, systematic overconfidence, and a miscounted competition. What production teaches that proposals don't.*
+*Three deployed systems — RoastMyPost, Squiggle AI, and an LLM-judged Fermi competition — read as case studies of the abstractions in earlier chapters, with published numbers and admitted failures: significant false-positive rates, systematic overconfidence, and a miscounted competition. What production teaches that proposals don't.*
 
-:::note[Status]
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Synthesized from QURI's published deployment write-ups (2024–2025). Positions here are exploratory, not settled.
+:::note
+Synthesized from QURI's published deployment write-ups (2024–2025).
 :::
 
 ## Why this page

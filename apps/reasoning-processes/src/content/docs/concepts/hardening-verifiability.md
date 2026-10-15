@@ -7,17 +7,13 @@ sidebar:
 
 *Family 2 of the [Hardening overview](/concepts/hardening-techniques/). All cheap robustness runs on one asymmetry: verification costing less than production. Where it holds, a constant amount of checking catches large distortions; where it fails, nothing else in the toolkit is cheap. The lever, its limit, the constructions with their cheapest attacks, and two worked bounds with numbers.*
 
-:::note[Status]
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Part III, family page. Exploratory. Grades per [The Core Model](/concepts/core-model/).
-:::
-
 ## The lever
 
-If checking a claim is cheaper than producing it, you can spot-check a small fraction and still catch a large lie — the asymmetry behind SAT, proof-carrying code ([Necula 1997](https://doi.org/10.1145/263699.263712)), succinct verifiable computation ([Pinocchio, Parno et al. 2013](https://doi.org/10.1109/SP.2013.47)), and the PCP theorem, under which a proof can be verified by reading $O(1)$ random bits ([Arora & Safra 1998](https://doi.org/10.1145/273865.273901); [Arora et al. 1998](https://doi.org/10.1145/278298.278306); [Dinur 2007](https://doi.org/10.1145/1236457.1236459)). The hardening move is to *force* the asymmetry into existence — require a structured, checkable artifact (a decomposition, a model, a held-out prediction) where one didn't exist.
+If checking a claim is cheaper than producing it, you can spot-check a small fraction and still catch a large lie — the asymmetry behind SAT, proof-carrying code ([Necula 1997](https://doi.org/10.1145/263699.263712)), succinct verifiable computation ([Pinocchio, Parno et al. 2013](https://doi.org/10.1109/SP.2013.47)), and the PCP theorem, under which a proof can be checked by reading $O(1)$ of its bits, chosen using $O(\log n)$ random bits ([Arora & Safra 1998](https://doi.org/10.1145/273865.273901); [Arora et al. 1998](https://doi.org/10.1145/278298.278306); [Dinur 2007](https://doi.org/10.1145/1236457.1236459)). The hardening move is to *force* the asymmetry into existence — require a structured, checkable artifact (a decomposition, a model, a held-out prediction) where one didn't exist.
 
 ## The limit
 
-The asymmetry has to *exist*. For machine-checkable proofs it does (Lean); for general estimates it may not — you cannot spot-check a bare probability, and the field has no PCP-analogue for quantitative reasoning yet. Worse, forcing a decomposition is itself gameable: a dishonest producer routes the load-bearing claim into the one node that *isn't* checkable, leaving the spot-check to graze only honest scaffolding (the decomposition-routing attack). And for the genuinely unresolvable residue — claims with too few checkable connections — this family is silent, which is precisely the territory [judge-grounded protocols](/concepts/oversight-protocols/) exist for.
+The asymmetry has to *exist*. For machine-checkable proofs it does (Lean); for general estimates it may not — you cannot spot-check a bare probability, and no PCP-analogue for quantitative reasoning is known yet. Worse, forcing a decomposition is itself gameable: a dishonest producer routes the load-bearing claim into the one node that *isn't* checkable, leaving the spot-check to graze only honest scaffolding (the decomposition-routing attack). And for the genuinely unresolvable residue — claims with too few checkable connections — this family is silent, which is precisely the territory [judge-grounded protocols](/concepts/oversight-protocols/) exist for.
 
 ## Constructions
 
@@ -27,7 +23,7 @@ The asymmetry has to *exist*. For machine-checkable proofs it does (Lean); for g
 | Forced precision (Quine–Duhem) | defended-falsehood prior $\sim p^{k_R}$ **[heuristic]** | bold-but-vague claims | choose a claim with no checkable connections ($k_R{=}0$) (≈ free) | speculative · — |
 | Decomposition disclosure | check $O(1)$ nodes of a stated graph **[heuristic]** | hidden load-bearing assumptions | put the load-bearing claim in an un-checkable leaf (low) | prototyped · [Necula 1997](https://doi.org/10.1145/263699.263712) |
 | Entailment-web check | $N$ related questions must cohere **[standard shape]** | confident-wrong that can't stay coherent | maintain a globally coherent but wrong worldview (high — the point) | prototyped · (consistency line) |
-| Held-out retrodiction | scored by held-out log-loss, not self-report **[standard shape]** | rhetorical worldview with no predictive content | exploit contamination — the "held-out" facts are in training (≈ free if the bank leaks) | prototyped · [Mallen 2023](https://arxiv.org/abs/2312.01037) |
+| Held-out retrodiction | scored by held-out log-loss, not self-report **[standard shape]** | rhetorical worldview with no predictive content | exploit contamination — the "held-out" facts are in training (≈ free if the bank leaks) | prototyped · [Zou et al. 2022](https://arxiv.org/abs/2206.15474) |
 | Retrodiction banks (decay-accounted) | each item priced by leak probability **[heuristic]** | contamination eroding a test set | infer outcomes from correlated public knowledge (low) | prototyped · — |
 | Throttle-vs-unlimited divergence | gap between tiny- and large-compute answers **[heuristic]** | heuristic/persuasion-driven answers | cache / canonicalize so both budgets return the same answer (≈ free) | speculative · — |
 

@@ -1,454 +1,111 @@
 ---
-title: "Core Concepts"
-description: "Key ideas of the Delegation Risk framework, plus the minimal viable version for teams starting small."
+title: "Concepts"
+description: "Reference statement of the framework's core concepts: the delegation risk formula, harm channels, propagation, the verifiability tiers, the Least-X core, tail risk, and the minimal delegation-engineering layer."
 ---
 
-This page introduces the key ideas without mathematical formalism. For quantitative details, see [Delegation Risk](/delegation-risk/overview/).
+A reference page. For the argument in order, read the [Five-Minute Intro](/getting-started/five-minute-intro/) and then [the Core Path](/getting-started/reading-order/#the-core-path).
 
-## Framework Overview
-
-How all the pieces fit together:
-
-```mermaid
-flowchart TB
-    subgraph Foundation["Foundation: What We're Managing"]
-        RISK["Delegation Risk<br/>(the expected cost of delegating)"]
-    end
-
-    subgraph Theory["Theory: How Risk Behaves"]
-        PROP["Risk Propagation<br/>How risk flows through chains"]
-        COMP["Composition<br/>How component risks combine"]
-    end
-
-    subgraph Methods["Methods: Established Approaches"]
-        BUDGET["Risk Budgeting<br/>Allocate, monitor, enforce"]
-        MECH["Mechanism Design<br/>Incentive-compatible reporting"]
-    end
-
-    subgraph Principles["Principles: How We Constrain"]
-        LEASTX["Least X Principles<br/>Capability, Privilege, Context..."]
-        DECOMP["Decomposition<br/>Many limited components"]
-    end
-
-    subgraph Application["Application: AI Systems"]
-        ARCH["Architecture<br/>Decomposed coordination"]
-        SAFETY["Safety Mechanisms<br/>Tripwires, gates, verifiers"]
-    end
-
-    RISK --> PROP
-    RISK --> COMP
-    PROP --> BUDGET
-    COMP --> BUDGET
-    BUDGET --> MECH
-    MECH --> LEASTX
-    LEASTX --> DECOMP
-    DECOMP --> ARCH
-    ARCH --> SAFETY
-```
-
-**Reading the diagram**: Delegation Risk is the foundation. Theory explains how it behaves. Methods provide established approaches from other fields. Principles give actionable constraints. Application shows how to build systems (with AI as primary focus).
-
-## Delegation Risk
-
-When you delegate a task, you're accepting **risk**—the potential for harm if the delegate fails or misbehaves.
-
-**Delegation Risk** quantifies this: for each delegate, sum over all possible bad outcomes, weighted by their probability. A delegate with access to your bank account has higher Delegation Risk than one that can only read public web pages.
-
-:::tip
-Risk is finite and should be budgeted. Just as organizations allocate compute and money, they should allocate delegation risk—tracking how much they're accepting, from which delegates, for what purposes.
-:::
-
-### The Formula
+## The formula
 
 **Delegation Risk = Σ P(harm mode) × Damage(harm mode)**
 
-For each way something could go wrong (harm mode), multiply:
-- The probability it happens
-- The damage if it does
-
-Sum across all harm modes to get total Delegation Risk.
+For each way a delegation can go wrong (a *harm mode*), multiply the probability that it happens by the damage if it does, and sum over all harm modes. The result is an expected loss in dollars.
 
 :::note[Canonical definition]
-This anchor is the canonical statement of the Delegation Risk formula. Where other pages restate it for convenience, this is the authoritative form.
+This anchor is the canonical statement of the formula. Other pages restate it for convenience.
 :::
 
-### Example: Employee with Check-Writing Authority
+**Units.** State what the probabilities are per: per task, per action, or per period. The delegation risk carries the same unit. Convert between them by multiplying a per-task figure by tasks per period. Most pages on this site use dollars per month.
 
-| Harm Mode | Probability | Damage | Risk Contribution |
-|-----------|-------------|--------|-------------------|
+*Example (illustrative): an employee with check-writing authority, probabilities per year.*
+
+| Harm mode | Probability | Damage | Contribution |
+|-----------|-------------|--------|--------------|
 | Clerical error | 0.01 | \$1,000 | \$10 |
 | Unauthorized payment | 0.001 | \$50,000 | \$50 |
 | Fraud | 0.0001 | \$500,000 | \$50 |
 
-**Delegation Risk** = \$10 + \$50 + \$50 = **\$110** expected cost
+Delegation risk is \$110/year. This is the average loss over many such years, not a prediction for any one year; see [when expected loss is the wrong metric](#when-expected-loss-is-the-wrong-metric).
 
-This doesn't mean you'll lose \$110. It means that over many such delegations, you'd expect \$110 in losses on average. You can compare this to the value the delegation provides and decide if it's worth it.
+The three-tier vocabulary keeps the formula's inputs separate. The **harm surface** is the set of harm modes (you enumerate it). **Exposure** is the worst-case loss across it given what the delegate can reach (a bound). **Delegation risk** is the expectation. See the [Glossary](/getting-started/glossary/#exposure).
 
-## Risk Propagation
+## Harm channels
 
-When delegates delegate to other delegates, risk relationships form networks. If A trusts B with weight 0.8, and B trusts C with weight 0.7, how much should A trust C?
+Harm modes fall into [three channels](/delegation-risk/risk-decomposition/):
 
-The canonical rule is **multiplicative**: T(A→C) = 0.8 × 0.7 = 0.56. Each hop is a separate chance of failure, so reliabilities multiply — and longer chains are automatically penalized, with no separate length discount needed.
+- **Accident**: the delegate fails at its task (bugs, hallucinations, edge cases).
+- **Defection**: the delegate pursues something other than the principal's interest. Scheming is the strategic case; reward hacking, which is goal-directed but not scheming, is a sub-type.
+- **Hijack**: a third party or user steers a delegate that is not itself scheming, for example through prompt injection in a document or tool output, or through misuse.
 
-```mermaid
-graph LR
-    A((A)) -->|"0.8"| B((B))
-    B -->|"0.7"| C((C))
-    A -.->|"0.56"| C
-```
+The channels call for different mitigations. Testing and redundancy address accidents. Control protocols and monitoring address defection. Separating instructions from untrusted data, and keeping a hard envelope, address hijack.
 
-Multiplication assumes the hops fail **independently**. When stages share a failure cause — same model provider, same training data, same context — failures clump together, and the correction depends on which direction you're composing:
+## Propagation
 
-- **Serial chains** (A delegates to B delegates to C): apply the mixture to the *working* probabilities, P(chain works) = (1−ρ) · ∏ tᵢ + ρ · min(tᵢ). In the fully correlated limit (ρ = 1) the chain is exactly as reliable as its weakest link. Correlation actually *helps* chains — failures bunch up — so the plain product is the conservative choice and safe to use as-is.
-- **Parallel safety layers** (a harmful action must slip past *every* verifier): apply the mixture to the *miss* probabilities, P(all miss) = (1−ρ) · ∏ pᵢ + ρ · min(pᵢ). Here correlation *hurts* — layers miss together — and the plain product badly understates risk. This is the case where the correction is safety-critical; see [the canonical example](/entanglements/#the-canonical-example).
+When delegates delegate, reliabilities compose. Quantitative "trust" on this site means one thing: **t = P(the delegate executes the task faithfully)**, estimated from its harm-mode table. If A delegates to B with t = 0.8 and B to C with t = 0.7, the chain works with probability 0.8 × 0.7 = 0.56 when the links fail independently.
 
-See [Risk Propagation](/delegation-risk/risk-propagation/) for the derivation, the simulation evidence, and why the once-offered alternative rules reduce to special cases of this one.
+Correlation changes the two directions of composition differently:
 
-:::note[Related: Social Choice Theory]
-Trust aggregation across multiple delegates relates to [social choice theory](https://en.wikipedia.org/wiki/Social_choice_theory)—how to combine individual inputs into collective outcomes. [Arrow's impossibility theorem](https://en.wikipedia.org/wiki/Arrow%27s_impossibility_theorem) has implications for trust aggregation: no perfect rule exists.
-:::
+- **Serial chains** (every link must work): correlation helps, because failures bunch together. The plain product is conservative and safe to use.
+- **Parallel checks** (a harmful action gets through only if every check misses): correlation hurts. Use the beta-factor mixture P(all miss) = (1−ρ)·∏pᵢ + ρ·min(pᵢ), with ρ on the failure-indicator (phi) scale. With three checks each missing 10%, the residual is 1 + 99ρ times the independence figure.
 
-## Decomposition Over Monoliths
+[Risk Propagation](/delegation-risk/risk-propagation/) has the derivation, the simulation and the estimation recipe. The alternative rules that earlier versions offered are retired.
 
-A single powerful delegate is dangerous because it concentrates capability, context, and control. If it fails or acts against you, the damage is unbounded.
+**Roll-ups add.** The expected loss of a system is the sum of its components' expected losses, whatever the correlation, by linearity of expectation. Where harm modes overlap on one asset, the naive sum overstates the true figure, so it is a conservative upper bound. Correlation matters for tail metrics and for AND-structured defenses, not for expected-loss totals.
 
-**Decomposition** breaks this pattern:
-- Split tasks across many specialized components
-- Each component has limited capability and context
-- No single component can cause catastrophic harm
-- Components can't easily coordinate against the system
+## Decomposition and the Least-X core
 
-Think of it like [separation of powers](https://en.wikipedia.org/wiki/Separation_of_powers) in government, or [microservices](https://en.wikipedia.org/wiki/Microservices) in software architecture.
+A single delegate with broad capability, context and access concentrates risk: its worst case is the whole system's worst case. Decomposition splits a task across narrow components so that each one's exposure is bounded. It does not stop correlated components from failing together, and it does not stop instances of one model from coordinating through shared reasoning. That is the subject of [Entanglements](/entanglements/).
 
-### Example: Organizational Analogy
+The six core [Least-X principles](/design-patterns/least-x-principles/) generalize least privilege:
 
-| Aspect | Centralized | Decomposed |
-|--------|-------------|------------|
-| **Single point of failure** | CEO makes all decisions | Authority distributed across roles |
-| **Blast radius** | Bad CEO decision affects everything | Bad decision contained to department |
-| **Coordination risk** | CEO can pursue personal agenda | Requires multiple people to collude |
-| **Verification** | Must verify CEO's judgment on everything | Verify narrow, specific behaviors |
+- **Least Intelligence**: the least capable implementation that does the task.
+- **Least Privilege**: minimum permissions and access rights.
+- **Least Context**: minimum information about the wider system.
+- **Least Persistence**: minimum state carried across invocations.
+- **Least Autonomy**: minimum ability to act without review.
+- **Least Connectivity**: minimum communication paths between components.
 
-The same logic applies to software systems and AI agents.
+The canonical page lists further principles as a labelled tail.
 
-## The "Least X" Principles
+## Verifiability hierarchy
 
-Security engineering has the [principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege): give each component minimum necessary access. We extend this across multiple dimensions:
+Implementations differ in how thoroughly you can check them. From most to least verifiable:
 
-- **Least Capability**: Minimum ability to take actions
-- **Least Privilege**: Minimum permissions and access rights
-- **Least Context**: Minimum information about the broader system
-- **Least Persistence**: Minimum state maintained across invocations
-- **Least Autonomy**: Minimum ability to act without oversight
-- **Least Connectivity**: Minimum communication paths between components
+1. **Formally verified code.** Proven against a specification. Examples: access-control checks, rate limiters.
+2. **Deterministic tested code and rule-based checks.** Auditable and repeatable. Examples: routing, schema validation, allow-lists.
+3. **Narrow learned models with measured error on a fixed task.** Examples: a classifier with a known false-negative rate on a held-out set.
+4. **Trusted LLMs**, below the capability level at which scheming is a live concern. This is AI Control's "trusted model" ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)).
+5. **Untrusted frontier models and agents.**
 
-Each principle bounds a different attack surface. Applied together, they create components that are limited in what they can do, know, remember, and coordinate.
+Use the most verifiable tier that can do the job. A check should sit at a lower tier than the component it checks; a frontier model checking a sibling of itself shares its blind spots. Training method does not define a tier: nearly all deployed frontier models are RL post-trained, and what matters is what you can verify about the deployed system.
 
-<details>
-<summary>Why each principle matters</summary>
+## When expected loss is the wrong metric
 
-| Principle | What it limits | Risk bounded |
-|-----------|---------------|--------------|
-| Least Capability | Ability to act | Direct damage from actions |
-| Least Privilege | Access rights | Scope of potential harm |
-| Least Context | System knowledge | Strategic planning against system |
-| Least Persistence | Memory across calls | Long-term planning, accumulating leverage |
-| Least Autonomy | Unsupervised action | Scope of damage before intervention |
-| Least Connectivity | Communication paths | Coordination between components |
+An expected-loss budget treats a 10⁻⁶ chance of losing \$1 billion the same as a certain loss of \$1,000. A principal who could not survive the first is not indifferent between them. Use something else when:
 
-</details>
+- **The tail matters.** Budget a tail measure such as [Expected Shortfall](/getting-started/glossary/#expected-shortfall), the mean loss in the worst α fraction of periods. This needs loss distributions, not point estimates, and it is where correlation between components enters.
+- **A single action can be catastrophic.** Put a hard cap on exposure instead of a budget on expectation. The [exposure envelope](/delegation-risk/runtime-accounting/#2-the-exposure-envelope) exists because a single concentrated failure must hit a wall, not slowly overdraw an account.
+- **The harm is irreversible or not denominated in money.** Treat it as a constraint (this mode must be outside the envelope, or below a stated probability), not as a line in a dollar budget.
 
-## Risk Budgeting
+## The minimal delegation-engineering layer
 
-Borrowed from finance and nuclear safety: set a total acceptable risk level for the system, then allocate risk budgets to components.
+If you build nothing else, build these four:
 
-Key requirements:
-- **Compositional guarantees**: Component risks must aggregate predictably
-- **Principled allocation**: Methods like [Euler allocation](/cross-domain-methods/euler-allocation/) ensure budgets sum correctly
-- **Incentive-compatible reporting**: Mechanisms that make honest risk reporting optimal
-- **Verification infrastructure**: Independent confirmation that claimed levels match reality
-- **Conservative margins**: Buffer for uncertainty and unknowns
+1. **Write down the harm surface.** For each component, record what it can reach and how it can fail, in each of the three channels.
+2. **Put a hard envelope around it.** File scope, tool permissions, egress allow-lists and spend caps, enforced by the harness, not by the model or its prompt.
+3. **Set a correlation budget.** No two checks on the same action share a model family, and at least one check sits at tier 1 or 2 of the hierarchy.
+4. **Keep a ledger and reconcile it monthly.** Log consequential actions with their preflight estimates, compare against incidents and near misses, and revise the estimates.
 
-:::note
-This isn't theoretical—nuclear plants operate at core damage frequencies around 10⁻⁵/reactor-year (NRC target: ~10⁻⁴/reactor-year) by flowing system targets down to component budgets through fault trees. Aviation uses the same approach to achieve the FAA/EASA catastrophic-condition target of 10⁻⁹/flight-hour.
-:::
-
-```mermaid
-flowchart TD
-    S[System Risk Target<br/>e.g. $10,000/year] --> A[Component A<br/>Budget: $3,000]
-    S --> B[Component B<br/>Budget: $4,000]
-    S --> C[Component C<br/>Budget: $3,000]
-    A --> V[Verification Layer]
-    B --> V
-    C --> V
-```
-
-## Architectural Safety
-
-The central claim: safety can be a property of system architecture, not just individual component behavior.
-
-If you can't guarantee a delegate is trustworthy, you can still:
-- Limit what they can access (least privilege)
-- Limit what they know (least context)
-- Limit what they can coordinate (decomposition)
-- Limit how much damage they can cause (risk budgets)
-- Verify their behavior matches claims (verification layers)
-
-:::caution
-These structural constraints provide defense in depth. They don't replace selecting trustworthy delegates—they bound the damage when trust is misplaced.
-:::
-
----
-
-## Application to AI Systems
-
-The framework applies generally, but AI systems are our primary focus. For AI specifically:
-
-### Verifiability Hierarchy
-
-Not all implementations are equally trustworthy:
-
-1. **Provably secure code** — Mathematical guarantees of correctness
-2. **Regular code** — Auditable, testable, deterministic
-3. **Fine-tuned narrow models** — Predictable within a specific domain
-4. **Constrained general models** — LLMs with extensive prompting and evaluation
-5. **Base LLMs** — General capability, harder to verify
-6. **RL systems** — Learned policies, least predictable
-
-:::note[Design Principle]
-Use the most verifiable implementation that achieves the required functionality. Don't use a frontier LLM for tasks that can be done with code or a narrow model.
-:::
-
-```mermaid
-graph TB
-    subgraph "Most Verifiable"
-        A[Provably Secure Code]
-    end
-    A --> B[Regular Code]
-    B --> C[Fine-tuned Narrow Models]
-    C --> D[Constrained General Models]
-    D --> E[Base LLMs]
-    E --> F[RL Systems]
-    subgraph "Least Verifiable"
-        F
-    end
-```
-
-<details>
-<summary>When to use each level</summary>
-
-| Level | Use when... | Example |
-|-------|-------------|---------|
-| Provably secure code | Correctness is critical, logic is simple | Access control checks, rate limiters |
-| Regular code | Behavior is fully specifiable | Data transformation, API routing |
-| Fine-tuned narrow models | Task is well-defined, training data exists | Sentiment classification, entity extraction |
-| Constrained general models | Judgment needed, outcomes recoverable | Draft generation, summarization |
-| Base LLMs | Maximum flexibility needed, heavy oversight | Creative tasks, complex reasoning |
-| RL systems | Learning from feedback is essential | Rarely recommended for safety-critical paths |
-
-</details>
-
-### Architectural Spectrum: Monolithic vs Decomposed
-
-Real systems exist on a spectrum. This diagram shows two stylized endpoints:
-
-```mermaid
-flowchart TB
-    subgraph Before["Monolithic Agent"]
-        direction TB
-        M["Single Agent<br/>────────────<br/>• Full context access<br/>• All capabilities<br/>• High autonomy<br/>• Single point of failure"]
-        M --> OUT1[Any Output]
-    end
-
-    subgraph After["Decomposed System"]
-        direction TB
-        subgraph Coord["Coordination (Code)"]
-            R[Router]
-        end
-        subgraph Workers["Narrow Components"]
-            W1["Searcher<br/>Read-only"]
-            W2["Summarizer<br/>Text only"]
-            W3["Analyzer<br/>No actions"]
-        end
-        subgraph Safety["Safety Layer"]
-            V[Verifier]
-            G[Human Gate]
-        end
-        R --> W1 & W2 & W3
-        W1 & W2 & W3 --> V
-        V --> G
-        G --> OUT2[Verified Output]
-    end
-```
-
-| Aspect | Monolithic | Decomposed |
-|--------|------------|------------|
-| **Single point of failure** | Yes—one bad output, system fails | No—failure isolated to component |
-| **Attack surface** | Entire model capability | Only exposed component interfaces |
-| **Verification** | Must verify everything the model can do | Verify narrow, specific behaviors |
-| **Blast radius** | Unlimited—model can do anything | Bounded—each component has limits |
-| **Coordination risk** | Model coordinates with itself | Components can't easily collude |
-
----
-
-## The Minimal Viable Framework
-
-You don't need all 45 patterns. If you implement nothing else, implement these five. This is the 80/20 version for teams starting small.
-
-### The 5 Essential Patterns
-
-#### 1. Least Privilege
-**Give the minimum permissions needed for the task.**
-
-```
-❌ AI has admin access to everything
-✓ AI can only read/write files in /workspace
-```
-
-#### 2. Human Escalation
-**High-stakes decisions go to humans.**
-
-```
-❌ AI executes all actions autonomously
-✓ Actions over $1000 require human approval
-```
-
-#### 3. Output Filtering
-**Check outputs before they reach the world.**
-
-```
-❌ AI response goes directly to user
-✓ Filter checks for PII, harmful content, policy violations
-```
-
-#### 4. Sandboxing
-**Limit what can go wrong.**
-
-```
-❌ AI runs on production server
-✓ AI runs in isolated container with no network access
-```
-
-#### 5. Audit Logging
-**Record everything for when things go wrong.**
-
-```
-❌ No logs, can't investigate incidents
-✓ All inputs, outputs, and decisions logged with timestamps
-```
-
-### Low-Risk vs High-Risk Decision
-
-```mermaid
-flowchart TD
-    Start[What are you building?] --> Q1{Can it access<br/>sensitive data?}
-    Q1 -->|No| Q2{Can it take<br/>real-world actions?}
-    Q1 -->|Yes| High[High Risk Path]
-    Q2 -->|No| Q3{Does it talk to<br/>customers?}
-    Q2 -->|Yes| High
-    Q3 -->|No| Low[Low Risk Path]
-    Q3 -->|Yes| Medium[Medium Risk Path]
-
-    Low --> L1[5 Essential Patterns]
-    Medium --> M1[+ Tripwire Monitoring<br/>+ Rate Limiting]
-    High --> H1[+ Human Review<br/>+ Formal Verification<br/>+ Defense in Depth]
-
-    style Low fill:#e8f5e9
-    style Medium fill:#fff3e0
-    style High fill:#ffebee
-```
-
-### Minimum Viable Implementation Checklist
-
-**Phase 1: Foundation (1 day)**
-- [ ] Define your harm modes (what could go wrong?)
-- [ ] Set a risk budget (how much harm is acceptable?)
-- [ ] Implement least privilege (minimum permissions)
-
-**Phase 2: Safety Basics (1 week)**
-- [ ] Add output filtering
-- [ ] Implement human escalation for high-stakes
-- [ ] Set up audit logging
-- [ ] Create a sandbox environment
-
-**Phase 3: Monitoring (2 weeks)**
-- [ ] Add basic anomaly detection
-- [ ] Set up alerting for unusual patterns
-- [ ] Review logs weekly
-
-**Phase 4: Iteration (Ongoing)**
-- [ ] Track actual vs. expected harm
-- [ ] Adjust risk budgets based on data
-- [ ] Add patterns as needed
-
-### When to Expand
-
-Add more patterns when:
-
-| Signal | Suggested Addition |
-|--------|-------------------|
-| Failures are correlated | Read Entanglements, add diversity |
-| Human review bottleneck | Add AI verifiers, graduated autonomy |
-| Novel attacks detected | Add tripwires, adversarial testing |
-| Cascading failures | Add bulkheads, blast radius containment |
-| Trust is miscalibrated | Add trust decay, capability sunset |
-
-### Which Sections Can I Skip?
-
-- **Entanglements** — Skip if your system has < 3 components, or you use completely different models for each component. Don't skip if you have multiple AI verifiers, use the same base model in multiple places, or components share training data.
-- **Power Dynamics** — Skip if you just want to implement patterns, not understand the theory. Don't skip if you need to justify decisions to stakeholders or want to optimize capability/risk tradeoffs.
-- **Research** — Skip if you're implementing, not doing research. Read if you want to understand the theoretical foundations or contribute improvements.
-- **Cross-Domain Methods** — Skip if you trust the patterns as-is. Read if you want to understand why these methods work (nuclear, finance precedents).
-
-### What This Framework Is NOT
-
-- **Not an alignment solution** — Assumes components may be misaligned
-- **Not formal verification** — Probabilistic, not provable
-- **Not a substitute for good models** — Better models reduce accident risk
-- **Not zero-risk** — Manages risk, doesn't eliminate it
-
----
-
-## What This Framework Provides
-
-1. **Vocabulary**: Precise terms for discussing risk, delegation, and containment
-2. **Theory**: Mathematics for risk propagation, capability quantification, and optimization
-3. **Methods**: Established approaches adapted from finance, nuclear safety, mechanism design
-4. **Principles**: Actionable design constraints (the "Least X" family)
-5. **Patterns**: Decomposed coordination, verification layers, safety mechanisms
-
-The goal is infrastructure for safely delegating at scale—not a complete solution to trust, but a foundation for managing risk as capabilities increase.
-
-### The Optimization Problem
-
-The framework isn't just about minimizing risk—it's about **maximizing capability subject to risk constraints**:
-
-$$\max \text{Capability} \quad \text{s.t.} \quad \text{DelegationRisk} \leq \text{Budget}$$
-
-Where **Capability = Power × Agency**:
-- **Power**: Ability to achieve diverse goals (what can the system accomplish?)
-- **Agency**: Coherence of goal-pursuit (how optimizer-like is the system?)
-
-See [Agent, Power, and Authority](/power-dynamics/agent-power-formalization/) for full formalization.
-
----
-
-## Key Takeaways
-
-:::note[Key Takeaways]
-1. **The goal is maximizing capability subject to risk constraints**: Not minimizing risk to zero
-2. **Capability = Power × Agency**: We want high power, minimum necessary agency
-3. **Delegation Risk quantifies the downside**: the expected cost of delegating, summed over harm modes ([the formula](#the-formula))
-4. **Decompose, don't centralize**: Many limited components are safer than one powerful delegate
-5. **Apply "Least X" principles**: Minimize capability, privilege, context, persistence, autonomy, connectivity
-6. **Budget both risk AND power**: Allocate, verify, and enforce limits on both sides
-7. **High power + low agency may be optimal**: "Strong tools" provide capability without coherent optimization pressure
-:::
-
-## See Also
-
-- [The Core Path](/getting-started/reading-order/#the-core-path) — The guided route through the framework's strongest material
-- [Getting Started](/getting-started/) — The full problem statement and approach
-- [Delegation Risk Overview](/delegation-risk/overview/) — The quantitative foundation
-- [Least X Principles](/design-patterns/least-x-principles/) — Deep dive into each principle
-- [Quick Start](/design-patterns/tools/quick-start/) — Apply these concepts step-by-step
+Ordinary security hygiene sits underneath: least privilege, sandboxing, audit logs and human approval above a threshold. It is necessary, but it is not what this framework adds. [For Engineers](/getting-started/for-engineers/) maps the layer onto current agent harnesses.
+
+## What this framework is not
+
+- **Not an alignment solution.** It assumes components may be misaligned and tries to bound the damage.
+- **Not formal verification.** Its guarantees are probabilistic, except where an envelope is enforced mechanically.
+- **Not validated.** Most numbers on this site are illustrative, and the framework is untested on deployed AI systems.
+
+## See also
+
+- [Glossary](/getting-started/glossary/) and [Quick Reference](/getting-started/quick-reference/)
+- [Delegation Risk](/delegation-risk/): the section this page summarizes
+- [Runtime Accounting](/delegation-risk/runtime-accounting/): preflight, envelope and ledger

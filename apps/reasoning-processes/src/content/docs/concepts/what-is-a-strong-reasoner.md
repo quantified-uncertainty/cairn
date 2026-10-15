@@ -7,8 +7,8 @@ sidebar:
 
 *A strong reasoner is an AI system whose judgments deserve substantial weight — in the limit, deference — within its domain. The definition is about warranted trust, not raw capability, and each candidate property earns its place only insofar as it is measurable.*
 
-:::note[Status]
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Positions here are exploratory, not settled. Most cited posts are our own earlier QURI writing.
+:::note
+Most cited posts are our own earlier QURI writing.
 :::
 
 ## A working definition

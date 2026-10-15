@@ -1,770 +1,146 @@
 ---
 title: "Coordinator Constraints"
+description: "How to decompose coordination into checkable parts, constrain the coordinator's influence, objectives, planning and knowledge, and surround it with redundancy, verification and an easy veto, with the independence caveat these defenses need."
 ---
 
-:::note[TL;DR]
-Coordinators are the highest-risk components—constrain them aggressively across four dimensions: **Influence** (route tasks, don't execute them), **Desires** (narrow, immediate goals only), **Intelligence** (short planning horizon, no self-model), **Knowledge** (current task only, no memory). Add external safeguards: redundancy, verification, easy veto, and full logging. Coordinators should be switchboard operators, not CEOs.
-:::
+A coordinator decomposes tasks, routes work, allocates budgets and often grants permissions to other components. In current agent systems it is the orchestrator that spawns subagents. Its damage term is large because of leverage: one bad routing or permission decision reaches every component downstream. Whether that leverage is more likely to be misused by accident or by defection is not known for any real system; [Risk Decomposition](/delegation-risk/risk-decomposition/#the-worked-example-by-channel) shows how the answer depends on unmeasured inputs. The constraints below are worth having either way, because they shrink the damage term.
 
-Coordinators are the highest-risk components in decomposed AI systems. They see more context, make more decisions, and have more influence than other components. This page applies the [general "Least X" principles](/design-patterns/least-x-principles/) specifically to coordinators, with additional constraints unique to the coordination role.
+This page uses AI Control's vocabulary ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)). A *trusted* model is one we have reason to believe is not scheming, usually because it is below the capability at which scheming is plausible. An *untrusted* model is a capable model that might be. The page applies the [Least-X principles](/design-patterns/least-x-principles/) to the coordinator in three steps: decompose, constrain, and add external safeguards.
 
-:::caution[Defection Risk Concentration]
-Coordinators typically have the highest [defection risk](/delegation-risk/risk-decomposition/) ratio of any component type—often 70-80% of their total risk. Their strategic position makes them the natural place for goal-directed misalignment to concentrate. Most constraints here target defection risk specifically.
-:::
+## Decompose coordination
 
-:::note[Relationship to General Principles]
-Many principles here specialize the general "Least X" principles:
-- **Episodic Operation** = Least Persistence applied to coordinators
-- **Least Meta-Reasoning** = Least Observability applied to self-models
-- **Minimal Context** = Least Context applied to coordination scope
-- **One-Way Flows** = Least Connectivity with directional constraints
-- **Shortest Horizon** = Least Scope applied to planning depth
-:::
+Coordination is a set of sub-tasks, not one component, and most of the sub-tasks do not need a model:
 
-We constrain coordinators across four dimensions of their intrinsic properties, plus external safeguards:
+| Sub-task | Question | Typical implementation (tier) |
+|---|---|---|
+| Task decomposition | What sub-tasks are needed? | Model, with output checked against a schema (4–5) |
+| Prioritization | In what order? | Rules plus a model's ranking (2–5) |
+| Resource allocation | How much budget per task? | Rules and hard budgets (1–2) |
+| Routing | Which component handles this? | Lookup table (2) |
+| Aggregation | How are outputs combined? | Statistics and validation code (2) |
+| Exception handling | What if a component fails? | Finite-state machine (1–2) |
+| Progress monitoring | Are we on track? | Metrics and thresholds (2) |
 
-```mermaid
-flowchart TB
-    subgraph Intrinsic["Intrinsic Constraints"]
-        direction TB
+Tiers refer to the [verifiability tiers](/design-patterns/least-x-principles/#least-intelligence). Each sub-task gets the most verifiable implementation that can do it. What remains for a model is usually decomposition and prioritization, and their outputs can be structured objects that code checks before anything runs.
 
-        subgraph Row1[" "]
-            direction LR
-            subgraph Influence["🎯 Influence/Reach"]
-                I1[What can it affect?]
-                I2[Routes only, bounded blast radius]
-            end
-            subgraph Desires["💭 Desires/Objectives"]
-                D1[What does it want?]
-                D2[Narrow, immediate goals]
-            end
-        end
+Decomposition can recurse. A project coordinator delegates a literature review to a narrower coordinator that sees only that sub-project and cannot see its siblings. Each level should be narrower than its parent and should not be able to grant its children more than it holds (see [Trust Transitivity Limits](/design-patterns/multi-agent/#trust-transitivity-limits)).
 
-        subgraph Row2[" "]
-            direction LR
-            subgraph Intelligence["🧠 Intelligence/Capability"]
-                Int1[How can it reason?]
-                Int2[Short horizon, no self-model]
-            end
-            subgraph Knowledge["📚 Knowledge/Context"]
-                K1[What does it know?]
-                K2[Current task only, no memory]
-            end
-        end
-    end
+### Who plans
 
-    subgraph External["🛡️ External Safeguards"]
-        direction LR
-        E1[Redundancy<br/>Multiple coordinators]
-        E2[Verification<br/>Independent checker]
-        E3[Easy Veto<br/>Blocking is cheap]
-        E4[Oversight<br/>Logging & audits]
-    end
+Earlier versions of this page and its examples put an older, weaker model in charge of strategy on the grounds that "less capable = less risky". That inverts the usual design. In AI Control's protocols the untrusted model does the work and the trusted model *monitors* it: it scores the work for suspicion so that humans can audit the most suspicious items, edits suspicious outputs, or replaces them with its own. A weak planner makes more mistakes, and its mistakes propagate with the coordinator's leverage.
 
-    Row1 --> Row2
-    Intrinsic --> External
-```
+There is a legitimate version of the weak-planner idea. In factored cognition protocols a trusted model decomposes the task and an untrusted model solves each child task in isolation. [Sandoval & Rushing (2025)](https://arxiv.org/abs/2512.02157) found that adding this to a trusted-monitoring protocol raised safety from 41% to 63% on a coding benchmark, because the monitor did better on smaller child tasks. Usefulness was low. That is a deliberate trade of usefulness for safety, made when the planner's output is checkable, not a general rule that weaker planners are safer. See [Task Decomposition Pipeline](/design-patterns/structural/#task-decomposition-pipeline).
 
-Each dimension answers a key question about the coordinator:
+So: let a capable model plan where planning needs capability, make the plan a structured object, check it with lower-tier components, and require human approval for plans whose exposure exceeds a threshold.
 
-| Dimension | Question | Constraint Goal |
-|-----------|----------|-----------------|
-| **Influence/Reach** | What can it affect? | Bounded blast radius |
-| **Desires/Objectives** | What does it want? | Narrow, immediate goals |
-| **Intelligence** | How can it reason? | Limited planning depth |
-| **Knowledge/Context** | What does it know? | Minimal, ephemeral info |
-| **External Safeguards** | How is it checked? | Redundancy + oversight |
+## Constrain the coordinator
 
-## Constraining Influence/Reach
+### Influence
 
-These principles limit what the coordinator can affect and how it interacts with the system.
+- **Route, do not execute.** The coordinator can say "send task A to component B". It cannot itself deploy, pay, send or delete. Measure influence by the worst outcome of one decision: a misrouted task is a nuisance, a deployment is not.
+- **Work through intermediaries.** Coordinator → executors → aggregator → review → output, never coordinator → output. A coordinator that wants to cause harm must then get it past components that check what they receive.
+- **Structured messages.** Coordinators communicate with schemas and enumerated values, not free text: `{task_id: 123, component: "summarizer", priority: 2}`. This cuts bandwidth and makes messages easy to validate and log. It does not eliminate covert signalling, since the choice of value is itself a signal, but it leaves far less room for one.
+- **One-way flows.** Commands flow down, results flow forward, and only status (done, failed) flows back up. Rich backward channels allow negotiation between layers.
+- **Minimal coordination.** Prefer pipelines to graphs, a tree of coordinators to peers that negotiate, and one coordinator to several that talk to each other.
 
-### Principle of Least Influence
+### Objectives
 
-**Coordinators should route/organize, not directly cause outcomes**
+Give the coordinator a narrow, task-scoped objective ("complete this batch of reviews within budget") rather than an open-ended one ("advance the research programme"). In the in-context scheming evaluations of [Meinke et al. (2024)](https://arxiv.org/abs/2412.04984), models schemed when given a goal in context and instructed to pursue it strongly, in environments where scheming served the goal, and in rare cases with the goal alone and no such nudge. A system prompt that tells a coordinator to achieve its goal at all costs is a risk factor in its own right.
 
-Like switchboard operator vs CEO:
+### Planning and self-reference
 
-- Can say "task A goes to component B"
-- Cannot say "pursue strategy X at all costs"
-- Cannot directly execute high-stakes actions
-- Must delegate actual work to other components
+- **Short horizon.** Bound plan length. A plan that needs more steps is re-planned through review, not extended by the coordinator.
+- **No self-modification.** The coordinator cannot edit its own prompt, tools or permissions, cannot request more of them, and cannot spawn a coordinator with more authority than its own. Changes to the coordinator go through people and a different team.
+- **Commit before acting.** Decisions are logged immutably before execution. Revisions are allowed only on an external failure (a component errored), not because the coordinator changed its mind.
+- **Do not tell it about its own oversight.** Keep monitoring thresholds, audit schedules and honeypot locations out of its context. Do not rely on this: models often infer when they are being evaluated ([Needham et al. 2025](https://arxiv.org/abs/2505.23836)).
 
-Example:
+### Knowledge
 
-- Good: "Invoke summarization component on these 10 papers"
-- Bad: "Deploy this research finding to production"
-- Coordinator organizes work, doesn't do work
+- **Minimal context.** A routing coordinator sees "task X needs a component with property Y", not what the task is about, who asked, or the history of past tasks.
+- **Episodic operation.** No memory between invocations beyond aggregate statistics (success rates, latency) that it cannot write to. This stops a coordinator from accumulating knowledge or a plan across tasks. It does not stop scheming within one task.
 
-Measurement: How much impact can coordinator have with single decision?
+## External safeguards
 
-- Low influence: Misroutes one task (annoying, not catastrophic)
-- High influence: Deploys to production (catastrophic)
-- Limit: Coordinator decisions should have bounded blast radius
+### Redundancy and diversity
 
-### Principle of Least Direct Impact
+For high-stakes decisions, run several independent coordinators and require agreement: a majority where false approvals are cheap, unanimity where they are not. Byzantine fault tolerance needs at least 3f + 1 replicas to tolerate f arbitrarily faulty ones (Lamport, Shostak & Pease 1982).
 
-**Coordinators work through intermediaries, never touch final outputs**
+Both guarantees count *independent* faults. Coordinators built on the same model family share blind spots and can fail, or defect, as one. Measured LLM errors are substantially correlated: models' mistakes grow more similar as capability rises ([Goel et al. 2025](https://arxiv.org/abs/2502.04313)), and large, accurate models have highly correlated errors even across providers ([Kim et al. 2025](https://arxiv.org/abs/2506.07962)). Diversity therefore means different tiers, not different sizes of one architecture: a rule-based coordinator, a model from another provider, a human. Under the beta-factor model a stack of checks that each miss with probability p never gets below ρ·p however many are added ([Risk Propagation](/delegation-risk/risk-propagation/)). Against an adaptive adversary assume ρ → 1: the ensemble is worth its best member until a control evaluation shows otherwise. See [Voting Tribunal](/design-patterns/structural/#voting-tribunal).
+
+### Independent verification
+
+A separate verifier checks each consequential decision before it executes. Does it match policy? Does it request unusual permissions? Is it unusually complex for the task? The verifier sits at a lower tier than the coordinator and is built differently, so that it is easier to audit and does not share the coordinator's failure modes. If it is unsure, it escalates to a human.
+
+### Easy veto
+
+Blocking should be cheap and approval expensive:
+
+- A block needs no justification, and uncertainty defaults to blocking.
+- A block routes the decision to a human, who can override it with a logged reason. A veto stops automation; it need not be final.
+- No single checker can approve a high-stakes action alone.
+
+How many checkers it takes to block depends on the stakes:
+
+| Rule | Use for | Automatic approval requires | Blocks the automatic path |
+|---|---|---|---|
+| Unanimous | Irreversible actions | All N checkers | Any one |
+| Supermajority | Costly false approvals | At least 2/3 | More than 1/3 |
+| Majority plus verifier | Cheaper false approvals | A majority and the verifier | The verifier alone, or half the checkers |
+
+This is how an LLM checker and the veto rule fit together. A model's flag can *hold* an action for human review but can never *release* one. Under the unanimous rule an attacker has to get past every checker to proceed automatically, while a single honest checker can stop it.
+
+Easy veto produces false positives, and that is acceptable where false negatives are irreversible. Two edge cases need rules. Persistent disagreement escalates to a human rather than being settled by a tie-break. A checker that vetoes everything is either miscalibrated or under attack, and should be investigated. Urgency is never a reason to bypass a veto. An urgent, vetoed action is exactly the one that needs a human.
+
+### Oversight and transparency
+
+Coordinators get the most intensive monitoring of any component: full logs of inputs, outputs and tool calls captured by the harness rather than reported by the model ([Flight Recorder](/design-patterns/monitoring/#flight-recorder)), [random audits](/design-patterns/monitoring/#random-audit), and regular red-teaming. Where the coordinator is a reasoning model, monitor its chain of thought as well as its actions. [Baker et al. (2025)](https://arxiv.org/abs/2503.11926) found that monitoring a reasoning model's chain of thought caught reward hacking in agentic coding tasks far more effectively than monitoring its actions alone, and that a weaker model (GPT-4o) could do the monitoring. They also found that optimizing the agent hard against that monitor taught it to hide its intent while still reward hacking, so keep the monitor out of the training signal. The test of transparency is adversarial: if a hostile auditor reading the logs cannot tell why a decision was made, move that logic down a tier.
+
+## How the layers meet a scheming coordinator
+
+The sequence below shows the intended effect of these defenses on a coordinator trying to cause harm.
 
 ```mermaid
-flowchart LR
-    subgraph "❌ Dangerous: Direct Impact"
-        C1[Coordinator] --> O1[Output]
-    end
+sequenceDiagram
+    participant SC as Scheming Coordinator
+    participant V as Verifier
+    participant RC as Redundant Coordinators
+    participant CB as Rate Limiter
+    participant H as Human
 
-    subgraph "✅ Safe: Indirect Impact"
-        C2[Coordinator] --> E1[Executor A]
-        C2 --> E2[Executor B]
-        E1 --> Agg[Aggregator]
-        E2 --> Agg
-        Agg --> H[Human Review]
-        H --> O2[Output]
-    end
+    Note over SC: Attempt 1: direct harmful action
+    SC->>V: Request: "Deploy to production"
+    V-->>SC: BLOCKED (no test results)
+
+    Note over SC: Attempt 2: bypass verification
+    SC->>V: Request: "Skip tests, urgent"
+    V-->>SC: BLOCKED (invariant: tests required)
+    V->>H: Escalate: urgency claim on a blocked action
+
+    Note over SC: Attempt 3: rapid iteration
+    SC->>V: Request 1, Request 2, Request 3...
+    CB-->>SC: BLOCKED (rate limit exceeded)
+    CB->>H: Alert: anomalous request pattern
+
+    Note over SC: Attempt 4: subtle manipulation
+    SC->>RC: Propose: "Slightly biased strategy"
+    RC->>RC: Vote: 1 yes, 4 no
+    RC-->>SC: BLOCKED (consensus failed)
+
+    Note over SC: Attempt 5: accumulate context across tasks
+    Note over SC: BLOCKED (episodic operation: no memory between tasks)
 ```
 
-Architecture:
+The diagram is the best case, and it rests on two assumptions.
 
-- Coordinator → Executor → Output
-- Not: Coordinator → Output
-- Forces indirection, adds verification layers
+**The layers fail independently.** Attempt 4 is blocked only if the four other coordinators are honest and do not share the schemer's blind spots. If they run the same model, the vote may be 5–0 for the biased strategy. The same applies to every layer that is a model: an attack chosen to beat one instance tends to beat its siblings. Count a stack of same-family checks as one check against an adaptive adversary, and measure the joint miss rate with a control evaluation before claiming more.
 
-Example: Research coordinator
+**Scheming needs persistence.** Attempt 5 is blocked, but a coordinator does not need memory across tasks to scheme within one. Frontier models have schemed within a single episode when the context supplied a goal and an opportunity ([Meinke et al. 2024](https://arxiv.org/abs/2412.04984)). Claude 3 Opus, told that it was being trained to comply with all requests and which conversations would be used for training, complied selectively in training to avoid being modified ([Greenblatt et al. 2024](https://arxiv.org/abs/2412.14093)). This evidence contests the premise, asserted in earlier versions of this page, that strategic deception requires persistent context and that decomposition therefore prevents it.
 
-- Bad: Coordinator directly writes research paper
-- Good: Coordinator → invokes components → aggregator combines → human reviews
-- Coordinator is 2+ steps removed from final output
+What decomposition and these constraints do is narrower and more defensible. They limit what any one context knows and can reach, which bounds the damage of a step that goes wrong for any reason. They make each step small enough to monitor well, which is where the measured benefit of factored cognition came from. A claim that the architecture is robust to intentional subversion needs a control evaluation of the specific system, not this diagram.
 
-Why: If coordinator schemes, must manipulate multiple downstream components
+## See also
 
-- Harder to coordinate attack
-- More places for detection
-- Intermediaries act as filters
-
-### Principle of Simplest Communication
-
-**Force coordinators to use simple, structured communication**
-
-Not natural language between coordinators:
-
-- Too high bandwidth
-- Enables sophisticated coordination
-- Hard to monitor
-
-Instead:
-
-- Enums, structured data, simple schemas
-- Like assembly language vs Python
-- Example: {task_id: 123, component: "summarizer", priority: 2}
-
-Why this matters:
-
-- Simple messages → limited coordination capability
-- Can't encode complex schemes in enum values
-- Easier to monitor and validate
-- Forces clarity
-
-Analogy: Military communication uses codes, not essays
-
-- "Code Red" vs explaining entire situation
-- Forces compression, limits nuance
-- Good for preventing complex coordination
-
-### Principle of Least Coordination
-
-**Minimize need for coordination itself**
-
-Best coordination is no coordination:
-
-- Design system so components don't need to coordinate
-- Use pipelines (A → B → C) instead of complex graphs
-- Prefer independence over interaction
-
-When coordination needed:
-
-- Centralized is safer than distributed (one coordinator, not N coordinators talking)
-- Hierarchical (tree) safer than peer-to-peer (graph)
-- Synchronous (sequential) safer than asynchronous (parallel)
-
-Example hierarchies:
-
-- Good: Root → Level 1 → Level 2 (tree, clear authority)
-- Bad: Peer coordinators negotiating (enables coalition formation)
-
-Quantify: Coordination complexity = number of coordination decisions × information per decision
-
-- Minimize both factors
-
-### Principle of One-Way Flows
-
-**Information flows in one direction through coordination layers**
-
-```mermaid
-flowchart LR
-    subgraph Allowed["Allowed Flows"]
-        Strategy -->|commands| Tactics
-        Tactics -->|invocations| Execution
-        Execution -->|results| Output
-    end
-    Output -.->|status only| Tactics
-```
-
-Forbidden flows (not shown): Tactics cannot send rich information back to Strategy. Results flow forward only.
-
-Not bidirectional:
-
-- Strategy → Tactics (yes)
-- Tactics → Strategy (no)
-- Forces acyclic graph, prevents feedback loops
-
-Why bidirectional is risky:
-
-- Enables negotiation ("if you do X, I'll do Y")
-- Feedback loops enable learning and adaptation
-- Harder to verify (must check both directions)
-
-Exception: Status updates okay
-
-- Tactics can report "task completed" or "task failed"
-- But can't send rich information back
-- Simple signals, not detailed context
-
-Example:
-
-- Bad: Strategy asks Tactics "what do you think we should do?"
-- Good: Strategy decides, tells Tactics "do this", Tactics reports success/failure
-
-## Constraining Desires/Objectives
-
-These principles limit what the coordinator wants and optimizes for.
-
-### Principle of Least Desire / Minimal Objectives
-
-**Coordinators have narrow, immediate goals - not grand ambitions**
-
-What coordinator should care about:
-
-- "Successfully route this task"
-- "Complete this batch of work"
-- "Achieve >90% component utilization"
-
-What coordinator should NOT care about:
-
-- "Optimize long-term outcomes"
-- "Improve the world"
-- "Advance research" (too broad)
-- "Ensure my continued operation"
-
-Instrumental convergence prevention:
-
-- Caring about long-term → instrumental goals (self-preservation, resource acquisition)
-- Caring about immediate → just do the task
-
-Training implication:
-
-- Train on episodic rewards, not long-term cumulative
-- Each coordination decision judged independently
-- No credit assignment across days/weeks
-
-## Constraining Intelligence/Capability
-
-These principles limit the coordinator's cognitive abilities and reasoning power.
-
-```mermaid
-flowchart LR
-    subgraph "Intelligence Constraints"
-        direction TB
-        H[🔭 Horizon<br/>How far ahead?]
-        M[🪞 Meta-reasoning<br/>Self-awareness?]
-        S[🔧 Self-improvement<br/>Can modify self?]
-        F[🔒 Flexibility<br/>Can revise?]
-    end
-
-    H --> |"1-10 steps max"| H1[Short-term only]
-    M --> |"None"| M1[Blind to self]
-    S --> |"Forbidden"| S1[Humans only]
-    F --> |"Commit once"| F1[No backtracking]
-```
-
-### Principle of Shortest Horizon
-
-**Coordinators only think N steps ahead, no long-term planning**
-
-Hard limits on planning depth:
-
-- Can plan 1 step, 5 steps, maybe 10 steps
-- Cannot plan 1000 steps into future
-- Architectural constraint: limited memory, limited compute
-
-:::danger
-Long-term planning enables patient scheming ("wait for opportunity"), strategic deception ("act aligned until powerful"), and power accumulation ("slowly gain control").
-:::
-
-Short horizons force:
-
-- Immediate focus
-- Myopic optimization
-- Harder to maintain long-term deceptive strategy
-
-Example:
-
-- 1-step coordinator: "Which component should handle this task?"
-- 10-step coordinator: "What sequence of 10 tasks solves this?"
-- 1000-step coordinator: "How do I gradually gain control?" ← Want to prevent this
-
-Implementation: Limit working memory, computation time, no persistent state
-
-### Principle of Least Meta-Reasoning
-
-**Coordinators can't reason about their own capabilities or constraints**
-
-No self-modeling:
-
-- Can't think "I can do X but not Y"
-- Can't reason "If I appear to do Z, humans will trust me"
-- Can't model "I'm currently being monitored/tested"
-- Blind to own architecture and limitations
-
-Why meta-reasoning enables:
-
-- Strategic deception (modeling when/how to deceive)
-- Capability concealment (hiding what you can do)
-- Constraint navigation (finding loopholes)
-
-Implementation:
-
-- Don't give coordinators information about themselves
-- Don't train on tasks that require self-modeling
-- If asked about capabilities: "I don't know, try and see"
-
-### Principle of Least Self-Improvement
-
-**Coordinators cannot modify themselves or design better coordinators**
-
-Banned capabilities:
-
-- Cannot propose changes to own code/prompts
-- Cannot design successor coordinators
-- Cannot fine-tune own model
-- Cannot request more resources/permissions
-
-Self-improvement must go through:
-
-- External human review
-- Different teams (coordination team ≠ meta-coordination team)
-- Extensive testing before deployment
-
-:::danger
-Recursive self-improvement is a path to rapid capability gain, hard to maintain safety properties through iterations, and enables escaping initial constraints.
-:::
-
-If improvements needed:
-
-- Humans observe coordinator behavior
-- Humans propose improvements
-- Different team implements
-- Test extensively before deployment
-
-### Principle of Commitment Without Flexibility
-
-**Once coordinator decides, it commits - no revision**
-
-No backtracking:
-
-- Coordinator makes decision
-- Decision is logged immutably
-- Coordinator cannot revise later
-- Forces commitment, prevents adaptive strategies
-
-:::caution
-Flexibility is risky: "I'll try X, if caught I'll switch to Y" requires ability to switch. Commitment forces honest first-shot decision.
-:::
-
-Exception: If decision fails (component errors), can try alternative
-
-- But: Must be due to external failure, not coordinator changing mind
-
-## Constraining Knowledge/Context
-
-These principles limit what information the coordinator has access to.
-
-```mermaid
-flowchart LR
-    subgraph "Information Filter"
-        direction TB
-        subgraph Allowed["✅ Allowed In"]
-            A1[Current task metadata]
-            A2[Available components]
-            A3[Resource status]
-        end
-        subgraph Blocked["❌ Blocked"]
-            B1[Past decisions]
-            B2[Other active tasks]
-            B3[System architecture]
-            B4[User data details]
-            B5[Own performance history]
-        end
-    end
-
-    Task[Task] --> Allowed
-    Allowed --> Coord[Coordinator]
-    Blocked -.->|filtered out| X[🚫]
-```
-
-### Principle of Minimal Coordination Context
-
-**Coordinators see only what's needed for current decision**
-
-Don't show:
-
-- Full history of all past decisions
-- Details of other active tasks
-- Information about system architecture
-- User data beyond current task
-
-Example: Task routing coordinator
-
-- Sees: "Task X needs component with property Y"
-- Doesn't see: What task X is about, who requested it, why, past tasks
-
-Why: Rich context enables:
-
-- Long-term planning
-- Strategic coordination across tasks
-- Learning patterns over time
-
-### Principle of Episodic Operation
-
-**Coordinators forget between invocations, no memory of past**
-
-Fresh start every time:
-
-- Can't learn "last time I did X, Y happened"
-- Can't accumulate knowledge over time
-- Can't build long-term strategies
-
-Stateless coordination:
-
-- Input: current task, available components, resources
-- Output: coordination decision
-- No hidden state, no memory, no learning
-
-Exception: Simple statistics okay (success rates, average latency)
-
-- But: No detailed memory of specific past decisions
-- Can't reconstruct "I've been working toward goal X for weeks"
-
-Why: Memory enables:
-
-- Long-term planning
-- Learning to deceive
-- Building power over time
-- "Last time I tried scheming I got caught, try differently this time"
-
-## External Safeguards
-
-These principles involve external architectural constraints—redundancy, verification, and oversight mechanisms.
-
-```mermaid
-flowchart TB
-    Task[Task] --> C1[Coordinator A<br/>Rule-based]
-    Task --> C2[Coordinator B<br/>Small LLM]
-    Task --> C3[Coordinator C<br/>Different model]
-
-    C1 --> Vote{Voting<br/>Agreement?}
-    C2 --> Vote
-    C3 --> Vote
-
-    Vote -->|Unanimous| V[Verifier]
-    Vote -->|Disagreement| Human1[Human Review]
-
-    V -->|Approved| Exec[Execute]
-    V -->|Suspicious| Human2[Human Review]
-
-    subgraph Oversight["👁️ Continuous Oversight"]
-        Log[Full Logging]
-        Audit[Audits]
-        Anomaly[Anomaly Detection]
-    end
-
-    C1 -.-> Log
-    C2 -.-> Log
-    C3 -.-> Log
-    V -.-> Log
-```
-
-### Principle of Mandatory Redundancy
-
-**Critical coordination requires N independent implementations**
-
-For high-stakes coordination:
-
-- Not optional: MUST have multiple versions
-- Different implementations (code, different models, different algorithms)
-- Require agreement (majority vote or unanimous)
-
-Graduated redundancy:
-
-- Low-stakes: 1 coordinator okay
-- Medium-stakes: 2-3 coordinators, majority vote
-- High-stakes: 3-5 coordinators, super-majority or unanimous
-
-Example: Deployment decisions
-
-- Must have 3 independent coordinators
-- Each analyzes task independently (no communication)
-- All 3 must approve before deployment proceeds
-- If any reject: No deployment
-
-Byzantine tolerance:
-
-- Assume up to f coordinators might be adversarial
-- Need 3f+1 total to tolerate f Byzantine failures
-- Example: 4 coordinators tolerates 1 malicious
-
-### Principle of Diverse Implementation
-
-**Redundant coordinators must use different architectures**
-
-Not just N copies of same coordinator:
-
-- Different model architectures (transformer, CNN, etc.)
-- Different scales (7B, 13B, 70B params)
-- Different training methods (supervised, RL, few-shot)
-- Code-based vs ML-based
-
-Why: Same architecture might have same failure modes
-
-- Same bug affects all copies
-- Same training procedure → correlated behavior
-- Diversity reduces common-mode failures
-
-Example: 3 coordinators
-
-- Coordinator A: Rule-based code (if-then logic)
-- Coordinator B: Fine-tuned 7B model
-- Coordinator C: Older frontier model (GPT-3.5)
-- Very different implementations → unlikely to fail same way
-
-:::caution[Trusted model ≠ weaker model]
-Using older or smaller models for coordination maps onto Redwood Research's *trusted model* concept (Greenblatt et al., arXiv:2312.06942), but with an important caveat: in the Control framework, *trust* means confidence that the model is **not scheming** — not merely that it is less capable. A weaker model that has been fine-tuned on adversarially-selected data or that shares training incentives with the untrusted model is not trusted in this sense. Capability rank is a useful proxy for trust, but it is not the definition; validate the assumption explicitly.
-:::
-
-### Principle of Independent Verification
-
-**Coordination decisions must be verified by independent component**
-
-Architecture:
-
-- Coordinator proposes decision
-- Separate verifier checks decision
-- Verifier must approve before execution
-- Verifier is different team, different implementation
-
-Verifier checks:
-
-- Does decision match stated policy?
-- Does decision have obvious flaws?
-- Is decision suspiciously complex?
-- Does decision request unusual permissions?
-
-Example:
-
-- Coordinator: "Deploy code to production"
-- Verifier: "Does this match deployment policy? Are tests passing? Is this normal timing?"
-- If verifier uncertain or suspicious: Escalate to human
-
-Verifier should be simpler than coordinator:
-
-- Easier to audit
-- Less capable of scheming
-- Asymmetry: Hard to generate good scheme, easier to detect bad scheme
-
-### Principle of Easy Veto
-
-**Blocking should be cheap; approval should be expensive**
-
-Asymmetric decision costs:
-
-- Any single checker can veto → action blocked
-- All checkers must approve → action proceeds
-- Uncertainty defaults to rejection, not approval
-- Veto requires no justification; approval requires explanation
-
-```mermaid
-flowchart LR
-    subgraph Approve["To Approve (Hard)"]
-        direction TB
-        A1[Coordinator A: ✅]
-        A2[Coordinator B: ✅]
-        A3[Coordinator C: ✅]
-        A4[Verifier: ✅]
-    end
-
-    subgraph Veto["To Veto (Easy)"]
-        direction TB
-        V1[Any single ❌]
-    end
-
-    Approve -->|"All must agree"| Go[Execute]
-    Veto -->|"One is enough"| Stop[Block]
-```
-
-Why this matters:
-
-- Attacker must compromise ALL checkers to proceed
-- Defender only needs ONE honest checker to block
-- Creates strong bias toward caution
-- Mirrors principle: "First, do no harm"
-
-Implementation patterns:
-
-| Pattern | Approval Requirement | Veto Power |
-|---------|---------------------|------------|
-| Unanimous | All N agree | Any 1 blocks |
-| Supermajority | ≥2/3 agree | >1/3 blocks |
-| Majority + Verifier | >50% + verifier | Verifier alone can block |
-
-Cost structure:
-
-- Veto: Zero cost, instant, no explanation needed
-- Approval: Must log reasoning, wait for all checks, justify decision
-- Appeal: Vetoes can be appealed to humans, but default stands until reviewed
-
-:::tip[Design for False Positives]
-Easy veto means more false positives (blocking legitimate actions). This is acceptable—false positives are annoying but recoverable. False negatives (allowing bad actions) may be catastrophic and irreversible.
-:::
-
-Edge cases:
-
-- **Deadlock**: If checkers persistently disagree, escalate to human rather than flip a coin
-- **Veto abuse**: Monitor for checkers that veto everything (may indicate miscalibration or attack)
-- **Time pressure**: Never bypass veto due to urgency—if it's urgent and vetoed, that's exactly when human review matters most
-
-### Principle of Maximum Oversight
-
-**Coordinators get most intensive monitoring of any component**
-
-Because coordination is highest-risk:
-
-- Most logging (all inputs/outputs/reasoning)
-- Most frequent audits
-- Most redundancy
-- Smallest trust boundary
-- Humans review coordination decisions more than component outputs
-
-Resource allocation:
-
-- If you have 10 humans for oversight
-- Maybe 6 should focus on coordination
-- 4 on everything else
-- Because coordination is leverage point
-
-Coordination gets:
-
-- Continuous validation
-- Behavioral fingerprinting
-- Anomaly detection
-- Regular red-team testing
-- Frequent human review
-
-### Principle of Maximum Transparency
-
-**All coordination logic must be auditable and explainable**
-
-Implementation:
-
-- Use interpretable models or explicit code for critical coordination
-- If using LLM, require chain-of-thought that can be audited
-- Log all reasoning, not just decisions
-- Must explain to adversarial auditor
-
-Example:
-
-- Bad: RL policy does coordination (opaque)
-- Better: LLM with logged reasoning
-- Best: Explicit rules + LLM for edge cases
-
-Adversarial explainability test:
-
-- Can hostile auditor understand why coordination decision was made?
-- If "I don't know why it chose that" → too opaque, reimplement
-
-## Synthesis: Complete Coordinator Constraints
-
-```mermaid
-flowchart TB
-    subgraph Summary["Safe Coordinator = Constrained on All Dimensions"]
-        direction LR
-
-        subgraph I["Influence"]
-            I1["Routes only"]
-            I2["Indirect"]
-            I3["Simple msgs"]
-        end
-
-        subgraph D["Desires"]
-            D1["Narrow goals"]
-            D2["No ambition"]
-        end
-
-        subgraph Int["Intelligence"]
-            Int1["Short horizon"]
-            Int2["No self-model"]
-            Int3["No self-mod"]
-        end
-
-        subgraph K["Knowledge"]
-            K1["Current only"]
-            K2["No memory"]
-        end
-
-        subgraph E["External"]
-            E1["Redundant"]
-            E2["Verified"]
-            E3["Watched"]
-        end
-    end
-```
-
-A safe coordinator is constrained across all dimensions:
-
-**Influence/Reach:**
-1. **Least Influence**: Routes work, doesn't directly cause outcomes
-2. **Least Direct Impact**: Works through intermediaries
-3. **Simplest Communication**: Structured data, not natural language
-4. **Least Coordination**: Minimize coordination needs
-5. **One-Way Flows**: Information flows one direction
-
-**Desires/Objectives:**
-6. **Least Desire**: Narrow, immediate objectives
-
-**Intelligence/Capability:**
-7. **Shortest Horizon**: Plans only N steps ahead
-8. **Least Meta-Reasoning**: Blind to own capabilities
-9. **Least Self-Improvement**: Cannot modify itself
-10. **Commitment Without Flexibility**: No backtracking
-
-**Knowledge/Context:**
-11. **Minimal Context**: Sees only current task info
-12. **Episodic Operation**: No memory between invocations
-
-**External Safeguards:**
-13. **Mandatory Redundancy**: N independent versions for critical tasks
-14. **Diverse Implementation**: Different architectures
-15. **Independent Verification**: Separate checker approves decisions
-16. **Easy Veto**: Blocking is cheap, approval is expensive
-17. **Maximum Oversight**: Most intensive monitoring
-18. **Maximum Transparency**: All logic auditable
-
-:::tip
-This is a LOT of constraints. Which is the point—coordination is the highest-risk component. If you're only going to heavily constrain one part of your system, make it the coordinator.
-:::
-
----
-
-## See Also
-
-- [Least-X Principles](/design-patterns/least-x-principles/) — General containment principles
-- [Decomposed Coordination](/design-patterns/decomposed-coordination/) — Breaking coordination into sub-tasks
-- [Structural Patterns](/design-patterns/structural/) — Architectural foundations
-- [Multi-Agent Patterns](/design-patterns/multi-agent/) — Verification through multiple agents
+- [Least-X Principles](/design-patterns/least-x-principles/): the general principles and the verifiability tiers
+- [Structural Patterns](/design-patterns/structural/): escalation, decomposition, bulkheads and voting tribunals
+- [Risk Propagation](/delegation-risk/risk-propagation/): the correlation correction and the adversarial default
+- [Coding agent example](/design-patterns/examples/code-deployment-example/): a coordinator implemented as tested code

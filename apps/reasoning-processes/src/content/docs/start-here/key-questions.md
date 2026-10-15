@@ -5,10 +5,10 @@ sidebar:
   order: 2
 ---
 
-*The uncertainties this book is organized around, in four clusters: what a strong reasoner is, where the gains come from, what could go wrong, and who should govern any of it. A cruxes document is, loosely, a draft utility function over the field's own questions.*
+*The uncertainties these notes are organized around, in four clusters: what a strong reasoner is, where the gains come from, what could go wrong, and who should govern any of it. A cruxes document is, loosely, a draft utility function over our own questions.*
 
-:::note[Status]
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Reflects cruxes principally from Ozzie Gooen's [Claims & Cruxes on LLM Forecasting & Epistemics](https://forum.effectivealtruism.org/posts/EykCuXDCFAT5oGyux/my-current-claims-and-cruxes-on-llm-forecasting-and) (2024), a preliminary personal post; the question set and weights remain under revision.
+:::note
+Reflects cruxes principally from Ozzie Gooen's [Claims & Cruxes on LLM Forecasting & Epistemics](https://forum.effectivealtruism.org/posts/EykCuXDCFAT5oGyux/my-current-claims-and-cruxes-on-llm-forecasting-and) (2024), a preliminary personal post; the question set and weights remain under revision.
 :::
 
 This wiki is organized around uncertainties, not conclusions. The questions below are the ones whose answers would most change what we work on. They cluster into four groups: what a strong reasoner *is*, where the gains will actually come from, what could go wrong, and who should be in charge of any of it. (A cruxes document is, loosely, a draft utility function — see [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/) — so treat the selection as a position we expect to revise.)

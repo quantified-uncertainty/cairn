@@ -7,13 +7,13 @@ sidebar:
 
 *Status: early draft, adapted from the 2021–22 estimation-theory notes. This is the sketchiest part of the original program and remains the most open.*
 
-The [evaluation component](/concepts/components/) needs concrete methods. This page is the menu. Each method is a different point in the [accuracy × quantity × cost](/concepts/the-systems-view/) trade-off, and each carries a different *trust* profile — which matters, because an evaluation only moves decisions if its audience believes it.
+The [evaluation component](/concepts/components/) needs concrete methods. This page is the menu. Each method is a different point in the [design space](/concepts/the-systems-view/#the-design-space) of accuracy, unit cost and robustness, and each carries a different *trust* profile — which matters, because an evaluation only moves decisions if its audience believes it.
 
-Existing real-world evaluations come in recognizable families: audits, appraisals, rulings, academic/business/public reviews and ratings, performance assessments, actuarial assessments, and composite indices. The methods below are the building blocks behind those. [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/) shows each one deployed at scale, with its documented failure. The strongest lesson there is that a method's *funding model* (who pays the evaluator) predicts its trustworthiness better than the method itself does.
+Existing real-world evaluations come in recognizable families: audits, appraisals, rulings, academic/business/public reviews and ratings, performance assessments, actuarial assessments, and composite indices. The methods below are the building blocks behind those. [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/) shows each one deployed at scale, with its documented failure. The strongest pattern there is that a method's *funding model* (who pays the evaluator) seems to predict its trustworthiness better than the method itself does, a hypothesis supported by contrasts rather than a coded count.
 
 ## Expert panels
 
-The most general-purpose method: assemble a small team of recognized experts and have them produce the judgment. Metaculus has resolved questions against small expert teams; resolution councils have been set up for similar purposes.
+The most general-purpose method: assemble a small team of recognized experts and have them produce the judgment. Forecasting platforms reportedly use small expert panels to resolve subjective questions. <!-- TODO(verify): find Metaculus documentation of expert-panel resolution; current support is secondary (Gooen 2025, "AI for Resolving Forecasting Questions"). -->
 
 Key parameters to tune:
 
@@ -23,7 +23,7 @@ Key parameters to tune:
 - **Assistance** — a support team of cheaper helpers behind the experts.
 - **Scoring / incentives** for correctness.
 
-Expert evaluations behave a lot like predictions, so good scoring rules still matter — you can have panels make fast intuitive calls and later test them probabilistically against better-resourced panels. The catch is cost: experts are expensive, so there's a sharp tension between labor intensity and quality. Profile: **high accuracy, low quantity, high cost, high trust.**
+Expert evaluations behave a lot like predictions, so good scoring rules still matter — you can have panels make fast intuitive calls and later test them probabilistically against better-resourced panels. The catch is cost: experts are expensive, so there's a sharp tension between labor intensity and quality. Profile: **high cost, low quantity, high trust;** accuracy is often lower than assumed, since independent expert reviewers agree only weakly (journal peer review averages κ ≈ 0.17; [Patterns §2](/concepts/patterns-and-failure-modes/#2-the-ratings-you-collect-are-a-biased-sample)).
 
 ## Surveys
 

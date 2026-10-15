@@ -37,7 +37,7 @@ These are framed as cruxes: questions where a confident answer would meaningfull
 
 ## On the field itself
 
-12. **Is "evaluation engineering" the right frame and name?** The lineage went *advanced evaluation systems → symbolic evaluation systems → estimation systems*; the present reframe centers engineering. Does the engineering framing carve the problem at its joints, or is it one more provisional label?
+12. **Is "evaluation engineering" the right frame and name?** The lineage went *advanced evaluation systems → symbolic evaluation systems → estimation systems*; the present reframe centers engineering. Does the engineering framing carve the problem at its joints, or is it one more provisional label? The name also collides with AI "evals" ([Chapter 1](/start-here/introduction/#not-ai-model-evals-though-they-overlap)).
 
 ---
 

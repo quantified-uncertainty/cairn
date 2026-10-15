@@ -7,8 +7,8 @@ sidebar:
 
 *How weighted question portfolios — the utility functions downstream pages assume — can actually be built: relative value functions as the format, comparison polling as the elicitation mechanism, two small experiments' worth of sobering empirical results, and what LLMs change.*
 
-:::note[Status]
-Draft v0 · updated June 2026 · maintained by [QURI](https://quantifieduncertainty.org/). Adapted from earlier QURI writing, updated for the LLM era. Positions here are exploratory, not settled. The empirical work cited below is QURI's own — this page's author participated in both 2022 experiments, which Nuño Sempere ran and wrote up.
+:::note
+Adapted from earlier QURI writing, updated for the LLM era. The empirical work cited below is QURI's own — this page's author participated in both 2022 experiments, which Nuño Sempere ran and wrote up.
 :::
 
 To score research by how much it moves the questions an organization cares about — the bet [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/) and [Overseeing Automated Research](/proposals/overseeing-automated-research/) both make — you need a weighted question portfolio: a utility function $U$. Both pages treat its construction as a quiet input cost — "weeks of specialist work." This page covers how such objects can actually be built. QURI spent roughly 2021–2023 on this problem; the accumulated work — a format, an elicitation mechanism, two small experiments, statistical grounding — is the most complete attempt we know of at eliciting ratio-scale relative values over research artifacts and grants specifically (GiveWell's and Rethink Priorities' moral-weights work shares the goal, not the ratio-distribution format).

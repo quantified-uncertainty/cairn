@@ -1,24 +1,52 @@
 ---
-title: LongtermWiki Meta
-description: Learn how to build LongtermWiki-like knowledge bases
+title: CAIRN Handbook
+description: How QURI builds and maintains CAIRN, its monorepo of LLM-assisted research wikis.
 template: splash
 hero:
-  tagline: Documentation for building LLM-assisted knowledge bases
+  tagline: How QURI builds and maintains its LLM-assisted research wikis.
   actions:
-    - text: Get Started
-      link: /getting-started/introduction/
+    - text: Adding a Wiki
+      link: /adding-a-wiki/
       icon: right-arrow
+    - text: Workshop
+      link: /workshop/
+      icon: open-book
+      variant: secondary
+    - text: GitHub
+      link: https://github.com/quantified-uncertainty/cairn
+      icon: github
+      variant: minimal
 ---
 
-## What is LongtermWiki?
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-LongtermWiki is a framework for building structured knowledge bases with:
+CAIRN is the [Quantified Uncertainty Research Institute](https://quantifieduncertainty.org/)'s monorepo of research wikis. Each wiki is an Astro Starlight site, drafted and revised largely with Claude Code, and deployed to Vercel from [one repository](https://github.com/quantified-uncertainty/cairn). This handbook covers how the repository works and how its content is reviewed.
 
-- **Astro + Starlight** for fast, static documentation sites
-- **YAML-driven data** for structured content
-- **React components** for interactive visualizations
-- **LLM workflows** for content generation and improvement
+## The wikis
 
-## This Site
+<CardGrid>
+  <LinkCard
+    title="Delegation Risk"
+    href="https://delegation-risk.quantifieduncertainty.org/"
+    description="Treating the risk of delegating to people, software, and AI agents as a quantity to estimate, budget, and design against."
+  />
+  <LinkCard
+    title="Evaluation Engineering"
+    href="https://evaluation-engineering.quantifieduncertainty.org/"
+    description="Designing and operating systems that produce large numbers of estimates and evaluations at known cost."
+  />
+  <LinkCard
+    title="Robust Reasoning Processes"
+    href="https://reasoning-processes.quantifieduncertainty.org/"
+    description="Working notes on reasoning processes that deliver trustworthy conclusions at known cost and resist corruption."
+  />
+</CardGrid>
 
-This meta-documentation explains how LongtermWiki works and how to build similar projects.
+## This handbook
+
+<CardGrid>
+  <LinkCard title="Adding a Wiki" href="/adding-a-wiki/" description="From the starter template to a deployed, CI-checked site." />
+  <LinkCard title="Build & Tooling" href="/build-and-tooling/" description="Repository layout, llms.txt generation, the link checker, and the shared Starlight package." />
+  <LinkCard title="Review Workflow" href="/review-workflow/" description="How audit and revision rounds are run." />
+  <LinkCard title="Workshop" href="/workshop/" description="Build a research website with Claude Code, starting from nothing." />
+</CardGrid>

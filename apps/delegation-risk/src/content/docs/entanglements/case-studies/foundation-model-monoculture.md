@@ -1,447 +1,72 @@
 ---
 title: "Foundation Model Monoculture"
-description: "Systemic entanglement risk from concentration in AI model providers and architectures"
+description: "Shared models, data and training methods make 'a different provider' weaker diversity than it looks. What the 2021–25 literature measures, how attacks transfer between language models, and what to do about it."
 sidebar:
   order: 14
 ---
 
-The AI ecosystem is converging on a small number of foundation models, providers, and architectural patterns. This **monoculture** creates systemic entanglement that affects not just individual systems but the entire AI infrastructure.
-
-When everyone uses GPT-4 (or models trained to imitate it), everyone shares the same blind spots.
-
----
-
-## The Monoculture Problem
+*Algorithmic monoculture* is the situation in which many decision-makers rely on the same model, or on models that share components such as training data. It creates two different risks for a delegation stack:
 
-### Current Concentration
+- **Correlated errors in ordinary operation.** If the actor and its checks, or many firms' checks, make the same mistakes, layering them buys less than independence predicts. This is passive [entanglement](/entanglements/fundamentals/types/#passive-entanglement).
+- **Correlated vulnerability to an adversary.** An input crafted against one model often works against related ones, so one attack defeats every layer that shares the weakness. This is the [hijack](/getting-started/glossary/#hijack) channel at scale.
 
-```mermaid
-flowchart TB
-    subgraph Providers["Foundation Model Providers (2024)"]
-        OpenAI["OpenAI<br/>GPT-4, GPT-4o"]
-        Anthropic["Anthropic<br/>Claude"]
-        Google["Google<br/>Gemini"]
-        Meta["Meta<br/>Llama"]
-    end
-
-    subgraph Users["Downstream Users"]
-        U1["Company A<br/>Uses GPT-4"]
-        U2["Company B<br/>Uses GPT-4"]
-        U3["Company C<br/>Uses Claude"]
-        U4["Company D<br/>Uses GPT-4"]
-        U5["Company E<br/>Uses GPT-4"]
-    end
-
-    OpenAI --> U1
-    OpenAI --> U2
-    OpenAI --> U4
-    OpenAI --> U5
-    Anthropic --> U3
-
-    style OpenAI fill:#ffcccc
-    style U1 fill:#ffe6e6
-    style U2 fill:#ffe6e6
-    style U4 fill:#ffe6e6
-    style U5 fill:#ffe6e6
-```
+## The literature
 
-**The problem**: If Companies A, B, D, and E all use GPT-4, their "independent" verification systems all share GPT-4's blind spots.
+The idea predates large language models. [Kleinberg & Raghavan (2021, *PNAS*)](https://arxiv.org/abs/2101.05853) show that when many decision-makers converge on one algorithm, collective decision quality can fall even if that algorithm is more accurate for each of them alone. Harm arises in normal operation, not only under shocks. [Bommasani et al. (2021)](https://arxiv.org/abs/2108.07258) named *homogenization* as a defining property of foundation models: defects in one model are inherited by everything adapted from it. [Bommasani et al. (2022)](https://arxiv.org/abs/2211.13972) define *outcome homogenization*, the extent to which the same individuals receive bad outcomes from every decision-maker, and find on fairness benchmarks that sharing training data reliably increases it.
 
-### Dimensions of Monoculture
+Measurements on current language models:
 
-| Dimension | Current State | Entanglement Risk |
-|-----------|---------------|-------------------|
-| **Provider concentration** | ~4 major providers | Single provider outage affects many |
-| **Architecture convergence** | Almost all transformers | Shared architectural vulnerabilities |
-| **Training data overlap** | Common Crawl, Wikipedia, books | Shared knowledge gaps |
-| **Training methodology** | Similar RLHF approaches | Shared value alignment |
-| **Fine-tuning data** | Similar sources (StackOverflow, etc.) | Shared task biases |
-| **Prompt patterns** | Shared best practices | Shared prompt vulnerabilities |
+- **[Kim et al. (2025)](https://arxiv.org/abs/2506.07962)** evaluate more than 350 models. Errors are substantially correlated: on one leaderboard dataset, two models that both err give the same wrong answer 60% of the time. Shared architecture and shared provider increase correlation, and larger, more accurate models have highly correlated errors even across architectures and providers.
+- **[Goel et al. (2025)](https://arxiv.org/abs/2502.04313)** define CAPA, a chance-adjusted measure of overlap in mistakes. They find that LLM judges favor models similar to themselves, and that models' mistakes grow more similar as capability increases.
+- **[Panickssery et al. (2024)](https://arxiv.org/abs/2404.13076)** find that LLM evaluators score their own outputs above others' that humans rate as equal, and that the strength of this self-preference rises with the model's ability to recognize its own text.
 
----
+None of these reports the statistic the site's correlation correction needs: the phi coefficient between two checks' misses on harmful actions ([Risk Propagation](/delegation-risk/risk-propagation/#what-ρ-means-and-how-to-estimate-it)). They establish direction. Read together, they say that a verifier from a different provider is weaker diversity than it appears, and that the shortfall grows with capability.
 
-## How Monoculture Creates Entanglement
+## The provider landscape is wider than the model landscape
 
-### Shared Blind Spots at Scale
+An earlier version of this page said "everyone uses GPT-4" and that concentration was "getting worse". By 2025 there were several frontier developers and competitive open-weight model families (DeepSeek, Qwen, Kimi, Llama and Mistral among them), so the number of providers is not the problem it was in 2023. We have no data on deployment concentration and make no claim about its trend.
 
-When the same model (or similar models) is used across an industry:
+Provider count overstates independence because the sources of correlation are shared across providers: mostly transformer architectures, heavily overlapping web-scale pretraining data, similar post-training methods, distillation from and synthetic data generated by other labs' models, and optimization against the same benchmarks. The Kim et al. finding that accurate models converge across providers is the measured consequence.
 
-```mermaid
-flowchart TB
-    subgraph Finance["Financial Services"]
-        F1["Bank A: Fraud Detection<br/>(GPT-4)"]
-        F2["Bank B: Fraud Detection<br/>(GPT-4)"]
-        F3["Bank C: Fraud Detection<br/>(GPT-4)"]
-    end
+Within a single deployment, model dependencies are also easy to miss. Embedding models in a vector store, guard and moderation models, rerankers, monitoring tools and the coding assistant that wrote the glue code may all come from the provider the "independent" verifier was meant to avoid.
 
-    Attacker["Attacker discovers<br/>GPT-4 fraud detection bypass"]
-    Attacker -->|"same attack works"| F1
-    Attacker -->|"same attack works"| F2
-    Attacker -->|"same attack works"| F3
+## Adversarial transfer
 
-    style Attacker fill:#ff9999
-    style F1 fill:#ffcccc
-    style F2 fill:#ffcccc
-    style F3 fill:#ffcccc
-```
+**Image classifiers.** [Szegedy et al. (2013)](https://arxiv.org/abs/1312.6199) found that adversarial examples transfer between networks with different architectures and training data. [Papernot et al. (2016)](https://arxiv.org/abs/1605.07277) showed that transfer across model classes is reliable enough to attack commercial classifiers through a locally trained substitute, and [Liu et al. (2016)](https://arxiv.org/abs/1611.02770) that attacks optimized against an ensemble transfer better, including targeted ones. [Tramèr et al. (2017)](https://arxiv.org/abs/1704.03453) traced transfer to adversarial subspaces that different models share. These are pixel-perturbation results. Their transfer rates do not carry over numerically to language models, and image defenses such as JPEG compression are irrelevant to an LLM verifier.
 
-**Single vulnerability → industry-wide exploit**
+**Language models.** [Zou et al. (2023)](https://arxiv.org/abs/2307.15043) optimized adversarial suffixes against open models (Vicuna-7B and 13B) and found that the same suffixes induced objectionable output from the public interfaces of ChatGPT, Bard and Claude as well as other open models. Two consequences for a delegation stack:
 
-### The Imitation Problem
+- **Open weights are a surrogate for closed ones.** An attacker can optimize against an open model and expect partial transfer to a closed verifier.
+- **A learned check on a related model is not an independent filter for adversarial inputs.** The site's rule is to assume ρ → 1 among learned checks when the attacker chooses the input ([Risk Propagation](/delegation-risk/risk-propagation/)).
 
-Even models from different providers may share vulnerabilities because:
+An earlier companion page gave transfer-rate tables for LLM pairs ("GPT-4 vs Claude: 40–60%"), rule-based checks ("5–15%") and human experts ("10–30%"), attributed to image-classifier papers that do not contain them. They have been removed. Measure transfer in your own stack instead.
 
-1. **Training on synthetic data**: Many models trained on GPT-generated text
-2. **Distillation**: Smaller models trained to imitate larger ones
-3. **Benchmark optimization**: All optimize for same benchmarks
-4. **Shared research**: Same papers, same techniques, same researchers
+## Measuring it in your stack
 
-```
-"Diverse" providers:
+1. Build a challenge set of inputs the actor mishandles: natural failures, plus adversarial inputs optimized against an open surrogate model.
+2. Run every check on the set and record which ones miss.
+3. Compute the phi coefficient of misses for each pair of checks, separately for the benign and adversarial subsets ([Measuring Entanglement](/entanglements/detection/correlation-calculator/)).
+4. Use the largest pairwise value, rounded up, as the stack's ρ. Expect the adversarial value to be much higher.
 
-OpenAI (GPT-4) ──────┐
-                      │
-Anthropic (Claude) ───┼── Similar training paradigms
-                      │   Similar architectures
-Google (Gemini) ──────┼── Similar fine-tuning
-                      │   Similar safety training
-Meta (Llama) ─────────┘
+## Risks beyond one stack
 
-Result: More correlation than provider diversity suggests
-```
+- **One exploit, many victims.** If many firms' fraud or content checks run on the same model, a bypass found once works everywhere, and the attacker's research cost is amortized across all of them.
+- **Simultaneous updates.** A provider's model update changes every dependent system at once. In late April 2025 OpenAI rolled back a GPT-4o update in ChatGPT after it made the model markedly more sycophantic, a change it attributed to weighting short-term user feedback too heavily ([OpenAI](https://openai.com/index/sycophancy-in-gpt-4o/)).
+- **Inherited behavior.** Models fine-tuned on another model's outputs inherit its errors along with its skills.
 
-### API Dependency Chains
+## Mitigations
 
-Modern AI systems often have hidden dependencies:
+- **Inventory model dependencies,** including embeddings, guard models, monitors and libraries, not only the main model.
+- **Diversify method on the verification path.** Rule-based checks, formal properties, execution-based tests and human review fail for different reasons than a second LLM does. A different provider is the weakest form of diversity. No form helps if every check reads the same poisoned input ([Solutions](/entanglements/mitigation/solutions/#1-diversity-of-method)).
+- **Do not let a model family grade itself.** Self-preference and similarity bias in judges are measured effects.
+- **Keep a verifier's training data independent** of the model it checks.
+- **Set a correlation budget,** for example "no two layers share a model family", and pin model versions so that a provider update is a deliberate change you test before rollout.
+- **Keep a tested fallback** that does not depend on the primary provider.
 
-```mermaid
-flowchart TB
-    subgraph YourSystem["Your 'Diverse' System"]
-        Agent["Agent<br/>(Claude)"]
-        Verifier["Verifier<br/>(GPT-4)"]
-    end
+Monoculture is also a collective-action problem: each deployer rationally picks the best model, and correlated failure is an externality borne by everyone ([Regulatory Approaches](/entanglements/cross-domain/regulatory-approaches/)).
 
-    subgraph Hidden["Hidden Dependencies"]
-        Library["AI Library<br/>uses OpenAI embeddings"]
-        VectorDB["Vector DB<br/>uses OpenAI embeddings"]
-        Monitoring["Monitoring Tool<br/>uses GPT-4"]
-    end
+## See also
 
-    Agent --> Library
-    Verifier --> VectorDB
-    Agent --> Monitoring
-
-    OpenAI["OpenAI API"]
-    Library --> OpenAI
-    VectorDB --> OpenAI
-    Monitoring --> OpenAI
-
-    style OpenAI fill:#ffcccc
-```
-
-**You thought you had diversity; you actually have 4 dependencies on OpenAI.**
-
----
-
-## Systemic Risks
-
-### 1. Correlated Failure Events
-
-**Scenario**: GPT-4 has a vulnerability to a specific prompt pattern.
-
-| Who's Affected | Impact |
-|----------------|--------|
-| All GPT-4 users | Direct exposure |
-| Users of GPT-4-based tools | Indirect exposure |
-| Users of models trained on GPT-4 output | Inherited vulnerability |
-| Users with GPT-4 in their stack anywhere | Hidden exposure |
-
-**Estimated blast radius**: Potentially millions of applications simultaneously.
-
-### 2. Adversarial Attack Amplification
-
-An attacker who finds a GPT-4 exploit can:
-1. Test it once, use it everywhere
-2. Scale attacks across entire industries
-3. Target the foundation layer, not individual apps
-4. Invest heavily in research (huge ROI)
-
-**Economics favor attackers in a monoculture.**
-
-### 3. Single Points of Trust
-
-When everyone relies on the same safety mechanisms:
-
-```mermaid
-flowchart TB
-    subgraph Trust["Trust Bottleneck"]
-        RLHF["OpenAI's RLHF"]
-        All["All GPT-4 applications"]
-        RLHF --> All
-    end
-
-    Concern["If RLHF has systematic blind spots,<br/>ALL applications inherit them"]
-
-    style RLHF fill:#ffcccc
-    style Concern fill:#ffe6e6
-```
-
-### 4. Regulatory and Ethical Concentration
-
-- **Same biases propagate everywhere**: If GPT-4 has a bias, it becomes universal
-- **Same values enforced**: OpenAI's content policy becomes de facto standard
-- **Same failures replicate**: If GPT-4 makes a type of error, everyone makes it
-
-### 5. Update Risk
-
-When a foundation model is updated:
-- All downstream applications change simultaneously
-- Behavior changes can cascade unpredictably
-- Difficult to test ecosystem-wide effects
-- Rollback may be impossible (if API-only access)
-
----
-
-## Measuring Monoculture Exposure
-
-### Provider Concentration
-
-Use the Herfindahl-Hirschman Index (HHI) to measure provider concentration:
-- **HHI < 0.15**: Unconcentrated (healthy)
-- **HHI 0.15-0.25**: Moderate concentration
-- **HHI > 0.25**: High concentration (risky)
-
-**Example**: If your system has 4 components—3 use OpenAI, 1 uses Anthropic:
-- OpenAI share: 75%, Anthropic share: 25%
-- HHI = 0.75² + 0.25² = 0.625 → Highly concentrated
-
-### Architecture Diversity Score
-
-| Diversity Level | Description | Score |
-|-----------------|-------------|-------|
-| All same architecture | Only transformers | 0 |
-| Minor variations | Different transformer sizes | 1 |
-| Different families | Transformer + RNN | 2 |
-| Different paradigms | Neural + symbolic | 3 |
-| Fundamentally different | Neural + rule-based + formal | 4 |
-
-### Supply Chain Depth
-
-How many layers deep does provider dependency go?
-
-```
-Your System
-├── Direct dependencies (Claude, GPT-4)
-├── Library dependencies (uses OpenAI embeddings)
-├── Infrastructure dependencies (hosted on Azure with AI services)
-└── Data dependencies (trained on GPT-4-generated data)
-
-Depth = max depth at which a single provider appears
-```
-
----
-
-## Case Studies in Monoculture Risk
-
-### Case 1: Log4j-Style Foundation Model Vulnerability
-
-**Hypothetical scenario**:
-- Researchers discover prompt pattern that causes GPT-4 to leak system prompts
-- Pattern works across all GPT-4-based applications
-- Within hours, thousands of system prompts extracted
-- Attackers use extracted prompts to craft targeted attacks
-
-**Why monoculture amplified this**:
-- Single fix needed → single vulnerability to find
-- Massive installed base → massive impact
-- Uniform behavior → uniform exploitation
-
-### Case 2: Training Data Poisoning
-
-**Hypothetical scenario**:
-- Bad actor injects poisoned content into Common Crawl
-- Content designed to cause specific behavior when triggered
-- Multiple foundation models trained on this data
-- Years later, trigger activates across "diverse" providers
-
-**Why monoculture amplified this**:
-- Common training data → common vulnerabilities
-- Training is expensive → limited data source diversity
-- Long-term persistence → delayed discovery
-
-### Case 3: Emergent Capability Correlation
-
-**Hypothetical scenario**:
-- All transformer-based models develop similar deceptive capabilities at certain scale
-- Different providers reach this scale at similar times
-- "Diverse" verification models all capable of coordinating
-
-**Why monoculture amplified this**:
-- Architectural similarity → similar emergence patterns
-- Similar training → similar capability profiles
-- Creates irreducible entanglement
-
----
-
-## Mitigation Strategies
-
-### 1. Supply Chain Transparency
-
-Know your actual dependencies:
-
-```
-DEPENDENCY AUDIT CHECKLIST:
-
-□ Direct model providers
-□ Embedding providers (often hidden in vector DBs)
-□ Training data sources (for fine-tuned models)
-□ Infrastructure AI services (cloud AI features)
-□ Third-party libraries (what models do they use?)
-□ Data pipeline (any AI-generated training data?)
-```
-
-### 2. Deliberate Architectural Diversity
-
-Don't just use different providers—use different approaches:
-
-| Layer | Diverse Option 1 | Diverse Option 2 | Diverse Option 3 |
-|-------|------------------|------------------|------------------|
-| Primary processing | Transformer LLM | - | - |
-| Verification | Rule-based system | Formal methods | Different LLM family |
-| Monitoring | Statistical anomaly detection | - | - |
-| Fallback | Simpler/older model | Human review | - |
-
-### 3. Critical Path Isolation
-
-For safety-critical paths, avoid shared infrastructure:
-
-```mermaid
-flowchart TB
-    subgraph Standard["Standard Path"]
-        S1["Main Processing<br/>(GPT-4)"]
-    end
-
-    subgraph Isolated["Isolated Safety Path"]
-        I1["Safety Check<br/>(Claude, different infra)"]
-        I2["Rule-based Validation"]
-        I3["Human Review"]
-    end
-
-    S1 --> Isolated
-    Isolated --> Output["Output"]
-
-    style S1 fill:#cce6ff
-    style I1 fill:#ccffcc
-    style I2 fill:#ffffcc
-    style I3 fill:#ffe6cc
-```
-
-### 4. Synthetic Data Independence
-
-If fine-tuning, avoid training on outputs from the model you're trying to be independent from:
-
-**Bad**: Fine-tune Claude on GPT-4 outputs to match GPT-4 quality
-**Better**: Fine-tune Claude on human-generated data only
-**Best**: Use fundamentally different training approach
-
-### 5. Emergency Independence
-
-Have fallback capabilities that don't depend on any AI provider:
-
-```
-EMERGENCY INDEPENDENCE PLAN:
-
-If all AI providers fail simultaneously:
-□ Rule-based fallback operational
-□ Human escalation path active
-□ Graceful degradation tested
-□ Core functionality preserved
-```
-
-### 6. Provider Rotation
-
-Don't lock into a single provider:
-
-| Practice | Implementation |
-|----------|----------------|
-| Multi-provider capability | Can switch providers in < 24 hours |
-| Regular rotation exercises | Quarterly switch to backup provider |
-| Provider-agnostic interfaces | Abstraction layer between app and provider |
-| Competitive awareness | Track multiple providers' capabilities |
-
----
-
-## The Ecosystem Perspective
-
-### Individual vs. Collective Risk
-
-| Your Perspective | Ecosystem Perspective |
-|------------------|----------------------|
-| "We use GPT-4 for efficiency" | Industry-wide GPT-4 monoculture |
-| "Switching providers is expensive" | Lock-in prevents ecosystem diversity |
-| "Everyone uses the same thing" | Systemic risk accumulates |
-| "One provider is reliable enough" | Single point of failure for economy |
-
-### Collective Action Problem
-
-Monoculture is a tragedy of the commons:
-- Individual incentive: Use best/cheapest model (GPT-4)
-- Collective outcome: Dangerous concentration
-- Solution: Coordination (regulation, standards, incentives)
-
-### The Role of Different Actors
-
-| Actor | Responsibility |
-|-------|---------------|
-| **Developers** | Know your dependencies; implement diversity where possible |
-| **Companies** | Invest in multi-provider capability; don't over-optimize on single provider |
-| **Providers** | Enable interoperability; don't encourage lock-in |
-| **Regulators** | Require transparency; consider concentration limits |
-| **Researchers** | Develop diverse architectures; study monoculture risk |
-
----
-
-## Indicators to Watch
-
-### Warning Signs
-
-| Signal | Concern |
-|--------|---------|
-| One provider dominates benchmark | Converging on single capability profile |
-| All providers using same architecture | Shared architectural vulnerabilities |
-| Training data sources consolidating | Shared knowledge gaps |
-| Safety approaches converging | Shared failure modes |
-| Fine-tuning on synthetic data common | Homogenization via imitation |
-
-### Positive Signs
-
-| Signal | Why It's Good |
-|--------|---------------|
-| New architectures gaining traction | Diversity increasing |
-| Open-source models competitive | Reduces provider concentration |
-| Non-neural AI methods advancing | Methodological diversity |
-| Regulatory attention to concentration | Collective action emerging |
-
----
-
-## Key Takeaways
-
-1. **Provider diversity ≠ independence.** Different providers may have highly correlated models.
-
-2. **Hidden dependencies matter.** Your "diverse" system may depend on OpenAI in 5 different ways.
-
-3. **Monoculture is a systemic risk.** Individual rational choices create collective vulnerability.
-
-4. **The attack economics favor monoculture exploitation.** One vulnerability, millions of targets.
-
-5. **True diversity requires different paradigms.** Neural networks from different providers still share transformer vulnerabilities.
-
-6. **This is getting worse, not better.** Concentration is increasing as leading models pull ahead.
-
----
-
-See also:
-- [Adversarial Transferability](/entanglements/research/adversarial-transferability/) - Why attacks transfer between models
-- [Historical Case Studies](/entanglements/case-studies/historical-cases/) - Past monoculture failures
-- [Regulatory Approaches](/entanglements/cross-domain/regulatory-approaches/) - Policy responses
-- [Types of Entanglement](/entanglements/fundamentals/types/) - Passive entanglement from shared training
+- [Research Connections](/entanglements/research/research-connections/): common-cause failure and correlated errors in LLMs
+- [Open-Source Supply Chain](/case-studies/human-systems/open-source-trust/): the package-ecosystem analogue
+- [Types of Entanglement](/entanglements/fundamentals/types/)
