@@ -19,7 +19,7 @@ export function loadImg(src) {
 }
 
 /** Find the ink box, whether the page is blank, and a two-column gutter. */
-export function analyze(src) {
+export function analyze(src, { scan = true } = {}) {
   const W = 240; const H = Math.max(1, Math.round(src.height * (W / src.width)));
   const c = document.createElement('canvas'); c.width = W; c.height = H;
   const g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(src, 0, 0, W, H);
@@ -27,7 +27,7 @@ export function analyze(src) {
   const lum = new Float32Array(W * H);
   for (let i = 0; i < W * H; i++) lum[i] = 0.3 * px[i * 4] + 0.59 * px[i * 4 + 1] + 0.11 * px[i * 4 + 2];
   // The algorithm lives in profile-core.js, so the feed and the compiler find the same boxes.
-  const a = analyzeLum(lum, W, H);
+  const a = analyzeLum(lum, W, H, { scan });
   if (a.blank) return { blank: true };
   const pad = state.cropPad ?? 0.012; // Settings: crop padding, a fraction of the page
   const [x0, y0, x1, y1] = a.ink;
@@ -44,7 +44,7 @@ export function cut(src, box) {
  *  marked blank. Each panel records the box it shows, in fractions of the
  *  source page, so overlays (text layer, highlights) can be placed on it. */
 export function panelsFrom(src, k, extra = {}) {
-  const a = analyze(src);
+  const a = analyze(src, { scan: false }); // pdf.js renders: born-digital pages
   if (a.blank) return [{ blank: true, k }];
   return panelsBox(src, k, state.crop ? a.box : FULL, a.gutter, extra);
 }

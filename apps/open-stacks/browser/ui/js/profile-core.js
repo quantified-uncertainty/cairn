@@ -9,7 +9,7 @@
 
 export const SCHEMA = 1;
 /** Analysis generation: bump whenever an algorithm below changes, so stored profiles recompile lazily. */
-export const GEN = 1;
+export const GEN = 2; // 2: born-digital pages are not scanner beds; full-bleed pages show whole; shared crops never cut ink
 /** Display hints both layers may give (analysis here, the augmentation from the model). */
 export const HINTS = {
   'one-up': 'One page at a time reads best (slides, landscape reports).',
@@ -44,9 +44,21 @@ const ar = (p) => (p.w > 0 && p.h > 0 ? p.w / p.h : 0.75);
  * Ink box, blank page and two-column gutter from a page's luminance (0-255),
  * row-major, W wide (240 in every producer) and H high. Returns
  * {blank, ink: Box | null (unpadded), gut: x fraction | null, dens}.
+ * scan: the page is a scan (dark scanner-bed bands at the borders are stepped past).
+ * A born-digital page (scan false) whose edges are not white paper — a dark page,
+ * full-bleed art, colour bands — is shown whole: its edges are the design.
  */
-export function analyzeLum(lum, W, H) {
+export function analyzeLum(lum, W, H, { scan = true } = {}) {
   const N = W * H;
+  if (!scan) {
+    const m = Math.max(1, Math.round(Math.min(W, H) * 0.02));
+    const ring = [];
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (x < m || y < m || x >= W - m || y >= H - m) ring.push(lum[y * W + x]);
+    ring.sort((a, b) => a - b);
+    const dark = ring.findIndex((v) => v >= 200);
+    const darkFrac = (dark < 0 ? ring.length : dark) / Math.max(1, ring.length);
+    if (ring[ring.length >> 1] < 200 || darkFrac > 0.3) return { blank: false, ink: [0, 0, 1, 1], gut: null, dens: 1 };
+  }
   const sorted = Float32Array.from(lum.length === N ? lum : lum.subarray(0, N)).sort();
   const bg = sorted[Math.floor(N * 0.8)];
   const thr = bg - Math.max(45, bg * 0.25);
@@ -56,10 +68,12 @@ export function analyzeLum(lum, W, H) {
   // borders: step past them before looking for the text block.
   let x0 = 0, x1 = W - 1, y0 = 0, y1 = H - 1;
   const mxB = Math.round(W * 0.12), myB = Math.round(H * 0.12);
-  while (x0 < mxB && cols[x0] > H * 0.35) x0++;
-  while (W - 1 - x1 < mxB && cols[x1] > H * 0.35) x1--;
-  while (y0 < myB && rows[y0] > W * 0.35) y0++;
-  while (H - 1 - y1 < myB && rows[y1] > W * 0.35) y1--;
+  if (scan) { // born-digital pages have no scanner bed: a dark band at an edge is part of the page
+    while (x0 < mxB && cols[x0] > H * 0.35) x0++;
+    while (W - 1 - x1 < mxB && cols[x1] > H * 0.35) x1--;
+    while (y0 < myB && rows[y0] > W * 0.35) y0++;
+    while (H - 1 - y1 < myB && rows[y1] > W * 0.35) y1--;
+  }
   // Then ignore a thin margin past the border, where shadows and specks live.
   x0 += Math.round(W * 0.015); x1 -= Math.round(W * 0.015); y0 += Math.round(H * 0.01); y1 -= Math.round(H * 0.01);
   let ink = 0;
@@ -286,7 +300,15 @@ export function cropGroups(pages, kind = 'pdf', pair = null, q = 0.1) {
 export function cropOf(P, k, pad = DEFAULT_PAD) {
   const p = P?.pages?.[k];
   if (!p || p.blank) return null;
-  const a = p.cg === 'own' ? p.crop || p.ink : P.crop?.groups?.[p.cg] || p.ink;
+  let a = p.cg === 'own' ? p.crop || p.ink : P.crop?.groups?.[p.cg] || p.ink;
+  // A shared box keeps a spread's pages the same shape, but it must never cut into this
+  // page's own ink (full-bleed art and dark pages, wide tables, marginal notes): any side
+  // where the page's ink reaches more than 1% of the page beyond the box takes the ink in.
+  if (a && p.ink && p.cg !== 'own') {
+    const t = 0.01, n = p.ink;
+    if (n[0] < a[0] - t || n[1] < a[1] - t || n[2] > a[2] + t || n[3] > a[3] + t)
+      a = [n[0] < a[0] - t ? n[0] : a[0], n[1] < a[1] - t ? n[1] : a[1], n[2] > a[2] + t ? n[2] : a[2], n[3] > a[3] + t ? n[3] : a[3]];
+  }
   return a ? padBox(a, pad) : null;
 }
 /** Shown width / height of page k with the crop applied (crop off: the page's own shape). */

@@ -283,7 +283,7 @@ async function pdfPage(pdf, k, keep) {
   S.task = page.render({ canvasContext: g, viewport: vp });
   try { await S.task.promise; } finally { S.task = null; }
   const { lum, W, H, c: small } = lumOf(c, c.width, c.height);
-  const a = core.analyzeLum(lum, W, H);
+  const a = core.analyzeLum(lum, W, H, { scan: false });
   const tc = await tcP;
   const fontOf = (name) => { try { if (!page.commonObjs.has(name)) return null; const f = page.commonObjs.get(name); return f ? { name: f.name, bold: f.bold, black: f.black } : null; } catch { return null; } };
   const lines = tc ? core.textLines(tc.items, fontOf) : [];

@@ -172,7 +172,7 @@ async function popplerItem(it) {
     const pages = [], heads = [], ixf = [];
     for (let k = 0; k < n; k++) {
       const { lum, W, H } = pgmLum(readFileSync(join(dir, pgms[k])));
-      const a = core.analyzeLum(lum, W, H);
+      const a = core.analyzeLum(lum, W, H, { scan: false }); // PDFs
       const t = text[k] || '';
       const lines = t.split('\n').map((l) => ({ t: l.trim() })).filter((l) => l.t);
       heads.push(...core.headsOf(lines, k, 0));
