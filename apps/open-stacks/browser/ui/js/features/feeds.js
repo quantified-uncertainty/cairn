@@ -14,7 +14,7 @@
 // only hook on the main feed is one spread:rendered listener that does a
 // single comparison unless a dive is pending.
 import { $, h, P, on, store, toast, sleep, keymap, keyHelp, registerView } from '../util.js';
-import { items, LANES, COUNTS, LANE_COLORS, byId } from '../corpus.js';
+import { items, LANES, LANE_COLORS, byId } from '../corpus.js';
 import { state, learn } from '../state.js';
 import { openDoc, scanUrl } from '../docs.js';
 import { setView, setLane, paintSaved } from '../chrome.js';
@@ -42,7 +42,7 @@ const ORDER = Object.keys(FEEDS);
 const CHIP = { claims: 'Contributions', definition: 'Definition', theorem: 'Theorem', limitation: 'Limitation', question: 'Open question', tldr: 'TL;DR', status: 'Epistemic status', pull: 'Pull', opener: 'Opening', quote: 'Quote' };
 const TYPE_LABEL = { lead: 'Figure', highlight: 'Highlight', finding: 'Finding', claims: 'Contributions', number: 'Number', table: 'Table', equation: 'Equation', definition: 'Definition', theorem: 'Theorem', limitation: 'Limitation', question: 'Open question', tldr: 'TL;DR', status: 'Epistemic status', pull: 'Pull quote', opener: 'Opening', quote: 'Quote', image: 'Picture', figure: 'Figure', plate: 'Plate' };
 const COLS = [240, 300, 380, 480], STREAMS = [400, 480, 560];
-const GAP = 16, PAD = 8, MAX_CARDS = 2000, TEXT_MAX = 440, TABLE_MAX = 460;
+const GAP = 16, PAD = 8, MAX_CARDS = 2000, TABLE_MAX = 460; // text cards are capped in CSS (.fd-main)
 const srcKind = (it) => (it.id.startsWith('arxiv:') ? 'arxiv' : it.kind === 'scan' ? 'scan' : it.kind === 'web' ? 'web' : it.kind === 'html' && /graphql/.test(it.url || '') ? 'post' : 'none');
 const itemOf = (card) => items[byId.get(card.id)];
 const yearOf = (it) => it?.y || String(it?.d || '').slice(0, 4);
@@ -158,6 +158,7 @@ async function runInk(pic) {
   const im = new Image();
   im.src = P(String(pic.img).replace(/_w\d+\.jpg$/, '_w200.jpg'));
   await im.decode();
+  const t0 = performance.now();
   const W = im.naturalWidth, H = im.naturalHeight;
   const x0 = Math.round(W * 0.06), y0 = Math.round(H * 0.08), w = W - 2 * x0, hh = H - 2 * y0;
   const c = document.createElement('canvas'); c.width = w; c.height = hh;
@@ -168,19 +169,17 @@ async function runInk(pic) {
   for (let p = 0, q = 0; q < grey.length; p += 4, q++) { const v = (0.299 * d[p] + 0.587 * d[p + 1] + 0.114 * d[p + 2]) | 0; grey[q] = v; hist[v]++; }
   let acc = 0, bg = 255; const target = 0.9 * grey.length;
   for (let v = 0; v < 256; v++) { acc += hist[v]; if (acc >= target) { bg = v; break; } }
-  let dark = 0, mid = 0, rows = 0, band = 0; const bands = [];
+  let dark = 0, mid = 0, rows = 0;
   for (let y = 0; y < hh; y++) {
     let rd = 0;
     for (let x = 0; x < w; x++) { const v = grey[y * w + x]; if (v < bg - 60) { dark++; rd++; } else if (v < bg - 25) mid++; }
-    if (rd > 0.02 * w) { rows++; band++; } else if (band) { bands.push(band); band = 0; }
+    if (rd > 0.02 * w) rows++;
   }
-  if (band) bands.push(band);
   const n = w * hh;
-  bands.sort((a, b) => a - b);
-  const r = { dark: dark / n, mid: mid / n, rowsInk: rows / hh, bands: bands.length, band50: bands.length ? bands[bands.length >> 1] / hh : 0, w: W, h: H };
-  // Ink on at least a fifth of the rows, not mostly dark, few mid greys. (Thin
-  // bands alone cannot tell type from line drawings, so a contents page whose
-  // OCR failed can still pass; the server's word count keeps those rare.)
+  const r = { dark: +(dark / n).toFixed(4), mid: +(mid / n).toFixed(4), rowsInk: +(rows / hh).toFixed(3), w: W, h: H, ms: Math.round(performance.now() - t0) };
+  // Ink on at least a fifth of the rows, not mostly dark, few mid greys. (A
+  // contents page whose OCR failed can still pass: thin bands of ink cannot
+  // tell type from line drawings. The server's word count keeps those rare.)
   r.ok = r.rowsInk >= 0.2 && r.dark < 0.6 && r.mid < 0.2;
   return r;
 }
@@ -195,7 +194,7 @@ async function prepare(card) {
     // Plates: try candidates in order, two at a time; the first that passes.
     const cands = pics.filter((p) => p.verdict !== false);
     for (let k = 0; k < cands.length; k += 2) {
-      const vs = await Promise.all(cands.slice(k, k + 2).map((p) => (p.verify ? inkTest(card.id, p) : Promise.resolve({ ok: true }))));
+      const vs = await Promise.all(cands.slice(k, k + 2).map((p) => (p.verify ? inkTest(card.id, p) : sizeOf(picSrc(p)).then((sz) => ({ ok: !!sz, ...sz })))));
       const j = vs.findIndex((v) => v.ok);
       if (j >= 0) { const p = { ...cands[k + j] }; if (vs[j].w) { p._w = vs[j].w; p._h = vs[j].h; } return [p]; }
     }
@@ -326,7 +325,7 @@ function picsBox(pics, W, broken) {
 }
 function capOf(p, n) {
   const label = p.label ? p.label.replace(/^Figure\b/, 'Fig.') : p.type === 'plate' ? 'Plate' : '';
-  const text = p.caption || (p.type === 'image' ? '' : '');
+  const text = p.caption || '';
   if (!label && !text) return null;
   return h('div', { className: 'fd-cap' + (n === 1 ? ' one' : '') }, label ? h('b', { textContent: label }) : null, text || '');
 }
@@ -512,6 +511,7 @@ function makeBoard(type, lane) {
       B.colH[c] += r.hgt + GAP;
       Object.assign(r.el.style, { left: r.x + 'px', top: r.y + 'px', height: r.hgt + 'px', containIntrinsicSize: `${B.colW}px ${r.hgt}px` });
       r.el.classList.add('placed');
+      if (r === V.sel) r.el.classList.add('sel');
       B.mas.append(r.el);
       B.recs.push(r); B.count++; addKin(r);
     }
@@ -536,12 +536,12 @@ function makeBoard(type, lane) {
   /** Re-place every card (resize, density, an undone hide after a re-layout): rebuilt at the new width. */
   B.relayout = () => {
     B.geom();
-    const anchor = B.recs.find((r) => !r.gone && r.y + r.hgt > B.el.scrollTop);
-    const keep = B.recs.filter((r) => !r.hidden && !r.gone);
+    const anchor = B.recs.find((r) => !r.hidden && r.y + r.hgt > B.el.scrollTop);
+    const keep = B.recs.filter((r) => !r.hidden);
     for (const r of B.recs) { r.el.remove(); dropKin(r); }
     B.recs = []; B.count = 0; B.colH = Array(B.n).fill(0);
     for (let k = 0; k < keep.length; k += 200) B.place(keep.slice(k, k + 200));
-    if (anchor && !anchor.hidden) B.el.scrollTop = anchor.y; else B.el.scrollTop = 0;
+    B.el.scrollTop = anchor ? anchor.y : 0;
     if (V.sel && !V.sel.el.isConnected) V.sel = null;
   };
   B.show = () => {
@@ -585,6 +585,7 @@ function makeStream(type, lane, deck) {
       r.el.style.height = r.hgt + 'px';
       r.el.style.containIntrinsicSize = `${W}px ${r.hgt}px`;
       r.el.classList.add('placed');
+      if (r === V.sel) r.el.classList.add('sel');
       S.list.insertBefore(r.el, S.more);
       S.recs.push(r); S.count++; addKin(r);
     }
@@ -682,7 +683,7 @@ function current() {
 }
 function open() {
   const s = current();
-  if (V.surf && V.surf !== s) { V.surf.hide(); V.surf.el.hidden = true; select(null); }
+  if (V.surf && V.surf !== s) { V.surf.hide(); V.surf.el.hidden = true; select(null); closePeek(); }
   for (const x of V.surfaces.values()) x.el.hidden = x !== s;
   V.surf = s; V.lane = state.lane;
   s.show();
@@ -722,7 +723,7 @@ function paintHead() {
     h('span', { className: 'fd-hint', textContent: 'hover to peek · Enter open here · q quote · s save · x hide · [ ] feeds · c layout · - = size' }));
 }
 
-function setType(t) { if (!FEEDS[t]) return; cfg.type = t; saveCfg(); if (cfg.layout !== 'board') cfg.layout = 'board'; saveCfg(); open(); tel('view', t); }
+function setType(t) { if (!FEEDS[t]) return; cfg.type = t; cfg.layout = 'board'; saveCfg(); open(); tel('view', t); }
 function toggleStream(t) {
   const k = cfg.streams.indexOf(t);
   if (k >= 0) cfg.streams.splice(k, 1); else cfg.streams = ORDER.filter((x) => x === t || cfg.streams.includes(x));
@@ -846,9 +847,9 @@ attachPeek(root, {
   },
   onClose(card, ms) { clearTimeout(warmT); tel('peek', recFeed(card), card, ms); },
 });
-const recFeed = (card) => (cfg.layout === 'board' ? cfg.type : Object.keys(FEEDS).find((t) => listOf(t, state.lane).seen.has(card.cid)) || 'columns');
+const recFeed = (card) => cardRec.get(card)?.type || (cfg.layout === 'board' ? cfg.type : ORDER.find((t) => listOf(t, state.lane).seen.has(card.cid)) || 'columns');
 
-function peekMeta(it, card) {
+function peekMeta(it) {
   const lane = LANES[it.lane] || it.lane;
   return [
     h('div', { className: 'pk-title', textContent: it.t }),
@@ -922,7 +923,7 @@ function renderPeek(card, body, ctx) {
     const use = (ready?.length ? ready : (card.pics || []).filter((p) => !p.verify).slice(0, card.show === 'few' ? 3 : 1));
     for (const p of use) body.append(bigPic({ ...p, _id: card.id }, W, use.length > 1 ? Hmax * 0.8 : Hmax));
     if (t === 'highlight' && card.passage?.quote && card.passage.ok) body.append(h('blockquote', { className: 'pk-pq' }, card.passage.quote, h('span', { className: 'ok', textContent: ' ✓' })), card.passage.why ? h('p', { className: 'pk-why' }, h('span', { className: 'fd-mk ai', textContent: 'AI' }), ' ', card.passage.why) : null);
-    body.append(h('div', { className: 'pk-meta' }, ...peekMeta(it, card)), peekKeys());
+    body.append(h('div', { className: 'pk-meta' }, ...peekMeta(it)), peekKeys());
     figStrip(it, card, body, ctx);
     return;
   }
@@ -954,7 +955,7 @@ function renderPeek(card, body, ctx) {
   }
   const others = L.cards.filter((c) => c.id === card.id && c.cid !== card.cid && !hidden.has(c.cid)).slice(0, 4);
   if (others.length) body.append(h('div', { className: 'pk-others' }, h('div', { className: 'pk-sl', textContent: 'More from this item' }), ...others.map((c) => h('div', { className: 'pk-o' }, h('span', { className: 'fd-chip c-' + c.type, textContent: c.type === 'table' ? c.label || 'Table' : chipOf(c) }), ' ', c.value ? h('b', { textContent: c.value + ' ' }) : null, (c.type === 'table' ? c.caption || '' : c.text || '').slice(0, 300)))));
-  body.append(h('div', { className: 'pk-meta' }, ...peekMeta(it, card)), peekKeys());
+  body.append(h('div', { className: 'pk-meta' }, ...peekMeta(it)), peekKeys());
 }
 // ---------------------------------------------------------------- opening at the place
 let dive = null; // { i, phase: 'anchor' | 'mark', anchor, quote, card, n, t }

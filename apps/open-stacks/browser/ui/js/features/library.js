@@ -100,7 +100,7 @@ function pickMode() {
 
 // ---------- open folders, filter, rows ----------
 const userOpen = new Set(), userClosed = new Set();
-let autoOpen = new Set(); // the current item's branch, and the branches walked through to it
+let autoOpen = new Set(); // the current item's branch
 let words = [], hay = null, match = null; // filter words; lowercase titles; Uint8Array of the items shown (filter, tag stack)
 let prune = null; // topic order in a tag stack: the tree shows only the stack's items
 const fClosed = new Set(); // folders closed by hand while filtering or pruned
@@ -257,11 +257,13 @@ const progress = (i) => { if (!progressOf) return null; if (!prog.has(i)) prog.s
 const readCount = (n) => { if (!progressOf) return 0; if (!readN.has(n.key)) { let k = 0; for (const i of n.items) if (progress(i)?.done) k++; readN.set(n.key, k); } return readN.get(n.key); };
 const icons = new Map(); // item -> its icon, cloned for each paint
 const icon = (i) => { if (!itemIcon) return h('span', { className: 'lr-b' }); if (!icons.has(i)) icons.set(i, itemIcon(items[i], 12)); return icons.get(i).cloneNode(true); };
+// Room below the last row, so the current row can stay a quarter from the top even near the end.
+const sizePad = () => { pad.style.height = rows.length * RH + Math.max(0, Math.round((list.clientHeight || 600) * 0.75) - RH) + 'px'; };
 function paintNow() {
   if (!showing() || !T) return;
   paintTop();
   qn.textContent = q() ? String(flat ? rows.length : match.reduce((s, x) => s + x, 0)) : '';
-  pad.style.height = rows.length * RH + 'px';
+  sizePad();
   const top = list.scrollTop, H = list.clientHeight || 600;
   const a = Math.max(0, Math.floor(top / RH) - 6), b = Math.min(rows.length, Math.ceil((top + H) / RH) + 6);
   slice.style.transform = `translateY(${a * RH}px)`;
@@ -347,9 +349,8 @@ function paintTop() {
 }
 
 // ---------- following the current item ----------
-let lastPos = -1, lastOrder = null;
 let mk = {}; // what the list was made for: the order (and its length), sort, scope and lane
-/** Show the current item: open its branch (and keep the ones just walked through open),
+/** Show the current item: open its branch (and close the ones walked out of),
  *  highlight it and keep it about a quarter from the top. force: also move the cursor while the list has the keyboard. */
 function follow(i, force = false) {
   if (i == null || !T) return;
@@ -358,20 +359,20 @@ function follow(i, force = false) {
   if (fresh) { mk = { o: state.order, n: state.order.length, s: state.sort, sc: state.scope, l: state.lane }; pickMode(); remask(); }
   if (!flat) {
     const anc = ancestors(i);
-    // Walking on (a few items at a time) keeps the folders behind you open, so the rows do not jump.
-    const near = lastOrder === state.order && lastPos >= 0 && Math.abs(state.pos - lastPos) <= 20;
-    const keep = near ? new Set(autoOpen) : new Set();
-    if (near) for (let p = Math.min(lastPos, state.pos); p <= Math.max(lastPos, state.pos); p++) for (const a of ancestors(state.order[p])) keep.add(a.key);
+    // Only the current item's branch is opened for you: folders you walk out of close behind
+    // you (ones you opened by hand stay open). The current row keeps its height on screen
+    // (below), so a folder closing above it does not move it.
+    const keep = new Set();
     let reopened = false;
     for (const a of anc) { keep.add(a.key); if (userClosed.delete(a.key) | fClosed.delete(a.key)) reopened = true; }
     if (reopened || keep.size !== autoOpen.size || [...keep].some((k) => !autoOpen.has(k))) { autoOpen = keep; flatten(); }
   }
-  lastPos = state.pos; lastOrder = state.order;
   if (!browsing() || force) sel = 'i' + i;
   const r = curIndex();
   if (r >= 0 && (!browsing() || force)) {
     const H = list.clientHeight || 600;
-    list.scrollTop = Math.max(0, Math.min(r * RH - Math.round(H * 0.25), rows.length * RH - H));
+    sizePad(); // before scrolling: the rows may have just changed
+    list.scrollTop = Math.max(0, r * RH - Math.round(H * 0.25));
   }
   paint();
 }
@@ -402,7 +403,7 @@ const followSoon = (i) => {
   });
 };
 on('item:shown', ({ i }) => followSoon(i));
-on('stack:changed', () => { topKey = ''; lastOrder = null; mk = {}; followSoon(current()); });
+on('stack:changed', () => { topKey = ''; mk = {}; followSoon(current()); });
 on('nav', (d) => { if (d.type === 'back') { topKey = ''; mk = {}; followSoon(current()); } });
 on('stack:show', () => { if (!showing()) setMode(true); const n = stackNode(); if (n) revealNode(n); else follow(current(), true); });
 on('view:changed', () => { if (showing()) follow(current()); });

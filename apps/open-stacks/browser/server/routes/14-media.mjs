@@ -27,7 +27,7 @@ import { readFile } from 'fs/promises';
 import * as R from '../rescue.mjs';
 
 const EVERY = (Number(process.env.STACKS_RESCUE_EVERY) || 4) * 3600e3;
-const FG_WAIT = 40e3; // the longest the reader waits for a rescue before the image shows as unavailable
+const FG_WAIT = 25e3; // the longest the reader waits for a rescue; the chip then says it is still looking, and the image comes back when found
 
 export default function (app) {
   const { cache } = app;
@@ -42,7 +42,8 @@ export default function (app) {
       // Images only: never a page that could run script on this origin (an SVG opened directly).
       'X-Content-Type-Options': 'nosniff', 'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; sandbox",
       'Access-Control-Expose-Headers': 'X-Stacks-Via, X-Stacks-From, X-Stacks-Archived',
-      ...(m.via ? { 'X-Stacks-Via': ascii(m.via), 'X-Stacks-From': ascii(m.from), 'X-Stacks-Archived': ascii(m.ts) } : {}),
+      ...(m.via ? { 'X-Stacks-Via': ascii(m.via), 'X-Stacks-From': ascii(m.from) } : {}),
+      ...(m.ts ? { 'X-Stacks-Archived': ascii(m.ts) } : {}),
     };
     if (req.headers['if-none-match'] === etag) { res.writeHead(304, hdr); return res.end(); }
     let buf;

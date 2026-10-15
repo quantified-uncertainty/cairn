@@ -46,6 +46,8 @@ function altOf(img) {
   const cap = img.closest('figure')?.querySelector('figcaption')?.textContent.replace(/\s+/g, ' ').trim();
   return cap || '';
 }
+/** What a chip replaces: the image, or the link around it when the link holds nothing else (no links inside links). */
+const slot = (img) => { const a = img.parentElement; return a?.tagName === 'A' && !a.textContent.trim() && a.children.length === 1 ? a : img; };
 function sizeIt(img, w, hh) {
   img.style.setProperty('--w', w + 'px'); img.style.setProperty('--r', String(w / hh));
   img.classList.add('rs-sized'); img.classList.remove('rs-wait');
@@ -58,7 +60,7 @@ function link(doc, cls, href, title) {
   return a;
 }
 function chip(doc, img, o, k = {}) {
-  const p = img.parentElement;
+  const p = slot(img).parentElement;
   const top = !p || p === doc.body || p.classList.contains('flow') || p.matches('figure, div, section, article, center');
   const el = doc.createElement(top ? 'p' : 'span');
   el.className = 'rs-chip';
@@ -84,7 +86,7 @@ function toChip(img, k) {
   const o = img.dataset.orig;
   const c = chip(document, img, o, k);
   c._img = img;
-  img.replaceWith(c);
+  slot(img).replaceWith(c);
   remeasure();
   return c;
 }
@@ -108,7 +110,8 @@ function fromChip(c) {
 flowFilters.push((doc, it) => {
   const list = [];
   for (const img of [...doc.querySelectorAll('img')]) {
-    const src = (img.getAttribute('src') || '').trim();
+    let src = (img.getAttribute('src') || '').trim();
+    if (src.startsWith('//')) src = 'https:' + src; // protocol-relative: not this local server's http
     if (!/^https?:\/\//i.test(src) || ours(src)) continue;
     const aw = parseFloat(img.getAttribute('width')), ah = parseFloat(img.getAttribute('height'));
     if ((aw > 0 && aw <= 2 && ah > 0 && ah <= 2) || TRACKER.test(src)) { img.remove(); continue; }
@@ -118,7 +121,7 @@ flowFilters.push((doc, it) => {
     img.setAttribute('src', viaImg(src, alts[0]));
     if (set.length) img.setAttribute('srcset', set.map((c) => (/^https?:\/\//i.test(c.u) ? viaImg(c.u, src) : c.u) + (c.d ? ' ' + c.d : '')).join(', '));
     const k = known.get(src);
-    if (k?.st === 'bad') { img.replaceWith(chip(doc, img, src, k)); continue; }
+    if (k?.st === 'bad') { slot(img).replaceWith(chip(doc, img, src, k)); continue; }
     if (!img.classList.contains('wv-sized')) {
       if (k?.w > 8 && k?.h > 8) sizeIt(img, k.w, k.h);
       else if (aw > 8 && ah > 8 && !/%/.test(img.getAttribute('width') + img.getAttribute('height'))) sizeIt(img, aw, ah);
@@ -228,10 +231,14 @@ async function manual(c) {
 // ---------------------------------------------------------------- hover: where it came from / wrong image?
 const badge = h('div', { id: 'rs-badge', hidden: true });
 let badgeImg = null, hideT = null;
-const infoOnce = new Map(); // url -> Promise<info>
+const infoOnce = new Map(); // url -> {p: Promise<info>, t}; asked again after half a minute
 function infoFor(o) {
-  if (!infoOnce.has(o)) infoOnce.set(o, fetch('/img/info', { method: 'POST', body: JSON.stringify({ imgs: [{ u: o }] }) }).then((r) => r.json()).then((j) => { if (j[o]) remember(o, j[o]); return known.get(o) || {}; }).catch(() => ({})));
-  return infoOnce.get(o);
+  const hit = infoOnce.get(o);
+  if (hit && Date.now() - hit.t < 30e3) return hit.p;
+  const p = fetch('/img/info', { method: 'POST', body: JSON.stringify({ imgs: [{ u: o }] }) }).then((r) => r.json()).then((j) => { if (j[o]) remember(o, j[o]); return known.get(o) || {}; }).catch(() => ({}));
+  infoOnce.set(o, { p, t: Date.now() });
+  if (infoOnce.size > 500) infoOnce.delete(infoOnce.keys().next().value);
+  return p;
 }
 const year = (ts) => (ts ? String(ts).slice(0, 4) : '');
 async function showBadge(img) {

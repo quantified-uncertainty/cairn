@@ -1432,17 +1432,25 @@ function modeKey(e) {
   if (k === 'ArrowRight' || (k === 'l' && !e.shiftKey)) return () => press(c, (o) => (e.shiftKey ? stepPara(1, o) : stepSentence(1, o)));
   if (k === 'ArrowUp' && !e.shiftKey) return () => stepRate(1);
   if (k === 'ArrowDown' && !e.shiftKey) return () => stepRate(-1);
-  if (k === ' ' && !e.shiftKey) return () => { if (R) toggle(); };
+  // Shift+Space too: a held one would riffle the pages (riffle.js)
+  if (k === ' ') return () => { if (R) toggle(); };
   if (k === 'Escape') return () => exitMode(true);
   return null;
 }
+// Widgets with keys of their own keep them: the library list (a tree or a
+// listbox: arrows, letters to filter, Esc) and the Settings sheet. Space still
+// pauses from the list. Esc first closes what is open over the pages.
+const ownKeys = (t) => !!t?.closest?.('[role=tree], [role=listbox], [role=combobox], [role=menu], #st');
+const shown = (sel) => { const el = $(sel); return !!el && !el.hidden; };
+const overlayOpen = () => shown('#keys') || shown('#st') || shown('#saved') || !!$('#wheel-menu');
 // Capture phase, ahead of the key registry (chrome.js) and hold-to-riffle
 // (riffle.js): in the mode these keys move the voice, not the pages.
 addEventListener('keydown', (e) => {
   if (!mode || state.view !== 'feed' || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
   const t = e.target, inBar = !!t?.closest?.('#ra-bar');
   if (typing(t) && !(inBar && t.tagName === 'SELECT')) return;
-  if ($('#keys') && !$('#keys').hidden) return;
+  if (ownKeys(t) && !(e.key === ' ' && !t.closest('#st'))) return;
+  if (e.key === 'Escape' && overlayOpen()) return;
   const act = modeKey(e); if (!act) return;
   e.preventDefault(); e.stopImmediatePropagation();
   if (inBar) t.blur?.();
