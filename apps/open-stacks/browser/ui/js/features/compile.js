@@ -41,7 +41,12 @@ const enc = encodeURIComponent;
 // ------------------------------------------------------------- scheduling ----
 const S = { pausedFor: null, resumeAt: 0, looping: false, task: null, hover: false, jobs: [], gen: 0, failed: new Set(), done: new Set() };
 const ric = (fn) => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(() => fn({ timeRemaining: () => 12, didTimeout: false }), 60));
-const paused = () => BATCH || !opt('compile', true) || S.pausedFor != null || S.hover || document.hidden || state.view !== 'feed' || performance.now() < S.resumeAt;
+// Not while the reader is acting: a unit starts 1.5 s after the last key, wheel or
+// click (figures, the heaviest, after 8 s), so a long task rarely meets a key press.
+S.lastInput = 0;
+for (const ev of ['keydown', 'wheel', 'pointerdown']) addEventListener(ev, () => { S.lastInput = performance.now(); }, { capture: true, passive: true });
+const quietFor = (ms) => performance.now() - S.lastInput > ms;
+const paused = () => BATCH || !opt('compile', true) || S.pausedFor != null || S.hover || document.hidden || state.view !== 'feed' || performance.now() < S.resumeAt || !quietFor(1500);
 on('nav', () => {
   S.pausedFor = state.gen; S.gen++;
   try { S.task?.cancel(); } catch { /* finished */ }
@@ -53,13 +58,14 @@ on('spread:settled', () => {
 document.getElementById('track')?.addEventListener('pointerenter', () => { S.hover = true; try { S.task?.cancel(); } catch { /* done */ } });
 document.getElementById('track')?.addEventListener('pointerleave', () => { S.hover = false; setTimeout(kick, 300); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(kick, 500); });
-function kick() { if (!S.looping && !paused()) { S.looping = true; ric(step); } }
+function kick() { if (!S.looping && !paused()) { S.looping = true; ric(step); } else if (!S.looping && !quietFor(1500)) later(1600); }
+const later = (ms) => { clearTimeout(S.kickT); S.kickT = setTimeout(kick, ms); };
 async function step(deadline) {
   S.idleSeen = (S.idleSeen || 0) + 1;
-  if (paused()) { S.looping = false; return; }
+  if (paused()) { S.looping = false; if (!quietFor(1500)) later(1600); return; }
   if (deadline.timeRemaining() <= 8) { ric(step); return; }
   const unit = nextUnit();
-  if (!unit) { S.looping = false; return; }
+  if (!unit) { S.looping = false; if (S.jobs.some((j) => j.phase === 'figures')) later(2000); return; }
   const gen = S.gen;
   // A unit waiting on the network (a download, archive.org) does not hold up the
   // others for long: after 15 s the loop goes on (that job stays busy until it ends).
@@ -116,7 +122,7 @@ class Job {
       case 'page': return run(() => this.page());
       case 'final': return run(() => this.final());
       case 'sprite': return run(() => this.sprite());
-      case 'figures': return run(() => this.figures());
+      case 'figures': return BATCH || quietFor(8000) ? run(() => this.figures()) : null;
       default: return null;
     }
   }

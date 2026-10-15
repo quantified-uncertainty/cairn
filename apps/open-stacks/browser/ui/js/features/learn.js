@@ -118,15 +118,6 @@ function apply(p) {
   return true;
 }
 
-// First load: the first item ranks with what was learned, but a slow server never holds up the start.
-const first = refresh({ force: true });
-await Promise.race([first, sleep(300)]);
-
-on('boot', () => {
-  L.booted = true;
-  if (registered()) reorder(); // arrived between the race and boot: boot built the order already, so this is cheap
-  first.then(() => { if (L.on) setTimeout(() => idle(() => { announce(); migrate(); }), 1500); });
-});
 on('status', (s) => {
   const ls = s?.learn;
   if (ls && !L.on) { if (ls.on && !inflight && Date.now() - L.fetchedAt > 10e3) refresh({ force: true }).then((ch) => { if (ch) { announce(); migrate(); } }); return; }
@@ -481,3 +472,13 @@ function migrate() {
 
 // For tests and the console.
 window.__stacksLearn = { L, refresh, apply, walkNew, isNew, rankMoves, placesOf, whyOf, setLearnOn };
+
+// ---------------------------------------------------------------- the first load (last: everything above is declared)
+// The first item ranks with what was learned, but a slow server never holds up the start.
+const first = refresh({ force: true });
+await Promise.race([first, sleep(300)]);
+on('boot', () => {
+  L.booted = true;
+  headBadge();
+  first.then(() => { if (L.on) setTimeout(() => idle(() => { announce(); migrate(); }), 1500); });
+});

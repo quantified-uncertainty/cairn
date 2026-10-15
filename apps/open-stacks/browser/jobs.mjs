@@ -13,6 +13,7 @@
  *   node jobs.mjs done <id> [--note "…"] [--force] [--live]
  *   node jobs.mjs drop <id> --why "…"
  *   node jobs.mjs new --type <type> --title "…" [--lane l] [--inputs id,id] [--count N] [--body "…"] [--priority p]
+ *   node jobs.mjs skeleton <arxiv|lw|af|eaf|ia|pdf|web> <id or URL> --job <id>   an item to fill in
  *
  * Global options: --dir <jobs dir> (default $STACKS_JOBS_DIR or ./jobs) and
  * --root <browser dir> (default this folder).
@@ -133,6 +134,24 @@ switch (cmd) {
       const r = J.dropJob(arg, { root: ROOT, dir: DIR, why: flags.get('why') });
       out(`${arg} dropped: ${r.file}\n\nCommit:\n  ${r.add}\n  ${r.commit}`);
     } catch (e) { fail(e.message); }
+    break;
+  }
+  case 'skeleton': {
+    // A correctly shaped item to fill in: node jobs.mjs skeleton arxiv 2610.01995 --job discover-0001 [--lane llm]
+    const [, src, raw] = pos;
+    const job = typeof flags.get('job') === 'string' ? flags.get('job') : '<job id>';
+    const today = localDay(Date.now());
+    const gql = (host, id) => `https://${host}/graphql?query=${encodeURIComponent(`{post(input:{selector:{_id:"${id}"}}){result{htmlBody}}}`)}`;
+    const base = { t: '', a: '', y: null, why: '', tags: [], added: today, job, via: { source: '', query: '', seeds: [] } };
+    let it;
+    if (src === 'arxiv' && raw) { const a = raw.replace(/^arxiv:/i, '').replace(/v\d+$/, ''); it = { id: `arxiv:${a}`, kind: 'pdf', ...base, d: `20${a.slice(0, 2)}-${a.slice(2, 4)}`, url: `https://arxiv.org/pdf/${a}`, page: `https://arxiv.org/abs/${a}`, via: { ...base.via, source: 'arxiv' } }; }
+    else if ((src === 'lw' || src === 'af') && raw) it = { id: `lw:${raw}`, kind: 'html', ...base, d: '', url: gql('www.lesswrong.com', raw), page: `https://www.lesswrong.com/posts/${raw}/<slug>`, words: 0, ...(src === 'af' ? { src: 'Alignment Forum' } : {}), via: { ...base.via, source: src === 'af' ? 'alignment-forum' : 'lesswrong' } };
+    else if (src === 'eaf' && raw) it = { id: `eaf:${raw}`, kind: 'html', ...base, d: '', url: gql('forum.effectivealtruism.org', raw), page: `https://forum.effectivealtruism.org/posts/${raw}/<slug>`, words: 0, via: { ...base.via, source: 'eaforum' } };
+    else if (src === 'ia' && raw) it = { id: `ia:${raw}`, kind: 'scan', ...base, ia: raw, n: 0, url: `https://archive.org/details/${raw}`, page: `https://archive.org/details/${raw}`, license: 'Public domain (published before 1931)', via: { ...base.via, source: 'internet-archive' } };
+    else if ((src === 'pdf' || src === 'web') && raw && /^https:\/\//.test(raw)) { const u = new URL(raw); const id = `${src}:${u.hostname.replace(/^www\./, '')}${u.pathname.replace(/\/+$/, '')}`; it = { id, kind: src, ...base, url: raw, page: raw, via: { ...base.via, source: 'author-site' } }; }
+    else fail('usage: node jobs.mjs skeleton <arxiv|lw|af|eaf|ia|pdf|web> <arXiv id | post _id | IA identifier | https URL> --job <id> [--lane <lane>]');
+    if (typeof flags.get('lane') === 'string') it.lane = flags.get('lane');
+    out(JSON.stringify(it, null, 1));
     break;
   }
   case 'new': {

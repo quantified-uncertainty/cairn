@@ -517,6 +517,12 @@ T.reload = async (browser) => {
 
 // ---------------------------------------------------------------- run
 let MODE = 'fixtures';
+if (process.env.DUI_DEBUG) T.debug = async (browser) => {
+  const { ctx, page } = await context(browser);
+  await open(page, process.env.DUI_DEBUG); await page.waitForTimeout(2500);
+  console.log(await page.evaluate(() => { const c = document.querySelector('#new-chip'); return { chip: c && { hidden: c.hidden, text: c.textContent, parent: c.parentNode?.id, prev: c.previousElementSibling?.id, rect: JSON.stringify(c.getBoundingClientRect()), disp: getComputedStyle(c).display }, L: window.__stacksLearn && { on: window.__stacksLearn.L.on, n: window.__stacksLearn.L.newIds.size } }; }));
+  await ctx.close();
+};
 if (process.env.DUI_PROFILE) T.profile = async (browser) => {
   const { ctx, page } = await context(browser);
   await open(page, '?lane=all'); await page.waitForTimeout(1500);
@@ -537,7 +543,7 @@ const browser = await (async () => {
   console.log(`Stacks dashboard UI test · ${BASE} · ${MODE} · screenshots in ${SHOTS}`);
   return chromium.launch({ executablePath: EXE });
 })();
-const ORDER = [...(process.env.DUI_PROFILE ? ['profile'] : []), 'keys', 'cold', 'term', 'why', 'flag', 'dashboard', 'badges', 'memory', 'reload', 'speed'];
+const ORDER = [...(process.env.DUI_DEBUG ? ['debug'] : []), ...(process.env.DUI_PROFILE ? ['profile'] : []), 'keys', 'cold', 'term', 'why', 'flag', 'dashboard', 'badges', 'memory', 'reload', 'speed'];
 const t0 = Date.now();
 try {
   for (const name of ORDER) {
