@@ -16,7 +16,8 @@ export const state = {
   // '2d' (vertical strokes = items, horizontal = pages) or 'continue'.
   // wheelDevice 'auto' guesses the device per gesture; 'mouse' or 'pad' fixes it.
   wheelMouse: store.get('wheelMouse', store.get('wheel') === 'pages' ? 'pages' : 'continue'),
-  wheelPad: store.get('wheelPad', '2d'), wheelDevice: store.get('wheelDevice', 'auto'),
+  // vertical strokes page through the item; at the end, keep scrolling to move on
+  wheelPad: store.get('wheelPad', 'continue'), wheelDevice: store.get('wheelDevice', 'auto'),
   status: {}, marks: new Map(), // id -> page numbers to mark on the strip (summary key points)
 };
 const seed = store.get('seed', Math.floor(Math.random() * 1e9));

@@ -275,7 +275,6 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
     const c0 = colOf(s.x0, s.x1)[0];
     if (byY.some((p) => p.prose && p !== s && s.y0 - p.y1 > -0.3 * body && s.y0 - p.y1 < 0.8 * body && (Math.abs(s.x0 - p.x0) < 1.2 * body || Math.abs(s.x0 - c0) < 1.2 * body))) s.prose = true;
   }
-  // Running heads and page numbers.
   // Running heads and page numbers: the edges of the page, and a topmost line in small type.
   const top = Math.min(...hz.map((s) => s.y0), H);
   for (const s of runs) s.margin = s.y1 < 0.065 * H || s.y0 > 0.94 * H || (!s.rot && s.y1 < 0.1 * H && s.y0 - top < body && s.fs <= 0.92 * body);
@@ -287,15 +286,21 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
   for (const s of byY) {
     const m = CAP.exec(s.str);
     if (!m || s.cap || s.margin) continue;
-    if (/^\s+$/.test(m[4]) && !/^[A-Z]/.test(s.str.slice(m.index + m[0].length))) continue; // "Figure 3 shows …" (the i flag makes [A-Z] match any letter)
-    if (!m[4].trim() && !/^\s+$/.test(m[4]) && s.str.trim().length > m[0].trim().length + 2) continue;
+    // "Figure 3 shows …" is body text ("Figure 3 Loss curves" a caption; the i flag lets [A-Z] match any letter).
+    const rest = s.str.slice(m.index + m[0].length);
+    if (!m[4].trim() && rest.trim() && !/^[A-Z]/.test(rest)) continue;
     const [c0] = colOf(s.x0, s.x1);
     if (hz.some((o) => o !== s && Math.abs(o.base - s.base) < 0.5 * body && o.x1 <= s.x0 + 1 && o.x1 > c0 - body && s.x0 - o.x1 < 3 * body)) continue; // not at a line start
     const blk = { x0: s.x0, y0: s.y0, x1: s.x1, y1: s.y1, runs: [s], kind: capKind(m[1]), label: capLabel(m) };
     s.cap = blk;
     let last = s;
-    // A bare label ("Fig. 39.") is followed by body text, not more caption.
-    const bare = s.str.trim().length <= m[0].trim().length + 2;
+    // The rest of the label's line first (a bold label is often a run of its own).
+    for (const o of byY.filter((o) => !o.cap && !o.margin && Math.abs(o.base - s.base) < 0.5 * body && o.x0 >= s.x0).sort((a, b) => a.x0 - b.x0)) {
+      if (o.x0 - blk.x1 > 3 * body || CAP.test(o.str)) break;
+      o.cap = blk; blk.runs.push(o); grow(blk, o);
+    }
+    // A bare label ("Fig. 39.") is followed by body text, not more caption (nor, in scans, is any label).
+    const bare = blk.runs.reduce((n, o) => n + o.str.trim().length, 0) <= m[0].trim().length + 2;
     for (let more = true; more && blk.runs.length < 24;) {
       more = false;
       for (const o of byY) {
@@ -477,7 +482,15 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
     }
     if (F) { F.cap = C; F.kind = C.kind; out.push(F); }
   }
-  for (const R of rs) if (!R.cap && R.strong && !(scan && ((R.y0 + R.y1) / 2 < 0.07 * H || (R.y0 + R.y1) / 2 > 0.95 * H))) { R.kind = 'figure'; out.push(R); }
+  for (const R of rs) if (!R.cap && R.strong && !(scan && ((R.y0 + R.y1) / 2 < 0.07 * H || (R.y0 + R.y1) / 2 > 0.95 * H))) {
+    R.kind = 'figure'; out.push(R);
+    // A plate's legend: the short centred line or two right under it, numbered or not.
+    if (scan && (R.x1 - R.x0) * (R.y1 - R.y0) > 0.3 * W * H) {
+      const cx = (R.x0 + R.x1) / 2;
+      const leg = hz.filter((s) => !s.prose && !s.margin && s.y0 >= R.y1 - 0.5 * body && s.y0 - R.y1 < 3 * body && Math.abs((s.x0 + s.x1) / 2 - cx) < 0.12 * (R.x1 - R.x0)).sort((a, b) => a.y0 - b.y0).slice(0, 2);
+      if (leg.length) R.cap = { label: '', text: leg.map((s) => s.str).join(' ').replace(/\s+/g, ' ').trim() };
+    }
+  }
 
   // 9. Merge overlaps; pad a little; keep the page's figures in reading order.
   out.sort((a, b) => (b.x1 - b.x0) * (b.y1 - b.y0) - (a.x1 - a.x0) * (a.y1 - a.y0));
@@ -651,7 +664,7 @@ function enterRegion(reg, el, it) {
   dropPending();
   enterAt = performance.now();
   pending = prepare(reg, el, it);
-  showT = setTimeout(() => { if (pending?.reg === reg) open(reg, el, it, false); }, REST_MS);
+  showT = setTimeout(() => { if (pending?.reg === reg) { pending.fired = performance.now(); open(reg, el, it, false); } }, REST_MS);
 }
 function leaveRegion() {
   hoverEl?.classList.remove('fp-over');
@@ -724,9 +737,13 @@ function layout(reg, el) {
   // The page(s) to the right, unless the figure is on the right-most page.
   const first = pgs[0], last = pgs[pgs.length - 1];
   const side = el === last && el !== first ? 'left' : el === first && el === last ? (A.r - P.right >= P.left - A.l ? 'right' : 'left') : 'right';
+  // The neighbouring page(s) whenever they give a real enlargement; else the
+  // best of the rest (beside the figure on its own page, or above or below it
+  // across the spread, which is how a wide figure gets two pages).
   const best = cands.reduce((a, b) => (b.s > a.s ? b : a));
   const byName = (n) => cands.find((c) => c.name === n);
-  let c = [byName(side), byName(side + '-in')].find((x) => x && x.s >= Math.max(1.2, 0.8 * best.s)) || best;
+  const nb = byName(side) || byName(side === 'left' ? 'right' : 'left');
+  const c = nb && (nb.s >= 2 || nb.s >= 0.6 * best.s) ? nb : [byName(side + '-in')].find((x) => x && x.s >= 0.8 * best.s) || best;
   if (c.s < 1.08) return null; // already about as large as it can be
   const vw = Math.round(fw * c.s), vh = Math.round(fh * c.s), fH = footH(reg, vw);
   const w = vw + 2, hgt = vh + fH + 2;
@@ -881,7 +898,7 @@ function open(reg, el, it, pinIt) {
   ov.style.transformOrigin = lay.origin;
   view.style.width = lay.vw + 'px'; view.style.height = lay.vh + 'px';
   capEl.style.maxHeight = Math.max(20, lay.fH - 34) + 'px';
-  capEl.replaceChildren(...(reg.cap ? [h('b', { textContent: reg.cap.label }), ' ', reg.cap.text] : []));
+  capEl.replaceChildren(...(reg.cap ? [reg.cap.label ? h('b', { textContent: reg.cap.label }) : null, reg.cap.label ? ' ' : null, reg.cap.text].filter(Boolean) : []));
   capEl.hidden = !reg.cap;
   ov.classList.toggle('nocap', !reg.cap);
   // The soft copy at once, then the sharp one.
@@ -899,7 +916,7 @@ function open(reg, el, it, pinIt) {
   markRegion(reg, 'src'); markRegion(reg, 'hot');
   const shown = performance.now();
   const job = prep.job || (prep.job = renderWin(it, k, ready.get(keyOf(it, k)), reg, base.width, base.height));
-  const rec = { shown: Math.round(shown - t0), sharp: null, kind: it.kind, s: +lay.s.toFixed(2), where: lay.where };
+  const rec = { shown: Math.round(shown - t0), fired: prep.fired ? Math.round(prep.fired - t0) : null, sharp: null, kind: it.kind, s: +lay.s.toFixed(2), where: lay.where };
   peekTimes.push(rec); if (peekTimes.length > 100) peekTimes.shift();
   job.promise.then((c) => {
     if (S.prep !== prep) return;

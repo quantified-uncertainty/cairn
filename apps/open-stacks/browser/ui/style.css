@@ -219,3 +219,9 @@ a { color: var(--accent); }
 #item-head h1 .ticon { color: var(--accent); vertical-align: -1px; }
 .rel .ticon, .trail .ticon { margin-right: 0; margin-top: 2px; }
 #loadpct { font: 10px var(--mono); color: var(--accent); border: 1px solid var(--accent); border-radius: 99px; padding: 0 6px; flex: none; opacity: .85; }
+
+/* Pull to the next item (wheel/trackpad at the end of an item) */
+#pull { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); width: min(520px, 70%); background: var(--bg-3); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; z-index: 30; font: 12px var(--sans); color: var(--ink); box-shadow: 0 8px 24px #0008; }
+#pull .fill { position: absolute; inset: 0 auto 0 0; background: color-mix(in srgb, var(--accent) 35%, transparent); transition: width .12s; }
+#pull span { position: relative; display: block; padding: 7px 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#stage { position: relative; }

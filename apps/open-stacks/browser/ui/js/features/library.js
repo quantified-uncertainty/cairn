@@ -21,7 +21,7 @@
 // turn or item switch except one tiny label in the header: the tree follows the
 // current item on 'item:settled', and only while it is showing.
 import { $, h, on, emit, store, registerKey, keyHelp } from '../util.js';
-import { items, LANES, COUNTS, LANE_COLORS, LANE_ORDERED } from '../corpus.js';
+import { items, byId, LANES, COUNTS, LANE_COLORS, LANE_ORDERED } from '../corpus.js';
 import { state, current, buildOrder } from '../state.js';
 import { showFeed } from '../feed.js';
 import { before, jumpTo } from '../nav.js';
@@ -96,9 +96,6 @@ function setFilter(text) {
 }
 function flatten() {
   if (!T) return;
-  const __t0 = performance.now(); try { flatten0(); } finally { (window.__lib ||= { paint: [], flat: [] }).flat.push(performance.now() - __t0); }
-}
-function flatten0() {
   const out = [];
   const walk = (n) => {
     for (const k of n.kids) {
@@ -242,11 +239,14 @@ registerKey('L', () => {
 let raf = 0;
 const paint = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; paintNow(); }); };
 let progressOf = null; // memory.js, when it is loaded
+// Reading progress per item and read counts per folder, kept until memory.js says an item changed.
+const prog = new Map(), readN = new Map();
+const progress = (i) => { if (!progressOf) return null; if (!prog.has(i)) prog.set(i, progressOf(items[i].id)); return prog.get(i); };
+const readCount = (n) => { if (!progressOf) return 0; if (!readN.has(n.key)) { let k = 0; for (const i of n.items) if (progress(i)?.done) k++; readN.set(n.key, k); } return readN.get(n.key); };
+const icons = new Map(); // item -> its icon, cloned for each paint
+const icon = (i) => { if (!itemIcon) return h('span', { className: 'lr-b' }); if (!icons.has(i)) icons.set(i, itemIcon(items[i], 12)); return icons.get(i).cloneNode(true); };
 function paintNow() {
   if (!showing() || !T) return;
-  const __t0 = performance.now(); try { paintNow0(); } finally { (window.__lib ||= { paint: [], flat: [] }).paint.push(performance.now() - __t0); }
-}
-function paintNow0() {
   paintScope();
   qn.textContent = q ? String(match.reduce((s, x) => s + x, 0)) : '';
   pad.style.height = rows.length * RH + 'px';
@@ -275,8 +275,7 @@ function rowEl(row, r, cur, s) {
     el.append(h('span', { className: 'lr-c', textContent: open ? '▾' : '▸' }));
     if (!n.parent) el.append(h('span', { className: 'lr-dot', style: `background:${LANE_COLORS[n.lane] || 'var(--ink-3)'}` }));
     el.append(h('span', { className: 'lr-t', textContent: n.label }));
-    let read = 0;
-    if (progressOf) for (const i of n.items) if (progressOf(items[i].id)?.done) read++;
+    const read = readCount(n);
     el.append(h('span', { className: 'lr-n', textContent: q ? `${n.m}/${n.n}` : read ? `${read}/${n.n}` : String(n.n), title: q ? `${n.m} of ${n.n} match` : read ? `${read} of ${n.n} read` : `${n.n} items` }));
     el.append(h('button', { type: 'button', className: 'lr-go', tabIndex: -1, textContent: '▶', title: n.parent ? `Browse “${n.label}” in the feed (Enter)` : `Browse the ${n.label} lane (Enter)` }));
     el.title = crumbOf(n).join(' › ');
@@ -284,9 +283,9 @@ function rowEl(row, r, cur, s) {
     const it = items[row.i];
     el.classList.add('lr-i');
     if (row.i === cur) el.classList.add('cur');
-    if (itemIcon) el.append(itemIcon(it, 12)); else el.append(h('span', { className: 'lr-b' }));
+    el.append(icon(row.i));
     el.append(h('span', { className: 'lr-t', textContent: it.t }));
-    const p = progressOf?.(it.id);
+    const p = progress(row.i);
     if (p) el.append(p.done ? h('span', { className: 'lr-p done', textContent: '✓', title: 'Read' })
       : h('span', { className: 'lr-p', title: p.n ? `${Math.round(p.frac * 100)}% seen` : 'Opened' }, h('i', { style: `width:${Math.max(12, Math.round(p.frac * 100))}%` })));
     el.title = [it.t, [it.a, it.y].filter(Boolean).join(', ')].filter(Boolean).join('\n');
@@ -329,7 +328,7 @@ function scrollTo(r, center) {
 }
 on('item:settled', ({ i }) => { if (showing()) revealItem(i); });
 on('view:changed', () => { if (showing()) { flatten(); paint(); } });
-on('memory:updated', () => { if (showing()) paint(); });
+on('memory:updated', ({ id } = {}) => { prog.delete(byId.get(id)); readN.clear(); if (showing()) paint(); });
 list.addEventListener('scroll', paint, { passive: true });
 addEventListener('resize', paint);
 

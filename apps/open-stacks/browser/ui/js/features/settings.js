@@ -120,7 +120,7 @@ function applyAll() {
   cssVar('--flow-img-h', d('imgMax', S.imgMax + 'vh'));
   cssVar('--page-gap', d('pageGap', S.pageGap + 'px'));
   cssVar('--panel-w', d('panelW', S.panelW + 'px'));
-  cssVar('--sum-delay', store.get('sumDelay', 5000) / 1000 + 's');
+  const sd = store.get('sumDelay', 5000); cssVar('--sum-delay', sd === 5000 ? null : sd / 1000 + 's');
   state.measure = S.measureCh ? S.measureCh * charEm() : undefined;
   state.cropPad = S.cropPad === DEF.cropPad ? undefined : S.cropPad / 100;
   state.pageGap = S.pageGap; state.fit = S.fit;

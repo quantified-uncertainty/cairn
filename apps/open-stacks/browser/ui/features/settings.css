@@ -148,3 +148,7 @@ html[data-st-filter="invert"] #st .st-pages i { filter: invert(.9) hue-rotate(18
 #st .st-cust input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
 #st .st-cust input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 2px; }
 #st .st-cust input[type="color"]::-moz-color-swatch { border: 0; border-radius: 2px; }
+/* The enlarged figure (figure peek) follows the pages' dim/invert setting. */
+html[data-st-filter="invert"] #fp-ov .fp-view canvas { filter: invert(.9) hue-rotate(180deg); }
+html[data-st-filter="dim"] #fp-ov .fp-view canvas { filter: brightness(.78) contrast(1.06); }
+html[data-st-filter="invert"] #fp-ov .fp-view { background: #1a1a1a; }

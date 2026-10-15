@@ -38,7 +38,7 @@ import { h, css, emit, store } from './util.js';
 import { state } from './state.js';
 
 export const tune = Object.assign({
-  padGap: 120, mouseGap: 250, dense: 20, lock: 12, stroke: 40, notch: 15, rate: 6, rise: 1.4, pinch: 10,
+  padGap: 120, mouseGap: 250, dense: 20, lock: 12, stroke: 40, notch: 15, rate: 14, rise: 1.4, pinch: 10,
 }, store.get('wheelTune', {}));
 
 let G = null; // the gesture in progress
@@ -191,7 +191,7 @@ function armNotchCheck(g) {
 const queue = [];
 let lastStep = -1e9, pumpT = 0;
 function push(g, axis, dir) {
-  if (!dir || queue.length >= 8) return;
+  if (!dir || queue.length >= 2) return; // no backlog: the pages stop when the wheel stops
   queue.push({ g, axis, dir, fresh: !g.made, x: ptr.x, y: ptr.y });
   g.made++;
   pump();

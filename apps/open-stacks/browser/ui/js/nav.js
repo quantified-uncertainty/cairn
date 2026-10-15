@@ -91,11 +91,44 @@ const stepped = (dir, e) => steppers.some((x) => x.fn(dir, e));
  *  Returns true when it turned, 'crossed' when it moved on, false when it stayed. */
 export function forward(e) {
   if (turn(1)) return true;
+  // The wheel never slides into the next item by accident: at the end you
+  // keep scrolling on purpose (a bar fills) to move on.
+  if (e?.device) {
+    if (!ready(items[current()])) return false;
+    if (state.pos >= state.order.length - 1) { toast('End of this lane'); return false; }
+    if (!pulled()) return 'pull';
+    return go(state.pos + 1) && 'crossed';
+  }
   // Not while the item is still opening: its last spread is not known yet, and
   // a quick second press would skip an item you have not seen.
   if (e?.repeat || e?.fresh === false || !ready(items[current()])) return false;
   if (state.pos >= state.order.length - 1) { toast('End of this lane'); return false; }
   return go(state.pos + 1) && 'crossed';
+}
+// Pull to the next item. Scrolling that reaches the end stops there, and
+// keeps stopping while it goes on (steps less than 0.7 s apart). After a
+// pause, a new scroll fills a bar: three steps move on to the next item.
+let pullN = 0, pullT = 0, pullHide = 0, endItem = null;
+function pulled() {
+  const now = performance.now();
+  const here = items[current()]?.id;
+  if (endItem !== here) { endItem = here; pullN = 0; pullT = now; showPull(0, 'End · pause, then scroll again for'); return false; }
+  const gap = now - pullT; pullT = now;
+  if (pullN === 0 && gap < 700) { showPull(0, 'End · pause, then scroll again for'); return false; }
+  pullN = gap > 1600 ? 1 : pullN + 1;
+  if (pullN >= 3) { pullN = 0; endItem = null; showPull(1, 'Next:'); return true; }
+  showPull(pullN / 3, 'Keep scrolling for');
+  return false;
+}
+function showPull(frac, label) {
+  const now = performance.now(); void now;
+  let bar = document.getElementById('pull');
+  if (!bar) { bar = h('div', { id: 'pull' }, h('div', { className: 'fill' }), h('span')); $('#stage').append(bar); }
+  const nx = items[state.order[state.pos + 1]];
+  bar.querySelector('span').textContent = `${label} ${nx?.t || 'the next item'}`;
+  bar.querySelector('.fill').style.width = Math.round(frac * 100) + '%';
+  bar.hidden = false;
+  clearTimeout(pullHide); pullHide = setTimeout(() => { bar.hidden = true; pullN = 0; }, frac >= 1 ? 500 : 1800);
 }
 /** Advance (Space, PageDown, F16, the wheel in continue mode): steppers, then the next spread, then the next item. */
 export function advance(e) { return stepped(1, e) || forward(e); }
