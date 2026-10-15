@@ -3,7 +3,7 @@ title: Reading Interfaces
 description: What research prototypes and products show about reading at different depths (Ai2's Semantic Reader prototypes, LiquidText, MarginNote, explorable explanations, Distill, the mnemonic medium, Gwern.net's popups, StretchText and semantic zoom, and the skimming literature), with study results, costs at October 2026 prices, and which ideas carry over from papers to books.
 ---
 
-*Status: draft, October 2026. Product features and statuses are as of October 2026. Study results are as their authors report them; most come from small lab studies (9–60 participants) run between 2001 and 2023 on papers and essays, not books. Every statement about books is inference unless a source is cited. Sources: the [R06 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R06-infovis-and-interaction-research.md), the [R11 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R11-reading-practice-curation-devices.md), and primary sources linked inline.*
+*Status: draft, October 2026. Product features and statuses are as of October 2026. Study results are as their authors report them. Most come from small lab studies (9–60 participants, 2001–2023) on papers and essays, not books; the exceptions are Wikipedia's Page Previews A/B tests and Quantum Country's usage data. Every statement about books is inference unless a source is cited. Sources: the [R06 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R06-infovis-and-interaction-research.md), the [R11 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R11-reading-practice-curation-devices.md), and primary sources linked inline.*
 
 ## The short version
 
@@ -21,12 +21,12 @@ Reading is several tasks with different interface needs, and the evidence sorts 
 |---|---|---|---|
 | **Triage** (seconds per item) | Is this worth opening? | Accurate *information scent* (cues about content you can't see yet); previews that don't navigate away | Wikipedia Page Previews, Gwern.net popups, TLDRs, citation cards |
 | **Skim** (minutes per item) | What does it say, and where? | Structure that supports satisficing; highlights that are faceted, evenly spread and adjustable in density | Scim, Google Scholar PDF Reader's AI outlines, section gists |
-| **Lookup** | What does this term, symbol or citation mean *here*? | Definitions in place, which save time without hurting accuracy | ScholarPhi, CiteSee, footnote popups |
+| **Lookup** | What does this term, symbol or citation mean *here*? | Definitions in place (ScholarPhi: significantly faster answers) | ScholarPhi, CiteSee, footnote popups |
 | **Deep study** | Do I understand it, and do I believe it? | Self-paced reading; excerpts that keep their links to the source; manipulable models | LiquidText, MarginNote, explorable explanations, Distill |
 | **Synthesis** | How do several works fit together? | Reuse of human-written overviews; threads with provenance | Relatedly, Threddy, LiquidText's multi-document workspace |
 | **Retention** | Will I still know this in a year? | Retrieval practice and spacing | Quantum Country, Orbit, Anki with FSRS, MarginNote 4 |
 
-A common failure is a single "AI reading assistant" that summarizes everything. It serves triage well. It also invites the reader to skip deep study and retention, the two depths where the learning happens. The rest of this chapter goes depth by depth.
+A common failure is a single "AI reading assistant" that summarizes everything [I]. It serves triage well. It also invites the reader to skip deep study and retention, the two depths where the learning happens. The rest of this chapter goes depth by depth.
 
 ## Skimming: what the eye-tracking says
 
@@ -37,13 +37,9 @@ Skimming is a different task from reading, not a faster version of it. The resea
 - **Good skimmers satisfice.** Duggan & Payne studied skimming of expository text under time pressure as a form of foraging ([2009](https://researchportal.bath.ac.uk/en/publications/text-skimming-the-process-and-effectiveness-of-foraging-through-t/), *J. Exp. Psych.: Applied* 15(3)). Their [2011 reanalysis](https://researchportal.bath.ac.uk/en/publications/skim-reading-by-satisficing-evidence-from-eye-tracking/) of the eye-movement data found that skimmers directed attention to the most important information, which improved their memory for it. Their model: read a section until the rate of new information falls below a threshold, then skip to the next one. I recall that the 2009 paper also found skimming the whole text beat reading half of it carefully, but I could not verify this; the abstract is not openly available [~65%].
 - **Highlights help skimmers when the density is right.** Scim (below) found faster information finding with no loss of accuracy. Its authors warn that "too few highlights will present the guise of an inept tool, and too many will slow a reader down" ([Lo et al. 2023](https://arxiv.org/abs/2303.14334)).
 
-**What this implies for design** [I]:
+**What this implies for design** [I]: a skimming aid should feed the satisficing decision by showing where the new information is and when to move on. Useful signals are section gists, an always-visible outline, and novelty measured against what the reader has already read (an embedding distance from their library and highlights, which no shipping tool computes, as far as I found). Don't build RSVP readers.
 
-- A skimming aid should feed the satisficing decision. The reader needs to know where the new information is and when to move on.
-- Useful signals: section gists, an always-visible outline, and novelty measured against what the reader has already read. That last signal is an embedding distance from the reader's library and highlights, and no shipping tool computes it, as far as I found.
-- Don't build RSVP readers.
-
-**The open question is replacement.** An LLM outline might make skimming better, or it might replace skimming, with the retention cost that implies. I found no study that separates the two. The nearest evidence is Kosmyna et al. ([arXiv 2506.08872](https://arxiv.org/abs/2506.08872)): people who wrote essays with an LLM showed weaker EEG connectivity and struggled to quote their own essays. That study covers writing, not reading, with 54 participants (18 in the crossover session), and is a preprint. Treat it as a caution, not evidence [low-medium].
+**The open question is replacement.** An LLM outline might improve skimming, or replace it, with the retention cost that implies. I found no study that separates the two. The nearest evidence is Kosmyna et al. ([arXiv 2506.08872](https://arxiv.org/abs/2506.08872)): people who wrote essays with an LLM showed weaker EEG connectivity and struggled to quote their own essays. It is a preprint about writing, not reading, with 54 participants; treat it as a caution, not evidence [low-medium].
 
 ## The Semantic Reader program
 
@@ -61,7 +57,7 @@ From 2020 to 2023, a multi-institution team led by Ai2 built ten research protot
 **What the program shows** (quotes are from [Lo et al. 2023](https://arxiv.org/abs/2303.14334); interpretation is mine):
 
 1. **Model errors were the binding constraint.** ScholarPhi's interface worked, but its 2021 definition extractor got about a quarter of definitions wrong or missed them. The authors warn that "even slight errors in these models can have detrimental effects on the readers."
-2. **LLMs changed the economics during the program.** "Until recently, interface design could require months of development of bespoke AI models." LLMs let the team "experiment with a wide range of new NLP capabilities at relatively low cost." The shipped definitions feature is now AI-generated from context ([product page](https://www.semanticscholar.org/product/semantic-reader), October 2026).
+2. **LLMs changed the economics during the program.** "Until recently, interface design could require months of development of bespoke AI models." LLMs let the team "experiment with a wide range of new NLP capabilities at relatively low cost."
 3. **Relatedly is the most portable idea.** It avoids generating syntheses by reusing human-written ones: related-work paragraphs are expert overviews that already exist. Only the headings were machine-written. The hallucination risk is therefore small, and it shrinks further if the headings are clearly labeled. [I]
 4. **Paper Plain's result is the one most relevant to "reading at a different depth."** Readers given gists beside the original text found reading easier and lost no comprehension. They also chose gists over definitions. The gists were an added layer, not a replacement.
 
@@ -83,7 +79,7 @@ Hover previews are one of the few reading-interface ideas tested at scale. Wikim
 | Previews seen (card open at least 1 s) per pageview | 0.26 | 0.27 |
 | Sessions that disabled the feature | about 0.01% | about 0.01% |
 
-Readers looked at about a fifth more pages while opening fewer. The previews replaced navigations instead of adding them. Page Previews has been on by default on all Wikipedias since July 2018. These data are from 2018 and from an encyclopedia, not from long-form reading [possibly stale].
+Readers looked at about a fifth more pages while opening fewer. The previews replaced navigations instead of adding them. [Page Previews](https://www.mediawiki.org/wiki/Page_Previews) has been on all Wikipedias since July 2018. These data are from 2018 and from an encyclopedia, not from long-form reading [possibly stale].
 
 ### Gwern.net: the most developed single-author version
 
@@ -92,13 +88,10 @@ Readers looked at about a fifth more pages while opening fewer. The previews rep
 - **Recursive popups.** Hovering a link opens the target as a full popup. Popups can be nested, moved, resized and pinned. On mobile they become tappable popovers.
 - **Link annotations.** Each annotated link has a mini-page with metadata, abstract and excerpts. Some are hand-written; others are "automatically extracted from sources (eg. Arxiv/BioRxiv/MedRxiv/Crossref)." The point is to let readers judge a source before visiting it.
 - **Collapsible sections.** Code-folding-style disclosure keeps the surface short. Combined with lazy transclusion, it builds very large "virtual" pages.
-- **Sidenotes** instead of footnotes on wide screens (2020).
 - **Link bibliographies.** Every link on a page, in order, with annotations expanded, so a reader can skim them all at once.
-- **Backlinks with context** (since 2021, rebuilt nightly).
-- **"Similar links."** A nearest-neighbor lookup over neural embeddings, which the page says comes with "no guarantees of relevance."
-- **Local archives** of linked pages, because "every link dies someday."
+- **Also:** sidenotes on wide screens (2020); backlinks with context (since 2021); "similar links" from an embedding nearest-neighbor lookup, with "no guarantees of relevance"; local archives, because "every link dies someday."
 
-Each feature lets the reader choose a depth on the spot: a link becomes a popup, an abstract, an excerpt, or the full source. Gwern.net is effectively StretchText (next section) applied to the reference layer, not to the prose.
+Each feature lets the reader choose a depth on the spot: a link becomes a popup, an abstract, an excerpt, or the full source. Gwern.net is effectively StretchText (next section) applied to the references rather than the prose.
 
 ### The risk: generated scent can mislead
 
@@ -107,7 +100,7 @@ An LLM can write an annotation for every link, citation and book mention, which 
 **Design rule** [I, high]: a hover card shows source material first and generated text second, and labels which is which:
 
 1. the abstract, table of contents, or the cited passage itself
-2. a generated "why this is cited here" gloss, built from the citing sentence plus the cited work's abstract (CiteSee-style)
+2. a generated "why this is cited here" gloss, built from the citing sentence plus the cited work's abstract (building on CiteRead, a Semantic Reader prototype that shows citing sentences inside the cited paper)
 3. whether the reader has seen the item before
 
 ## Multi-resolution text: StretchText, semantic zoom and generated gists
@@ -128,11 +121,11 @@ The lesson for multi-resolution text: show the overview *next to* the undistorte
 |---|---|---|---|
 | Paper Plain gists (2022–23) | A plain-language gist per section, beside the original | Research prototype; medical papers | n = 24: easier reading, same comprehension |
 | [Google Scholar PDF Reader AI outlines](https://scholar.googleblog.com/2024/11/ai-outlines-in-scholar-pdf-reader-skim.html) (Nov 2024) | An "extended table of contents" with bullets per section | Selected English papers | None published that I found |
-| Kindle "Story So Far" and "Ask This Book" ([Amazon](https://aboutamazon.com/news/devices/new-amazon-kindle-scribe-color)) | A recap up to your position; Q&A over the book | US books only; closed, with no API | None published |
+| Kindle "Story So Far" and "Ask This Book" ([Amazon](https://aboutamazon.com/news/devices/new-amazon-kindle-scribe-color)) | A recap up to your position; Q&A over the book | US books only; closed, no public API found | None published |
 | Gemini Notebook (formerly NotebookLM) Audio Overviews ([help](https://support.google.com/gemininotebook/answer/16212820)) | Spoken discussions: Deep Dive, Brief, Critique, Debate | Up to 50 sources free, each up to 500,000 words; EPUB accepted | None on comprehension; Google warns they "may contain inaccuracies" |
 | Google's Learn Your Way (Sept 2025) | A textbook chapter re-leveled to the reader's grade level, with quizzes and other formats | One chapter; Labs experiment | RCT, n = 60, ages 15–18: 78% vs 67% on a retention test 3–5 days later. See [Generative Interfaces](/interfaces/generative-interfaces/) |
 
-**Faithfulness is the remaining constraint.** In [FABLES](https://arxiv.org/abs/2404.01261) (26 books published 2023–24, 3,158 claims), the best 2024 model had 90.9% of its book-summary claims judged faithful (Claude 3 Opus). GPT-4 reached 78% and Mixtral 69%. Most unfaithful claims concerned events and character states, and summaries over-weighted the ending. The best LLM judge reached only F1 = 58.2 at catching unfaithful claims, so machines could not yet check the summaries. Current frontier models are probably better, but I found no 2026 rerun [~70% that error rates have at least halved; unverified].
+**Faithfulness is the remaining constraint.** In [FABLES](https://arxiv.org/abs/2404.01261) (26 books published 2023–24, 3,158 claims), the best 2024 model had 90.9% of its book-summary claims judged faithful (Claude 3 Opus). GPT-4 reached 78% and Mixtral 69%. Most unfaithful claims concerned events and character states, and summaries over-weighted the ending. The best LLM judge reached only F1 = 58.2 at catching unfaithful claims, so machines could not yet check the summaries. Current frontier models are probably better, but I found no 2026 rerun [~70%, my guess, that unfaithful-claim rates have at least halved].
 
 **How to build a zoom ladder** [I]. A zoom ladder goes book → part → chapter → section → paragraph, with these properties:
 
@@ -149,7 +142,7 @@ These tools treat an *excerpt that keeps its link to the source* as the basic un
 
 | Tool | Mechanism | Platforms and price (Oct 2026) | Evidence | Source |
 |---|---|---|---|---|
-| **LiquidText** | Pull excerpts out onto a workspace; link notes to many passages; pinch to bring distant passages or documents together; connect material "across pages and documents" | iPadOS, Windows, macOS; LIVE sync is a subscription; no prices or AI features on the homepage | Research origin: Tashman & Edwards, CHI 2011 (114 citations). I could not read its evaluation; the abstract is withheld in the Semantic Scholar record | [liquidtext.net](https://www.liquidtext.net/) |
+| **LiquidText** | Pull excerpts out onto a workspace; link notes to many passages; connect material "across pages and documents" with a pinch gesture. The CHI 2011 design also let readers collapse a document to bring distant passages side by side [T] | iPadOS, Windows, macOS; LIVE sync is a subscription; no prices or AI features on the homepage | Research origin: Tashman & Edwards, CHI 2011 (114 citations). I could not read its evaluation; the abstract is withheld in the Semantic Scholar record | [liquidtext.net](https://www.liquidtext.net/) |
 | **MarginNote 4** | PDF and EPUB reader where every highlight becomes a card; cards, mind-map nodes and flashcards are "same card, three forms"; FSRS scheduling; "Immersive Recall" mode blurs the document so you recall before revealing; AI chapter summaries, key terms and quiz drafts that the reader accepts, edits or rejects | iPad and Mac; 14-day trial; lifetime or subscription (prices not on the homepage) | Vendor claims about 30% less review time than "traditional Anki schedulers." This is unverified marketing | [marginnote.com](https://www.marginnote.com/) |
 | **Threddy** (prototype) | Clip sentences into threads while reading, keeping their citations; thread-based recommendations | Research prototype | n = 9 against Google Docs: more clips and references, higher flow | [arXiv 2208.03455](https://arxiv.org/abs/2208.03455) |
 | **Zotero 10** | Reflowable "Reading Mode" for PDFs that you can annotate in; Read Aloud (since Zotero 9); advanced search over annotations | Free and open source; Win/Mac/Linux, iOS, Android | None published | [Zotero 10](https://www.zotero.org/blog/zotero-10/) (2026-08-17) |
@@ -168,7 +161,7 @@ Bret Victor's ["Explorable Explanations"](https://worrydream.com/ExplorableExpla
 
 - An LLM can now generate a working interactive model of a formula or simulation in minutes (see [Generative Interfaces](/interfaces/generative-interfaces/)). The authoring cost that ended Distill is mostly gone.
 - The verification cost is not. A reactive document with a wrong model teaches the wrong intuition *convincingly*. A fluent wrong summary is easy to distrust; a slider that behaves plausibly is not.
-- **The best fit is a well-specified model taken from a book or paper**, checked against the source's own worked examples. Examples in this reader's domains: Bayes' rule with adjustable base rates, the Kelly criterion, the bias–variance trade-off, the decomposition of a Brier score, a SIR epidemic model. Each has a closed form or a reference implementation to test against.
+- **The best fit is a well-specified model taken from a book or paper**, checked against the source's own worked examples. Examples in this reader's domains: Bayes' rule with adjustable base rates, the Kelly criterion, the bias–variance trade-off, the decomposition of a Brier score, an SIR epidemic model. Each has a closed form or a reference implementation to test against.
 - **The worst fit is a generated "simulation" of a verbal argument.** The model's assumptions then belong to the LLM, not the author.
 
 For textbooks, this is the highest-value use of generated interactivity [~70%]. Many textbook formulas already have worked examples in the text, and those examples serve as test cases.
@@ -187,7 +180,7 @@ Andy Matuschak and Michael Nielsen's [Quantum Country](https://quantum.country/)
 
 Matuschak's later notes report that readers who reach five or more days of demonstrated retention rarely forget afterward (median accuracy around 95%). He also says the data are correlational [S, via R11]. **The causal evidence for the mnemonic medium as such is one informal experiment.** The evidence for its ingredients is much stronger.
 
-Quantum Country is still live with four essays and Patreon support. Its successor platform, [Orbit](https://github.com/andymatuschak/orbit), is open source and describes itself as an experimental platform, "first and foremost a vehicle for research" (October 2026).
+As of October 2026, Quantum Country is live with four essays and Patreon support. Its successor platform, [Orbit](https://github.com/andymatuschak/orbit), is open source and describes itself as an experimental platform, "first and foremost a vehicle for research" (October 2026).
 
 ### The underlying evidence is strong
 
@@ -203,13 +196,13 @@ Anki has offered FSRS since version 23.10, with a default desired retention of 9
 
 ### The arithmetic for books
 
-At Quantum Country's density of 112 prompts per 4 hours of reading, a book that takes 20 hours to study yields about 560 prompts. At Nielsen's 4–7 minutes per card, that is about **37–65 hours of lifetime review per book** [I]. The mnemonic layer can easily cost more time than the reading.
+At Quantum Country's density of 112 prompts per 4 hours of reading, a book that takes 20 hours to study yields about 560 prompts. At Nielsen's 4–7 minutes per card over 20 years, that is about **37–65 hours of lifetime review per book** [I]. The mnemonic layer can easily cost more time than the reading.
 
-That argues for being selective. Write prompts for the 5–10 works you want to master, which is Nielsen's "deep core" (see R11), and only for the parts you will build on. Don't write prompts for everything you read.
+That argues for being selective. Write prompts for the 5–10 works you want to master, the "deep core" of Nielsen's advice to read a few key works deeply and many shallowly ([R11](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R11-reading-practice-curation-devices.md)), and only for the parts you will build on. Don't write prompts for everything you read.
 
 ### Who writes the prompts
 
-Matuschak and Nielsen wrote every prompt by hand, and writing good prompts is hard. An LLM can draft 3–5 prompts per section for any chapter for a fraction of a cent. **Whether machine-drafted prompts produce the same retention as expert-written ones is untested.** I found no published controlled comparison [~70% that none exists]. The generation effect suggests that the reader's own editing matters.
+Matuschak and Nielsen wrote every prompt by hand, and writing good prompts is hard. An LLM can draft 3–5 prompts per section for any chapter for a fraction of a cent. **Whether machine-drafted prompts produce the same retention as expert-written ones is untested.** I found no published controlled comparison [~70% that none exists]. The generation effect suggests that the reader's own editing matters [I].
 
 **What to do now:** treat LLM prompts as drafts the reader accepts, edits or deletes, as MarginNote 4 does. Track your own retention on drafted and self-written prompts separately. It is a cheap n-of-1 experiment, and there is no published answer to wait for.
 
@@ -224,14 +217,14 @@ Most of this research used papers and essays. Papers have a standard structure (
 | **Hover cards** (Page Previews: +20–22% distinct pages) | Popups for endnotes, cited works and books mentioned in the text, showing catalog record and table of contents first and the generated gloss second | Reference resolution from book endnotes to catalog records (messier than paper references) | **High** for nonfiction | Endnote parsing; generated scent that misleads |
 | **Reusing human overviews** (Relatedly: better outlines, n = 15) | Index the introductions, literature reviews, "further reading" sections and bibliographic essays of open books, plus syllabi, as expert mini-maps of a field | Open-licensed books; topic indexing | **High** | Licensing of reused text: store pointers and short excerpts (see [The Legal Map](/building/legal-map/)) |
 | **Faceted skim highlights** (Scim: faster, 70.4% of diary sessions helped) | New facets: Claim / Evidence / Example / Caveat for nonfiction; Definition / Theorem / Example / Exercise for textbooks | A per-genre facet scheme; density control | **Medium** | Goal/Method/Result is paper-specific; book facets are untested |
-| **Excerpt workspaces** (LiquidText, Threddy) | Syntopical reading across several books on one question, as in Adler | Works on any PDF or EPUB today | **High** (book-agnostic) | None technical; little outcome evidence |
+| **Excerpt workspaces** (LiquidText, Threddy) | Syntopical reading across several books on one question, as in Adler | Exists today (MarginNote handles PDF and EPUB) | **High** (book-agnostic) | None technical; little outcome evidence |
 | **Explorables** (Victor, Distill) | Interactive versions of a textbook's formulas, checked against its worked examples | Full text; code generation; tests | **Medium-high** for quantitative textbooks, **low** for argument-driven books | A plausible wrong model teaches persuasively |
 | **Mnemonic medium** (Quantum Country: correlational, about 54 days per prompt after 6 reviews) | Reader-approved prompt drafts per section, exported to Anki or FSRS | Full text; a review app | **Medium** | Review load (37–65 hours per book at essay density); untested machine prompts |
 | **Personalized citation coloring** (CiteSee: 37% of cards opened from 8.2% of citations) | "You've read or saved this" marks on works cited in a book | Reading history; book citation graphs, which are sparse | **Low-medium** | Few book-to-book citation graphs; endnotes cite many old and gray sources |
 
 **Text access is the common obstacle.** Every high-transfer idea above needs the full text. For a personal tool, the clean sources are public-domain and open-licensed books (see [Open-Access Books and Textbooks](/access/open-books/) and [The Public Domain and Open Corpora](/access/public-domain/)) plus EPUBs and PDFs you own, processed locally. For in-copyright books you do not hold, a tool is limited to metadata, tables of contents and snippets (see [Searching Inside Books You Don't Have](/finding/searching-inside-books/)).
 
-Closed e-readers are adding some of these layers. Kindle has Story So Far and Ask This Book (US only), and Boox has an AI assistant for selected text. None exposes an API you can build on (R11, October 2026). Zotero 10 is the most capable open host: it reflows PDFs, supports annotation, reads aloud, and can be scripted.
+Closed e-readers are adding some of these layers. [Kindle](https://aboutamazon.com/news/devices/new-amazon-kindle-scribe-color) has Story So Far and Ask This Book (US only), and [Boox](https://shop.boox.com/products/noteair6c) has an AI assistant for selected text. None exposes a public API for custom workflows, as far as R11 found (October 2026). Zotero 10 is the most capable open host. It reflows PDFs, supports annotation, reads aloud, and has a local HTTP API with full-text endpoints. R04 also documents a community MCP server, zotero-mcp, that lets Claude Code search, read and annotate a Zotero library.
 
 ### What it costs to generate the layers
 
@@ -240,7 +233,7 @@ Assume a 100,000-word nonfiction book of about 150,000 input tokens, read once i
 | Layer | Output tokens per book (assumed) | Haiku 5.5 batch, per book | Sonnet 5.5 batch, per book | 10,000 books (Haiku / Sonnet) |
 |---|---|---|---|---|
 | Gist ladder (section, chapter, book) | ~10,000 | ~\$0.01 | ~\$0.20 | ~\$100 / ~\$2,000 |
-| Position-sensitive glossary | ~15,000 | ~\$0.01 | ~\$0.23 | ~\$110 / ~\$2,300 |
+| Position-sensitive glossary | ~15,000 | ~\$0.01 | ~\$0.23 | ~\$110 / ~\$2,250 |
 | Prompt drafts (4 per section, ~90 sections) | ~22,000 | ~\$0.01 | ~\$0.26 | ~\$130 / ~\$2,600 |
 | Hover cards for ~300 references (~500 tokens of context each) | ~24,000 | ~\$0.01 | ~\$0.27 | ~\$140 / ~\$2,700 |
 | Aspect strips: per-chapter relevance to standing interests (R06 estimate) | — | ~\$0.009 | ~\$0.17 | ~\$86 / ~\$1,725 |
@@ -266,26 +259,19 @@ See [Costs and Effort](/building/costs-and-effort/) for the full budget.
 **For building** (with Claude Code, over the [reference architecture](/building/reference-architecture/)), in order of evidence per unit of effort [I]:
 
 1. **Hover cards everywhere**: source first, generated gloss second, labeled. This has the largest-sample evidence and the cheapest implementation.
-2. **An overview strip beside an undistorted reading view**: chapter and section gists linked to spans, a coverage strip, and the reader's own highlights. Overview+detail has 25 years of preference evidence.
-3. **A position-sensitive glossary for textbooks.** ScholarPhi's interface already worked; only the extractor was weak, and LLMs largely fix that.
+2. **An overview strip beside an undistorted reading view**: chapter and section gists linked to spans, a coverage strip, and the reader's own highlights. Readers have preferred overview+detail to distortion since the 2001 study, and Paper Plain's gists-beside-text worked.
+3. **A position-sensitive glossary for textbooks.** ScholarPhi's interface already worked; only the extractor was weak. LLMs probably do better [~75%], though no one has published their accuracy on this task.
 4. **Reader-approved prompt drafts exported to FSRS**, with drafted and self-written prompts tracked separately.
 5. **"Relatedly for books"**: index human-written field overviews from open books and present them as expert maps. This is cheap, and its hallucination risk is low.
-6. **Keep one durable data layer** (annotations, excerpts, prompts, trails, credences) and generate many small views over it. Ink & Switch's [*Malleable software*](https://www.inkandswitch.com/essay/malleable-software/) (June 2025) argues for this: views are cheap to regenerate with AI, and the data is what lasts.
+6. **Keep one durable data layer** (annotations, excerpts, prompts, trails, credences) and generate many small views over it. This follows the "tools, not apps" pattern in Ink & Switch's [*Malleable software*](https://www.inkandswitch.com/essay/malleable-software/) (June 2025): shared data, many small composable tools. The essay also warns that AI code generation alone does not make software malleable.
 
-**Measure** [I]:
-
-- Time to answer a factual question about a chapter.
-- Distinct items engaged per session, the Page Previews metric.
-- Retention at 30 days for prompted vs unprompted material.
-- The share of highlights converted into retrieval prompts.
-
-Clicks and session length do not measure learning. See [The Design Space](/building/design-space/) and the [Prototype Gallery](/building/prototype-gallery/) for mockups of several of these.
+**Measure** [I] time to answer a factual question about a chapter, distinct items engaged per session (the Page Previews metric), 30-day retention for prompted vs unprompted material, and the share of highlights converted into retrieval prompts. Clicks and session length do not measure learning. See [The Design Space](/building/design-space/) and the [Prototype Gallery](/building/prototype-gallery/) for mockups of several of these.
 
 ## Open questions
 
 - **Do LLM-drafted spaced-repetition prompts give retention comparable to expert-written ones?** A reader could resolve this for themselves by splitting one textbook's sections between drafted-and-edited and self-written prompts and comparing FSRS retention after 90 days. A published RCT would settle it in general.
 - **Does a position-sensitive glossary save time on textbooks the way ScholarPhi did on papers?** Test: time-to-answer on notation questions in chapters 8–12 of an open-licensed statistics or ML textbook, with and without the glossary.
-- **How faithful are October 2026 frontier models' chapter gists for nonfiction?** FABLES used 2024 models and recent narrative books. A FABLES-style rerun on 10 open-licensed nonfiction books would cost about \$2,000 in annotation at FABLES' rate.
+- **How faithful are October 2026 frontier models' chapter gists for nonfiction?** FABLES used 2024 models on recently published books, and its error categories (events, character states) suggest fiction. A FABLES-style rerun on 10 open-licensed nonfiction books would cost about \$2,000 in annotation at FABLES' rate.
 - **Do generated outlines improve skimming or replace it?** A Duggan–Payne-style study with three arms (skim alone, skim with an outline, outline alone) and a retention test one week later would answer this.
 - **Does Scim-style faceted highlighting help on book chapters, and which facets?** Claim / Evidence / Caveat for nonfiction is an untested guess.
 - **What highlight density is optimal?** The Semantic Reader team says "just the right density" matters but gives no number; Scim let readers choose. Logging the densities readers choose would give a prior.

@@ -39,7 +39,7 @@
    - It unlocks Libby, **O'Reilly for Public Libraries** ("50,000+ business and technology titles, 30,000+ hours of video"), LinkedIn Learning, Udemy (via Gale), ProQuest eBook Central, EBSCO and Gale databases, JSTOR, Statista, IBISWorld, NYT, WSJ and the Washington Post [P][38].
    - In my 33-book technical spot-check, **SFPL alone (Libby + O'Reilly) plus legal free copies covered 28/33 (85%)** [P/I].
 2. **O'Reilly's own catalog is narrower than people assume.**
-   - Its public book sitemap lists **66,609 titles**. By ISBN prefix it has roughly 9,800 Packt, 9,200 Wiley, 8,300 O'Reilly, 5,000 Pearson, 4,000 Apress, 3,000 CRC/Taylor & Francis, 1,500 De Gruyter and 1,140 Manning [P][2].
+   - Its public book sitemap lists **66,609 title URLs**. By the ISBN prefixes listed in §1.2 it has roughly 9,200 Wiley, 9,000 O'Reilly, 6,200 Pearson, at most 6,400 Packt (the 978-1-78/80/83/84 blocks, which also hold other UK publishers), 4,000 Apress, 2,700–3,000 CRC/Taylor & Francis, 1,500 De Gruyter and 1,100 Manning [P][2]. [corrected in verification]
    - It has **zero MIT Press, Cambridge, Oxford or core-Springer titles**. So no CLRS, no Goodfellow, no Sutton & Barto, no PRML.
    - The individual plan is **$49/month, $129/3 months or $499/year**; Teams is $499 per member per year [P][1].
 3. **O'Reilly's membership agreement now forbids using its content as AI input.**
@@ -50,7 +50,7 @@
    - Its search index holds about 1.58M items, about 1.50M with US rights. Major publishers: Routledge (~153k), CRC (~34k), Wiley (~19k), Cambridge (~15.7k), Princeton (~9.8k), MIT Press (~1,000). It has only **33 O'Reilly titles and no Pearson** [P][8].
    - It covered 5/33 of my technical set but 8/20 of the humanities set.
 5. **Everand ended "unlimited" reading.**
-   - Plans are now **Standard $11.99/month (1 "unlock"), Plus $16.99 (3), Deluxe $28.99 (5)**. Most of its 1.5M+ catalog needs an unlock, and the old Legacy plan "has been discontinued" (help pages updated 2026-09) [P][9][10][11].
+   - Plans are now **Standard $11.99/month (1 "unlock"), Plus $16.99 (3), Deluxe $28.99 (5)**. Most of its 1.5M+ catalog needs an unlock, and the old Legacy plan "has been discontinued" for new sign-ups, though existing Legacy subscribers are told "Your plan is still active and hasn't changed" (help pages updated 2026-09) [P][9][10][11]. [corrected in verification]
    - Scribd Inc. also acquired the social reading app **Fable** [P][12].
 6. **Springer now sells individuals a token plan, Springer+.**
    - **Basic $39.99/month** buys 10 units. **Standard $299 per 6 months** buys 120 units.
@@ -96,7 +96,7 @@
 | O'Reilly Teams | $499 per member per year (2–25 seats) | Same plus cloud labs and admin | Sponsor terms apply | Active | [P][1] |
 | **O'Reilly via a public library** | $0 with a card (SFPL, Oakland, Berkeley, San José, Santa Clara County) | SFPL blurb: "50,000+ business and technology titles, 30,000+ hours of video" | Library card; remote login through the library | Active | [P][38][46][50][53][55] |
 | **Perlego Essential** | $15/mo; $45 per 4 mo; $125/yr | "800,000+ trusted titles and best-sellers" | Offline reading in app | Active; A/B prices from $12/mo | [P][5][7] |
-| **Perlego Complete** | $27/mo; $79 per 4 mo; $199/yr (variants $22–$38/mo; $144/yr) | "1.5M+ books"; index ≈1.58M items, ≈1.50M with US rights | About 461k items flagged "restricted", probably Complete-only [I, low-med] | Active | [P][5][6][7][8] |
+| **Perlego Complete** | $27/mo; $79 per 4 mo; $199/yr (variants $22–$38/mo; $144/yr) | "1.5M+ books"; index ≈1.58M items, ≈1.50M with US rights | About 461k–507k items flagged "restricted" (approximate index counts; 507,011 on re-query), probably Complete-only [I, low-med] [corrected in verification] | Active | [P][5][6][7][8] |
 | **Everand Standard / Plus / Deluxe** | $11.99 / $16.99 / $28.99 per month | 1.5M+ ebooks and audiobooks; a rotating "unlimited" subset | 1 / 3 / 5 unlocks a month; unused unlocks expire after 6 months; 30-day trial on the web (7 days in-app) with 1 unlock | Legacy unlimited plan **discontinued** | [P][9][10][11][13] |
 | **Kindle Unlimited** | **[U]** about $11.99/mo | "Unlimited access to over 5 million digital titles" | Amazon device or app; borrowing cap **[U]** | Active | [P for catalog claim][14]; price [U] |
 | Kobo Plus (US) | **[U]** | **[U]** mostly trade, indie and Kobo Writing Life titles | — | Could not verify (kobo.com returned 403) | — |
@@ -116,16 +116,16 @@
 
 - **Method.**
   - O'Reilly's `robots.txt` points to a sitemap index. Its `book-sitemap.xml` lists 24 files of 2,500 URLs each, but files p25–p27 also exist (p27 has 1,609 entries).
-  - Total: **66,609 unique `/library/view/<slug>/<id>/` URLs**. Of the identifiers, 59,908 are 13-digit ISBNs, 4,021 are 10-digit ISBNs and 1,337 are internal `0642572…` IDs (probably video or audio) [P][2].
+  - Total: **66,609 `/library/view/<slug>/<id>/` URLs (66,577 unique identifiers; 32 appear twice)**. [corrected in verification] Of the identifiers, 59,908 are 13-digit ISBNs, 4,021 are 10-digit ISBNs and 1,337 are internal `0642572…` IDs (probably video or audio) [P][2].
   - `lastmod` dates fall in 2024 (27,436), 2025 (15,087) and 2026 (24,076).
 - **Publisher composition by ISBN registrant prefix** [P][2]; the prefix-to-publisher mapping is mine [I, med]:
 
 | Publisher (prefixes) | Titles in sitemap |
 |---|---|
-| Packt (978-1-78/80/83/84…) | ≈9,836 (the 978-1-80/-84 blocks also contain some other UK publishers) |
+| Packt (978-1-78/80/83/84…) | **≤6,443** upper bound for the whole 978-1-78/80/83/84 range, which also contains other UK publishers; ≈4,700 in identifiable Packt registrant blocks [corrected in verification] |
 | Wiley (978-1-118/119, 0-470/471, 1-394) | ≈9,204 |
-| O'Reilly Media (978-0-596, 1-4493, 1-4919, 1-4920, 1-0981, 979-8-3416) | ≈8,301 (also covers No Starch titles issued with O'Reilly e-ISBNs) |
-| Pearson / Addison-Wesley / Prentice Hall (978-0-13, 0-321, 0-201) | ≈4,967 |
+| O'Reilly Media (978-0-596, 1-4493, 1-4919, 1-4920, 1-098, 979-8-3416) | **≈8,975** (also covers No Starch titles issued with O'Reilly e-ISBNs, and ≈2,880 979-8-341-6 translations) [corrected in verification] |
+| Pearson / Addison-Wesley / Prentice Hall (978-0-13, 0-321, 0-201) | **≈6,188** [corrected in verification] |
 | Apress (978-1-4842, 1-4302, 979-8-8688) | ≈3,997 |
 | CRC / Taylor & Francis (several) | ≈3,057 |
 | Elsevier / Academic Press / Morgan Kaufmann | ≈1,675 |
@@ -219,9 +219,9 @@ AbeBooks ISBN searches sorted by price plus shipping, 2026-10-15 [P][33]. "Total
 
 | Library | Eligibility & cost | How to get it | Notable e-resources for researchers | Evidence |
 |---|---|---|---|---|
-| **San Francisco PL** | **Free to all California residents** | Apply online, then show photo ID in person | Libby/OverDrive, Hoopla, Palace Project, Kanopy; **O'Reilly for Public Libraries**; **LinkedIn Learning** (16,000+ courses); **Udemy (Gale Presents)** (4,000+ courses); Treehouse; **ProQuest eBook Central**; EBSCO eBook Collection (Main Library only); **JSTOR** (EZproxy link, "1838 – 3 years ago"); Academic Search Complete; Gale Academic OneFile; OED; Statista (card and PIN needed from 2026-04-01); IBISWorld; Morningstar; NYT, WSJ and Washington Post; PressReader; WorldCat. 268 headings on the A–Z list | [P][37][38] |
-| **Oakland PL** | Free to California residents | Online cards must be **verified with ID within 30 days**; Oakland, Emeryville and Piedmont residents can verify by phone or email | Libby, Hoopla, Kanopy, Palace; **O'Reilly for Public Libraries**; **American Physical Society** journals; Gale Academic OneFile; NYT; WSJ; Pressbooks | [P][49][50] |
-| **Berkeley PL** | "Free to all California residents"; "applicants must be present" | In person (a 120-day temporary eCard dates from COVID) | Libby, Hoopla, Kanopy; **O'Reilly Technical Books**; **JSTOR/Artstor** (EZproxy); **Physical Review journals**; OED; NYT, WSJ, Washington Post; Udemy. **From 2026-10-15, Libby and Kanopy logins require card number plus PIN** | [P][45][46][48] |
+| **San Francisco PL** | **Free to all California residents** | Apply online, then show photo ID in person | Libby/OverDrive, Hoopla, Palace Project, Kanopy; **O'Reilly for Public Libraries**; **LinkedIn Learning** (16,000+ courses); **Udemy (Gale Presents)** (4,000+ courses); Treehouse; **ProQuest eBook Central**; EBSCO eBook Collection (Main Library only); **JSTOR** (EZproxy link, "1838 – 3 years ago"); Academic Search Complete; Gale Academic OneFile; OED; Statista (card and PIN needed from 2026-04-01); IBISWorld; Morningstar; NYT, WSJ and Washington Post; PressReader; WorldCat. 228 entries on the A–Z list (23 pages). [corrected in verification] | [P][37][38] |
+| **Oakland PL** | Free to California residents | Online cards must be **verified with ID within 30 days**; Oakland, Emeryville and Piedmont residents can verify by phone or email | Libby, Hoopla, Kanopy, Palace; **O'Reilly for Public Libraries**; **American Physical Society** journals (direct journals.aps.org link with no proxy login, so probably in-library IP access only [corrected in verification]); Gale Academic OneFile; NYT; WSJ; Pressbooks | [P][49][50] |
+| **Berkeley PL** | "Free to all California residents"; "applicants must be present" | In person (a 120-day temporary eCard dates from COVID) | Libby, Hoopla, Kanopy; **O'Reilly Technical Books**; **JSTOR/Artstor** (EZproxy); **Physical Review journals** ("in library access only" [corrected in verification]); OED; NYT, WSJ, Washington Post; Udemy. **From 2026-10-15, Libby and Kanopy logins require card number plus PIN** | [P][45][46][48] |
 | **San José PL** | Full card for California residents (4 years) | Apply online, then pick up in person with proof of a California address and photo ID | **O'Reilly**, **LinkedIn Learning** (16,000+ courses), Hoopla, Libby (incl. 250+ Great Courses) | [P][52][53] |
 | **Santa Clara County Library** | **Instant eCard for county residents; free full card in person for anyone with a US mailing address** | Online eCard (county) or in person | **O'Reilly**, **LinkedIn Learning**, Treehouse, The Great Courses, Academic Search Complete, EBSCO and Gale reference eBooks | [P][54][55] |
 | **LA Public Library** | Free to California residents; **e-card for LA City residents only**; **$50 non-resident card (outside California), in person only** | In person with ID; online pre-registration | 1.5M+ ebooks and audiobooks; 200+ databases including **ProQuest Central**, Research Library, ABI/Inform, **OECD iLibrary**, **HeinOnline**, Lexis Advance, Westlaw, Oxford Reference, Gale eBooks, LinkedIn Learning, Great Courses (via Hoopla); **JSTOR in-library only**. **No O'Reilly** | [P][41][42][43][44] |
@@ -456,7 +456,7 @@ Holds are heavier for popular trade titles: *Thinking in Systems*: SFPL 26 copie
 |---|---|---|---|---|---|
 | Free web (OA, author PDFs, arXiv) | $0 | 33% | low [I] | ≈50% of recent articles (R02) | Findability |
 | **SFPL card** | $0 | 64% via Libby + O'Reilly; **85% with free web** | 50% | JSTOR (remote status disputed), EBSCO, Gale, ProQuest eBook Central | One in-person visit; holds |
-| Bay Area card stack (6 cards) | $0 | adds SJPL/SCCLD O'Reilly-adjacent titles | 80% | Adds APS journals (OPL, BPL) | Several visits |
+| Bay Area card stack (6 cards) | $0 | adds SJPL/SCCLD O'Reilly-adjacent titles | 80% | Adds APS journals (OPL, BPL; in-library only [corrected in verification]) | Several visits |
 | + LAPL card | $0 + trip to LA | 88% with free web | 95% | ProQuest Central, OECD, HeinOnline | In person in LA |
 | O'Reilly Individual | $499 | 42% | 0% | – | Only worth it without a library route |
 | Perlego Complete | $199 (or $27/mo) | 15% | 40% | – | Sales-rights gaps |
@@ -479,7 +479,7 @@ Holds are heavier for popular trade titles: *Thinking in Systems*: SFPL 26 copie
    - Adds Libby, O'Reilly, LinkedIn Learning, Udemy, ProQuest eBook Central, EBSCO and Gale article databases, and possibly JSTOR. Link+ and ILL for print.
    - Expected: **about 85% of a technical list** (counting free copies) and **about 50% of a humanities list** as ebooks, with holds queues on popular trade books [P/I].
 3. **Rung 2: the free card stack.**
-   - Oakland (online, then verify within 30 days; APS journals), Berkeley (APS journals, JSTOR), San José and Santa Clara County (O'Reilly, LinkedIn Learning; SCCLD in person for any US address), Peninsula Library System, and **LAPL on any trip to LA**.
+   - Oakland (online, then verify within 30 days; APS journals in the library), Berkeley (APS journals in the library only, JSTOR) [corrected in verification], San José and Santa Clara County (O'Reilly, LinkedIn Learning; SCCLD in person for any US address), Peninsula Library System, and **LAPL on any trip to LA**.
    - Expected: **about 88% technical and about 95% humanities** as ebooks. Holds spread across systems [P/I].
 4. **Rung 3: free walk-in academic access.**
    - UC Berkeley public computers (databases, no login); SFSU research stations (download to USB); Stanford day passes (7 a year).
@@ -526,7 +526,7 @@ Holds are heavier for popular trade titles: *Thinking in Systems*: SFPL 26 copie
 | LAPL e-card eligibility | LA City residents only | 2026-10-15 | [41][42] | P, high |
 | OCLS fee card discontinued | 2026-07-31 | 2026-10-15 | [56] | P, high |
 | Link+ | 64 libraries, 11M+ items; Berkeley allows 25 items, 21 days + 1 renewal | 2026-10-15 | [47][51] | P, high |
-| SFPL A–Z database headings | 268 | 2026-10-15 | [38] | P, high |
+| SFPL A–Z database entries | 228 [corrected in verification] | 2026-10-15 | [38] | P, high |
 | Spot-check: SFPL + free web, technical | 28/33 (85%) | 2026-10-15 | [2][40] + R01 | P/I, med |
 | Spot-check: Bay Libby union, humanities | 16/20 (80%); +LAPL 19/20 | 2026-10-15 | [40] | P, med |
 | IA lending | 1-hour loans; some 14-day; 10 books at a time | 2026-10-15 | [35] | P, high |
@@ -547,7 +547,7 @@ Holds are heavier for popular trade titles: *Thinking in Systems*: SFPL 26 copie
 10. **JSTOR officially offers public libraries walk-in access only** [P][20]. Yet Bay Area libraries list remote EZproxy links [P][38][46].
 11. **Berkeley PL Libby and Kanopy logins need a PIN from 2026-10-15**, the date of this research [P][48]. SFPL's Statista needs card and PIN from 2026-04-01 [P][38].
 12. **DeepDyve now costs $59/month** [P][15]. My prior expectation was about $40–$50 [U].
-13. **Two Bay Area public libraries (Oakland, Berkeley) offer American Physical Society journals** [P][46][50]. This is a little-known free physics route.
+13. **Two Bay Area public libraries (Oakland, Berkeley) offer American Physical Society journals** [P][46][50]. This is a little-known free physics route, but it is walk-in only: Berkeley PL lists it as "in library access only", and Oakland links straight to journals.aps.org with no proxy login. [corrected in verification]
 14. **Santa Clara County's Libby shows 334 copies of the *AI Engineering* audiobook**, nearly all available [P][40]. This is evidence of cost-per-circulation-style licensing for some technical audiobooks [I].
 15. **Google's *Site Reliability Engineering* 2nd edition (2026) is not free online, unlike the 1st** (per R01) [S]. Free technical books may be closing on new editions.
 
@@ -560,7 +560,7 @@ Holds are heavier for popular trade titles: *Thinking in Systems*: SFPL 26 copie
    - SFPL's blurb says 50,000+ titles; the sitemap has 66,609 identifiers, and early-release books and live events may be excluded.
    - **[~70%]** that nearly all *books* in the sitemap are readable via library access. I could not log in to check.
 3. **Is the O'Reilly sitemap complete?** The sitemap index lists only 24 of at least 27 files, so the index itself is stale. Some catalog titles may lack sitemap entries **[~80%] the sitemap captures ≥90% of book titles**.
-4. **Perlego's "restricted" flag** (≈461k items). I infer it marks Complete-tier-only content [I, low-med]. It might instead mark institution-excluded titles.
+4. **Perlego's "restricted" flag** (≈461k–507k items, depending on the query; the count is approximate). [corrected in verification] I infer it marks Complete-tier-only content [I, low-med]. It might instead mark institution-excluded titles.
 5. **Perlego counts** differ between facet (approximate) and filter queries by 30–45% (Routledge 221k vs 153k). Use them as orders of magnitude.
 6. **Kindle Unlimited price and caps; Kobo Plus availability and prices; IEEE and ACM membership benefits** (including whether ACM membership still bundles O'Reilly access, a well-known route around 2019–2024): **all unverified in 2026** because pages were blocked [U].
 7. **National fee cards** (Brooklyn, Philadelphia, Fairfax, Houston) are unverified. Treat older blog lists as stale.
@@ -710,3 +710,39 @@ All accessed 2026-10-15 unless noted. "Updated" dates are the page's own.
 - R02: OA share, JPASS cross-check.
 - R09: license terms and TDM law.
 - R11: devices; Libby on e-ink.
+
+---
+
+## Verification pass (independent)
+
+Checked 2026-10-15 by an independent fact-checker. Each cited source was re-opened directly (pages, the Perlego plans endpoint and public search index, the OverDrive Thunder API, the Crossref API, and all 27 O'Reilly book-sitemap files). **Independent web searches for newer or contradicting reports could not be run: the shared web-search budget was used up**, so "confirmed" means "matches the primary source today", not "no contrary reporting exists".
+
+| Claim | Verdict | Correction | Source |
+|---|---|---|---|
+| 1. O'Reilly Individual $49/mo, $129/3 mo, $499/yr; Teams $499 per member per year (2–25); "nearly 200 providers" | confirmed | — | https://www.oreilly.com/pricing/ |
+| 2. O'Reilly sitemap: 66,609 title URLs; ~9.8k Packt, ~9.2k Wiley, ~8.3k O'Reilly, ~5k Pearson, ~4k Apress, ~3k CRC/T&F, ~1.1k Manning; 0 MIT, CUP, OUP, core Springer | corrected | 66,609 URLs is right (66,577 unique IDs; 24 files in the index plus p25–p27). Wiley 9,200, Apress 3,994, De Gruyter 1,502, Manning ~1,076–1,214 and the four zeros reproduce. But the stated prefixes give **at most 6,443 for the whole Packt range** (978-1-78/80/83/84, which also holds other publishers; ≈4,700 in identifiable Packt blocks), not 9,836; **O'Reilly ≈8,975** (not 8,301); **Pearson ≈6,188** (not 4,967). Packt is not the largest publisher; Wiley and O'Reilly are. The 51 hits in 978-981 are Pan/Jenny Stanford, not Springer | https://www.oreilly.com/book-sitemap.xml (all `epubs-books-p1…p27.xml`) |
+| 3. O'Reilly membership agreement (2024-10-09): personal use; no spiders; no AI training; no "input or a prompt to a machine learning or AI system"; 250-word quotes | confirmed | — | https://www.oreilly.com/membership-agreement/ |
+| 4. Perlego US: Essential $15 / $45 / $125; Complete $27 / $79 / $199; A/B variants $12–$38 a month | confirmed | Plus unlabeled legacy US plans at $22/mo, $60 per 4 mo and $144/yr | https://api.perlego.com/payment/v1/plans |
+| 5. Perlego index ≈1.58M (≈1.50M US rights); Routledge ~153k, CRC ~34k, Wiley ~19k, CUP ~15.7k, Princeton ~9.8k, MIT ~1,003, Packt ~5.7k; O'Reilly 33; no Pearson | confirmed | Re-query: 1,584,988 total; 1,521,208 with US rights (≈1.52M; counts non-exhaustive); Routledge 153,106; CRC 33,701; Wiley 18,959; CUP 15,658; Princeton 9,762; MIT 1,003; Packt 5,662; O'Reilly 33; Pearson 0. "Restricted" flag now ≈507k (dossier said 461k) | Perlego public search index configured in https://www.perlego.com/pricing/ |
+| 6. Everand Standard $11.99 (1), Plus $16.99 (3), Deluxe $28.99 (5); most of 1.5M+ needs an unlock; Legacy discontinued | confirmed | Article updated_at 2026-09-27 (edited 2026-08-17). Existing Legacy subscribers keep their plan ("Your plan is still active and hasn't changed") | https://support.scribd.com/hc/en-us/articles/40678839226644-Everand-plans-Standard-Plus-and-Deluxe ; https://support.scribd.com/hc/en-us/articles/47040289862420-Which-books-require-an-unlock |
+| 7. Springer+ Basic $39.99/mo for 10 units; Standard $299 / 6 mo for 120; 1 unit = article or chapter; eBook ≤7 units; 12 hours to download; personal use | confirmed | — | https://link.springer.com/product/springer-plus ; support articles 6000273891, 6000273890 |
+| 8. JPASS $19.50/mo (10 PDFs) or $199/yr (120 PDFs); 2,400+ journals; no discontinuation announced | confirmed | The same page also says "2,000+ academic journals" in its overview. No discontinuation notice on the page; no independent search possible | https://about.jstor.org/products/jpass/ |
+| 9. DeepDyve Personal $59/mo or $499/yr; 35M+ paywalled papers; print 20–40 pp/mo; first month $0 | confirmed | Pricing page says "up to 40 pages / mo" for both plans; homepage says "Print 20-40 pages per month" | https://www.deepdyve.com/pricing ; https://www.deepdyve.com/ |
+| 10. SFPL free to all California residents (online + photo ID in person); lists O'Reilly for Public Libraries ("50,000+ … 30,000+ hours of video"), LinkedIn Learning, Udemy, ProQuest eBook Central, JSTOR | confirmed | All five entries found. Separately, the A–Z list has **228** entries, not 268 (fixed inline) | https://sfpl.org/welcome-new-cardholders ; https://sfpl.org/articles-databases (pages 5, 11, 12, 15, 21) |
+| 11. JSTOR public libraries walk-in only; SFPL and Berkeley PL list remote EZproxy links | confirmed | SFPL: `ezproxy.sfpl.org/login?url=https://www.jstor.org/`; BPL: `login.ezproxy.berkeleypubliclibrary.org`. Whether remote access works is still untested | https://about.jstor.org/products/fees/public-libraries/ |
+| 12. LAPL free to California residents in person; e-card LA City only (vendor licensing); $50 out-of-state card, in person only | confirmed | Online pre-registration exists, but the card is collected in person | https://lapl.org/library-card/borrowing-policies-and-information |
+| 13. OCLS fee cards "no longer being issued or renewed, as of July 31, 2026" | confirmed | — | https://ocls.org/using-library/types-cards/what-are-types-cards/ |
+| 14. UC Berkeley California-resident card $100 ($95 seniors), no remote; Extension 10+ week course $25 / 6 months with remote access | confirmed | — | https://www.lib.berkeley.edu/find/borrow-renew |
+| 15. VSPA fee $750 first year, $1,500 second consecutive year; needs a department appointment and faculty sponsor | confirmed | Appointment requirement is on the library's visiting-scholars page; the faculty sponsor appears on the fee page (pays if the scholar cannot) | https://vspa.berkeley.edu/about/university-services-fee ; https://www.lib.berkeley.edu/help/visiting-scholars |
+| 16. Stanford $35 / 2 wk, $75 / mo, $150 / 3 mo, $450 / yr; $1,000 / yr with borrowing; on-site e-resources; 7 day passes (14 alumni); UCB grads and faculty free | confirmed | — | https://library.stanford.edu/about-stanford-libraries/visitor-access |
+| 17. SFSU Community Borrowers $50/yr, no remote e-resources; public stations, no login, USB downloads | confirmed | "No account or login is required" is on the /accounts page | https://library.sfsu.edu/community-borrowers ; https://library.sfsu.edu/accounts |
+| 18. JSTOR Corporate Collection 800+ journals; $9,000 (Tier 1) to $65,000 (Tier 14) | confirmed | — | https://about.jstor.org/products/fees/corporate-and-for-profit/ |
+| 19. Libby spot-check (18/33, 16/20; SFPL 10/33, 10/20; +LAPL 23/33, 19/20; LAPL MIT Press titles) | confirmed (partial re-check) | 10 re-run lookups all agree: SFPL DDIA 10 copies; LAPL CLRS (3e and 4e, 3 copies each), Goodfellow 3, Sutton & Barto 1; none of these at SFPL, SJPL or SCCLD; SJPL Hands-On ML; PLS Raschka. The table tallies are internally consistent. The full 53-title sweep was not re-run | https://thunder.api.overdrive.com/v2/libraries/{sfpl,lapl,sanjose,santaclara,pls}/media?query=… |
+| 20. Crossref: ~24,780 of 37,502 ACM 2026 DOIs have CC licenses vs ~12,100 of 45,892 in 2024 | confirmed | 24,784 / 37,502 (66%) and 12,114 / 45,892 (26%). About 12,000 of the 2026 DOIs carry no license metadata at all | https://api.crossref.org/members/320/works?filter=from-pub-date:2026-01-01&rows=0&facet=license:30 |
+| Other: SFPL "268 headings on the A–Z list" | corrected | 228 entries (23 pages) | https://sfpl.org/articles-databases |
+| Other: APS journals at Oakland and Berkeley PL as a free physics route | corrected | BPL lists Physical Review "in library access only"; OPL links straight to journals.aps.org with no proxy, so access is probably walk-in only | https://www.berkeleypubliclibrary.org/explore/elibrary/alphabetical-list ; https://oaklandlibrary.org/resource/ |
+| Other: Santa Clara County free full card for any US mailing address, in person | confirmed | — | https://sccld.org/card/ |
+| Other: San Antonio $30/yr for county residents outside city limits from 2026-10-01 | confirmed | Paid in person | https://guides.mysapl.org/librarycards |
+| Other: Springer pay-per-view $39.95 per article and $29.95 per chapter; MyCopy $39.99 | confirmed | Page modified 2024-11-29. The Palgrave $39.99 chapter price is not on this page | https://support.springernature.com/en/support/solutions/articles/6000230449-springer-nature-products |
+| Other: JSTOR terms (2026-04-24) ban LLM training, scraping and systematic downloading | confirmed | — | https://about.jstor.org/terms/ |
+| Other: Kindle Unlimited "over 5 million digital titles" | unverifiable | amazon.com returned 503 during verification | https://www.amazon.com/kindle-dbs/hz/subscribe/ku |
