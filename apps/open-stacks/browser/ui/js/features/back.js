@@ -18,6 +18,8 @@ import { showFeed } from '../feed.js';
 import { paintSaved, paintLanes } from '../chrome.js';
 
 const MAX = 100;
+// The 'nav:before' labels are identifiers (other modules match them); these read better in the notice.
+const SAY = { 'last spread': 'go to the end', jump: 'random spot', 'link jump': 'followed link', unzoom: 'zoom out' };
 const stack = [];
 let restoring = false, tick = false, seen = null;
 
@@ -63,7 +65,7 @@ export function undo() {
     showFeed();
     emit('nav', { type: 'back', i: snap.i, it: items[snap.i], s: snap.s, undone: snap.label });
   } finally { restoring = false; }
-  toast(`Undone: ${snap.label}`);
+  toast(`Undone: ${SAY[snap.label] || snap.label}`, { icon: 'rotate-ccw' });
   return true;
 }
 registerStepper((dir) => {

@@ -106,12 +106,12 @@ export function removePages(keys) {
 }
 function toggleSpread() {
   const got = spreadEntries();
-  if (!got.length) return toast('Nothing to add yet: wait for the pages to load');
+  if (!got.length) return toast('Pages still loading', { icon: 'hourglass', sub: 'Press e again in a moment' });
   const have = new Set(tray.map(keyOf));
   const fresh = got.filter((g) => !have.has(keyOf(g.e)));
-  if (!fresh.length) { removePages(got.map((g) => keyOf(g.e))); toast(`Removed ${pagesLabel(got.map((g) => g.e.k))} from the export tray`); return; }
+  if (!fresh.length) { removePages(got.map((g) => keyOf(g.e))); toast(`Removed ${pagesLabel(got.map((g) => g.e.k))} from export`, { icon: 'file-minus', sub: `${tray.length} page${tray.length === 1 ? '' : 's'} left in the tray` }); return; }
   addPages(fresh);
-  toast(`Added ${pagesLabel(fresh.map((g) => g.e.k))} · ${tray.length} page${tray.length > 1 ? 's' : ''} in the export tray (E)`, 2200);
+  toast(`Added ${pagesLabel(fresh.map((g) => g.e.k))} to export`, 2200, { icon: 'file-plus', kind: 'ok', sub: `${tray.length} page${tray.length > 1 ? 's' : ''} in the tray · E opens it` });
   // Warm the server cache with the full-resolution scans the PDF will need.
   const it = items[current()];
   if (it.kind === 'scan') serverPrefetch(fresh.map((g) => scanUrl(it, g.e.k, 1500)), 50, 'export-' + it.id + '-' + fresh[0].e.k);
@@ -703,7 +703,7 @@ function fileName(list = tray) {
 /** Export button: build, save on the server, download; optionally send to the reMarkable. */
 export async function exportPdf({ send = false, download = !send } = {}) {
   if (busy) return;
-  if (!tray.length) { toast('The export tray is empty: press e on a spread'); return; }
+  if (!tray.length) { toast('Export tray is empty', { icon: 'inbox', sub: 'Press e on a page to add it' }); return; }
   busy = true; paintSheet(); msg('Loading pdf-lib…');
   try {
     const r = await buildPdf(tray, opts, (n, of) => msg(`Building… ${n}/${of} pages`));
@@ -722,8 +722,9 @@ export async function exportPdf({ send = false, download = !send } = {}) {
       msg(`Sending to reMarkable… (${info})`);
       const s = await (await fetch('/export/remarkable', { method: 'POST', body: JSON.stringify({ file: saved.file }) })).json();
       msg(s.ok ? `Sent “${saved.file}” to reMarkable ${s.folder} · ${info}` : `rmapi failed: ${s.output}`, s.ok ? 'ok' : 'bad');
-      toast(s.ok ? 'Sent to reMarkable' : 'Sending to reMarkable failed', 2400);
-    } else toast(`Exported ${r.pages} pages`, 2000);
+      if (s.ok) toast('Sent to reMarkable', 2400, { icon: 'send', kind: 'ok' });
+      else toast('Not sent to reMarkable', { icon: 'circle-alert', kind: 'bad', sub: 'The export tray says why' });
+    } else toast(`Exported ${r.pages} pages`, 2000, { icon: 'file-check', kind: 'ok' });
     return { ...r, ...saved };
   } catch (e) {
     console.error(e); msg('Export failed: ' + e.message, 'bad');

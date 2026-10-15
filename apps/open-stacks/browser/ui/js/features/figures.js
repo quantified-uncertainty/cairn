@@ -152,12 +152,12 @@ async function openFigure(i, f) {
   const pos = state.order.indexOf(i);
   if (pos >= 0) { state.pos = pos; setView('feed'); } else jumpTo(i);
   const land = (kk) => {
-    if (kk == null) { toast(`${f.label}: not found in the text · opened at the start`, 2200); return; }
+    if (kk == null) { toast(`${f.label} not found`, 2200, { icon: 'search-x', sub: 'Not in the text; opened at the start' }); return; }
     if (flow || kk !== (state.start.get(i) ?? 0)) goPage(kk);
-    toast(`${f.label} · p. ${kk + 1}`);
+    toast(f.label, { icon: 'image', sub: `p. ${kk + 1}` });
   };
   if (k !== undefined) { if (flow && k != null) afterRender = { i, fn: () => land(k) }; else land(k); return; }
-  toast(`Finding ${f.label}…`, 4000);
+  toast(`Finding ${f.label}…`, 4000, { icon: 'search', kind: 'busy' });
   const kk = await p;
   // Only move if the reader is still where we put them.
   if (state.view !== 'feed' || current() !== i || (state.hist.get(i) || []).length || (state.start.get(i) ?? 0) !== 0) return;
@@ -565,10 +565,10 @@ function thumb(it, i, f) {
     hidePop();
     const p = findPage(it, f).catch(() => null);
     let k = await Promise.race([p, sleep(300).then(() => undefined)]);
-    if (k === undefined) { toast(`Finding ${f.label}…`, 4000); k = await p; }
+    if (k === undefined) { toast(`Finding ${f.label}…`, 4000, { icon: 'search', kind: 'busy' }); k = await p; }
     if (current() !== i || state.view !== 'feed') return;
-    if (k == null) { toast(`${f.label}: not found in the text · first page`, 2200); goPage(0); return; }
-    goPage(k); toast(`${f.label} · p. ${k + 1}`);
+    if (k == null) { toast(`${f.label} not found`, 2200, { icon: 'search-x', sub: 'Not in the text; showing the first page' }); goPage(0); return; }
+    goPage(k); toast(f.label, { icon: 'image', sub: `p. ${k + 1}` });
   };
   let tm = null;
   el.onmouseenter = () => { tm = setTimeout(() => showPop(el, i, f, { image: true }), 220); };

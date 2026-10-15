@@ -489,7 +489,7 @@ async function bindShown(r, tries = 0) {
 async function rebindFlow(r) {
   const got = await currentWords().catch(() => null);
   if (R !== r || !got) return;
-  if (got.words.length !== r.words.length) { stopReading(); toast('The text changed under the reading; stopped'); return; }
+  if (got.words.length !== r.words.length) { stopReading(); toast('Reading stopped', { icon: 'volume-x', sub: 'The text on screen changed' }); return; }
   got.words.forEach((w, j) => { r.words[j].range = w.range; r.words[j].block = w.block; });
   repaint();
 }
@@ -509,7 +509,7 @@ async function begin(opt = {}) {
   stopReading();
   const r = { i, it, kind: isFlow(it) ? 'flow' : it.kind === 'pdf' ? 'pdf' : 'scan', words: [], spans: new Map(), passages: [], index: 0, lastTok: 0, lastJ: -1, playing: true, loading: true, more: false, next: 0, notice: '' };
   r.engine = pickEngine(r);
-  if (r.engine === 'browser' && !hasSynth) { toast('This browser has no voice; Gemini voices need GEMINI_API_KEY'); return; }
+  if (r.engine === 'browser' && !hasSynth) { toast('No voice to read with', { icon: 'volume-x', kind: 'bad', sub: 'This browser has none; Gemini voices need GEMINI_API_KEY' }); return; }
   R = r; heldAt = 0; heldChar = 0;
   paintBar();
   try {
@@ -528,8 +528,8 @@ async function begin(opt = {}) {
       await loadPage(r, opt.page ?? state.start.get(i) ?? 0, opt);
       if (R !== r) return;
     }
-  } catch (e) { if (R === r) { stopReading(false); toast(e.message); } return; }
-  if (!r.passages.length) { stopReading(false); toast('Nothing to read here'); return; }
+  } catch (e) { if (R === r) { stopReading(false); toast('Cannot read aloud', { icon: 'volume-x', kind: 'bad', sub: e.message }); } return; }
+  if (!r.passages.length) { stopReading(false); toast('Nothing to read here', { icon: 'volume-x' }); return; }
   r.loading = false;
   holdUntil = 0;
   speak(0); ensureAhead(r); tick(); paintBar(); syncMedia();
@@ -569,7 +569,7 @@ function stopReading(remember = true) {
   R = null; cancelAnimationFrame(raf); raf = 0;
   paintBar(); syncMedia();
 }
-function finish() { stopReading(false); toast('Finished reading'); }
+function finish() { stopReading(false); toast('Finished reading', { icon: 'circle-check', kind: 'ok' }); }
 
 async function advance() {
   const r = R; if (!r) return;
@@ -894,7 +894,7 @@ function stepRate(d) {
   let k = SPEEDS.findIndex((s) => s >= prefs.rate - 1e-6); if (k < 0) k = SPEEDS.length - 1;
   if (d > 0 && SPEEDS[k] > prefs.rate) k--; // between steps: the next one up is k itself
   setRate(SPEEDS[Math.max(0, Math.min(SPEEDS.length - 1, k + d))]);
-  toast(`Reading speed ${prefs.rate}×`);
+  toast(`Reading speed ${prefs.rate}×`, { icon: 'gauge', sub: '< slower · > faster' });
 }
 registerKey('v', toggle, { help: ['v V', 'read aloud from the top of the screen (Alt+click a word: from there) / stop'], order: 45 });
 registerKey('V', () => stopReading(false)); // a stop forgets the place: v then reads from the top of the screen
@@ -920,7 +920,7 @@ async function readFromPoint(x, y, target) {
     if (!node) return;
     const got = R && R.it.id === it.id && R.kind === 'flow' ? { words: R.words } : await currentWords();
     const j = got ? wordAtCaret(got.words, node, off) : -1;
-    if (j >= 0) begin({ j }); else toast('No text there to read');
+    if (j >= 0) begin({ j }); else toast('No text there to read', { icon: 'volume-x' });
     return;
   }
   const pg = target.closest('.pg[data-k]'); if (!pg) return;

@@ -18,7 +18,7 @@ export function appendQuote(it, text, page) {
   const next = (cur ? cur.replace(/\n*$/, '\n\n') : '') + q;
   save(it, next);
   const ta = $('#note'); if (ta && state.panelItem === it.id) ta.value = next;
-  toast('Quoted into your note');
+  toast('Quoted into your note', { icon: 'quote', kind: 'ok' });
 }
 
 registerSection({

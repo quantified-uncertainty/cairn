@@ -535,13 +535,13 @@ async function vpToPdfPage(pdf, vp, texts) {
 
 async function toggleArxiv() {
   const i = current(); const it = items[i];
-  if (!isArxiv(it)) { toast('H reads the HTML version of arXiv papers'); return; }
+  if (!isArxiv(it)) { toast('Only for arXiv papers', { icon: 'info', sub: 'H switches an arXiv paper to its HTML version' }); return; }
   store.set('webview:usedH', true);
   const t0 = performance.now();
   try {
     if (!it._pdf) {
       // PDF -> HTML, at the same place.
-      toast('Opening the HTML version…', 4000);
+      toast('Opening the HTML version…', 4000, { icon: 'loader-circle', kind: 'busy' });
       const k = state.start.get(i) ?? 0;
       const pdfDoc = peekDoc(it);
       const { url, via } = await resolveArxiv(it.id);
@@ -556,7 +556,7 @@ async function toggleArxiv() {
       asHtml[it.id] = url; store.set('webview:arxiv', asHtml);
       state.hist.set(i, []); state.start.set(i, 0); state.pendingVp = vp || null;
       if (current() === i) showFeed();
-      toast(`HTML version (${via}) · H for the PDF`, 2200);
+      toast('HTML version', 2200, { icon: 'file-code', sub: `from ${via} · H for the PDF` });
     } else {
       // HTML -> PDF.
       const s = state.start.get(i) ?? 0;
@@ -571,11 +571,11 @@ async function toggleArxiv() {
       }
       state.hist.set(i, []); state.start.set(i, k);
       if (current() === i) showFeed();
-      toast('PDF · H for the HTML version', 1600);
+      toast('PDF version', { icon: 'file-text', sub: 'H for the HTML version' });
     }
   } catch (e) {
     toPdf(it);
-    toast(e.message || 'No HTML version', 2400);
+    toast('No HTML version', { icon: 'circle-alert', kind: 'bad', sub: e.message && e.message !== 'No HTML version' ? e.message : 'Staying with the PDF' });
   }
   console.debug(`webview: H took ${Math.round(performance.now() - t0)} ms`);
 }
@@ -689,8 +689,8 @@ function moveTo(v, y, except) {
 }
 function liveTurn(v, dir) {
   const step = v.n * stride(v);
-  if (dir > 0 && v.base + step >= v.H - 8) { toast('End · j for the next item'); return; }
-  if (dir < 0 && v.base <= 0) { toast('Start'); return; }
+  if (dir > 0 && v.base + step >= v.H - 8) { toast('End of document', { icon: 'arrow-down-to-line', kind: 'edge', sub: 'j for the next item' }); return; }
+  if (dir < 0 && v.base <= 0) { toast('Start of document', { icon: 'arrow-up-to-line', kind: 'edge' }); return; }
   moveTo(v, dir > 0 ? v.base + step : Math.max(0, v.base - step));
 }
 function relayout(v) {
@@ -702,7 +702,7 @@ function setN(v, n) {
   v.n = Math.max(1, Math.min(6, n));
   userN[v.it.id] = v.n; store.set('webview:liveN', userN);
   fit(v); relayout(v);
-  toast(`${v.n} live view${v.n > 1 ? 's' : ''}${v.z < 1 ? ` at ${Math.round(v.z * 100)}%` : ''}`);
+  toast(`${v.n} live view${v.n > 1 ? 's' : ''}${v.z < 1 ? ` at ${Math.round(v.z * 100)}%` : ''}`, { icon: 'app-window', sub: '+ − to change' });
 }
 // One wheel gesture turns N screens, like a page turn; Shift+wheel scrolls finely.
 let wAcc = 0, wLast = 0, wSteps = 0;
@@ -747,7 +747,7 @@ addEventListener('message', (e) => {
       v.fitted = true; v.need = Math.min(+m.need, 2400);
       needs[v.it.url] = v.need; store.set('webview:need', needs);
       const n0 = v.n; fit(v); relayout(v);
-      if (v.n !== n0 || v.z < 1) toast(`This page needs ${v.need}px: ${v.n} view${v.n > 1 ? 's' : ''}${v.z < 1 ? ` at ${Math.round(v.z * 100)}%` : ''} (+ − to change)`, 2600);
+      if (v.n !== n0 || v.z < 1) toast(`${v.n} live view${v.n > 1 ? 's' : ''}${v.z < 1 ? ` at ${Math.round(v.z * 100)}%` : ''}`, 2600, { icon: 'app-window', sub: `This page needs ${v.need} px · + − to change` });
     } else if (m.type === 'wheel') liveWheel(v, +m.dx || 0, +m.dy || 0, m.mode, !!m.shift);
     else if (m.type === 'key' && typeof m.key === 'string') document.dispatchEvent(new KeyboardEvent('keydown', { key: m.key, shiftKey: !!m.shift, bubbles: true, cancelable: true }));
     else if (m.type === 'goto') moveTo(v, +m.y || 0);
@@ -798,17 +798,17 @@ function applyLive() {
 }
 function toggleLive() {
   const i = current(); const it = items[i];
-  if (it?.kind !== 'web') { toast('N shows the live original of web pages'); return; }
+  if (it?.kind !== 'web') { toast('Only for web pages', { icon: 'info', sub: 'N shows the live original of a web page' }); return; }
   if (liveIds.has(it.id)) {
     liveIds.delete(it.id);
     const v = views.get(it.id);
     // Back to the columns at about the same place.
     if (v?.H) { state.hist.set(i, []); state.start.set(i, 0); state.pendingVp = Math.round((v.base / v.H) * (it.n || 1)); }
     if (v) { v.el.remove(); views.delete(it.id); }
-    toast('Reader columns · N for the live page');
+    toast('Reader columns', { icon: 'book-open', sub: 'N for the live page' });
   } else {
     liveIds.add(it.id);
-    toast('Live page: scripts run in each view · + − views · N for the reader', 2600);
+    toast('Live page', 2600, { icon: 'globe', kind: 'mode', sub: 'Scripts run in each view · + − views · N for the reader' });
   }
   store.set('webview:live', [...liveIds]);
   showFeed();

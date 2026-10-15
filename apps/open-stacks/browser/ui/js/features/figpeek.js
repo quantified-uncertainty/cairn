@@ -298,7 +298,7 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
     const rest = s.str.slice(m.index + m[0].length);
     if (!m[4].trim() && rest.trim() && !/^[A-Z]/.test(rest)) continue;
     const [c0] = colOf(s.x0, s.x1);
-    if (hz.some((o) => o !== s && Math.abs(o.base - s.base) < 0.5 * body && o.x1 <= s.x0 + 1 && o.x1 > c0 - body && s.x0 - o.x1 < 3 * body)) continue; // not at a line start
+    if (hz.some((o) => o !== s && Math.abs(o.base - s.base) < 0.5 * body && o.x1 <= s.x0 + 1 && o.x1 > c0 - body && s.x0 - o.x1 < body)) continue; // not at a line start (text wrapped beside a figure is further off)
     const blk = { x0: s.x0, y0: s.y0, x1: s.x1, y1: s.y1, runs: [s], kind: capKind(m[1]), label: capLabel(m) };
     s.cap = blk;
     let last = s;
@@ -311,13 +311,14 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
     }
     // A bare label ("Fig. 39.") is followed by body text, not more caption (nor, in scans, is any label).
     const bare = blk.runs.reduce((n, o) => n + o.str.trim().length, 0) <= m[0].trim().length + 2;
+    const [cc0, cc1] = colOf(s.x0, s.x1), centred = Math.abs((s.x0 + s.x1) / 2 - (cc0 + cc1) / 2) < body && s.x0 > cc0 + body;
     for (let more = true; more && blk.runs.length < 24;) {
       more = false;
       for (const o of byY) {
         // A line that starts "Figure 7." continues a caption whose line breaks mid-sentence ("… are shown in").
         if (o.cap || o.margin || !inCol(o) || (CAP.test(o.str) && /[.!?:]["”)]?\s*$/.test(last.str)) || ((bare || scan) && o.prose)) continue;
         const sameLine = Math.abs(o.base - last.base) < 0.5 * body && o.x0 >= blk.x0 - body && o.x0 - blk.x1 < 3 * body && o.y0 >= blk.y0 - body;
-        const next = o.y0 - last.y1 > -0.5 * s.fs && o.y0 - last.y1 < 0.75 * s.fs && ovX(o, blk) > 0 && Math.abs(o.fs - s.fs) < 0.2 * s.fs;
+        const next = o.y0 - last.y1 > -0.5 * s.fs && o.y0 - last.y1 < 0.75 * s.fs && ovX(o, blk) > 0 && Math.abs(o.fs - s.fs) < 0.2 * s.fs && (centred || o.x0 >= blk.x0 - body);
         if (sameLine || next) { o.cap = blk; blk.runs.push(o); grow(blk, o); if (o.y0 > last.y0) last = o; more = true; }
       }
     }
@@ -906,7 +907,7 @@ function paintMeta() {
 function open(reg, el, it, pinIt) {
   const k = Number(el.dataset.k); reg.k = k;
   let prep = pending?.reg === reg ? pending : prepare(reg, el, it);
-  if (!prep.lay) { if (pinIt) toast('This figure is already shown about as large as it can be'); return; }
+  if (!prep.lay) { if (pinIt) toast('Already full size', { icon: 'maximize', sub: 'This figure is shown about as large as it can be' }); return; }
   if (!ov) buildOv();
   if (S.prep && S.prep !== prep) S.prep.job?.cancel();
   const t0 = enterAt || performance.now();
@@ -976,8 +977,8 @@ function applyEnabled() { document.body.classList.toggle('fp-off', !enabled); }
 applyEnabled();
 registerKey('Z', () => {
   enabled = !enabled; store.set('figpeek', enabled); applyEnabled();
-  if (!enabled) { closeOv(); setHoverPage(null); toast('Figure peek off · Z turns it back on'); return; }
-  toast('Figure peek on: rest the pointer on a figure');
+  if (!enabled) { closeOv(); setHoverPage(null); toast('Figure peek off', { icon: 'image-off', kind: 'mode', sub: 'Z turns it back on' }); return; }
+  toast('Figure peek on', { icon: 'image', kind: 'mode', sub: 'Rest the pointer on a figure to enlarge it' });
   const it = items[current()];
   if (raster(it)) for (const el of spread.children) if (el._pnl?.canvas) { const k = Number(el.dataset.k); regionsOf(it, k).then((r) => paintBoxes(it, k, r)).catch(() => {}); }
 }, { help: ['Z', 'figure peek: rest the pointer on a figure to enlarge it, click to pin (on/off)'], order: 12 });

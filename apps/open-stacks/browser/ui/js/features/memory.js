@@ -252,7 +252,7 @@ function placeChip() {
 function hideChip() { chip = null; chipEl.remove(); }
 const toStart = () => goPage(0); // the 'nav' listener below says how to come back
 // t already goes to the first page (nav.js); note when it leaves a resumed spread.
-on('nav', ({ type, k }) => { if (type === 'page' && k === 0 && chip?.s != null) { const kk = chip.k; hideChip(); toast(`First page · Back returns to p. ${kk + 1}`, 2200); } });
+on('nav', ({ type, k }) => { if (type === 'page' && k === 0 && chip?.s != null) { const kk = chip.k; hideChip(); toast('First page', 2200, { icon: 'arrow-up-to-line', sub: `Backspace returns to p. ${kk + 1}` }); } });
 on('spread:rendered', ({ it, s }) => {
   if (!chip) return;
   if (chip.id !== it.id) { hideChip(); return; }

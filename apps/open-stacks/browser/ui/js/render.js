@@ -1,7 +1,12 @@
 // Raster pages: fetch or render, find the ink, crop, split columns, mark blanks.
+// With a profile (profile.js), the crop, blank pages and gutters come from it,
+// and a stored display image stands in for a pdf.js render when it is sharp
+// enough: decoded and cropped off the main thread (createImageBitmap).
 import { P, lru } from './util.js';
 import { state } from './state.js';
 import { openDoc, scanUrl } from './docs.js';
+import { analyzeLum } from './profile-core.js';
+import { profileOf, cropOf, displayFor, assetUrl, assetMissing, cropKey } from './profile.js';
 
 const imgs = new Map();
 export function loadImg(src) {
@@ -21,45 +26,12 @@ export function analyze(src) {
   const px = g.getImageData(0, 0, W, H).data;
   const lum = new Float32Array(W * H);
   for (let i = 0; i < W * H; i++) lum[i] = 0.3 * px[i * 4] + 0.59 * px[i * 4 + 1] + 0.11 * px[i * 4 + 2];
-  const sorted = Float32Array.from(lum).sort();
-  const bg = sorted[Math.floor(sorted.length * 0.8)];
-  const thr = bg - Math.max(45, bg * 0.25);
-  const rows = new Uint16Array(H), cols = new Uint16Array(W);
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (lum[y * W + x] < thr) { rows[y]++; cols[x]++; }
-  // Scanner beds and page edges show up as nearly solid dark bands at the
-  // borders: step past them before looking for the text block.
-  let x0 = 0, x1 = W - 1, y0 = 0, y1 = H - 1;
-  const lim = (a, b) => [Math.round(a * 0.12), Math.round(b * 0.12)];
-  const [mxB, myB] = lim(W, H);
-  while (x0 < mxB && cols[x0] > H * 0.35) x0++;
-  while (W - 1 - x1 < mxB && cols[x1] > H * 0.35) x1--;
-  while (y0 < myB && rows[y0] > W * 0.35) y0++;
-  while (H - 1 - y1 < myB && rows[y1] > W * 0.35) y1--;
-  // Then ignore a thin margin past the border, where shadows and specks live.
-  x0 += Math.round(W * 0.015); x1 -= Math.round(W * 0.015); y0 += Math.round(H * 0.01); y1 -= Math.round(H * 0.01);
-  let ink = 0;
-  const rws = new Uint16Array(H), cls = new Uint16Array(W);
-  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (lum[y * W + x] < thr) { rws[y]++; cls[x]++; ink++; }
-  const frac = ink / Math.max(1, (x1 - x0) * (y1 - y0));
-  if (frac < 0.0025) return { blank: true };
-  const rmin = Math.max(1, W * 0.004), cmin = Math.max(1, H * 0.004);
-  while (y0 < y1 && rws[y0] < rmin) y0++;
-  while (y1 > y0 && rws[y1] < rmin) y1--;
-  while (x0 < x1 && cls[x0] < cmin) x0++;
-  while (x1 > x0 && cls[x1] < cmin) x1--;
+  // The algorithm lives in profile-core.js, so the feed and the compiler find the same boxes.
+  const a = analyzeLum(lum, W, H);
+  if (a.blank) return { blank: true };
   const pad = state.cropPad ?? 0.012; // Settings: crop padding, a fraction of the page
-  const box = { x0: Math.max(0, x0 / W - pad), y0: Math.max(0, y0 / H - pad), x1: Math.min(1, (x1 + 1) / W + pad), y1: Math.min(1, (y1 + 1) / H + pad) };
-  // Gutter: an ink-free vertical run in the middle third of the box.
-  let gutter = null;
-  const bw = x1 - x0;
-  if (bw > 40) {
-    let run = 0, best = 0, at = 0;
-    for (let x = Math.round(x0 + bw * 0.38); x <= Math.round(x0 + bw * 0.62); x++) {
-      if (cls[x] <= (y1 - y0) * 0.004) { run++; if (run > best) { best = run; at = x - run / 2; } } else run = 0;
-    }
-    if (best >= Math.max(2, bw * 0.012)) gutter = at / W;
-  }
-  return { blank: false, box, gutter };
+  const [x0, y0, x1, y1] = a.ink;
+  return { blank: false, box: { x0: Math.max(0, x0 - pad), y0: Math.max(0, y0 - pad), x1: Math.min(1, x1 + pad), y1: Math.min(1, y1 + pad) }, gutter: a.gut };
 }
 export function cut(src, box) {
   const sx = Math.round(box.x0 * src.width), sy = Math.round(box.y0 * src.height);
@@ -71,32 +43,64 @@ export function cut(src, box) {
 /** Turn a raster page into display panels: cropped, or split into columns, or
  *  marked blank. Each panel records the box it shows, in fractions of the
  *  source page, so overlays (text layer, highlights) can be placed on it. */
-export function panelsFrom(src, k) {
+export function panelsFrom(src, k, extra = {}) {
   const a = analyze(src);
   if (a.blank) return [{ blank: true, k }];
-  const full = { x0: 0, y0: 0, x1: 1, y1: 1 };
-  const box = state.crop ? a.box : full;
-  const base = { k, srcW: src.width, srcH: src.height };
-  if (state.cols && a.gutter) {
-    const left = { ...box, x1: Math.min(box.x1, a.gutter + 0.01) };
-    const right = { ...box, x0: Math.max(box.x0, a.gutter - 0.01) };
-    return [{ ...base, canvas: cut(src, left), box: left, part: 'a' }, { ...base, canvas: cut(src, right), box: right, part: 'b' }];
+  return panelsBox(src, k, state.crop ? a.box : FULL, a.gutter, extra);
+}
+const FULL = { x0: 0, y0: 0, x1: 1, y1: 1 };
+/** The boxes a page shows: the crop, or its two columns split at the gutter. */
+function partsOf(box, gutter) {
+  if (!(state.cols && gutter)) return [{ box }];
+  return [{ box: { ...box, x1: Math.min(box.x1, gutter + 0.01) }, part: 'a' }, { box: { ...box, x0: Math.max(box.x0, gutter - 0.01) }, part: 'b' }];
+}
+function panelsBox(src, k, box, gutter, extra = {}) {
+  const base = { k, srcW: src.width, srcH: src.height, ...extra };
+  const parts = partsOf(box, gutter);
+  if (parts.length === 1) return [{ ...base, canvas: state.crop ? cut(src, box) : src, box }];
+  return parts.map((x) => ({ ...base, canvas: cut(src, x.box), box: x.box, part: x.part }));
+}
+/** A canvas showing an ImageBitmap without copying it (bitmaprenderer), or by drawing it. */
+function bitmapCanvas(bm) {
+  const c = document.createElement('canvas'); c.width = bm.width; c.height = bm.height;
+  const ctx = c.getContext('bitmaprenderer');
+  if (ctx) ctx.transferFromImageBitmap(bm); else { c.getContext('2d').drawImage(bm, 0, 0); bm.close?.(); }
+  return c;
+}
+/** Panels cut from an image (a Blob) showing region `ibox` of the page, at `fw` x `fh` px a full page. */
+async function panelsFromImage(blob, k, ibox, fw, fh, iw, ih, box, gutter, extra) {
+  const parts = partsOf(box, gutter);
+  const rect = (b) => {
+    const sx = Math.max(0, Math.round((b.x0 - ibox[0]) * fw)), sy = Math.max(0, Math.round((b.y0 - ibox[1]) * fh));
+    return [sx, sy, Math.max(1, Math.min(iw - sx, Math.round((b.x1 - b.x0) * fw))), Math.max(1, Math.min(ih - sy, Math.round((b.y1 - b.y0) * fh)))];
+  };
+  let bms;
+  if (parts.length === 1 && iw && ih) bms = [await createImageBitmap(blob, ...rect(parts[0].box))];
+  else {
+    const all = await createImageBitmap(blob);
+    if (!iw) { iw = all.width; ih = all.height; fw = iw / (ibox[2] - ibox[0]); fh = ih / (ibox[3] - ibox[1]); }
+    bms = await Promise.all(parts.map((x) => createImageBitmap(all, ...rect(x.box))));
+    all.close?.();
   }
-  return [{ ...base, canvas: state.crop ? cut(src, box) : src, box }];
+  return parts.map((x, j) => ({ k, canvas: bitmapCanvas(bms[j]), box: x.box, srcW: Math.round(fw), srcH: Math.round(fh), ...(x.part ? { part: x.part } : {}), ...extra }));
 }
 
 // PDF pages render at about the screen's physical height, so text stays sharp
 // on high-DPI displays; fewer are kept in memory when they are this large.
-const RENDER_H = Math.min(2200, Math.max(1400, Math.round(screen.height * (devicePixelRatio || 1) * 0.85)));
+export const RENDER_H = Math.min(2200, Math.max(1400, Math.round(screen.height * (devicePixelRatio || 1) * 0.85)));
 const RENDER_CAP = RENDER_H > 1600 ? 30 : 48;
 // Rendered pages, keyed by item, page and display options.
 const renders = new Map();
 /** The render of a page if it is already made or under way (never starts one). */
-export const cachedRender = (it, k) => renders.get(`${it.id}|${k}|${state.crop}|${state.cols}`) || null;
+export const cachedRender = (it, k) => renders.get(keyOf(it, k)) || null;
 // Finished renders, so a spread whose pages are all ready can be shown in the
 // same frame as the key press (no placeholders, no await).
 const done = new Map();
-const keyOf = (it, k) => `${it.id}|${k}|${state.crop}|${state.cols}|${state.cropPad ?? ''}`;
+// cropKey: renders made before an item's profile arrived (each page cropped to its
+// own ink) are not mixed with ones cropped to the profile's shared box.
+const keyOf = (it, k) => `${it.id}|${k}|${state.crop}|${state.cols}|${state.cropPad ?? ''}|${cropKey(profileOf(it))}`;
+/** Forget every render in memory (the benchmark measures cold paths with it). */
+export function dropRenders() { renders.clear(); done.clear(); }
 export const renderedNow = (it, k) => { const key = keyOf(it, k); return renders.has(key) ? done.get(key) || null : null; };
 export function renderPage(it, k) {
   const key = keyOf(it, k);
@@ -109,11 +113,29 @@ export function renderPage(it, k) {
 }
 function renderPage1(it, k, key) {
   return lru(renders, key, async () => {
+    const pf = profileOf(it), pg = pf?.pages?.[k];
+    if (pg) {
+      if (pg.blank) return [{ blank: true, k }];
+      const d = displayFor(pf, k, RENDER_H);
+      if (d) {
+        try {
+          const r = await fetch(assetUrl(pf, 'display', k));
+          if (!r.ok) throw new Error('gone');
+          const fw = d.w / (d.box[2] - d.box[0]), fh = d.h / (d.box[3] - d.box[1]);
+          return await panelsFromImage(await r.blob(), k, d.box, fw, fh, d.w, d.h, cropOf(pf, k), pg.gut, { pdfScale: fw / pg.w, src: 'asset' });
+        } catch { assetMissing(pf, 'display', k); /* fall back to rendering */ }
+      }
+      if (it.kind === 'scan') {
+        const r = await fetch(P(scanUrl(it, k, 1000)));
+        if (!r.ok) throw new Error('image unavailable');
+        return panelsFromImage(await r.blob(), k, [0, 0, 1, 1], 0, 0, 0, 0, state.crop ? cropOf(pf, k) : FULL, pg.gut, { src: 'scan' });
+      }
+    }
     if (it.kind === 'scan') {
       const im = await loadImg(P(scanUrl(it, k, 1000)));
       const c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
       c.getContext('2d').drawImage(im, 0, 0);
-      return panelsFrom(c, k);
+      return panelsFrom(c, k, { src: 'scan' });
     }
     const d = await openDoc(it);
     if (k >= d.n) return [];
@@ -124,6 +146,8 @@ function renderPage1(it, k, key) {
     const c = document.createElement('canvas'); c.width = Math.floor(vp.width); c.height = Math.floor(vp.height);
     const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
     await page.render({ canvasContext: g, viewport: vp }).promise;
-    return panelsFrom(c, k).map((p) => ({ ...p, pdfScale: scale }));
+    // With a profile the crop is known: no ink analysis (getImageData) on the main thread.
+    if (pg) return panelsBox(c, k, state.crop ? cropOf(pf, k) : FULL, pg.gut, { pdfScale: scale, src: 'pdfjs' });
+    return panelsFrom(c, k, { pdfScale: scale, src: 'pdfjs' });
   }, RENDER_CAP);
 }

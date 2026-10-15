@@ -22,8 +22,10 @@
 //     notch: a trackpad after all.
 // state.wheelDevice ('auto' | 'mouse' | 'pad') fixes the answer instead.
 //
-// Mouse: each notch is a step, queued and paced at `rate` steps a second; a
-// reversal drops what is queued, and starts a new spin even after a refused one.
+// Mouse: each notch is a step, queued and paced at `rate` steps a second; at
+// most 2 wait (no backlog when a fast spin stops), unless the notches came no
+// faster than the pace and a busy page delivered them together. A reversal
+// drops what is queued, and starts a new spin even after a refused one.
 // Notches less than `mouseGap` ms apart are one spin.
 // Trackpad: the first `lock` px decide the axis (2:1); one step once the stroke
 // passes `stroke` px, and the momentum tail is ignored. A new stroke starts after
@@ -45,17 +47,16 @@ let G = null; // the gesture in progress
 let lastT = -1e9, gid = 0, notchPx = 0;
 let ptr = { x: null, y: null };
 // Chrome merges the wheel events queued while the page is busy into one (deltas
-// summed, stamped with the last one's time). unit: a mouse notch's delta per
-// deltaMode, from notches that arrived on time (kept once their gesture ends as
-// a mouse's; else the spin's first notch), so that a merged event counts as the
-// notches it holds. devStamps: events carry the device's time (some event has
-// waited in the queue), so a gap between stamps is the reader's.
-const unit = {};
-const unitOf = (mode) => (G?.device === 'mouse' && G.u?.[0] === mode ? G.u[1] : unit[mode] || (G?.device === 'mouse' && !mode ? G.first : 0));
+// summed, stamped with the last one's time). unitOf: the spin's notch size (its
+// smallest notch that arrived on time, else its first), so that a merged event
+// counts as the notches it holds. Only within a spin: notch sizes differ between
+// wheels and settings. devStamps: events carry the device's time (some event
+// has waited in the queue), so a gap between stamps is the reader's.
+const unitOf = (mode) => (G?.device === 'mouse' && !mode ? (G.u?.[0] === mode ? G.u[1] : G.first) : 0);
 let devStamps = false;
 
 function begin(now, device, final, big = 0) {
-  if (G) { clearTimeout(G.chk); if (G.device === 'mouse' && G.u) unit[G.u[0]] = G.u[1]; }
+  if (G) clearTimeout(G.chk);
   G = { id: ++gid, t0: now, device, final, first: big, n: 0, dense: 0, vary: 0, axis: null, ax: 0, ay: 0, acc: 0, dir: 0,
     made: 0, fired: 0, stop: false, peak: 0, prevA: 0, decl: 0, tail: false, ds: [], raw: [] };
   if (DEBUG) mark('begin', now);
@@ -91,7 +92,7 @@ function onWheel(e, steps, pinches) {
   // Notches merged during a stall: a whole multiple of the notch size (pixel
   // deltas only: Chrome merges; Firefox's line deltas are accelerated on macOS).
   const r = unitOf(mode) ? big / unitOf(mode) : 0;
-  const merged = !mode && (late || lag > 16) && r > 1.9 && Math.abs(r - Math.round(r)) < 0.12 ? Math.min(4, Math.round(r)) : 1;
+  let merged = !mode && (late || lag > 16) && r > 1.9 && Math.abs(r - Math.round(r)) < 0.12 ? Math.min(4, Math.round(r)) : 1;
   // A pause in a stepped trackpad stroke's tail (the page was busy, or events
   // were merged) continues the tail when its speed carries on from where it
   // was (a new stroke starts slow again); the rise test still catches a new flick.
@@ -99,6 +100,7 @@ function onWheel(e, steps, pinches) {
   if (!G || (dt > (G.device === 'mouse' ? tune.mouseGap : tune.padGap) && !resumes && !busy && !(merged > 1 && G.device === 'mouse'))) {
     const sure = forced || (mode ? 'mouse' : dx && dy ? 'pad' : null);
     begin(now, sure || (big >= tune.notch || (notchPx && Math.abs(big - notchPx) < 0.5) ? 'mouse' : 'pad'), !!sure, big);
+    merged = 1; // a new spin's first event sets its notch size
   } else if (!forced && mode === 0) {
     // A quick stream of varying deltas: a trackpad, whatever the first event
     // looked like. Notches keep their size (or whole multiples of it, merged).
@@ -112,7 +114,9 @@ function onWheel(e, steps, pinches) {
     // The rest of a stopped spin is dropped; turning the wheel back starts a new one.
     if (G.stop && Math.sign(Math.abs(dx) > Math.abs(dy) ? dx : dy) === G.dir) return;
     if (merged === 1 && !late && !(G.u?.[1] <= big)) G.u = [mode, big]; // the smallest notch on time
-    notch(dx, dy, now, merged, big);
+    // Notches no faster than the pace (by the device's clock) are never dropped
+    // as backlog, even when the page delivers them late and together.
+    notch(dx, dy, now, merged, big, dt / merged >= 1000 / tune.rate);
   } else stroke(dx, dy, now, frames);
 }
 
@@ -133,12 +137,12 @@ function wasBusy() {
 }
 
 // ---------- mouse: one notch, one step ----------
-function notch(dx, dy, now, k = 1, big = 0) {
+function notch(dx, dy, now, k = 1, big = 0, spaced = false) {
   const axis = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
   const dir = Math.sign(axis === 'h' ? dx : dy);
   if (G.dir && dir !== G.dir) { const f = G.final; dropQueued(G); begin(now, 'mouse', f, big).n = 1; } // a reversal: a new spin
   G.axis = axis; G.dir = dir;
-  for (let j = 0; j < k; j++) push(G, axis, dir); // k: notches merged into one event
+  for (let j = 0; j < k; j++) push(G, axis, dir, spaced); // k: notches merged into one event
 }
 
 // ---------- trackpad: one stroke, one step ----------
@@ -190,8 +194,8 @@ function armNotchCheck(g) {
 // ---------- the step queue: at most `rate` steps a second ----------
 const queue = [];
 let lastStep = -1e9, pumpT = 0;
-function push(g, axis, dir) {
-  if (!dir || queue.length >= 2) return; // no backlog: the pages stop when the wheel stops
+function push(g, axis, dir, spaced = false) {
+  if (!dir || queue.length >= (spaced ? 6 : 2)) return; // no backlog: the pages stop when the wheel stops
   queue.push({ g, axis, dir, fresh: !g.made, x: ptr.x, y: ptr.y });
   g.made++;
   pump();

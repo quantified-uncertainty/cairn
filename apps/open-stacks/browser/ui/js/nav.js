@@ -87,6 +87,7 @@ export function turn(dir) {
 // ---------- Advance and Back ----------
 const stepped = (dir, e) => steppers.some((x) => x.fn(dir, e));
 const laneEnd = () => toast('Last item in this lane', { icon: 'arrow-down-to-line', kind: 'edge', sub: 'Pick another lane at the top (keys 0–9)' });
+const laneStart = () => toast('First item in this lane', { icon: 'arrow-up-to-line', kind: 'edge' });
 /** Page forward; on the last spread, the next item at its opening page, but only
  *  on a fresh press or stroke (not key repeat, not later in the same wheel gesture).
  *  Returns true when it turned, 'crossed' when it moved on, false when it stayed. */
@@ -110,6 +111,7 @@ export function forward(e) {
 // keeps stopping while it goes on (steps less than 0.7 s apart). After a
 // pause, a new scroll fills a bar: three steps move on to the next item.
 let pullN = 0, pullT = 0, pullHide = 0, endItem = null;
+on('nav', () => { endItem = null; }); // any move away and back reaches the end anew: pause again
 function pulled() {
   const now = performance.now();
   const here = items[current()]?.id;
@@ -315,8 +317,37 @@ K(['Backspace', 'PageUp', 'F17'], back, ['⌫ ⇧Space PgUp', 'go back: undo the
 K('F18', () => go(state.pos + 1), ['F16 F17 F18', 'next page / go back / next item (pedals, mouse buttons, a keyboard layer)'], 9);
 K(['j', 'ArrowDown'], () => go(state.pos + 1), ['j k', 'next / previous item (↓ ↑)'], 10);
 K(['k', 'ArrowUp'], () => go(state.pos - 1));
-K(['l', 'ArrowRight'], forward, ['l h', 'turn pages (→ ←); on the last page, l goes on to the next item'], 11);
-K(['h', 'ArrowLeft'], () => turn(-1));
+// → and ← turn pages. At the end of an item, → once only says what is next;
+// a second → within 1.5 s moves on. At the start, ← twice goes back to the
+// previous item, where you left it. So stepping across items is deliberate,
+// and works the same in both directions.
+let edgePress = null; // { dir, id, at }
+let lastTurnAt = 0; // presses still in a quick run of page turns never count at an edge
+function edgeTwice(dir, label) {
+  const it = items[current()]; const now = performance.now();
+  if (now - lastTurnAt < 600) { lastTurnAt = now; toast(dir > 0 ? 'End of document' : 'Start of document', 1200, { icon: dir > 0 ? 'arrow-down-to-line' : 'arrow-up-to-line', kind: 'edge', sub: `Pause, then press ${dir > 0 ? '→' : '←'} twice to go on` }); return false; }
+  if (edgePress && edgePress.dir === dir && edgePress.id === it?.id && now - edgePress.at < 1500) { edgePress = null; return true; }
+  edgePress = { dir, id: it?.id, at: now };
+  const other = items[state.order[state.pos + dir]];
+  if (other) toast(dir > 0 ? 'Next item' : 'Previous item', 1500, { icon: dir > 0 ? 'skip-forward' : 'skip-back', sub: `Press ${dir > 0 ? '→' : '←'} again for: ${other.t}` });
+  else if (dir > 0) laneEnd(); else laneStart();
+  return false;
+}
+function pageRight(e) {
+  if (turn(1)) { edgePress = null; lastTurnAt = performance.now(); return; }
+  const it = items[current()];
+  if (!it || !ready(it) || e?.repeat) return;
+  if (state.pos >= state.order.length - 1) { laneEnd(); return; }
+  if (edgeTwice(1, 'Next')) go(state.pos + 1);
+}
+function pageLeft(e) {
+  const i = current(); const it = items[i];
+  if ((state.start.get(i) ?? 0) > 0) { edgePress = null; turn(-1); lastTurnAt = performance.now(); return; }
+  if (!it || e?.repeat || state.pos <= 0) { if (state.pos <= 0) laneStart(); return; }
+  if (edgeTwice(-1, 'Back to')) go(state.pos - 1); // opens where you left it
+}
+K(['l', 'ArrowRight'], pageRight, ['l h', 'turn pages (→ ←); at the end or start, press twice for the next or previous item'], 11);
+K(['h', 'ArrowLeft'], pageLeft);
 K(['z', 'Enter'], () => toggleZoom(), ['z Esc', 'zoom to one page or column / up a level: unzoom, then the wall'], 12);
 K('Escape', () => {
   if ($('#wheel-menu')) $('#wheel-menu').remove();

@@ -471,8 +471,8 @@ async function setBudget(usd) {
     if (j.error) throw new Error(j.error);
     serverInfo = j;
     if (state.status.spend) state.status.spend.budget = j.budget;
-    toast(`Daily AI budget $${j.budget}${j.override ? '' : ' (default)'}`);
-  } catch (e) { toast('Could not set the budget: ' + e.message, 3000); }
+    toast(`AI budget: $${j.budget} a day`, { icon: 'wallet', kind: 'ok', sub: j.override ? '' : 'the default' });
+  } catch (e) { toast('Budget not changed', 3000, { icon: 'circle-alert', kind: 'bad', sub: e.message }); }
   sync(); repaintPanel();
 }
 

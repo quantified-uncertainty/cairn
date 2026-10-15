@@ -169,6 +169,21 @@ export function paintPos(it, s, c, n, flow = false) {
 
 // ---------- page strip ----------
 let scrubObs = null; let scrubFor = null;
+// One thumbnail of the pinned strip (p), filled as it scrolls into view.
+async function fillThumb(it, t) {
+  const k = Number(t.dataset.k);
+  if (it.kind === 'scan') { t.prepend(h('img', { loading: 'lazy', src: P(scanUrl(it, k, 120)), alt: '' })); return; }
+  const d = await openDoc(it).catch(() => null);
+  if (!d) return;
+  if (d.pdf) {
+    const page = await d.pdf.getPage(k + 1);
+    const vp0 = page.getViewport({ scale: 1 });
+    const vp = page.getViewport({ scale: 74 * 2 / vp0.height });
+    const c = h('canvas', { width: Math.floor(vp.width), height: Math.floor(vp.height) });
+    await page.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
+    t.prepend(c);
+  } else t.prepend(h('div', { className: 'tt', textContent: (d.texts?.[k] || '').slice(0, 160) }));
+}
 export function paintScrub(i, s, c) {
   const it = items[i]; const box = $('#scrub');
   const n = it.n || 0;

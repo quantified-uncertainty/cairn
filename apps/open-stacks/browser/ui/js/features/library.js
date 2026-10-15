@@ -391,8 +391,9 @@ function treeKey(e) {
 list.addEventListener('keydown', (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   if (treeKey(e)) { e.preventDefault(); e.stopPropagation(); return; }
-  // Type to filter (Space still reaches the page: it is Advance; L switches back to the item).
-  if (e.key.length === 1 && e.key !== ' ' && e.key !== 'L') { e.preventDefault(); e.stopPropagation(); input.focus(); input.value = (stale ? '' : input.value) + e.key; onInput(); }
+  // Type to filter. Space still reaches the page (it is Advance), and so do Shift+letter
+  // commands (L back to the item, I moves the panel…).
+  if (e.key.length === 1 && e.key !== ' ' && !/[A-Z]/.test(e.key)) { e.preventDefault(); e.stopPropagation(); input.focus(); input.value = (stale ? '' : input.value) + e.key; onInput(); }
   else if (e.key === 'Backspace' && q) { e.preventDefault(); e.stopPropagation(); input.focus(); input.value = input.value.slice(0, -1); onInput(); }
 });
 function onInput() {
@@ -409,7 +410,7 @@ input.addEventListener('keydown', (e) => {
   const r = selIndex();
   if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'PageDown' || e.key === 'PageUp') { treeKey(e); e.preventDefault(); }
   else if (e.key === 'Enter') { e.preventDefault(); activate(r < 0 ? rows.findIndex((x) => x.i != null) : r); }
-  else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); if (input.value) { input.value = ''; onInput(); } else list.focus(); }
+  else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); if (input.value) { input.value = ''; onInput(); list.focus({ preventScroll: true }); } else done(); }
   else if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); list.focus(); }
 });
 

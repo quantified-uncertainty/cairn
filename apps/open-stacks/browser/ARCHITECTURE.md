@@ -20,7 +20,7 @@ How the pieces fit, for anyone adding a feature. The README covers running and u
 
 | Module | Holds |
 |---|---|
-| `util.js` | `h()`, `$()`, `P(url)` (the proxy URL), `store`, `lru`, `fmtDate`, `toast`, `css()`, and the hooks below |
+| `util.js` | `h()`, `$()`, `P(url)` (the proxy URL), `store`, `lru`, `fmtDate`, `toast`, `css()`, and the hooks below. `toast(text, ms?, {icon, sub, kind, fill})` is the HUD notice, low on the stage, one at a time: a big icon (a name from `hud-icons.js`, `'a+b'` for two), a short main line (2-5 words), an optional second line; `kind` is `mode`, `ok`, `edge`, `bad` or `busy`; `fill` (0-1) is the pull to the next item |
 | `corpus.js` | `items` (merged with `enrich.json`), `LANES`, `COUNTS`, `LANE_WEIGHTS`, `LANE_COLORS`, `byId`, `tokens`, `related(i)` |
 | `state.js` | `state` (view, lane, order, pos, `start` (Map item → page or column), `hist` (turn history), `per`, `zoom`, `crop`, `cols`, `font`, `panel`, `wheelMouse` / `wheelPad` / `wheelDevice` (the wheel map per device), `marks`, `status`, …), `current()`, `buildOrder`, `learn` |
 | `docs.js` | `openDoc(it)`: scan → `{n}`, pdf → `{n, pdf}` (a pdf.js document), html/web/text → a *flow* doc `{flow: true, html, n, texts, outline}`; `isFlow(it)`, `scanUrl`, `pdfjs()`, `extractors` (per kind), `prepareFlow`, `pdfOutline` |
@@ -63,3 +63,4 @@ How the pieces fit, for anyone adding a feature. The README covers running and u
 
 - `build-corpus.mjs` writes `corpus.json` from the LessWrong/Alignment Forum APIs, `data/lanes/*.json` (curated lane files) and `seeds.json`.
 - `enrich.json` (optional) adds per-item `rel` (0–1 relevance), `hook` (one line) and `best` (0-based best pages).
+- The library tree (built at the end of `build-corpus.mjs`; `--tree-only` redoes just this): every item has `path` (folder names under its lane, outermost first) and `ord` (its place in the lane's tree order, depth-first, so it also orders items within a folder). The QURI wikis follow each site's own Starlight sidebar; the other lanes get topic, year or era folders. `laneOrdered` (`corpus.js` `LANE_ORDERED`) names the lanes whose order matters; `buildOrder` follows `ord` there, and narrows the feed to `state.scope` (a Set of item indexes) while `features/library.js` browses one folder.
