@@ -242,7 +242,7 @@ a { color: inherit; }
   filter: drop-shadow(0 1px 0 rgba(0,0,0,.45));
 }
 :root { --gold-hi-fixed: #e8cf88; }
-.cover .c-title .t { font: 600 var(--fs, 20px)/1.12 var(--display); letter-spacing: .1em; text-transform: uppercase; font-variation-settings: 'opsz' 30; overflow-wrap: anywhere; }
+.cover .c-title .t { font: 600 var(--fs, 20px)/1.12 var(--display); letter-spacing: .1em; text-transform: uppercase; font-variation-settings: 'opsz' 30; padding: 0 4px; }
 .cover .c-title .s { font: italic 400 13px/1.25 var(--display); margin-top: 10px; letter-spacing: .02em; }
 .cover .orn { position: absolute; left: 50%; bottom: 46px; transform: translateX(-50%); color: #d2b46a; opacity: .9; }
 .cover .imprint { position: absolute; left: 0; right: 0; bottom: 22px; text-align: center; font: 600 8.5px/1 var(--display); letter-spacing: .32em; color: #d8bd77; opacity: .85; text-transform: uppercase; }
@@ -967,7 +967,7 @@ function renderShelf() {
     const hgt = 196 + (hash(v.id) % 18);
     return `<button class="spine${v._new ? ' new' : ''}" type="button" data-vid="${esc(v.id)}" aria-pressed="${v.id === cur.id}" style="--c:${clothOf(v)};width:${w}px;height:${hgt}px" aria-label="Volume ${esc(v.numeral)}: ${esc(v.title)}, ${r.pages} pages at ${hoursOf(v)} hours">
       <span class="bands"></span><span class="sp-num">${esc(v.numeral)}</span>
-      <span class="sp-title"><span>${esc(v.short || v.title)}</span></span>
+      <span class="sp-title" style="font-size:${clamp((hgt - 84) / ((v.short || v.title).length * 0.84), 8.5, 12).toFixed(1)}px"><span>${esc(v.short || v.title)}</span></span>
       <span class="bands b"></span><span class="sp-label">${esc(v.call.split(' ')[0])}</span></button>`;
   }).join('');
   el.innerHTML = html + `<span class="shelf-gap"></span><button class="spine-blank" type="button" id="blank-spine" aria-label="Commission a new volume"><b>+</b><span>Commission</span></button>`;
@@ -1247,7 +1247,7 @@ function wrap2(text, maxc) {
 }
 function coreSVG(v, sol) {
   const R = v.route, C = R.concepts, n = C.length;
-  const W = Math.max(860, 176 * n + 100), axisX = 76, colW = (W - axisX - 20) / n;
+  const W = Math.max(860, 176 * n + 110), axisX = 76, colW = (W - axisX - 30) / n;
   const yTop = 150, yBot = 640;
   const minYear = Math.min(...C.flatMap((c) => c.nodes.map((nd) => REC[nd.ref].year)));
   const span = Math.log(2027 - Math.min(minYear, 1700) + 30);
@@ -1274,7 +1274,7 @@ function coreSVG(v, sol) {
   bands.forEach(([a, b, name], i) => {
     const y1 = i === 0 ? yTop - 14 : yOf(a + 0.5), y2 = i === 2 ? deepestBottom + 6 : yOf(b - 0.5);
     s += `<rect x="${axisX}" y="${y1}" width="${W - axisX - 8}" height="${y2 - y1}" fill="${i % 2 ? 'var(--paper-3)' : 'var(--paper)'}" opacity=".7"/>`;
-    s += `<text x="${W - 12}" y="${y1 + 13}" text-anchor="end" font-size="9.5" fill="var(--ink-3)" letter-spacing="1.2">${name.toUpperCase()}</text>`;
+    s += `<text x="${W - 14}" y="${y1 + 6}" font-size="9" fill="var(--ink-3)" letter-spacing="1.2" transform="rotate(90 ${W - 14} ${y1 + 6})">${name.toUpperCase()}</text>`;
   });
   [2026, 2020, 2010, 2000, 1975, 1950, 1900, 1850, 1800, 1750, 1700].filter((y) => y >= Math.min(minYear, 1750) - 30).forEach((yr) => {
     const y = yOf(yr);
@@ -1317,13 +1317,16 @@ function coreSVG(v, sol) {
     ns.forEach((o) => {
       const g = GENRE[genreOf(o.r)];
       const on = pick === o.nd.ref, rd = S.read.has(o.nd.ref), sel = S.sel === o.nd.ref;
-      const [l1, l2] = wrap2(o.r.piece, maxc);
+      let [l1, l2] = wrap2(o.r.piece, maxc - 6);
+      if (l2.length > maxc) l2 = l2.slice(0, maxc - 1) + '…';
+      const author = String(o.r.by || '').split(',')[0].trim().split(' ').pop();
+      const byLine = !l2 && author ? author : '';
       if (Math.abs(o.y - o.ty) > 2) s += `<path d="M${cx + bw / 2 + 4} ${o.ty} h4 V ${o.y}" fill="none" stroke="var(--ink-3)" stroke-width=".8"/>`;
       const fill = rd ? 'var(--gold-hi)' : on ? 'var(--route-bg)' : g.bg;
       s += `<g class="node" tabindex="0" role="button" data-node="${esc(o.nd.ref)}" aria-label="${esc(o.r.piece)}, ${o.r.year}, ${esc(g.name)}${on ? ', on the chosen route' : ''}${rd ? ', already read' : ''}">
         <rect class="box" x="${cx - bw / 2}" y="${o.y - NH / 2}" width="${bw}" height="${NH}" rx="3" fill="${fill}" stroke="${on || rd ? 'var(--gold)' : g.c}" stroke-width="${on || sel ? 2.4 : 1.1}"/>
         <rect x="${cx - bw / 2}" y="${o.y - NH / 2}" width="5" height="${NH}" rx="1.5" fill="${g.c}"/>
-        <text font-size="11" fill="${rd ? '#2a2412' : 'var(--ink)'}" font-family="Libre Caslon Text, Georgia, serif"><tspan x="${cx - bw / 2 + 11}" y="${o.y - 3}">${esc(l1)}</tspan><tspan x="${cx - bw / 2 + 11}" y="${o.y + 11}">${esc(l2)}</tspan></text>
+        <text font-size="11" fill="${rd ? '#2a2412' : 'var(--ink)'}" font-family="Libre Caslon Text, Georgia, serif"><tspan x="${cx - bw / 2 + 11}" y="${o.y - 3}">${esc(l1)}</tspan><tspan x="${cx - bw / 2 + 11}" y="${o.y + 11}">${esc(l2)}</tspan></text>${byLine ? `<text x="${cx - bw / 2 + 11}" y="${o.y + 11}" font-size="10.5" font-style="italic" fill="${rd ? '#2a2412' : 'var(--ink-3)'}" font-family="Libre Caslon Text, Georgia, serif">${esc(byLine)}</text>` : ''}
         <text x="${cx + bw / 2 - 5}" y="${o.y - 3}" font-size="10" text-anchor="end" fill="${rd ? '#2a2412' : 'var(--ink-3)'}">${rd ? '★' : o.r.year}</text>
         ${on && !rd ? `<circle cx="${cx + bw / 2 - 8}" cy="${o.y + 8}" r="3.2" fill="var(--gold)"/>` : ''}</g>`;
       (pos[o.nd.ref] ||= []).push({ x: cx, y: o.y, l: cx - bw / 2, r: cx + bw / 2 });
@@ -2011,6 +2014,7 @@ async function boot() {
   if (!VOLS.some((v) => v.id === S.vid)) S.vid = VOLS[0].id;
   if (!['open', 'loan', 'any'].includes(S.key)) S.key = 'any';
   update();
+  document.fonts?.ready.then(() => fitCoverTitle());
   $('#foot-mode').textContent = 'Precomputed volumes · live binding when opened in Claude';
   // live capability: never block first paint
   (async () => {

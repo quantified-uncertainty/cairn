@@ -1273,8 +1273,8 @@ function quoteDiff(quoted, original) {
   const out = []; let i = 0, j = 0, diffs = 0;
   while (i < n || j < m) {
     if (i < n && j < m && a[i] === bq[j]) { out.push(document.createTextNode(a[i] + ' ')); i++; j++; }
-    else if (j < m && (i >= n || dp[i][j + 1] >= dp[i + 1][j])) { out.push(h('ins', {}, bq[j]), ' '); j++; diffs++; }
-    else { out.push(h('del', {}, a[i]), ' '); i++; }
+    else if (i < n && (j >= m || dp[i + 1][j] >= dp[i][j + 1])) { out.push(h('del', {}, a[i]), ' '); i++; }
+    else { out.push(h('ins', {}, bq[j]), ' '); j++; diffs++; }
   }
   return { out, diffs };
 }
@@ -1325,12 +1325,12 @@ function renderTimeline(b, bi) {
   let x = X0; segs.forEach((g) => { g.w = avail * Math.max(g.span, 60) / tot; g.x = x; x += g.w + gap; });
   const xOf = (y) => { const g = segs.find((q) => y >= q.lo && y <= q.hi) || segs[0]; return g.x + g.w * (y - g.lo) / (g.span || 1); };
   const yr = (y) => (y < 0 ? `${-y} BCE` : y < 1000 ? `${y} CE` : String(y));
-  const AX = 40, ROW = 21, H = AX + 34 + evs.length * ROW + 8;
+  const AX = 46, ROW = 21, H = AX + 34 + evs.length * ROW + 8;
   const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, class: 'tl-svg', role: 'img', 'aria-label': 'Timeline' });
   segs.forEach((g, gi) => {
     svg.append(s('line', { x1: g.x, x2: g.x + g.w, y1: AX, y2: AX, stroke: 'var(--ink)', 'stroke-width': 1.5 }));
     const yrs = evs.map((e) => e.y).filter((y) => y >= g.lo && y <= g.hi);
-    if (yrs.length) svg.append(s('text', { x: g.x + g.w / 2, y: AX - 10, 'text-anchor': 'middle', 'font-size': 9.5, fill: 'var(--ink-3)', 'font-family': 'IBM Plex Mono' }, yrs.length > 1 ? `${yr(Math.min(...yrs))} – ${yr(Math.max(...yrs))}` : yr(yrs[0])));
+    if (yrs.length) svg.append(s('text', { x: g.x + (gi ? g.w * 0.35 : g.w / 2), y: AX - 10, 'text-anchor': 'middle', 'font-size': 9.5, fill: 'var(--ink-3)', 'font-family': 'IBM Plex Mono' }, yrs.length > 1 ? `${yr(Math.min(...yrs))} – ${yr(Math.max(...yrs))}` : yr(yrs[0])));
     if (gi) svg.append(s('text', { x: g.x - gap / 2, y: AX + 4, 'text-anchor': 'middle', 'font-size': 13, fill: 'var(--ink-3)' }, '//'));
   });
   const leaders = s('g', {}), labels = s('g', {});
@@ -1351,7 +1351,7 @@ function renderTimeline(b, bi) {
     bindEl(g, key, e, e.label);
   });
   svg.append(leaders, labels);
-  if (b.now) { const cx = xOf(Number(b.now.year)); svg.append(s('path', { d: `M${cx} ${AX - 3}l5 -8h-10z`, fill: 'var(--blue)' }), s('text', { x: cx - 8, y: AX - 3, 'text-anchor': 'end', 'font-size': 10, fill: 'var(--blue-ink)', 'font-weight': 600 }, b.now.label)); }
+  if (b.now) { const cx = xOf(Number(b.now.year)); svg.append(s('path', { d: `M${cx} ${AX - 3}l5 -8h-10z`, fill: 'var(--blue)' }), s('line', { x1: cx, x2: cx, y1: AX - 11, y2: AX - 24, stroke: 'var(--blue)', 'stroke-width': 1 }), s('text', { x: cx + 3, y: AX - 26, 'text-anchor': 'end', 'font-size': 10, fill: 'var(--blue-ink)', 'font-weight': 600 }, b.now.label)); }
   const list = h('ul', { class: 'tl-list' }, evs.map(({ e, i, y }) => { const key = `lenses.${bi}.events.${i}`; const li = h('li', {}, h('span', { class: 'y' }, yr(y) + (e.dateFrom !== 'text' ? '†' : '')), h('span', {}, e.label, e.hypothetical ? ' (supposed)' : ''), h('span', {}, chip(e, key))); bindEl(li, key, e, e.label); return li; }));
   const xr = evs.filter(({ e }) => e.xref).map(({ e }) => h('span', {}, xrefBtn(e.xref)));
   return blockShell(b, bi, [h('div', { class: 'figure' }, svg), list, h('div', { class: 'foot' }, '† Date supplied by the annotator from outside the text (filled dots: printed in the text). Dashed: events the author only supposes. ', xr)]);
@@ -1473,7 +1473,7 @@ function renderBranch(b, bi) {
       axis.append(s('text', { x: 8, y: y + 3.5, 'font-size': 10.5, fill: 'var(--ink-2)', 'font-family': 'Libre Caslon Text' }, roman(l)));
       axis.append(s('text', { x: X0 - 10, y: y + 3.5, 'font-size': 9, 'text-anchor': 'end', fill: 'var(--ink-3)', 'font-family': 'IBM Plex Mono' }, fmtDec(l * per)));
     }
-    if (cA != null) { const ym = (yOf(cA) + yOf(levels.find((x) => x > cA))) / 2; axis.append(s('path', { d: `M${X0 - 10} ${ym + 4} l8 -8 M${X0 - 10} ${ym + 9} l8 -8`, stroke: 'var(--ink-3)', 'stroke-width': 1 }), s('text', { x: X1, y: ym + 3, 'text-anchor': 'end', 'font-size': 9.5, fill: 'var(--ink-3)', 'font-style': 'italic' }, `lines ${roman(cA + 1)}–${roman(maxL)} condensed, as in the printed figure`)); }
+    if (cA != null) { const ym = (yOf(cA) + yOf(levels.find((x) => x > cA))) / 2; axis.append(s('path', { d: `M${X0 - 10} ${ym + 4} l8 -8 M${X0 - 10} ${ym + 9} l8 -8`, stroke: 'var(--ink-3)', 'stroke-width': 1 }), s('title', {}, 'condensed interval')); }
     axis.append(s('text', { x: X0 - 10, y: 14, 'font-size': 9, 'text-anchor': 'end', fill: 'var(--ink-3)' }, 'generations'));
     svg.append(axis);
     const edges = s('g', {});
@@ -1493,7 +1493,8 @@ function renderBranch(b, bi) {
       g.append(s('circle', { cx: x, cy: y, r: n.unnamed ? 3 : 3.6, fill: n.unnamed ? 'var(--sheet)' : 'var(--ink)', stroke: 'var(--ink)', 'stroke-width': 1.2 }));
       const m = String(n.label || '').match(/^([A-Za-z]+)(\d*)$/);
       if (m) {
-        const t = s('text', { x, y: orig ? y + 17 : y - 8, 'text-anchor': 'middle', 'font-size': orig ? 14 : 12.5, fill: 'var(--ink)', 'font-family': 'Libre Caslon Text', 'font-style': orig ? null : 'italic', 'font-weight': orig ? 700 : null }, m[1]);
+        const top = (+n.level || 0) === maxL;
+        const t = s('text', { x: orig || top ? x : x + 6, y: orig ? y + 17 : top ? y - 8 : y + 4, 'text-anchor': orig || top ? 'middle' : 'start', 'font-size': orig ? 14 : 12.5, fill: 'var(--ink)', 'font-family': 'Libre Caslon Text', 'font-style': orig ? null : 'italic', 'font-weight': orig ? 700 : null }, m[1]);
         if (m[2]) t.append(s('tspan', { 'baseline-shift': 'super', 'font-size': 8, 'font-style': 'normal', 'font-family': 'IBM Plex Mono' }, m[2]));
         g.append(t);
       }
@@ -1512,7 +1513,7 @@ function renderBranch(b, bi) {
   const seg = h('span', { class: 'seg' }, segBtns);
   const scaleChips = scales.map((sc, i) => { const key = `lenses.${bi}.scales.${i}`; const c = chip(sc, key); if (c) bindEl(c, key, sc, sc.label); return c; });
   const bar = scales.length ? h('div', { class: 'scalebar' }, h('span', {}, 'Each horizontal line is'), seg, h('span', { style: 'display:inline-flex;gap:4px' }, scaleChips)) : null;
-  return blockShell(b, bi, [bar, h('div', { class: 'figure scroll' }, svg), h('div', { class: 'foot' }, 'This plain-text edition has no figure. The rebuild places every node the prose names; positions are schematic. Four of the six descendants of (I) are not named in the text.')]);
+  return blockShell(b, bi, [bar, h('div', { class: 'figure scroll' }, svg), h('div', { class: 'foot' }, 'This plain-text edition has no figure. The rebuild places every node the prose names; positions are schematic. As in the printed figure, the lines between X and XIV are condensed into one interval. Four of the six descendants of (I) are not named in the text.')]);
 }
 
 const RENDER = { LiveCalculation: renderLiveCalc, WorkedExample: renderWorked, ArgumentTree: renderArg, ClaimCard: renderClaims, Counterexample: renderCounter, CastList: renderCast, Glossary: renderGloss, Timeline: renderTimeline, MapOfPlaces: renderMap, BranchingDiagram: renderBranch };
@@ -2020,16 +2021,16 @@ async function composeDraft() {
     if (t.trim() && curP) curP.words += t.split(/\s+/).filter(Boolean).length;
     let m;
     if (nodes.length >= 24) continue;
-    if (!prev.trim() && (m = t.match(/^(\d{1,3})\.\s+(\S.*)$/))) nodes.push({ kind: 'section', text: `§${m[1]}`, src: [words(t.replace(/\s+/g, ' ').trim(), 12)] });
+    if (!prev.trim() && (m = t.match(/^(\d{1,3})\.\s+(\S.*)$/))) { const q = words(t.replace(/\s+/g, ' ').trim(), 12); nodes.push({ kind: 'section', text: `§${m[1]}: “${q.replace(/^\d+\.\s*/, '').replace(/_/g, '')}…”`, src: [q] }); }
     else if ((m = t.match(/^_([^_]{3,70})_\.?\s?—/))) nodes.push({ kind: 'section', text: m[1], src: [m[0]] });
-    else if (/^\s*([IVX]{1,5})\s*$/.test(t) && !prev.trim()) { let k = n + 1; while (k <= ch.end && !(bk.lines[k - 1] || '').trim()) k++; const q = words((bk.lines[k - 1] || '').replace(/\s+/g, ' ').trim(), 10); if (q.length > 12) nodes.push({ kind: 'section', text: `Part ${t.trim()}`, src: [q] }); }
+    else if (/^\s*([IVX]{1,5})\s*$/.test(t) && !prev.trim()) { let k = n + 1; while (k <= ch.end && !(bk.lines[k - 1] || '').trim()) k++; const q = words((bk.lines[k - 1] || '').replace(/\s+/g, ' ').trim(), 10); if (q.length > 12) nodes.push({ kind: 'section', text: `Part ${t.trim()}: “${q.replace(/_/g, '')}…”`, src: [q] }); }
   }
   let outlineTitle = 'Outline (from section marks)';
   if (nodes.length < 3) {
     nodes.length = 0;
     const long = paras.filter((pp) => pp.words >= 40 && pp.first.split(' ').length >= 6);
     const step = Math.max(1, Math.ceil(long.length / 14));
-    long.filter((_, i) => i % step === 0).slice(0, 14).forEach((pp, i) => nodes.push({ kind: 'section', text: `Paragraph at line ${pp.n}`, src: [words(pp.first, 14)] }));
+    long.filter((_, i) => i % step === 0).slice(0, 14).forEach((pp) => { const q = words(pp.first, 14); nodes.push({ kind: 'section', text: `“${q.replace(/_/g, '')}…”`, src: [q] }); });
     outlineTitle = 'Outline (paragraph openings)';
   }
   // 2. sentences with numbers

@@ -304,6 +304,8 @@ a { color: var(--accent-ink); text-underline-offset: 2px; text-decoration-thickn
 .kpi.accent .v { color: var(--accent-ink); }
 
 .keyline { margin: 10px 0 0; font-size: 12.5px; color: var(--ink-3); line-height: 1.9; }
+.keyline { display: flex; flex-wrap: wrap; gap: 2px 12px; align-items: center; }
+.keyline > span { white-space: nowrap; }
 .keyline .glyph { margin-right: 2px; }
 .keyline .kd { display: inline-block; width: 9px; height: 9px; border: 1px dashed; border-radius: 50%; vertical-align: -1px; margin-right: 2px; }
 .conts { display: grid; gap: 1px; margin: 0; padding: 0; list-style: none; }
@@ -1322,14 +1324,6 @@ function drawGlow() {
     c.globalAlpha = base * (0.28 + 0.18 * k);
     c.beginPath(); for (const h of b) hexPoly(c, h, 0.92); c.fill();
   });
-  // unseen-species overlay: where unmet works probably are
-  if (st.tab === 'unseen' && st.unShow && st.unseen) {
-    c.globalAlpha = 0.5;
-    for (const row of st.unseen.where) {
-      if (!row.share) continue;
-      for (const wi of row.singletons) { const w = M.works[wi]; c.beginPath(); c.arc(w.px, w.py, M.R * (0.5 + row.share * 1.6), 0, 7); c.fill(); }
-    }
-  }
   c.globalAlpha = 1;
 }
 
@@ -1418,6 +1412,14 @@ function drawTop() {
       diamond(c, x, y - 1, 8.5, String(k + 1));
       placed.push([x - 10, y - 11, x + 10, y + 9]);
     });
+  }
+  // unseen species: singletons (works met exactly once) mark where unmet works probably are
+  if (st.tab === 'unseen' && st.unShow && st.unseen) {
+    const rr = clamp(2.2 * Math.sqrt(T.k), 3, 6.5);
+    c.lineWidth = 1.4; c.strokeStyle = C.accent;
+    c.beginPath();
+    for (const row of st.unseen.where) for (const wi of row.singletons) { const w = M.works[wi]; const [x, y] = toScreen(w.px, w.py); c.moveTo(x + rr, y); c.arc(x, y, rr, 0, 7); }
+    c.fillStyle = C.accent; c.globalAlpha = 0.16; c.fill(); c.globalAlpha = 0.9; c.stroke(); c.globalAlpha = 1;
   }
   // field-guide pins
   if (st.tab === 'guide' && st.guide.cited && st.guide.cited.length) {
@@ -1847,7 +1849,7 @@ function renderAtlas() {
       <div class="kpi"><div class="v">${entered}<small> / ${M.subs.length}</small></div><div class="l">provinces entered</div></div>
       <div class="kpi"><div class="v">${fmt(D.frontier.length)}</div><div class="l">frontier hexes glowing</div></div>
     </div>
-    <p class="keyline">${flagSVG()} read · <span class="kd" style="border-color:var(--ink-2)"></span> rumoured · ${glyphSVG('free')} free now · ${glyphSVG('borrow')} borrowable · ${glyphSVG('pd')} print-disabled · ${glyphSVG('none')} no ebook · <button class="linkish" type="button" data-act="key">full key</button></p>
+    <p class="keyline"><span>${flagSVG()} read</span> <span><span class="kd" style="border-color:var(--ink-2)"></span> rumoured</span> <span>${glyphSVG('free')} free now</span> <span>${glyphSVG('borrow')} borrowable</span> <span>${glyphSVG('pd')} print-disabled</span> <span>${glyphSVG('none')} no ebook</span> <button class="linkish" type="button" data-act="key">full key</button></p>
     ${nRead ? `<div class="row" style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn" type="button" data-act="replay">Replay the settlement</button><button class="btn" type="button" data-act="fit">Whole world</button></div>` : ''}
     ${st.landfalls.length ? `<h3>Best landfalls on the frontier</h3>
     <p class="small" style="margin-top:-2px">Unread works in glowing hexes, ranked by how many flags share their outline range, then by editions, readers and access. Numbered on the map.</p>
@@ -1913,7 +1915,7 @@ const ADV = /\b(advanced|topics in|handbook|lectures?|seminar|monographs?|procee
 function levelOf(w) {
   const t = (w.t + ' ' + (w.st || '')).toLowerCase();
   const subj = (w.s || []).join(' | ').toLowerCase();
-  if (INTRO.test(t) || /popular works|juvenile|textbooks/.test(subj)) return 0;
+  if (INTRO.test(t) || /popular works|juvenile literature/.test(subj)) return 0;
   if (ADV.test(t)) return 2;
   return 1;
 }
@@ -2103,7 +2105,7 @@ function renderUnseen() {
     </div>
     <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px">
       <div class="seg" role="group" aria-label="Interval">${[0.8, 0.95].map((zz) => `<button type="button" data-unz="${zz}" aria-pressed="${st.unZ === zz}">${zz === 0.8 ? '80%' : '95%'} interval</button>`).join('')}</div>
-      <label style="display:flex;gap:6px;align-items:center;font-size:13.5px"><input type="checkbox" id="un-show" ${st.unShow ? 'checked' : ''}> Glow where the unseen probably are</label>
+      <label style="display:flex;gap:6px;align-items:center;font-size:13.5px"><input type="checkbox" id="un-show" ${st.unShow ? 'checked' : ''}> Mark singletons on the map</label>
     </div>
     <h3>Species-accumulation curve</h3>
     <div id="un-chart"></div>
@@ -2118,7 +2120,7 @@ function renderUnseen() {
     <table class="mini"><thead><tr><th>Town</th><th class="r">Singletons</th><th class="r">Unmet (truth)</th></tr></thead><tbody>
       ${U.where.filter((r) => r.f1 || r.unmetTruth).slice(0, 7).map((r) => { const t = r.tk >= 0 ? M.towns[r.tk] : null; return `<tr><td>${t ? `<button class="linkish" type="button" data-town="${t.ti}">${esc(rangeStr(t.lo, t.hi) + ' ' + shortTitle(t.n, 34))}</button>` : '<span class="small">outside the outline ranges</span>'}</td><td class="r"><span class="shr" style="width:${Math.round(40 * r.share)}px"></span> ${r.f1}</td><td class="r">${r.unmetTruth}</td></tr>`; }).join('')}
     </tbody></table>
-    <p class="small">Good–Turing logic: unseen works are likeliest where many works were seen exactly once. The glowing circles on the map mark those singletons.</p>
+    <p class="small">Good–Turing logic: unseen works are likeliest where many works were seen exactly once. The magenta rings on the map mark those singletons.</p>
     <details class="method"><summary>Method and caveats</summary>
       <p>Encounters (${fmt(c.n)} here): ${fmt(bySrc.read)} books read, ${fmt(bySrc.shelf)} shelf-walk sightings (four neighbours either side of each book read), ${fmt(bySrc.xref)} subject cross-references (top three works per specific heading) and ${fmt(bySrc.search)} search results (top 30 by reading logs for each of the explorer's searches). For the example reader these are derived from its synthetic history, not observed.</p>
       <p>Estimator: <code>Ŝ = S_obs + ((n−1)/n)·f₁(f₁−1)/(2(f₂+1))</code>, with Chao's log-normal interval. Extrapolated curve: <code>S(n+m) = S_obs + f̂₀[1 − (1 − f₁/(n f̂₀ + f₁))^m]</code> (Chao et al. 2014). Stopping rule: the estimated chance the next encounter is new, <code>(f₁/n)·(n−1)f₁/((n−1)f₁+2f₂)</code> (Chao &amp; Jost 2012).</p>
