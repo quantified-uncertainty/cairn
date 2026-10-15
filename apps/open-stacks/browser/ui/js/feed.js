@@ -15,7 +15,7 @@ import { profileOf, loadProfile, snapStart, spreadAt, cropOf, pageAspect, itemAs
 const profileSoon = (it) => {
   const P = profileOf(it);
   if (P !== undefined || !(it.kind === 'pdf' || it.kind === 'scan')) return P ?? null;
-  return Promise.race([loadProfile(it), new Promise((r) => setTimeout(r, 150))]).then(() => profileOf(it) ?? null);
+  return Promise.race([loadProfile(it), new Promise((r) => setTimeout(r, 60))]).then(() => profileOf(it) ?? null);
 };
 
 export async function showFeed() {

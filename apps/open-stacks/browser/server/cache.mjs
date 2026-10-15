@@ -296,7 +296,10 @@ export function progressOf(u) {
 // w200): the cached image stands in, hard-linked, with no request (ia.larger).
 function alias(u) {
   if (inflight.has(u)) return false;
-  const big = ia.larger(u, cached);
+  // Only an image fetched at that size stands in, never another stand-in (a w400
+  // that is really a w1000 must not answer for a w200).
+  const own = (v) => { try { return cached(v) && !JSON.parse(readFileSync(paths(v).meta, 'utf-8')).alias; } catch { return false; } };
+  const big = ia.larger(u, own);
   if (!big) return false;
   try {
     const from = paths(big), k = key(u), to = pathsK(k);

@@ -52,13 +52,11 @@ function paint(card, el, root) {
   } catch (e) { console.warn('peek render', e); }
 }
 function open(root, card, el) {
-  window.__pkT = [performance.now()];
   clearTimeout(closeT); clearTimeout(swapT); clearTimeout(restT);
   const was = P.open;
   if (was && P.card === card) return;
   if (was) { endTiming(); }
   place(el);
-  window.__pkT.push(performance.now());
   P.open = true; P.t0 = performance.now();
   panel.hidden = false;
   paint(card, el, root);
@@ -69,7 +67,6 @@ function open(root, card, el) {
     document.addEventListener('pointerdown', onDown, true);
   }
   roots.get(root)?.onOpen?.(card, el);
-  window.__pkT.push(performance.now());
 }
 function endTiming() {
   const o = P.o, card = P.card;
@@ -149,7 +146,7 @@ export function attachPeek(root, { selector, cardOf, render, delay = 200, grace 
     if (el !== restEl || Math.abs(e.clientX - ax) > 6 || Math.abs(e.clientY - ay) > 6) {
       restEl = el; ax = e.clientX; ay = e.clientY;
       clearTimeout(restT);
-      window.__restSet = performance.now(); restT = setTimeout(() => { window.__restFire = performance.now(); if (restEl === el && el.isConnected) { const c = cardOf(el); if (c) open(root, c, el); } }, delay);
+      restT = setTimeout(() => { if (restEl === el && el.isConnected) { const c = cardOf(el); if (c) open(root, c, el); } }, delay);
     }
   };
   const leave = () => { clearTimeout(restT); restEl = null; if (P.open && P.root === root) scheduleClose(); };

@@ -304,7 +304,10 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
     }
     if (cut.length !== runs.length) { runs = cut; hz = runs.filter((s) => !s.rot); }
   }
-  const colOf = (x0, x1) => (!two ? [bx0, bx1] : x1 <= gm + body ? [bx0, gL] : x0 >= gm - body ? [gR, bx1] : [bx0, bx1]);
+  // The column a box is in (-1 left, 1 right, 0 both); one that only reaches a
+  // little way past the gutter (a figure and caption a bit wider than their column) keeps to its side.
+  const sideOfX = (x0, x1) => (!two ? 0 : x1 <= gm + body ? -1 : x0 >= gm - body ? 1 : x0 < gL - body && x1 < gR + 0.3 * (bx1 - gR) ? -1 : x1 > gR + body && x0 > gL - 0.3 * (gL - bx0) ? 1 : 0);
+  const colOf = (x0, x1) => { const sd = sideOfX(x0, x1); return sd < 0 ? [bx0, Math.max(gL, x1)] : sd > 0 ? [Math.min(gR, x0), bx1] : [bx0, bx1]; };
 
   // 2. Prose: long body-size lines, and the short last lines of their paragraphs.
   for (const s of hz) { const [c0, c1] = colOf(s.x0, s.x1); s.prose = fsOk(s) && s.n >= 15 && textLike(s) && s.x1 - s.x0 >= 0.62 * (c1 - c0); }
@@ -348,7 +351,8 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
     s.cap = blk;
     let last = s;
     // A caption stays in its column on a two-column page (unless its label starts across both).
-    const inCol0 = !two ? () => true : s.x1 <= gm + body ? (o) => o.x1 <= gm + body : s.x0 >= gm - body ? (o) => o.x0 >= gm - body : () => true;
+    const sd = sideOfX(s.x0, s.x1);
+    const inCol0 = sd < 0 ? (o) => o.x1 <= Math.max(gm + body, s.x1 + body) : sd > 0 ? (o) => o.x0 >= Math.min(gm - body, s.x0 - body) : () => true;
     const inCol = (o) => inCol0(o) && o.x0 >= limL && o.x1 <= limR;
     // The rest of the label's line first (a bold label is often a run of its own).
     for (const o of byY.filter((o) => !o.cap && !o.margin && inCol(o) && Math.abs(o.base - s.base) < 0.5 * body && o.x0 >= s.x0).sort((a, b) => a.x0 - b.x0)) {
@@ -367,7 +371,7 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
       for (const o of byY) {
         // A line that starts "Figure 7." continues a caption whose line breaks mid-sentence ("… are shown in").
         if (o.cap || o.margin || !inCol(o) || (CAP.test(o.str) && /[.!?:]["”)]?\s*$/.test(last.str)) || ((bare || scan) && o.prose)) continue;
-        const sameLine = Math.abs(o.base - last.base) < 0.5 * body && o.x0 >= blk.x0 - body && o.x0 - blk.x1 < 3 * body && o.y0 >= blk.y0 - body && !CAP.test(o.str);
+        const sameLine = Math.abs(o.base - last.base) < 0.5 * body && o.x0 >= blk.x0 - body && o.x0 - blk.x1 < 3 * body && o.y0 >= blk.y0 - body && !CAP.test(o.str) && Math.abs(o.fs - s.fs) < 0.3 * s.fs;
         const d = o.y0 - last.y1;
         const next = d > -0.5 * s.fs && d < (gap == null ? 0.75 * s.fs : Math.min(0.75 * s.fs, Math.max(0.3 * s.fs, gap + 0.4 * s.fs))) && ovX(o, blk) > 0 && Math.abs(o.fs - s.fs) < 0.2 * s.fs && (centred || o.x0 >= blk.x0 - body) && !cell(o);
         if (sameLine || next) { o.cap = blk; blk.runs.push(o); grow(blk, o); if (o.y0 > last.y0) { if (next && !sameLine) gap = Math.max(gap ?? -Infinity, d); last = o; } more = true; if (blk.runs.length >= 24) break; }
@@ -519,7 +523,8 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
       }
       if (!parts && two && R.x0 < gL - 2 * body && R.x1 > gR + 2 * body) {
         const nearC = caps.filter((C) => C.y0 < R.y1 + 0.12 * H && C.y1 > R.y0 - 0.12 * H);
-        if (!nearC.some((C) => C.x0 < gm - body && C.x1 > gm + body) && nearC.some((C) => C.x1 <= gm + body) && nearC.some((C) => C.x0 >= gm - body)) parts = splitAt(R, gL - 6 * body, gR + 6 * body, gm);
+        const sides = new Set(nearC.map((C) => sideOfX(C.x0, C.x1)));
+        if (!sides.has(0) && sides.has(-1) && sides.has(1)) parts = splitAt(R, gL - 6 * body, gR + 6 * body, gm);
       }
       if (!parts) continue;
       R.dead = true; rs.push(...parts); again = true;
@@ -537,10 +542,11 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
       changed = false;
       // Labels from the region's own column only (unless it spans both); a region
       // cut apart above keeps to its side of the cut.
-      const side = !two ? 0 : R.x1 <= gm + body ? -1 : R.x0 >= gm - body ? 1 : 0;
+      const sd = R.xlim ? 0 : sideOfX(R.x0, R.x1);
+      const okSide = (b) => sd === 0 || (sd < 0 ? b.x1 <= Math.max(gm + body, R.x1 + body) : b.x0 >= Math.min(gm - body, R.x0 - body));
       const inLim = (A, b) => !A.xlim || (b.x0 >= A.xlim[0] - 0.3 * body && b.x1 <= A.xlim[1] + 0.3 * body);
-      for (const s of lab2) if (!s.used && near(s, R, 1.6 * body, 1.25 * body) && inLim(R, s) && (R.xlim || side === 0 || (side < 0 ? s.x1 <= gm + body : s.x0 >= gm - body))) { grow(R, s); s.used = R; changed = true; }
-      for (const Q of rs) if (Q !== R && !Q.dead && near(Q, R, 0.4 * body, 0.4 * body) && inLim(R, Q) && inLim(Q, R)) { grow(R, Q); R.gc += Q.gc; R.img ||= Q.img; R.xlim ||= Q.xlim; Q.dead = true; changed = true; }
+      for (const s of lab2) if (!s.used && near(s, R, 1.6 * body, 1.25 * body) && inLim(R, s) && okSide(s)) { grow(R, s); s.used = R; changed = true; }
+      for (const Q of rs) if (Q !== R && !Q.dead && near(Q, R, 0.4 * body, 0.4 * body) && inLim(R, Q) && inLim(Q, R) && okSide(Q)) { grow(R, Q); R.gc += Q.gc; R.img ||= Q.img; R.xlim ||= Q.xlim; Q.dead = true; changed = true; }
     }
   }
   rs = rs.filter((R) => !R.dead);

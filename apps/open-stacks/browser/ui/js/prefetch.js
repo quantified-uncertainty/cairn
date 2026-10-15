@@ -123,23 +123,37 @@ export function planAround(i, s) {
   loadProfiles(state.order.slice(state.pos + 1, state.pos + 11).map((ii) => items[ii]).filter((x) => x && !isFlow(x)))
     .then((got) => { if (got && state.pos === pos0 && state.order[state.pos] === i) planAround(i, state.start.get(i) ?? s); }, () => {});
   // The server works further ahead, into its disk cache, in priority bands:
-  // sharp pages near you, then the next items' first spreads, then legible
-  // mid-res pages a little further out, then thumbnails for the page strip.
-  const near = [], mid = [], thumbs = [], nextItems = [];
+  // sharp pages near you, then the next few items' first spreads, then sharp
+  // pages further out, then the later items, then small pages around you.
+  // An Internet Archive page costs ~0.6 s of the datanode's time whatever its
+  // size (measured), so each page comes in two sizes only: w1000 to read and
+  // w200 for the strip, track and riffle. The server answers the strip's w120
+  // and the feed's w400 placeholder from those (cache.mjs alias()), so w400 and
+  // w120 are not fetched here. Pages go in the order you will reach them.
+  const near = [], mid = [], thumbs = [], nextItems = [], laterItems = [];
   if (it.kind === 'scan') {
-    const lo = Math.max(0, s - 2 * per), hi = Math.min(it.n, s + per * (6 + 4 * v));
-    for (let k = lo; k < hi; k++) near.push(scanUrl(it, k, 1000));
-    for (const b of (it.best || []).slice(0, 4)) for (let j = 0; j < per; j++) near.push(scanUrl(it, b + j, 1000));
-    for (let k = Math.max(0, s - 10); k < Math.min(it.n, s + 40); k++) mid.push(scanUrl(it, k, 400));
-    for (let k = Math.max(0, s - 20); k < Math.min(it.n, s + 60); k++) thumbs.push(scanUrl(it, k, 120));
+    // From the spread on screen in the direction you are paging, then back the other way.
+    const run = (to, w, ahead, back) => {
+      const a = dir > 0 ? s : s + per - 1, b = dir > 0 ? s - 1 : s + per;
+      for (let j = 0; j < ahead; j++) { const k = a + dir * j; if (k >= 0 && k < it.n) to.push(scanUrl(it, k, w)); }
+      for (let j = 0; j < back; j++) { const k = b - dir * j; if (k >= 0 && k < it.n) to.push(scanUrl(it, k, w)); }
+    };
+    const ahead = per * (6 + 4 * v);
+    run(near, 1000, ahead, 2 * per);
+    for (const b of (it.best || []).slice(0, 4)) for (let j = 0; j < per; j++) if (b + j < it.n) near.push(scanUrl(it, b + j, 1000));
+    const have = new Set(near);
+    const far = []; run(far, 1000, Math.max(40, ahead), 10);
+    for (const u of far) if (!have.has(u)) mid.push(u);
+    run(thumbs, 200, 60, 20);
   }
-  for (const ii of state.order.slice(state.pos + 1, state.pos + 25)) {
-    const x = items[ii];
-    if (x.kind === 'scan') { const s0 = startOf(ii) ?? 0; for (let j = 0; j < state.per; j++) nextItems.push(scanUrl(x, s0 + j, 1000)); } else nextItems.push(x.url);
-  }
+  state.order.slice(state.pos + 1, state.pos + 25).forEach((ii, d) => {
+    const x = items[ii], to = d < 4 ? nextItems : laterItems;
+    if (x.kind === 'scan') { const s0 = startOf(ii) ?? 0; for (let j = 0; j < state.per; j++) to.push(scanUrl(x, s0 + j, 1000)); } else to.push(x.url);
+  });
   serverPrefetch(near, 60, 'near');
   serverPrefetch(nextItems, 55, 'next-items');
   serverPrefetch(mid, 40, 'mid');
+  serverPrefetch(laterItems, 35, 'later-items');
   serverPrefetch(thumbs, 30, 'thumbs');
 }
 

@@ -35,9 +35,10 @@ registerTextSource(async ({ i, it }) => {
     const vpEl = n.parentElement.closest('[data-vp]');
     const page = vpEl ? Number(vpEl.dataset.vp) : 0;
     for (const m of n.data.matchAll(/\S+/g)) {
-      const range = document.createRange();
-      range.setStart(n, m.index); range.setEnd(n, m.index + m[0].length);
-      words.push({ text: m[0], page, range, block: vpEl });
+      const a = m.index, b = m.index + m[0].length;
+      // The Range is made when first asked for: every live Range is updated on
+      // every DOM change in the page, so thousands of them make the app slow.
+      words.push({ text: m[0], page, block: vpEl, node: n, a, b, get range() { const r = document.createRange(); r.setStart(n, a); r.setEnd(n, b); Object.defineProperty(this, 'range', { value: r }); return r; } });
     }
   }
   const s = state.start.get(i) ?? 0;

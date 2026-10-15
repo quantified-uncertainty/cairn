@@ -330,8 +330,9 @@ const K = (keys, fn, help, order) => registerKey(keys, fn, { help, order });
 K([' ', 'PageDown', 'F16'], (e) => (e.key === ' ' && e.shiftKey ? back(e) : advance(e)), ['Space PgDn', 'next page; after the last page, the next item'], 8);
 K(['Backspace', 'PageUp', 'F17'], back, ['⌫ ⇧Space PgUp', 'go back: undo the last move, save or skip, to the exact place'], 9);
 K('F18', () => go(state.pos + 1), ['F16 F17 F18', 'next page / go back / next item (pedals, mouse buttons, a keyboard layer)'], 9);
-K(['j', 'ArrowDown'], () => go(state.pos + 1), ['j k', 'next / previous item (↓ ↑)'], 10);
-K(['k', 'ArrowUp'], () => go(state.pos - 1));
+// At either end of the stack, say so (and which stack: a folder or tag you stay in).
+K(['j', 'ArrowDown'], () => go(state.pos + 1) || (state.view === 'feed' && state.pos >= state.order.length - 1 && laneEnd()), ['j k', 'next / previous item (↓ ↑)'], 10);
+K(['k', 'ArrowUp'], () => go(state.pos - 1) || (state.view === 'feed' && state.pos <= 0 && laneStart()));
 // → and ← turn pages. At the end of an item, → once only says what is next;
 // a second → within 1.5 s moves on. At the start, ← twice goes back to the
 // previous item, where you left it. So stepping across items is deliberate,

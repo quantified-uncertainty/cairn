@@ -94,8 +94,8 @@ function cutSentences(words, from, to) {
   for (let j = from; j < to; j++) {
     const w = words[j]; const say = w.say ?? spokenOf(w.text);
     if (say) cur.push({ say, j, glue: !!w.glue });
-    const next = j + 1 < to ? words[j + 1] : null;
-    if (!next) close(false);
+    const next = words[j + 1];
+    if (!next || j + 1 >= to) close(!!next && next.para !== w.para); // the end of the words, or of this chunk of them
     else if (next.para !== w.para) close(true);
     else if (say && !w.glue && ENDS.test(say) && !ABBR.test(say) && !INITIAL.test(say)) close(false);
   }
@@ -520,7 +520,7 @@ function session(i, it, eng) {
   return {
     id: ++sessions, i, it, eng, kind: isFlow(it) ? 'flow' : it.kind === 'pdf' ? 'pdf' : 'scan',
     words: [], sents: [], cum: null, spans: new Map(), first: 0, next: 0, n: it.n || 1, paraNext: 0,
-    passages: [], index: 0, tok: 0, cur: 0, at: 0, c: 0,
+    passages: [], built: 0, index: 0, tok: 0, cur: 0, at: 0, c: 0,
     playing: true, loading: true, notice: '', gen: 0, approx: false, q: Promise.resolve(),
   };
 }
@@ -530,36 +530,41 @@ function queue(r, fn) { const p = r.q.then(() => (R === r ? fn() : false)); r.q 
 // --- flow documents: the words in the live columns ---
 const SKIP = 'pre, script, style, .flow-title .m, sup, .ts-gap';
 const PARA = 'p,li,h1,h2,h3,h4,h5,h6,blockquote,td,th,dt,dd,figcaption,caption,pre,div,section,article,header,tr';
-/** Every word of a flow layout as { text, page, para, range, glue? } (the words text.js gives, in order). */
+/** Every word of a flow layout as { text, page, para, node, a, b, glue? }: the
+ *  words text.js gives, in order, as a text node and offsets. No Range is kept
+ *  per word: every live Range is updated on every DOM change in the page, and
+ *  tens of thousands of them made each change of the player cost ~100 ms. */
 function collectFlow(L) {
   const words = [], paras = new Map();
-  const walker = document.createTreeWalker(L.flow, NodeFilter.SHOW_TEXT, {
-    acceptNode: (n) => (n.parentElement.closest(SKIP) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
-  });
+  const walker = document.createTreeWalker(L.flow, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+  let open = false; // the last word ran to the end of its text node with nothing after it yet
   for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-    const pe = n.parentElement, vp = pe.closest('[data-vp]'), blk = pe.closest(PARA);
+    if (n.nodeType === 1) { if (/^(BR|IMG|SVG|HR)$/i.test(n.tagName)) open = false; continue; }
+    const pe = n.parentElement;
+    if (pe.closest(SKIP)) { open = false; continue; }
+    const vp = pe.closest('[data-vp]'), blk = pe.closest(PARA);
     let para = paras.get(blk); if (para == null) paras.set(blk, (para = paras.size));
     const page = vp ? Number(vp.dataset.vp) : 0;
+    let first = true;
     for (const m of n.data.matchAll(/\S+/g)) {
-      const range = document.createRange();
-      range.setStart(n, m.index); range.setEnd(n, m.index + m[0].length);
-      words.push({ text: m[0], page, para, range });
+      // "<em>word</em>s": a word that runs on into the next text node with no space is said as one
+      if (first && open && m.index === 0 && words[words.length - 1].para === para) words[words.length - 1].glue = true;
+      first = false;
+      words.push({ text: m[0], page, para, node: n, a: m.index, b: m.index + m[0].length });
     }
-  }
-  for (let j = 0; j + 1 < words.length; j++) { // "<em>word</em>s": no space between
-    const a = words[j].range, b = words[j + 1].range;
-    if (a.endContainer === b.startContainer || a.endOffset !== a.endContainer.length || b.startOffset !== 0 || words[j].para !== words[j + 1].para) continue;
-    const gap = document.createRange();
-    gap.setStart(a.endContainer, a.endOffset); gap.setEnd(b.startContainer, 0);
-    words[j].glue = !/\s/.test(gap.toString()) && !gap.cloneContents().querySelector('br,img,svg');
+    if (/\S/.test(n.data)) open = !/\s$/.test(n.data);
+    else open = false;
   }
   return words;
 }
+/** A fresh Range over a flow word (from..to: a run of words). */
+function rangeOf(w, to = w) { const r = document.createRange(); r.setStart(w.node, w.a); r.setEnd(to.node, to.b); return r; }
 const flowOn = (r) => r?.kind === 'flow' && live?.id === r.it.id;
 /** The column a flow word is in (from its first line box), or null when it is not drawn. */
 function colOf(w, L = live) {
-  const rr = w?.range?.getClientRects()[0];
-  if (!rr || (!rr.width && !rr.height) || !L) return null;
+  if (!w?.node || !L) return null;
+  const rr = rangeOf(w).getClientRects()[0];
+  if (!rr || (!rr.width && !rr.height)) return null;
   const fr = L.flow.getBoundingClientRect();
   return Math.max(0, Math.floor((rr.left - fr.left + L.g.gap / 2) / L.g.pitch));
 }
@@ -579,7 +584,7 @@ function firstFrom(words, s, L = live) {
 function rebind(r, L) {
   const ws = collectFlow(L);
   if (ws.length !== r.words.length) { exitMode(false); toast('Reading stopped', { icon: 'circle-alert', kind: 'bad', sub: 'The text changed under it' }); return false; }
-  ws.forEach((w, j) => { r.words[j].range = w.range; });
+  ws.forEach((w, j) => { r.words[j].node = w.node; });
   drawGen++;
   return true;
 }
@@ -587,7 +592,7 @@ function rebind(r, L) {
 function applyAnchor(L) {
   const a = anchor; anchor = null;
   const r = R && R.it.id === a.id && R.kind === 'flow' ? R : null;
-  if (r && r.words[0] && !L.flow.contains(r.words[0].range.startContainer) && !rebind(r, L)) return;
+  if (r && r.words[0] && !L.flow.contains(r.words[0].node) && !rebind(r, L)) return;
   const words = r ? r.words : collectFlow(L);
   const c = colOf(words[a.j], L); if (c == null) return;
   const i = current();
@@ -723,7 +728,6 @@ function append(r, k, ws) {
   r.spans.set(k, [a, r.words.length]);
   r.next = k + 1;
   r.sents = sentencesOf(r.words);
-  if (ws.length) r.passages.push(...buildPassages(r.words, a, r.words.length, sizesOf(r.eng), r.passages.length));
 }
 /** Add page k's words before the loaded ones; every index moves up. */
 function prepend(r, k, ws) {
@@ -736,7 +740,7 @@ function prepend(r, k, ws) {
   r.words = ws.concat(r.words);
   for (const [kk, [a, b]] of r.spans) r.spans.set(kk, [a + m, b + m]);
   r.spans.set(k, [0, m]); r.first = k;
-  r.cur += m; r.gen++;
+  r.cur += m; r.built += m; r.gen++;
   for (const p of r.passages) { for (const t of p.toks) t.j += m; for (const s of p.sents) { s[0] += m; s[1] += m; } }
   r.sents = sentencesOf(r.words);
 }
@@ -759,7 +763,7 @@ const earlier = (r) => queue(r, async () => {
 /** Read from page k afresh: its words (blank pages passed over, up to 12). */
 const loadFrom = (r, k) => queue(r, async () => {
   r.gen++; const gen = r.gen;
-  Object.assign(r, { words: [], sents: [], spans: new Map(), passages: [], first: k, next: k, index: 0, tok: 0, cur: 0 });
+  Object.assign(r, { words: [], sents: [], spans: new Map(), passages: [], built: 0, first: k, next: k, index: 0, tok: 0, cur: 0 });
   for (let tries = 0; r.next < r.n && tries < 12; tries++) {
     const kk = r.next;
     const ws = await pageWords(r, kk);
@@ -769,7 +773,20 @@ const loadFrom = (r, k) => queue(r, async () => {
   }
   return r.words.length > 0;
 });
+/** Cut the next stretch of words (about CHUNK, to a sentence end) into passages. */
+const CHUNK = 1500;
+function extend(r) {
+  if (r.built >= r.words.length) return false;
+  const want = Math.min(r.words.length - 1, r.built + CHUNK);
+  let si = sentIdx(r, want); if (r.sents[si] && r.sents[si][1] < want) si++;
+  const s = r.sents[si];
+  const to = Math.max(r.built + 1, s ? Math.min(r.words.length, s[1] + 1) : r.words.length);
+  r.passages.push(...buildPassages(r.words, r.built, to, sizesOf(r.eng), r.passages.length));
+  r.built = to;
+  return true;
+}
 function ensureAhead(r) {
+  while (r.passages.length - r.index <= 4 && extend(r)) { /* cut more */ }
   if (r.kind === 'flow' || r.next >= r.n || r.ahead) return;
   if (r.passages.length - r.index > 4 && r.words.length - r.cur > 250) return;
   r.ahead = true;
@@ -880,7 +897,7 @@ function moveTo(j, { speak: how = 'now', play = false } = {}) {
   const r = R; if (!r || !r.words.length) return;
   j = Math.max(0, Math.min(r.words.length - 1, j));
   stopSpeech(); dropFetches();
-  r.passages = buildPassages(r.words, j, r.words.length, sizesOf(r.eng));
+  r.passages = []; r.built = j; extend(r);
   r.index = 0; r.tok = 0; r.at = 0; r.c = 0; r.loading = false;
   r.cur = r.passages[0]?.toks[0]?.j ?? j;
   if (play) r.playing = true;
@@ -1022,7 +1039,9 @@ function halt(msg) { pause(); if (R) { R.notice = msg; paintBar(); } }
 async function advance() {
   const r = R; if (!r) return;
   const mine = run;
-  for (let n = 0; r.index + 1 >= r.passages.length && r.next < r.n && r.kind !== 'flow' && n < 12; n++) { // the next page (blank ones passed over)
+  for (let n = 0; r.index + 1 >= r.passages.length && n < 24; n++) { // cut more, then the next page (blank ones passed over)
+    if (extend(r)) continue;
+    if (r.kind === 'flow' || r.next >= r.n) break;
     r.loading = true; paintBar();
     await more(r);
     if (R !== r || mine !== run) return;
@@ -1235,16 +1254,16 @@ function elsOf(w) {
   }
   return out;
 }
-const drawn = (r, w) => (w.range ? flowOn(r) && live.flow.contains(w.range.startContainer) : elsOf(w).length > 0);
-/** A word's range without its quotes and punctuation. */
+const drawn = (r, w) => (w.node ? flowOn(r) && live.flow.contains(w.node) : elsOf(w).length > 0);
+/** A flow word's range without its quotes and punctuation. */
 function trimmed(w) {
   const lead = w.text.match(/^[^\p{L}\p{N}]*/u)[0].length, tail = w.text.match(/[^\p{L}\p{N}]*$/u)[0].length;
-  if (lead + tail >= w.text.length || w.range.startContainer !== w.range.endContainer) return { range: w.range };
+  if (lead + tail >= w.text.length) return { range: rangeOf(w) };
   const r = document.createRange();
-  r.setStart(w.range.startContainer, w.range.startOffset + lead); r.setEnd(w.range.endContainer, w.range.endOffset - tail);
+  r.setStart(w.node, w.a + lead); r.setEnd(w.node, w.b - tail);
   return { range: r };
 }
-const marksOf = (w) => (w.range ? [trimmed(w)] : elsOf(w).map((el) => ({ el })));
+const marksOf = (w) => (w.node ? [trimmed(w)] : elsOf(w).map((el) => ({ el })));
 function prioritise() {
   if (!globalThis.CSS?.highlights) return;
   [['tts-hover', 0], ['tts-sentence', 1], ['tts-word', 2]].forEach(([n, p]) => { const x = CSS.highlights.get(n); if (x) x.priority = p; });
@@ -1265,7 +1284,7 @@ function paint() {
     if (r.kind === 'flow') {
       const fa = r.words[a], fb = r.words[b];
       if (fa && fb && drawn(r, fa) && drawn(r, fb)) {
-        try { const s = document.createRange(); s.setStart(fa.range.startContainer, fa.range.startOffset); s.setEnd(fb.range.endContainer, fb.range.endOffset); marks = [{ range: s }]; } catch { /* torn DOM */ }
+        try { marks = [{ range: rangeOf(fa, fb) }]; } catch { /* torn DOM */ }
       }
     } else for (let x = a; x <= b && x - a < 160; x++) for (const el of elsOf(r.words[x])) marks.push({ el });
     highlight('tts-sentence', marks);
@@ -1280,7 +1299,7 @@ on('textlayer:ready', ({ it }) => { drawGen++; if (R && it?.id === R.it.id) pain
 /** Whether a word is on screen now. */
 function onScreen(r, w) {
   if (r.kind === 'flow') {
-    if (!flowOn(r) || !live.flow.contains(w.range.startContainer)) return false;
+    if (!flowOn(r) || !live.flow.contains(w.node)) return false;
     const c = colOf(w), s = state.start.get(r.i) ?? 0;
     return c != null && c >= s && c < s + live.g.cols;
   }
@@ -1305,7 +1324,7 @@ function follow(r, w) {
   if (Date.now() < holdUntil || performance.now() < settling || anchor) return;
   if (document.querySelector('#track:hover, #scrub:hover')) return; // the reader is looking through the item
   if (r.kind === 'flow') {
-    if (!flowOn(r) || !live.flow.contains(w.range.startContainer)) return; // relayout pending
+    if (!flowOn(r) || !live.flow.contains(w.node)) return; // relayout pending
     const c = colOf(w); if (c == null) return;
     const s = state.start.get(r.i) ?? 0, n = live.g.cols;
     if (c >= s && c < s + n) return;
@@ -1324,7 +1343,7 @@ on('spread:rendered', ({ it, flow }) => {
   if (anchor && anchor.id === it.id && flow) applyAnchor(flow);
   const r = R;
   if (r && it.id === r.it.id) {
-    if (flow && r.kind === 'flow' && r.words[0] && !flow.flow.contains(r.words[0].range.startContainer) && !rebind(r, flow)) return;
+    if (flow && r.kind === 'flow' && r.words[0] && !flow.flow.contains(r.words[0].node) && !rebind(r, flow)) return;
     paint();
   }
   if (mode && !R && contFor === it.id) { contFor = null; setTimeout(() => { if (mode && !R && items[current()]?.id === it.id) begin({ cont: true }); }, 0); }
@@ -1437,14 +1456,16 @@ function caretAt(x, y) {
   const cr = document.caretRangeFromPoint?.(x, y);
   return cr ? { node: cr.startContainer, off: cr.startOffset } : null;
 }
-/** The flow word at a caret (or the next one after it): binary search by comparePoint. */
+/** The flow word at a caret (or the next one after it): binary search against the caret point. */
 function wordAtCaret(words, node, off) {
+  const at = document.createRange();
+  try { at.setStart(node, off); } catch { return -1; }
   let lo = 0, hi = words.length - 1, ans = -1;
   while (lo <= hi) {
-    const m = (lo + hi) >> 1; let c;
-    try { c = words[m].range.comparePoint(node, off); } catch { return -1; }
-    if (c === 0) return m;
-    if (c < 0) { ans = m; hi = m - 1; } else lo = m + 1;
+    const m = (lo + hi) >> 1, w = words[m]; let s, e;
+    try { s = at.comparePoint(w.node, w.a); e = at.comparePoint(w.node, w.b); } catch { return -1; }
+    if (s <= 0 && e >= 0) return m;   // the word starts at or before the caret and ends at or after it
+    if (s > 0) { ans = m; hi = m - 1; } else lo = m + 1;
   }
   return ans;
 }
@@ -1455,7 +1476,7 @@ function flowWordAt(words, x, y) {
   if (!c || !live?.flow.contains(c.node)) return -1;
   const j = wordAtCaret(words, c.node, c.off); if (j < 0) return -1;
   let best = -1, bd = Infinity;
-  for (const q of [j - 1, j]) { if (!words[q]) continue; const d = distTo(words[q].range.getClientRects(), x, y); if (d < bd) { bd = d; best = q; } }
+  for (const q of [j - 1, j]) { if (!words[q]) continue; const d = distTo(rangeOf(words[q]).getClientRects(), x, y); if (d < bd) { bd = d; best = q; } }
   return bd <= 14 ? best : -1;
 }
 /** The text-layer word under (or nearest, within 20 px of) a point on a raster page. */

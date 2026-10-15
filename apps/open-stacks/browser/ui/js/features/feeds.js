@@ -430,6 +430,7 @@ const bodyEl = h('div', { className: 'fd-body' });
 root.append(head, bodyEl);
 $('#main').append(root);
 
+const placeMs = []; // [cards, ms] per placed batch (window.__feeds.placeMs)
 const recOf = new WeakMap(); // card element -> record
 const cardRec = new WeakMap(); // card object -> its latest record
 const kin = new Map(); // item id -> Set of card elements on screen
@@ -464,7 +465,7 @@ function makeFeeder(S) {
       S.q.splice(k, 1);
       if (r.ready) batch.push(r);
     }
-    if (batch.length) S.place(batch);
+    if (batch.length) { const t0 = performance.now(); S.place(batch); placeMs.push([batch.length, Math.round(performance.now() - t0)]); if (placeMs.length > 200) placeMs.shift(); }
     if (S.q.some((r) => r.ready !== undefined) || (S.q.length && S.q[0].ready === undefined)) setTimeout(S.kick, S.q.some((r) => r.ready !== undefined) ? 0 : 120);
     S.status();
   };
@@ -495,8 +496,12 @@ function makeBoard(type, lane) {
   };
   B.place = (batch) => {
     if (!B.n) { B.geom(); B.colH = Array(B.n || 1).fill(0); B.n ||= 1; }
+    const T = [performance.now()]; void B.el.offsetHeight; T.push(performance.now());
     for (const r of batch) { r.el = renderCard(r.card, B.L, B.colW, r.ready); recOf.set(r.el, r); B.meas.append(r.el); }
+    T.push(performance.now());
     for (const r of batch) measureRead(r);
+    T.push(performance.now());
+    (window.__T ||= []).push(T.slice(1).map((t, k) => Math.round(t - T[k])));
     for (const r of batch) {
       measureWrite(r);
       let c = 0;
@@ -1169,7 +1174,7 @@ keyHelp.push(
 
 // ---------------------------------------------------------------- dev hooks
 window.__feeds = {
-  cfg, lists, V, openCard, getFeed,
+  cfg, lists, V, openCard, getFeed, placeMs,
   /** Run the ink test over every plate candidate in a lane, in idle time. */
   async verifyAll(lane = state.lane) {
     let off = 0, done = false, tested = 0, passed = 0; const out = [];

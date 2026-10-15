@@ -35,17 +35,15 @@ try {
   for (const [id, e] of Object.entries(saved)) if (e?.dir && e.nodes?.length && Date.now() - e.at < MAX_AGE) items.set(id, { dir: e.dir, nodes: e.nodes.slice(0, 3), at: e.at, n: 0, rr: 0 });
 } catch { /* first run */ }
 let saveT = null;
-function save() {
-  if (saveT) return;
-  saveT = setTimeout(() => {
-    saveT = null;
-    try {
-      writeFileSync(FILE + '.tmp', JSON.stringify(Object.fromEntries([...items].map(([id, e]) => [id, { dir: e.dir, nodes: e.nodes, at: e.at }]))));
-      renameSync(FILE + '.tmp', FILE);
-    } catch { /* read-only disk: keep going in memory */ }
-  }, 2000);
-  saveT.unref?.();
+function saveNow() {
+  clearTimeout(saveT); saveT = null;
+  try {
+    writeFileSync(FILE + '.tmp', JSON.stringify(Object.fromEntries([...items].map(([id, e]) => [id, { dir: e.dir, nodes: e.nodes, at: e.at }]))));
+    renameSync(FILE + '.tmp', FILE);
+  } catch { /* read-only disk: keep going in memory */ }
 }
+function save() { if (!saveT) { saveT = setTimeout(saveNow, 2000); saveT.unref?.(); } }
+process.on('exit', () => { if (saveT) saveNow(); });
 
 /** {id, page} of a canonical page image URL, else null. */
 export const pageOf = (u) => { const m = PAGE.exec(u); return m ? { id: m[1], page: m[2] } : null; };

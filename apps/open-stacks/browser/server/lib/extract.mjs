@@ -41,6 +41,8 @@ export const RE = {
   // extraction-yields.md section 2 ("Results"), with ranges ("5-18x") and a few more comparatives.
   result: /\b(?:improv|reduc|increas|outperform|achiev|boost|decreas|gain|drop|exceed|surpass|match|cut|lower|rais|speed|accelerat|beat|recover|halv|doubl)\w*\b[^.;]{0,90}?(?:\d+(?:\.\d+)?\s?(?:%|×|x\b|-fold|fold\b|points?\b|pp\b|percentage points)|by (?:a factor of|an order of magnitude))|\d+(?:\.\d+)?\s?% of\b|\b\d+(?:\.\d+)?(?:\s?[-–]\s?\d+(?:\.\d+)?)?\s?[×x]\s+(?:faster|slower|more|fewer|larger|bigger|smaller|less|cheaper|higher|lower|longer|shorter|better|worse)\b/i,
   prob: /\b\d+(?:\.\d+)?\s?% (?:chance|probability|likely|confiden)|(?:probability|chance|odds) (?:of|that)[^.]{0,60}\d+\s?%|\bp\s?=\s?0?\.\d+/i,
+  // Posts and wikis also state numbers informally: survey shares, credences, "1 in 3", "10x".
+  postNum: /\b\d+(?:\.\d+)?\s?% (?:sure|confident|certain|likely|chance|probability|of (?:the )?(?:time|people|respondents|cases|users|participants|experts|forecasters|researchers|voters|the public|deaths|questions|predictions|tasks|attempts)|(?:of \w+ )?(?:support|agree|believe|think|say|said|favou?r|oppose|reported|expect))\b|\b\d{1,3} (?:in|out of) \d{1,3}\b(?! (?:days?|weeks?|months?|years?|hours?|minutes?)\b)|\bfrom \d+(?:\.\d+)?\s?% to \d+(?:\.\d+)?\s?%|\b\d[\d,]*(?:\.\d+)?\s?[x×](?=[\s,.;)]|$)/i,
   setup: /\b(?:learning rate|batch size|epochs?|warm-?up|weight decay|dropout|seeds?|hyperparameters?|we (?:use|set) )/i,
   contrib: /\b(?:(?:our|main|key|primary|two|three|four|several|following|this paper.s|this work.s|the) (?:\w+ )?contributions|contributions (?:are|of this|include)|we (?:make|offer) the following|we summari[sz]e our (?:main |key )?(?:findings|results)|in summary, (?:we|our)|this paper makes)/i,
   contribNot: /\b(?:equal|authors?)\W+contribution/i,
@@ -143,7 +145,11 @@ export function sentences(t) {
 // Numbers: the quantity as written, and whether it is a multiple or a big change.
 const QTY = /(?:\d+(?:[.,]\d+)?\s?[-–]\s?)?\d+(?:[.,]\d+)?\s?(?:%|(?:×|x\b)(?!\s?10\b)|-fold|fold\b|percentage points|points?\b|pp\b)/i;
 function numValue(s, m) {
+  if (/^\d{1,3} (?:in|out of) \d{1,3}$/.test(m[0])) return { value: m[0], mult: false, big: false };
   const ft = /\bfrom\s+(\d+(?:\.\d+)?\s?%?)\s+to\s+(\d+(?:\.\d+)?\s?%?)/i.exec(s);
+  if (ft && /\b(?:rang(?:e|es|ing)|between|vary|varies|varying|spanning)\b[^.]{0,30}$/i.test(s.slice(0, ft.index))) {
+    return { value: `${ft[1].trim().replace(/\s?%$/, '')}–${ft[2].trim()}`, big: false, mult: false };
+  }
   if (ft) {
     const a = parseFloat(ft[1]), b = parseFloat(ft[2]);
     return { value: `${ft[1].trim()} → ${ft[2].trim()}`, big: a > 0 && b > 0 && Math.max(a / b, b / a) >= 2, mult: false };
@@ -682,7 +688,7 @@ function fromBlocks(root, { kind, base, page, docLen }) {
     const early = s.b.k < Math.max(15, nb * 0.1);
     let m;
     if ((m = RE.finding.exec(t)) && !RE.findingNot.test(t)) P.add(sentPart('finding', i, { cue: m[0], score: 0.4 + (early ? 0.2 : 0) + (HAS_NUM.test(t) ? 0.2 : 0) + (RE.surprise.test(m[0]) ? 0.1 : 0) }));
-    if (((m = RE.result.exec(t)) || (m = RE.prob.exec(t))) && !RE.setup.test(t)) {
+    if (((m = RE.result.exec(t)) || (m = RE.prob.exec(t)) || (m = RE.postNum.exec(t))) && !RE.setup.test(t)) {
       const v = numValue(t, m);
       P.add(sentPart('number', i, { value: v.value, cue: m[0], score: 0.5 + (early ? 0.2 : 0) + (v.mult ? 0.2 : 0) + (v.big ? 0.1 : 0) }));
     }
@@ -874,7 +880,9 @@ export function fromPost({ htmlBody, page, preview }) {
 
 const ROOTS = [(e) => hasClass(e, 'sl-markdown-content'), (e) => e.tag === 'd-article', (e) => e.tag === 'article', (e) => e.tag === 'main', (e) => e.a.role === 'main',
   (e) => hasClass(e, 'post-content'), (e) => hasClass(e, 'entry-content'), (e) => e.a.id === 'content', (e) => e.tag === 'body'];
-const JUNK = (e) => ['script', 'style', 'noscript', 'nav', 'form', 'button', 'template', 'iframe', 'select'].includes(e.tag) || hasClass(e, 'sr-only') || hasClass(e, 'sl-anchor-link') || hasClass(e, 'pagination-links');
+const COMMENTS = /(?:^|[\s_-])(?:comments?|commentlist|comment-list|comments-area|disqus_thread|disqus|responses|replies|respond)(?:$|[\s_-])/i;
+const JUNK = (e) => ['script', 'style', 'noscript', 'nav', 'form', 'button', 'template', 'iframe', 'select'].includes(e.tag) || hasClass(e, 'sr-only') || hasClass(e, 'sl-anchor-link') || hasClass(e, 'pagination-links')
+  || COMMENTS.test(e.a.id || '') || COMMENTS.test(e.a.class || ''); // reader comments under blog posts
 
 /** A web page: content root, og:image, then the shared block parts. */
 export function fromWeb({ html, url }) {

@@ -21,12 +21,18 @@
 .lib-q::placeholder { color: var(--ink-3); }
 .lib-q::-webkit-search-cancel-button { display: none; } /* Esc clears it */
 .lib-qn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font: 10px var(--mono); color: var(--ink-3); pointer-events: none; }
-.lib-scope { display: flex; align-items: baseline; gap: 6px; min-width: 0; font-size: 11px; }
-.lib-scope[hidden] { display: none; }
-.lib-scope .ls-l { font: 600 9.5px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); flex: none; }
-.lib-scope .ls-t { border: 0; padding: 0; color: var(--accent); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
-.lib-scope .ls-x { border: 0; padding: 0 4px; margin-left: auto; color: var(--ink-3); flex: none; }
-.lib-scope .ls-x:hover, .lib-scope .ls-t:hover { color: var(--ink); }
+/* The stack you are walking ("LLM papers › Scaling  7 / 70  ✕") and the sort switch. */
+.lib-stack { display: flex; align-items: baseline; gap: 8px; min-width: 0; font-size: 11px; }
+.lib-stack .ls-t { border: 0; padding: 0; background: none; color: var(--ink-2); font: 600 10px var(--mono); text-transform: uppercase; letter-spacing: .07em; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; cursor: pointer; }
+.lib-stack.narrow .ls-t { color: var(--accent); }
+.lib-stack .ls-c { font: 10px var(--mono); color: var(--ink-3); flex: none; }
+.lib-stack .ls-n { margin-left: auto; font: 10px var(--mono); color: var(--ink-3); flex: none; }
+.lib-stack .ls-x { border: 0; padding: 0 2px; background: none; color: var(--ink-3); flex: none; font-size: 11px; cursor: pointer; }
+.lib-stack .ls-x:hover, .lib-stack .ls-t:hover { color: var(--ink); }
+.lib-sort { display: flex; gap: 2px; flex-wrap: wrap; }
+.lib-sort button { border: 0; border-radius: 3px; padding: 2px 7px; background: none; font: 10.5px var(--sans); color: var(--ink-3); cursor: pointer; }
+.lib-sort button:hover { color: var(--ink); }
+.lib-sort button.on { background: var(--bg-3); color: var(--ink); }
 
 /* The tree: a virtual list, only the rows in view exist. */
 .lib-list { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; position: relative; outline: none; scrollbar-width: thin; scrollbar-color: var(--line) transparent; padding-bottom: 12px; }
@@ -56,6 +62,9 @@
 .lr-p i { display: block; height: 100%; background: var(--ink-3); }
 .lr-p.done { width: auto; height: auto; background: none; font: 10px var(--sans); color: var(--ok); }
 
-/* While browsing a folder, its name follows the lane in the item header. */
-#item-head .lib-crumb { border: 0; padding: 0; font: 10px var(--mono); text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); max-width: 46ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-#item-head .lib-crumb:hover { color: var(--accent); }
+/* The flat list (For you, Newest, Oldest, or an order made by hand): what is behind you is dimmed. */
+.lib-list.flat .lr { padding-left: 10px; }
+.lr.before { opacity: .5; }
+.lr.before:hover, .lr.before.sel { opacity: .85; }
+.lr-i .lr-dot { width: 6px; height: 6px; }
+.lr-d { font: 10px var(--mono); color: var(--ink-3); flex: none; }

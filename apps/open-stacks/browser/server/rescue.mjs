@@ -100,7 +100,9 @@ class Lim {
   constructor(name, conc, gapFg = 0, gapBg = 0) { Object.assign(this, { name, conc, gapFg, gapBg, active: 0, next: 0, pause: 0, wait: [], timer: null, n: 0 }); }
   acquire(job) { return new Promise((resolve) => { this.wait.push({ job, resolve }); this.grant(); }); }
   release() { this.active--; this.grant(); }
-  hold(ms) { this.pause = Math.max(this.pause, now() + ms); }
+  // Rate limited: pause the host, doubling each time it happens again (up to five minutes).
+  hold(ms) { this.strikes = Math.min((this.strikes || 0) + 1, 8); this.pause = Math.max(this.pause, now() + Math.min(300e3, Math.max(ms, 1000 * 2 ** this.strikes))); }
+  ok() { this.strikes = 0; }
   grant() {
     clearTimeout(this.timer); this.timer = null;
     while (this.wait.length && this.active < this.conc) {
@@ -121,7 +123,7 @@ function limFor(u) {
   let host = '?'; try { host = new URL(u).hostname.replace(/^www\./, ''); } catch { /* bad url */ }
   const wb = u.startsWith(WAYBACK) || u.startsWith(WAYBACK_API) || /(^|\.)archive\.org$/.test(host);
   const name = wb ? 'archive.org' : host.split('.').slice(-2).join('.');
-  if (!lims.has(name)) lims.set(name, wb ? new Lim(name, 2, 250, 1500) : new Lim(name, 6, 0, 150));
+  if (!lims.has(name)) lims.set(name, wb ? new Lim(name, 2, 700, 2500) : new Lim(name, 6, 0, 150));
   return lims.get(name);
 }
 const retryAfter = (v) => { if (!v) return 0; const s = Number(v); if (Number.isFinite(s)) return s * 1000; const t = Date.parse(v); return Number.isFinite(t) ? Math.max(0, t - now()) : 0; };
@@ -141,7 +143,8 @@ export async function grab(u, { max = MAX_IMG, job = { fg: true }, accept = '*/*
       const res = await fetch(cur, { headers: { 'User-Agent': UA, Accept: accept }, redirect: 'manual', signal: AbortSignal.timeout(job.fg ? 30e3 : 90e3) });
       const loc = res.headers.get('location');
       if (res.status >= 300 && res.status < 400 && loc) { await res.body?.cancel().catch(() => {}); cur = new URL(loc, cur).href; continue; }
-      if (res.status === 429 || res.status === 503) L.hold(Math.min(300e3, Math.max(retryAfter(res.headers.get('retry-after')), 5000)));
+      if (res.status === 429 || res.status === 503) L.hold(retryAfter(res.headers.get('retry-after')));
+      else if (res.status < 400) L.ok();
       const type = res.headers.get('content-type') || '';
       const len = Number(res.headers.get('content-length')) || 0;
       if (len > max) { await res.body?.cancel().catch(() => {}); return { status: res.status, type, big: true, final: cur, len }; }
@@ -305,7 +308,7 @@ export function liveMirrors(u, alts = [], { blockedImgur = !!S.blocked.imgur } =
   const wm = /^upload\.wikimedia\.org$/.test(host) && x.pathname.match(/^\/wikipedia\/([^/]+)\/thumb\/([0-9a-f]\/[0-9a-f]{2}\/[^/]+)\/(\d+)px-([^/]+)$/);
   if (wm) {
     add(`https://upload.wikimedia.org/wikipedia/${wm[1]}/${wm[2]}`);
-    for (const w of [500, 960, 330, 250]) add(`https://upload.wikimedia.org/wikipedia/${wm[1]}/thumb/${wm[2]}/${w}px-${wm[4]}`);
+    for (const w of [500, 330]) add(`https://upload.wikimedia.org/wikipedia/${wm[1]}/thumb/${wm[2]}/${w}px-${wm[4]}`);
   }
   const ss = u.match(/^https?:\/\/(?:cdn\.substack\.com|substackcdn\.com)\/image\/fetch\/([^/]+)\/(https?(?:%3A|:)(?:%2F|\/).+)$/i);
   if (ss) { add(`https://substackcdn.com/image/fetch/${ss[1]}/${ss[2]}`); try { add(decodeURIComponent(ss[2])); } catch { /* bad escape */ } }
@@ -333,42 +336,52 @@ const tsDate = (ts) => (ts ? `${ts.slice(0, 4)}-${ts.slice(4, 6)}-${ts.slice(6, 
 /**
  * Snapshots of a URL in the Wayback Machine that returned 200: the earliest
  * and the latest (latest first for documents, earliest first for images,
- * which are likelier to have been replaced by a placeholder later).
+ * which are likelier to have been replaced by a placeholder later). `quick`
+ * asks once (other forms of the same URL). A rate-limited or failed lookup
+ * sets job.incomplete, and is not remembered.
  */
-export async function waybackSnaps(u, { job = { fg: true }, kind = 'img' } = {}) {
-  const mk = u + '|' + kind;
+export async function waybackSnaps(u, { job = { fg: true }, kind = 'img', quick = false } = {}) {
+  const mk = u + '|' + kind + (quick ? '|q' : '');
   const hit = wbMemo.get(mk);
   if (hit && now() - hit.at < 6 * 3600e3) return hit.snaps;
   const snaps = [];
+  let incomplete = false;
   const add = (ts, orig) => { if (ts && /^\d{8,14}$/.test(ts) && !snaps.some((s) => s.ts === ts)) snaps.push({ ts, orig: orig || u }); };
-  const order = kind === 'img' ? ['19960101', ''] : ['', '19960101'];
+  // GET JSON from the archive, waiting out one rate limit (the host pause) before giving up.
+  const ask = async (q) => {
+    for (let a = 0; a < 2; a++) {
+      try {
+        const r = await grab(q, { max: 2e6, job, accept: 'application/json' });
+        if (r.status === 200 && r.buf) return JSON.parse(r.buf.toString('utf-8') || 'null');
+        if (r.status !== 429 && r.status < 500) return null;
+      } catch { /* timeout or reset: once more */ }
+    }
+    incomplete = true;
+    return null;
+  };
+  const order = (kind === 'img' ? ['19960101', ''] : ['', '19960101']).slice(0, quick ? 1 : 2);
   for (const t of order) {
-    try {
-      const r = await grab(`${WAYBACK_API}?url=${encodeURIComponent(u)}${t ? '&timestamp=' + t : ''}`, { max: 1e6, job, accept: 'application/json' });
-      if (r.status !== 200 || !r.buf) continue;
-      const c = JSON.parse(r.buf.toString('utf-8'))?.archived_snapshots?.closest;
-      if (c && c.available !== false && String(c.status) === '200') {
-        const m = String(c.url || '').match(/\/web\/(\d{8,14})[a-z_]*\/(.+)$/);
-        add(c.timestamp || m?.[1], m?.[2]);
-      }
-    } catch { /* try the next */ }
+    const c = (await ask(`${WAYBACK_API}?url=${encodeURIComponent(u)}${t ? '&timestamp=' + t : ''}`))?.archived_snapshots?.closest;
+    if (c && c.available !== false && String(c.status) === '200') {
+      const m = String(c.url || '').match(/\/web\/(\d{8,14})[a-z_]*\/(.+)$/);
+      add(c.timestamp || m?.[1], m?.[2]);
+    }
   }
   // The availability API often answers with nothing, or a capture that was not
   // a 200; the CDX index lists every capture.
-  if (!snaps.length) {
+  if (!snaps.length && !quick) {
     for (const lim of kind === 'img' ? ['3', '-2'] : ['-2', '3']) {
-      try {
-        const q = `${WAYBACK}/cdx/search/cdx?url=${encodeURIComponent(u)}&output=json&fl=timestamp,original,statuscode,mimetype&filter=statuscode:200${kind === 'img' ? '&filter=mimetype:image/.*' : ''}&limit=${lim}${lim.startsWith('-') ? '&fastLatest=true' : ''}`;
-        const r = await grab(q, { max: 2e6, job, accept: 'application/json' });
-        if (r.status !== 200 || !r.buf?.length) continue;
-        const rows = JSON.parse(r.buf.toString('utf-8') || '[]').slice(1);
-        for (const row of lim.startsWith('-') ? rows.reverse() : rows) add(row[0], row[1]);
-      } catch { /* none */ }
-      if (snaps.length >= 2) break;
+      const rows = await ask(`${WAYBACK}/cdx/search/cdx?url=${encodeURIComponent(u)}&output=json&fl=timestamp,original,statuscode,mimetype&filter=statuscode:200${kind === 'img' ? '&filter=mimetype:image/.*' : ''}&limit=${lim}${lim.startsWith('-') ? '&fastLatest=true' : ''}`);
+      const list = Array.isArray(rows) ? rows.slice(1) : [];
+      for (const row of lim.startsWith('-') ? list.reverse() : list) add(row[0], row[1]);
+      if (snaps.length >= 2 || !list.length) break;
     }
   }
-  wbMemo.set(mk, { at: now(), snaps });
-  if (wbMemo.size > 3000) wbMemo.delete(wbMemo.keys().next().value);
+  if (incomplete) job.incomplete = true;
+  else {
+    wbMemo.set(mk, { at: now(), snaps });
+    if (wbMemo.size > 3000) wbMemo.delete(wbMemo.keys().next().value);
+  }
   return snaps;
 }
 const rawSnap = (s) => `${WAYBACK}/web/${s.ts}id_/${s.orig}`;
@@ -451,8 +464,9 @@ async function doResolve(u, job, how, force) {
   const got = await rescueImage(u, job, how, why);
   if (got) return got;
   const r = (S.imgs[u] ||= {});
-  Object.assign(r, { st: 'bad', why, at: now(), next: now() + backoff(r.tries || 0) });
-  r.tries = (r.tries || 0) + 1;
+  // The archive was rate limiting or unreachable: try again within the hour rather than in a day.
+  Object.assign(r, { st: 'bad', why, at: now(), next: now() + (job.incomplete ? 3600e3 : backoff(r.tries || 0)) });
+  if (!job.incomplete) r.tries = (r.tries || 0) + 1;
   const c = ctxs.get(u); if (c) r.ctx = { ...(r.ctx || {}), ...trimCtx(c) };
   bump(); save();
   return { st: 'bad', why };
@@ -483,8 +497,8 @@ export async function rescueImage(u, job = { fg: false }, how = 'scavenger', why
     const got = await tryCopy(u, m, job, { via: viaOf(m) }, how);
     if (got) return got;
   }
-  for (const k of waybackKeys(u)) {
-    const snaps = await waybackSnaps(k, { job, kind: 'img' });
+  for (const [j, k] of waybackKeys(u).entries()) {
+    const snaps = await waybackSnaps(k, { job, kind: 'img', quick: j > 0 });
     for (const s of snaps.slice(0, 3)) {
       const got = await tryCopy(u, rawSnap(s), job, { via: 'Internet Archive', ts: s.ts }, how);
       if (got) return got;

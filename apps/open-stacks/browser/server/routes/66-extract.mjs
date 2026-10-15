@@ -20,6 +20,7 @@ import { join } from 'path';
 import http from 'http';
 import { createHash } from 'crypto';
 import { Worker } from 'worker_threads';
+import { monitorEventLoopDelay } from 'perf_hooks';
 import { HOST } from '../config.mjs';
 import { VER, FEEDS, serveView, cardsFor, avatarOf } from '../lib/extract.mjs';
 
@@ -51,7 +52,15 @@ export default function (app) {
   const DIR = join(CACHE, 'extract');
   mkdirSync(DIR, { recursive: true });
   const FIG_DIR = join(CACHE, 'figures');
+  // /figures (65-figures.mjs) caches each paper's list as {v, at, src, figures}. When the
+  // worker had to run that same extract() itself, the list is saved in that format, so the
+  // Figures view and Peek's figure strip find it without parsing the paper again.
+  let FIG_VER = null;
+  try { FIG_VER = Number((/const VER = (\d+)/.exec(readFileSync(new URL('./65-figures.mjs', import.meta.url), 'utf-8')) || [])[1]) || null; } catch { /* leave the figures cache alone */ }
   const LOOP = `http://${HOST === '0.0.0.0' || HOST === '::' ? '127.0.0.1' : HOST}:${app.PORT}`;
+  // Event-loop delay while this module works, for /status: the main thread must keep serving pages.
+  const lag = monitorEventLoopDelay({ resolution: 10 });
+  lag.enable();
   const stats = { hits: 0, built: 0, failed: 0, served: 0, feedRequests: 0, cpuMs: 0, cpuMax: 0, files: 0 };
   try { stats.files = readdirSync(DIR).filter((f) => f.endsWith('.json') && f !== 'verdicts.json').length; } catch { /* empty */ }
 
@@ -273,6 +282,10 @@ import(${JSON.stringify(LIB)}).then((X) => {
     try { const j = JSON.parse(readFileSync(join(FIG_DIR, safe(aid) + '.json'), 'utf-8')); if (j.src && Array.isArray(j.figures)) figures = j.figures; } catch { /* not built yet */ }
     await idle(job);
     const r = await parseJob({ src: 'latexml', html, url, base: used, aid, figures }, job);
+    if (r.figures && FIG_VER) {
+      const f = join(FIG_DIR, safe(aid) + '.json');
+      if (!existsSync(f)) try { writeFileSync(f + '.tmp', JSON.stringify({ v: FIG_VER, at: Date.now(), src: used, figures: r.figures })); renameSync(f + '.tmp', f); } catch { /* not essential */ }
+    }
     // Inline SVG pictures are served by /figures/svg (65-figures.mjs) from these files.
     if (r.svgs?.length) {
       const d = join(FIG_DIR, 'svg', safe(aid));
@@ -527,7 +540,7 @@ import(${JSON.stringify(LIB)}).then((X) => {
     extract: {
       cached: stats.files, hits: stats.hits, built: stats.built, failed: stats.failed,
       queue: bgQueue.length + bgSem.waiting, fg: [...building.values()].filter((j) => j.fg).length, bg: [...building.values()].filter((j) => !j.fg).length,
-      gateWaits: gate.waits, cpu: { jobs: wQueue.length + (wBusy ? 1 : 0), ms: Math.round(stats.cpuMs), maxMs: Math.round(stats.cpuMax) },
+      gateWaits: gate.waits, loopMs: { p50: Math.round(lag.percentile(50) / 1e6), p99: Math.round(lag.percentile(99) / 1e6), max: Math.round(lag.max / 1e6) }, cpu: { jobs: wQueue.length + (wBusy ? 1 : 0), ms: Math.round(stats.cpuMs), maxMs: Math.round(stats.cpuMax) },
       feeds: Object.fromEntries([...feeds.values()].map((st) => [st.per === FEEDS[st.type].per ? `${st.type}|${st.lane}` : st.key, { cards: st.cards.length, walked: st.pos, done: st.done }])),
     },
   }));
