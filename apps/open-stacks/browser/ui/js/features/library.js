@@ -145,7 +145,25 @@ function remask() {
   for (const ln of T.lanes) mark(ln, false);
   flatten();
 }
+// The list is rebuilt when folders open or close, the current item changes (its position and
+// section rows move with it) or a filter changes. One row keeps its place on screen across a
+// rebuild: the row you just clicked or moved to, else the keyboard's row, else the current item.
+let anchor = null; // { id, t }: a row you pointed at, held still for a few seconds
+const anchored = () => anchor && performance.now() - anchor.t < 3000;
+function heldRow() {
+  if (anchored()) return anchor.id;
+  if (browsing() && sel) return sel;
+  const c = current(); return c != null ? 'i' + c : null;
+}
 function flatten() {
+  const id = heldRow();
+  const r0 = id ? rows.findIndex((x) => rowId(x) === id) : -1, y = r0 >= 0 ? r0 * RH - list.scrollTop : null;
+  rowsNow();
+  if (y == null) return;
+  const r1 = rows.findIndex((x) => rowId(x) === id);
+  if (r1 >= 0 && r1 !== r0) { sizePad(); list.scrollTop = Math.max(0, r1 * RH - y); }
+}
+function rowsNow() {
   if (!T) return;
   if (flat) {
     const o = state.order, out = [], lanes = new Set();
@@ -487,6 +505,7 @@ function follow(i, force = false) {
   }
   if (!browsing() || force) sel = 'i' + i;
   const r = curIndex();
+  if (anchored() && anchor.id === 'i' + i && !force) { paint(); return; } // you clicked it: it stays under the pointer
   if (r >= 0 && (!browsing() || force)) {
     const H = list.clientHeight || 600;
     sizePad(); // before scrolling: the rows may have just changed
@@ -560,12 +579,14 @@ function move(r) {
   if (!rows.length) return;
   r = Math.max(0, Math.min(rows.length - 1, r));
   sel = rowId(rows[r]); scrollTo(r, false); paint();
+  anchor = { id: sel, t: performance.now() };
   preview(rows[r]);
 }
 list.addEventListener('click', (e) => {
   const el = e.target.closest('.lr'); if (!el) return;
   const r = Number(el.dataset.r), row = rows[r]; if (!row) return;
   sel = rowId(row);
+  anchor = { id: sel, t: performance.now() };
   if (e.target.closest('.lr-go')) { activate(r); return; }
   if (row.node) toggle(row.node); else activate(r);
 });

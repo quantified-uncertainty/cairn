@@ -379,7 +379,7 @@ if (process.argv.includes('--merge')) {
       if (!x.id || !x.url || !x.t) { skipped.push(`${f}: ${x.id || '(no id)'}: needs id, url and t`); continue; }
       const lane = x.lane || d.lane;
       if (!LANES[lane]) { skipped.push(`${f}: ${x.id}: unknown lane ${lane}`); continue; }
-      const it = { ...x, lane, src: srcOf(x), score: x.score || 0 };
+      const it = { ...x, lane, src: lane === 'quri' && x.src ? x.src : srcOf(x), score: x.score || 0 };
       if (it.kind === 'html' && !/\/graphql\b/.test(it.url)) it.kind = 'web';
       if (!it.d && /^arxiv:\d{4}\./.test(it.id)) it.d = `20${it.id.slice(6, 8)}-${it.id.slice(8, 10)}`;
       const s = scores[fam(it)] || [];
@@ -395,7 +395,8 @@ if (process.argv.includes('--merge')) {
   buildTree(c.items.filter((it) => changed.has(it.lane) && it.lane !== 'quri'));
   if (changed.has('quri')) {
     let ord = Math.max(-1, ...c.items.filter((it) => it.lane === 'quri' && Number.isFinite(it.ord)).map((it) => it.ord));
-    for (const it of c.items) if (it.lane === 'quri' && !Number.isFinite(it.ord)) { it.path = [it.src || new URL(it.url).host, 'Not in the sidebar']; it.ord = ++ord; }
+    const siteOf = (host) => c.items.find((o) => o.lane === 'quri' && o.path?.length && Number.isFinite(o.ord) && new URL(o.url).host === host)?.path[0];
+    for (const it of c.items) if (it.lane === 'quri' && !Number.isFinite(it.ord)) { const host = new URL(it.url).host; it.path = [siteOf(host) || it.src || host, 'Not in the sidebar']; it.ord = ++ord; }
   }
   c.counts = c.items.reduce((m, x) => ((m[x.lane] = (m[x.lane] || 0) + 1), m), {});
   for (const l of Object.keys(c.counts)) if (!c.lanes?.[l]) (c.lanes ||= {})[l] = LANES[l];
@@ -438,7 +439,7 @@ if (existsSync(LANE_DIR)) {
       if (!x.id || !x.url || !x.t) continue;
       const lane = x.lane || d.lane;
       if (!LANES[lane]) continue;
-      add({ ...x, lane, src: srcOf(x), score: x.score || 0 }); n++;
+      add({ ...x, lane, src: lane === 'quri' && x.src ? x.src : srcOf(x), score: x.score || 0 }); n++;
     }
     console.log(`${f}: ${n}`);
   }

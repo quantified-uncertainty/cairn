@@ -13,12 +13,16 @@
 //   ← →, h l, the wheel   back / forward a sentence; hold a key to skip faster
 //   Shift+← →             back / forward a paragraph
 //   ↑ ↓  (< >)            faster / slower
-//   Space, v              pause / play
-//   Esc, V, ×             leave the mode
+//   Space (⇧Space), v     pause / play
+//   Esc, V, ×             leave the mode (Esc first closes Settings, ?, the saved list)
 //   j k                   another item: the mode ends, or with "Next item" on
 //                         the reading goes on there (and at the end of an item)
+// The library list and the Settings sheet keep their own keys while focused.
 // The pages turn when the spoken word leaves the screen; a page the reader turns
-// holds that for HOLD_MS.
+// (PgDn, Back, a link followed, zoom) holds that for HOLD_MS, and a jump (the
+// outline, the strip, the track, the overview, g t Home End, r) takes the voice
+// along. A render never moves the pages itself: it comes inside showFeed(),
+// before the 'nav' event of the reader's own turn, so following there undid it.
 //
 // Voices are engines (registerEngine, exported):
 //   { id, label, kind: 'events' | 'audio', sizes: [characters per passage, the

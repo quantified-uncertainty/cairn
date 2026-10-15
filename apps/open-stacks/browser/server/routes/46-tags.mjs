@@ -31,17 +31,17 @@ export function clean(raw) {
 
 export default function (app) {
   const file = process.env.STACKS_TAGS ? resolve(process.env.STACKS_TAGS) : join(app.HERE, 'data', 'tags.json');
-  let mtime = -1, body = null, n = 0;
+  let mtime = -1, bad = -1, body = null, n = 0;
   function load() {
     let m;
     try { m = statSync(file).mtimeMs; } catch { mtime = -1; body = null; n = 0; return null; }
-    if (m === mtime) return body;
+    if (m === mtime || m === bad) return body;
     try {
       const data = clean(JSON.parse(readFileSync(file, 'utf8')));
       body = JSON.stringify(data); n = data.tags.length; mtime = m;
     } catch (e) {
-      // Half-written or malformed: keep what was served before, try again next time.
-      console.warn('tags.json:', e.message);
+      // Half-written or malformed: keep what was served before, and read it again once it changes.
+      bad = m; console.warn('tags.json:', e.message);
     }
     return body;
   }

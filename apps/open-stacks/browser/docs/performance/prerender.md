@@ -53,7 +53,7 @@ It builds on the compiled-document profiles (`docs/profiles/spec.md`, "the profi
 
 ### 1.1 Setup
 
-Measured on 2026-10-15 in this container: Linux, 4 vCPUs shared with other agents (load average 10-30 throughout), poppler 24.02, MuPDF 1.23.10 (installed for this test with `apt-get install mupdf-tools`), headless Chromium 141 (Playwright 1.56). Every comparison is interleaved and repeated, with the order shuffled each round; renders report **CPU time** (user + system of the child process, from `wait4`), which the other agents' load disturbs far less than wall time. Absolute numbers on the reader's Mac will be lower; the ratios are what the design rests on. Scripts and raw CSVs: `/tmp/claude-0/-home-user-cairn/0193788b-bfb6-55ba-996b-2cd5efef9d2b/scratchpad/builders/pr-design/` (`bench.py`, `prep.py`, `decode.mjs`, `decode2.mjs`, `switch-bench.mjs`, `testpdf.mjs`, `*.csv`).
+Measured on 2026-10-15 in this container: Linux, 4 vCPUs shared with other agents (load average 10-30 throughout), poppler 24.02, MuPDF 1.23.10 (installed for this test with `apt-get install mupdf-tools`), headless Chromium 141 (Playwright 1.56). Every comparison is interleaved and repeated, with the order shuffled each round; renders report **CPU time** (user + system of the child process, from `wait4`), which the other agents' load disturbs far less than wall time. Absolute numbers on the reader's Mac will be lower; the ratios are what the design rests on. Scripts and raw CSVs: `/tmp/claude-0/-home-user-cairn/0193788b-bfb6-55ba-996b-2cd5efef9d2b/scratchpad/builders/pr-design/` (`bench.py` and its CSVs for 1.2-1.4, `prep.py`, `decode.mjs`, `decode2.mjs`, `decode3.mjs` for 1.5-1.6, `switch-bench.mjs` and `switch-trace.mjs` for the app benchmark, `testpdf2.mjs` for 1.8, and the drafts `stacks-render.swift` and `mu-worker2.js` of the appendices).
 
 Nine corpus PDFs, chosen to cover the kinds of page the reader meets:
 
@@ -181,11 +181,11 @@ From the profiles spec, section 1.2 (same container, headless Chromium, pdf.js 4
 
 ### 1.8 Geometry: crop box and rotation
 
-A four-page test PDF (Appendix C: portrait; `/Rotate 90`; a CropBox inset 72 pt inside the MediaBox; landscape), rendered at 400 px:
+A five-page test PDF (Appendix C: portrait; `/Rotate 90`; a CropBox inset 72 pt inside the MediaBox; landscape; CropBox and `/Rotate 270` together), rendered at 400 px:
 
 - `pdfinfo` reports the **crop box** (468 × 648 pt for page 3), as pdf.js shows it. `pdftoppm` **without `-cropbox` renders the media box**: page 3 came out 310 × 400 px with the ink at x = 0.177 instead of 289 × 400 with the ink at 0.076. `compile.mjs`'s poppler engine passes no `-cropbox`, so on any PDF whose CropBox differs from its MediaBox its ink boxes and display images are offset from pdf.js (none of the nine sampled PDFs differ; publisher PDFs sometimes do). The shared module (2.7) fixes it.
 - `pdftoppm -scale-to-y` applies **before** `/Rotate`: page 2 came out 400 px wide and 310 tall. Rendering must use `-r <dpi>` computed from the displayed (rotated) height, as `compile.mjs`'s display images already do.
-- MuPDF's page bounds are the crop box with the rotation applied, y down: exactly what pdf.js shows (all four pages matched poppler with `-cropbox`).
+- MuPDF's page bounds are the crop box with the rotation applied, y down: exactly what pdf.js shows (all five pages matched poppler with `-cropbox -r`).
 - The Quartz helper must do both itself: `CGPDFPageGetDrawingTransform` never scales up, so Appendix A builds the transform for each `/Rotate` and clips to the crop box ∩ media box (pdf.js's `view`).
 
 ### 1.9 The profile budget
@@ -255,7 +255,7 @@ Quartz and MuPDF workers are long-lived child processes that read one JSON comma
 In `server/pdfnative.mjs`, no worker process:
 
 - `info`: `pdfinfo -f 1 -l <n> <file>` (crop box sizes; `rot` swaps width and height, as `compile.mjs` `pdfinfo()` does today).
-- `render`: `pdftoppm -cropbox -jpeg -jpegopt quality=<q×100> -r <72 × h / ph> -x X0 -y Y0 -W W -H H -f k+1 -l k+1 -singlefile <file> <out-without-.jpg>`. For ahead and idle, consecutive pages of the same size and crop box are batched into one call (`-f a -l b`, at most 8; the box is the same for body pages, which share a crop group), output names `<prefix>-<k+1>.jpg`, renamed one by one.
+- `render`: `pdftoppm -cropbox -jpeg -jpegopt quality=<q×100> -r <72 × h / ph> -x X0 -y Y0 -W W -H H -f k+1 -l k+1 -singlefile <file> <out-without-.jpg>`, the rectangle passed for whole pages too (`-x 0 -y 0 -W FW -H FH`): with `-r` alone poppler rounds some pages up by a pixel (Appendix C). For ahead and idle, consecutive pages of the same size and crop box are batched into one call (`-f a -l b`, at most 8; the box is the same for body pages, which share a crop group), output names `<prefix>-<k+1>.jpg`, renamed one by one.
 - `lum`: `pdftoppm -cropbox -gray -r <72 × 400 / ph> -f a -l b <file> <prefix>` in ranges of 32 pages of the same size, so ranges spread over the pool.
 - `text`: `pdftotext -enc UTF-8 -f a -l b <file> <out>` in ranges of 32 pages (srd: 18 s on one core otherwise).
 
@@ -993,14 +993,52 @@ while ((c = command()) != null) {
 
 ## Appendix C: the geometry test PDF
 
-`test/fixtures/geometry.pdf`, written by about 40 lines of Node with no dependencies (the generator used here is `testpdf.mjs` in the measurement folder; the self-test embeds the same generator). Every page has 36-pt black squares inset 36 pt from each corner of its visible box, and a 108 × 18 pt bar under the top-left square, which tells the orientation:
+`test/fixtures/geometry.pdf`, written by the generator below (Node, no dependencies; `prerender.mjs --self-test` embeds the same function). Every page has 36-pt black squares inset 36 pt from each corner of its visible box, and a 108 × 18 pt bar under the top-left square, which tells the orientation.
 
 | Page | MediaBox | CropBox | `/Rotate` | Shown as (pt) | Checks |
 |---|---|---|---|---|---|
 | 1 | 612 × 792 | — | 0 | 612 × 792 | scale, y direction |
-| 2 | 612 × 792 | — | 90 | 792 × 612 | rotation: the top-left square and its bar move to the top-right corner, the bar becoming vertical, left of the square, running down (checked: MuPDF and poppler agree) |
+| 2 | 612 × 792 | — | 90 | 792 × 612 | rotation: the top-left square and its bar move to the top-right corner, the bar becoming vertical, left of the square, running down |
 | 3 | 612 × 792 | 72 72 540 720 | 0 | 468 × 648 | crop box: squares at the corners of the crop box, not the media box |
 | 4 | 792 × 612 | — | 0 | 792 × 612 | landscape, the 1.3 × class width cap |
-| 5 (to add) | 612 × 792 | 36 108 576 756 | 270 | 648 × 540 | rotation and crop box together |
+| 5 | 612 × 792 | 36 108 576 756 | 270 | 648 × 540 | rotation and crop box together |
 
-Measured here at 400 px (ink box as fractions of the shown page): page 3 with `pdftoppm -cropbox` and MuPDF `[0.076, 0.055, 0.924, 0.945]`, without `-cropbox` `[0.177, 0.138, 0.823, 0.863]` (the media box: wrong); page 2 with both engines `[0.046, 0.058, 0.954, 0.943]` on a 518 × 400 page (MuPDF) and a 400 × 310 page (`pdftoppm -scale-to-y 400`, scaled before rotation: use `-r`).
+Measured here at 400 px tall (ink box as fractions of the shown page), MuPDF and `pdftoppm -cropbox -r` agreeing on every page: 1 `[0.058, 0.045, 0.939, 0.955]` (310 × 400 px), 2 `[0.046, 0.060, 0.954, 0.940]` (518 × 400), 3 `[0.076, 0.055, 0.924, 0.945]` (289 × 400), 4 as 2, 5 `[0.056, 0.068, 0.944, 0.932]` (480 × 400). Without `-cropbox`, page 3 comes out `[0.177, 0.138, 0.823, 0.863]` (the media box: wrong); with `-scale-to-y 400`, page 2 comes out 400 × 310 (scaled before rotation: use `-r`); with `-r` alone, poppler rounds some pages up by a pixel (401 rows for 400), so the adapter always passes `-x 0 -y 0 -W FW -H FH` (2.5).
+
+```js
+// The geometry test PDF (docs/performance/prerender.md, Appendix C), with no dependencies:
+//   node geometry-pdf.mjs out.pdf
+// Each page: 36-pt black squares inset 36 pt from the corners of its visible box (the CropBox, else the
+// MediaBox), and a 108 x 18 pt bar under the top-left square, which tells the orientation.
+import { writeFileSync } from 'fs';
+export const PAGES = [
+  { media: [0, 0, 612, 792] },
+  { media: [0, 0, 612, 792], rot: 90 },
+  { media: [0, 0, 612, 792], crop: [72, 72, 540, 720] },
+  { media: [0, 0, 792, 612] },
+  { media: [0, 0, 612, 792], crop: [36, 108, 576, 756], rot: 270 },
+];
+export function geometryPdf(pages = PAGES) {
+  const objs = [];
+  const add = (s) => objs.push(s);
+  add(null); add(null); // 1: catalog, 2: pages
+  const kids = [];
+  for (const p of pages) {
+    const [x0, y0, x1, y1] = p.crop || p.media;
+    const sq = (x, y) => `${x} ${y} 36 36 re f\n`;
+    const c = '0 0 0 rg\n' + sq(x0 + 36, y0 + 36) + sq(x1 - 72, y0 + 36) + sq(x0 + 36, y1 - 72) + sq(x1 - 72, y1 - 72) + `${x0 + 36} ${y1 - 102} 108 18 re f\n`;
+    add(`<< /Length ${c.length} >>\nstream\n${c}endstream`);
+    add(`<< /Type /Page /Parent 2 0 R /MediaBox [${p.media.join(' ')}]${p.crop ? ` /CropBox [${p.crop.join(' ')}]` : ''}${p.rot ? ` /Rotate ${p.rot}` : ''} /Contents ${objs.length} 0 R /Resources << >> >>`);
+    kids.push(objs.length);
+  }
+  objs[0] = '<< /Type /Catalog /Pages 2 0 R >>';
+  objs[1] = `<< /Type /Pages /Kids [${kids.map((k) => k + ' 0 R').join(' ')}] /Count ${kids.length} >>`;
+  let pdf = '%PDF-1.4\n';
+  const offs = objs.map((o, i) => { const at = pdf.length; pdf += `${i + 1} 0 obj\n${o}\nendobj\n`; return at; });
+  const xref = pdf.length;
+  pdf += `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n` + offs.map((o) => String(o).padStart(10, '0') + ' 00000 n \n').join('');
+  pdf += `trailer\n<< /Size ${objs.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+  return Buffer.from(pdf, 'latin1');
+}
+if (process.argv[2]) writeFileSync(process.argv[2], geometryPdf());
+```

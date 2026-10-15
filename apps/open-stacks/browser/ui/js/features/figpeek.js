@@ -10,27 +10,38 @@
 // hover; a click opens it pinned, to zoom into. Z turns peeking on or off.
 //
 // Finding figures happens lazily: in idle time after 'spread:settled', or on
-// the first hover over a page; never during a turn. A page becomes:
+// the first hover over a settled page; never during a turn. A page becomes:
 //  - text runs: pdf.js text items (OCR lines for scans) joined along a line
-//    and split at wide gaps. Long body-size runs are prose; runs that start
-//    "Figure 3:", "Table 2.", "Fig. 4 |", "PLATE IV" … begin captions;
-//  - image placements: the operator list's paintImage* ops under the current
-//    transform (PDFs);
+//    and split at wide gaps. Long body-size runs are prose, and so are the
+//    lines of their paragraphs (first and last lines, narrow lines wrapped
+//    round a figure, lines of numbers); runs spaced apart on one line in one
+//    type are table cells, not prose; runs that start "Figure 3:", "Table 2.",
+//    "Fig. 4 |", "PLATE IV", "Algorithm 1" … begin captions;
+//  - image placements: the paintImage* ops of the operator list pdf.js already
+//    holds from rendering the page (asked for only for a page with ink beside
+//    its text: moving an operator list from the worker is the costly part);
 //  - an ink grid, about 240 cells across, from the page as rendered on screen
 //    (the panels' canvases through their crop boxes).
-// Ink that is not text, plus placed images, is graphics. Graphics grow by
+// A PDF page that is one picture (a scanned book or journal) is looked at as a
+// scan. Ink that is not text, plus placed images, is graphics. Graphics grow by
 // about a line, never through prose or captions (nor across the gutter of a
 // two-column page), into connected regions, which take in the small text
 // around them (axis labels, legends, sub-figure letters) but not prose or
-// their caption. Captions then claim the regions beside them (above for
-// figures, below for tables; sub-figures side by side unite, stacked ones
-// share the caption), and a caption with no region proposes one: the ink
-// between it and the prose above (or below). Regions with no caption stay
-// only when they are clearly graphics (a plate takes the short line under it
-// as its legend). Scans add barriers at the page edges and close each
-// caption's column, as OCR boxes cover print less tightly. Regions are kept
-// in fractions of the page, so they serve every crop, column split and zoom.
-// Other features can use regionsOf(it, k) (e.g. for figure crops).
+// their caption. A region that captions say is two figures (captions side by
+// side under it, or in both columns) is cut apart down its emptiest column.
+// Captions then claim the regions beside them, the surest claims first, on the
+// side this page puts its figures and tables (told by the captions with regions
+// on one side only); sub-figures side by side unite, stacked ones share the
+// caption. A caption with no region proposes one: the ink between it and the
+// prose, or a block of lines set apart from prose (examples, listings); an
+// algorithm takes its lines down to its closing rule. Regions with no caption
+// stay only when they are clearly graphics, not lines of print (dot leaders,
+// bands behind headings, equations the OCR missed, rules round a page of
+// words); a plate takes the short line under it as its legend. Scans add
+// barriers at the page edges and close each caption's column, as OCR boxes
+// cover print less tightly. Regions are kept in fractions of the page, so they
+// serve every crop, column split and zoom. Other features can use
+// regionsOf(it, k) (e.g. for figure crops).
 //
 // The enlargement is sharp: PDFs re-render just the region from the PDF at
 // the size shown (an offset viewport), again for each zoom; scans crop the
@@ -339,7 +350,7 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false, 
   // well apart from it (a figure's labels beside text wrapped round it are smaller).
   const byB = hz.slice().sort((a, b) => a.base - b.base);
   byB.forEach((s, i) => {
-    const sd = sideOfX(s.x0, s.x1), apart = (o) => Math.max(o.x0 - s.x1, s.x0 - o.x1) > 1.5 * body && sideOfX(o.x0, o.x1) === sd && Math.abs(o.fs - s.fs) < 0.15 * Math.max(o.fs, s.fs) && !CAP.test(o.str) && !CAP.test(s.str);
+    const sd = sideOfX(s.x0, s.x1), apart = (o) => Math.max(o.x0 - s.x1, s.x0 - o.x1) > 1.5 * body && sideOfX(o.x0, o.x1) === sd && Math.abs(o.fs - s.fs) < 0.08 * Math.max(o.fs, s.fs) && !CAP.test(o.str) && !CAP.test(s.str);
     for (let j = i - 1; j >= 0 && s.base - byB[j].base < 0.3 * body && !s.cell; j--) if (apart(byB[j])) s.cell = true;
     for (let j = i + 1; j < byB.length && byB[j].base - s.base < 0.3 * body && !s.cell; j++) if (apart(byB[j])) s.cell = true;
   });
@@ -361,7 +372,7 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false, 
   for (let pass = 0; pass < 2; pass++) for (const s of byY) {
     if (s.prose || s.cell || !fsOk(s) || !textLike(s)) continue;
     if (byY.some((p) => p.prose && p !== s && p.y0 - s.y1 > -0.3 * body && p.y0 - s.y1 < 0.8 * body && Math.abs(s.x1 - p.x1) < 0.6 * body && s.x0 >= p.x0 - body) ||
-      hz.some((p) => p.prose && p !== s && Math.abs(p.base - s.base) < 0.3 * body && Math.max(p.x0 - s.x1, s.x0 - p.x1) < 1.2 * body)) s.prose = true;
+      hz.some((p) => p.prose && p !== s && Math.abs(p.base - s.base) < 0.3 * body && Math.max(p.x0 - s.x1, s.x0 - p.x1) < 2 * body)) s.prose = true;
   }
   // A line inside a paragraph is prose whatever it holds ("ly: 12, 13, 14, 23, 24,"): prose
   // right above and right below it, starting where it starts.

@@ -265,8 +265,8 @@ function paintNow() {
   box.classList.toggle('open', open);
   if (open) {
     chips = list; fit = -1;
-    row.replaceChildren(h('div', { className: 'tg-r wrap' }, label, ...list.map(chipEl),
-      list.length > 1 ? h('button', { type: 'button', className: 'tg-more tg-less', textContent: '−', title: 'Fewer: one or two rows' }) : null));
+    // − (back to two rows) sits by the label, so it costs no row of its own.
+    row.replaceChildren(h('div', { className: 'tg-r wrap' }, label, h('button', { type: 'button', className: 'tg-more tg-less', textContent: '−', title: 'Fewer: one or two rows' }), ...list.map(chipEl)));
     return;
   }
   const k = `${i}|${list.map((c) => c.key).join('|')}|${width()}|${tight}`;

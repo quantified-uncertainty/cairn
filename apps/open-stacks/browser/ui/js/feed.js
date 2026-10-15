@@ -117,6 +117,12 @@ function progressive(gen, it, slots, boxW, boxH) {
     x.el.classList.remove('loading');
     x.el.classList.toggle('preview', !sharp); x.el.classList.toggle('lowres', !sharp);
     const a = pnl.aspect ?? pnl.canvas.width / pnl.canvas.height;
+    // The first page shape seen of this item may change how many pages fit
+    // (finish() would find out only when the slowest page is in): lay out again now.
+    if (!aspects.has(it.id) && !profileOf(it)) {
+      aspects.set(it.id, a);
+      if (state.perAuto && !state.zoom && fitPer(it, boxW, boxH) !== state.per) { showFeed(); return; }
+    }
     if (Math.abs(a / Number(x.el.dataset.aspect) - 1) > 0.002) { x.el.dataset.aspect = String(a); layoutPanels(slots.map((y) => y.el), boxW, boxH); }
   };
   for (const x of slots) {

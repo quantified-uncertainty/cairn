@@ -51,20 +51,32 @@ export function panelsFrom(src, k, extra = {}) {
 
 // Scans without a profile: a page's ink box, blank flag and gutter are found
 // once, from whichever image of it came first (a small preview or the sharp
-// w1000; analyze() reads a 240-px-wide grid either way, and boxes are fractions
-// of the page), and reused for the other, so the preview and the sharp page are
-// cut identically. Panels carry `aspect` from the box and the image's shape
-// (IA's sizes are power-of-two reductions of one image, so it is the same for
-// both), and feed.js sizes pages by it: the sharp page replaces the preview
-// without the spread moving.
-const scanCuts = new Map(); // `${id}|${k}|${pad}` -> analyze() result
-function scanPanels(it, k, src, extra) {
+// w1000; boxes are fractions of the page), and reused for the other, so the
+// preview and the sharp page are cut identically. Panels carry `aspect` from
+// the box and the image's shape (IA's sizes are power-of-two reductions of one
+// image, so it is the same for both), and feed.js sizes pages by it: the sharp
+// page replaces the preview without the spread moving.
+// The work stays off the main thread's canvases: the analysis reads a
+// 240-px-wide copy made by createImageBitmap (drawing the full page into a
+// readable canvas first cost ~40 ms of main thread a page, profiled while
+// reading), and the panel is a crop shown through 'bitmaprenderer'.
+const scanCuts = new Map(); // `${id}|${k}|${pad}` -> Promise<analyze() result>
+async function scanPanels(it, k, im, extra) {
+  const iw = im.naturalWidth || im.width, ih = im.naturalHeight || im.height;
   const key = `${it.id}|${k}|${state.cropPad ?? ''}`;
   let a = scanCuts.get(key);
-  if (!a) { a = analyze(src); scanCuts.set(key, a); if (scanCuts.size > 4000) scanCuts.delete(scanCuts.keys().next().value); }
-  if (a.blank) return [{ blank: true, k }];
-  return panelsBox(src, k, state.crop ? a.box : FULL, a.gutter, extra)
-    .map((p) => ({ ...p, aspect: ((p.box.x1 - p.box.x0) * src.width) / ((p.box.y1 - p.box.y0) * src.height) }));
+  if (!a) {
+    a = (async () => {
+      const sm = await createImageBitmap(im, { resizeWidth: 240, resizeHeight: Math.max(1, Math.round((240 * ih) / iw)), resizeQuality: 'low' });
+      try { return analyze(sm); } finally { sm.close?.(); }
+    })();
+    scanCuts.set(key, a); if (scanCuts.size > 4000) scanCuts.delete(scanCuts.keys().next().value);
+    a.catch(() => scanCuts.delete(key));
+  }
+  const cut = await a;
+  if (cut.blank) return [{ blank: true, k }];
+  const panels = await panelsFromImage(im, k, [0, 0, 1, 1], state.crop ? cut.box : FULL, cut.gutter, extra);
+  return panels.map((p) => ({ ...p, aspect: ((p.box.x1 - p.box.x0) * iw) / ((p.box.y1 - p.box.y0) * ih) }));
 }
 // The size scans are read at (the Internet Archive's w1000: ~1064 px wide for a
 // 500 ppi scan), and the small sizes a preview may come from, largest first.
@@ -79,13 +91,13 @@ const PREVIEW_W = [600, 400, 200];
  */
 export async function previewScan(it, k, { fetch: get = false } = {}) {
   if (it.kind !== 'scan' || profileOf(it)?.pages?.[k]) return null;
-  const r = await fetch(`/ia/preview?u=${encodeURIComponent(scanUrl(it, k, SCAN_W))}&w=${PREVIEW_W.join(',')}${get ? '&fetch=1' : ''}`).catch(() => null);
-  if (!r || r.status !== 200) return null;
-  const bm = await createImageBitmap(await r.blob()).catch(() => null);
-  if (!bm) return null;
-  const c = document.createElement('canvas'); c.width = bm.width; c.height = bm.height;
-  c.getContext('2d').drawImage(bm, 0, 0); bm.close?.();
-  return scanPanels(it, k, c, { src: 'preview' });
+  // Not through loadImg: a page with no preview now (204) may have one later.
+  const im = await new Promise((res) => {
+    const x = new Image(); x.decoding = 'async';
+    x.onload = () => x.decode().then(() => res(x), () => res(x)); x.onerror = () => res(null);
+    x.src = `/ia/preview?u=${encodeURIComponent(scanUrl(it, k, SCAN_W))}&w=${PREVIEW_W.join(',')}${get ? '&fetch=1' : ''}`;
+  });
+  return im ? scanPanels(it, k, im, { src: 'preview' }).catch(() => null) : null;
 }
 const FULL = { x0: 0, y0: 0, x1: 1, y1: 1 };
 /** The boxes a page shows: the crop, or its two columns split at the gutter. */
@@ -161,12 +173,7 @@ function renderPage1(it, k, key) {
       }
       if (it.kind === 'scan') return panelsFromImage(await loadImg(P(scanUrl(it, k, SCAN_W))), k, [0, 0, 1, 1], state.crop ? cropOf(pf, k) : FULL, pg.gut, { src: 'scan' });
     }
-    if (it.kind === 'scan') {
-      const im = await loadImg(P(scanUrl(it, k, SCAN_W)));
-      const c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
-      c.getContext('2d').drawImage(im, 0, 0);
-      return scanPanels(it, k, c, { src: 'scan' });
-    }
+    if (it.kind === 'scan') return scanPanels(it, k, await loadImg(P(scanUrl(it, k, SCAN_W))), { src: 'scan' });
     const d = await openDoc(it);
     if (k >= d.n) return [];
     const page = await d.pdf.getPage(k + 1);

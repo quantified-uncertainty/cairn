@@ -451,7 +451,7 @@ T.memory = async (browser) => {
   for (let k = 0; k < 12 && !log.memory.some((o) => o.o === 'judge' && o.j === 'unless'); k++) await page.waitForTimeout(500);
   const visits = log.memory.filter((o) => o.o === 'visit');
   const xs = visits.filter((o) => o.x).map((o) => o.x), vias = visits.filter((o) => o.via).map((o) => o.via);
-  check('8 visit ops carry x (how they ended)', xs.includes('next') && xs.includes('less') && xs.includes('view'), xs.join(','));
+  check('8 visit ops carry x (how they ended; Back ends one with prev)', xs.includes('next') && xs.includes('less') && xs.includes('prev') && xs.includes('view'), xs.join(','));
   check('8 the first visit op carries via', vias.length > 0 && vias.every((v) => v === 'feed' || v === 'jump') && vias.includes('jump'), vias.join(','));
   const js = log.memory.filter((o) => o.o === 'judge').map((o) => o.j);
   check('8 Back after x sends unless', js.join() === 'less,unless', js.join());
@@ -485,7 +485,8 @@ T.speed = async (browser) => {
   const cfgs = { with: null, without: (j) => ({ js: j.js.filter((x) => !OURS.test(x)), css: j.css.filter((x) => !OURS.test(x)) }) };
   const out = {};
   const A = FINDS.items[0].id, B = FINDS.items[1].id;
-  for (const round of [0, 1]) for (const [name, features] of Object.entries(cfgs)) {
+  // Rounds alternate the two configurations; the first warms the cache, the rest are pooled (60 turns, 24 switches each).
+  for (const round of [0, 1, 2]) for (const [name, features] of Object.entries(cfgs)) {
     const { ctx, page } = await context(browser, { features });
     await open(page, `?id=${encodeURIComponent(A)}`);
     await waitSpread(page); await page.waitForTimeout(2500);
@@ -510,7 +511,7 @@ T.speed = async (browser) => {
       }
       return { turns: turns.filter((x) => x === x), sw: sw.filter((x) => x === x) };
     }, [A, B]);
-    if (round === 1) out[name] = r; // the first round warms the cache and the PDF documents
+    if (round > 0) { out[name] ||= { turns: [], sw: [] }; out[name].turns.push(...r.turns); out[name].sw.push(...r.sw); } // round 0 warms the cache
     await ctx.close();
   }
   const mt = (n) => median(out[n].turns), ms = (n) => median(out[n].sw);

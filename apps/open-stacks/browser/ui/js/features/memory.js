@@ -86,7 +86,7 @@ const finished = (r) => !!r.n && ((r.seen?.at(-1)?.[1] ?? -1) >= r.n - 1 || (r.s
 
 // ---------- sending ----------
 let ops = [];
-const op = (o, id, x) => ops.push({ o, id, t: Date.now(), ...x });
+const op = (o, id, x) => { const r = { o, id, t: Date.now(), ...x }; ops.push(r); return r; };
 function flush(beacon = false) {
   if (!ops.length) return;
   const batch = ops; ops = [];
@@ -108,32 +108,34 @@ const active = () => !document.hidden && state.view === 'feed' && (Date.now() - 
 // ---------- visits and spreads ----------
 let visit = null;  // { id, i, s, a, last (last active, ms), settled, sent, sentAt }
 let spread = null; // { id, k, c, s, ms, seen }
-const newVisit = (i, settled) => ({ id: items[i].id, i, s: Date.now(), t0: performance.now(), a: 0, last: Date.now(), settled, sent: false, sentAt: 0, via: reached() });
+const newVisit = (i, settled, via = 'feed') => ({ id: items[i].id, i, s: Date.now(), t0: performance.now(), a: 0, last: Date.now(), settled, sent: false, sentAt: 0, via });
 
 // How a visit ended (x) and how it was reached (via), from the last 'nav:before' label
 // (the learning model weighs a quick exit by them: server/learn.mjs). The first label
 // of a synchronous burst wins: 'less like this' is followed at once by go()'s 'next item'.
+// Only a label made during the visit ends it; Back (no label: back.js emits 'nav' {type:
+// 'back'} right after the item shows) ends it with 'prev'.
 const EXIT = { 'next item': 'next', 'previous item': 'prev', 'less like this': 'less', 'more like this': 'more',
   'open item': 'jump', 'browse results': 'jump', 'stay in': 'jump', 'leave stack': 'jump', 'link jump': 'jump', 'lane switch': 'lane' };
-let lastBefore = null, burst = false;
-const recent = () => (lastBefore && Date.now() - lastBefore.t < 2000 ? lastBefore.label : null);
-const exitMove = () => EXIT[recent()] || 'next';
-const reached = () => (EXIT[recent()] === 'jump' ? 'jump' : 'feed');
+let lastBefore = null, burst = false, backAt = 0;
+/** The move that just left visit v: its label, if made during v and in the last 2 s. */
+const moveOf = (v) => (lastBefore && Date.now() - lastBefore.t < 2000 && (!v || lastBefore.t >= v.s) ? EXIT[lastBefore.label] || null : null);
 
 function sendVisit(x) {
-  const v = visit; if (!v?.settled) return;
+  const v = visit; if (!v?.settled) return null;
   const it = items[v.i], r = rec(v.id);
-  op('visit', v.id, { s: v.s, e: Math.max(v.s, v.last), a: Math.round(v.a), ...(v.sent ? {} : { ti: it.t, lane: it.lane, kind: it.kind, via: v.via || 'feed' }), ...(x ? { x } : {}) });
+  const sent = op('visit', v.id, { s: v.s, e: Math.max(v.s, v.last), a: Math.round(v.a), ...(v.sent ? {} : { ti: it.t, lane: it.lane, kind: it.kind, via: v.via || 'feed' }), ...(x ? { x } : {}) });
   if (!v.sent) { r.nv++; r.ti ||= it.t; }
   v.sent = true; v.sentAt = Date.now();
   r.last = Math.max(r.last, v.last);
+  return sent;
 }
 function sendSpread() {
   const p = spread; if (!p || (p.ms < SEQ_MS && !p.seen)) return;
   op('saw', p.id, { k: p.k, c: p.c, s: p.s, ms: Math.round(p.ms), seen: p.seen ? 1 : 0 });
 }
 const endSpread = () => { sendSpread(); spread = null; };
-function endVisit(x) { endSpread(); sendVisit(x); visit = null; }
+function endVisit(x) { endSpread(); const o = sendVisit(x); visit = null; return o; }
 
 function markSeen() {
   const p = spread; p.seen = true;
@@ -160,8 +162,10 @@ setInterval(() => {
 }, 1000);
 
 on('item:shown', ({ i, it }) => {
-  endVisit(exitMove());
-  visit = newVisit(i, false);
+  const mv = moveOf(visit);
+  const fin = endVisit(mv || 'next');
+  if (fin && !mv) queueMicrotask(() => { if (Date.now() - backAt < 100) fin.x = 'prev'; }); // Back: the 'nav' event comes in this same task
+  visit = newVisit(i, false, mv === 'jump' ? 'jump' : 'feed');
   resumeChip(i, it);
   paintSeen(it.id, it.n || mem.get(it.id)?.n);
 });
@@ -195,12 +199,27 @@ on('spread:settled', (d) => {
   paintSeen(d.it.id, p.n);
   emit('memory:updated', { id: d.it.id });
 });
+// A spread still waiting for its pages (a cold scan shows previews first) has not settled, but
+// where you are is known: a stop of 1.5 s there records it, so leaving early still resumes there.
+let placeT = 0;
+const placeSoon = () => { clearTimeout(placeT); placeT = setTimeout(placeHere, 1500); };
+function placeHere() {
+  const i = current(), it = items[i];
+  if (!it || state.view !== 'feed' || visit?.id !== it.id || isFlow(it) || !state.start.has(i)) return;
+  const k = state.start.get(i), c = Math.max(1, state.zoom ? 1 : state.shown || state.per), r = rec(it.id);
+  if ((spread?.id === it.id && spread.k === k) || (r.k === k && !r.f)) return; // settled there, or already recorded
+  op('at', it.id, { k, c, n: it.n || 0, f: 0 });
+  Object.assign(r, { k, c, at: Date.now(), last: Date.now(), f: 0, far: Math.max(r.far, k + c - 1) });
+  if (it.n) r.n = it.n;
+}
+on('item:shown', placeSoon);
+on('nav', placeSoon);
 
 // Leaving the feed ends the visit; coming back starts one when the pages settle.
 on('view:changed', ({ view }) => {
   if (view !== 'feed') { endVisit('view'); hideChip(); flush(); return; }
   const i = current();
-  if (i != null && visit?.id !== items[i].id) { endVisit(); visit = { ...newVisit(i, false), ret: true }; }
+  if (i != null && visit?.id !== items[i].id) { endVisit(); visit = { ...newVisit(i, false, moveOf(null) === 'jump' ? 'jump' : 'feed'), ret: true }; }
 });
 // Hidden or closed: send what we have (the visit goes on if you come back soon).
 const save = () => { sendSpread(); sendVisit(); flush(true); };
@@ -223,7 +242,11 @@ on('nav:before', ({ label, i }) => {
 });
 // Back undid a judgment: retract it (the server replays jl, so 'unless' cancels 'less').
 const RETRACT = { save: 'unsave', unsave: 'save', 'less like this': 'unless', 'more like this': 'unmore' };
-on('nav', (d) => { if (d.type === 'back' && RETRACT[d.undone] && d.i != null && items[d.i]) judge(d.i, RETRACT[d.undone]); });
+on('nav', (d) => {
+  if (d.type !== 'back') return;
+  backAt = Date.now();
+  if (RETRACT[d.undone] && d.i != null && items[d.i]) judge(d.i, RETRACT[d.undone]);
+});
 
 // ---------- resume ----------
 // prefetch.js asks where an item opens when nothing has placed it this session.
