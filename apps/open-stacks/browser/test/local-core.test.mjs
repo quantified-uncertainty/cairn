@@ -130,6 +130,47 @@ test('html: body only, no scripts, handlers or javascript: links, relative URLs 
   assert.equal(L.htmlDoc('<h1>Only a heading</h1>').title, 'Only a heading');
 });
 
+test('html: SVG animation cannot set a link to javascript: (animate, set)', () => {
+  const r = L.htmlDoc(Buffer.from('<svg><a><animate attributeName="href" values="javascript:alert(1)"/><set attributeName="href" to="javascript:alert(2)"></set><animateMotion dur="1s"/><text>t</text></a></svg>'));
+  assert.ok(!/animate|<set|javascript/i.test(r.html), r.html);
+  assert.match(r.html, /<text>t<\/text>/);
+});
+test('text encodings: BOMs, UTF-8 cut short, a declared encoding, Latin-1 without one', (t) => {
+  const u16 = (s, be) => { const b = Buffer.from('﻿' + s, 'utf16le'); return be ? b.swap16() : b; };
+  assert.equal(L.decodeText(u16('Wide “text”')), 'Wide “text”');
+  assert.equal(L.decodeText(u16('Big end', true)), 'Big end');
+  assert.equal(L.decodeText(Buffer.from('﻿BOM café', 'utf-8')), 'BOM café');
+  assert.equal(L.decodeText(Buffer.from('café', 'utf-8').subarray(0, 4)), 'caf', 'a character cut off at the end is not a reason to read Latin-1');
+  assert.equal(L.decodeText(Buffer.from('caf\xe9 cr\xe8me', 'latin1')), 'café crème');
+  assert.equal(L.decodeText(Buffer.from('<?xml version="1.0" encoding="iso-8859-15"?><p>\xa4</p>', 'latin1')), '<?xml version="1.0" encoding="iso-8859-15"?><p>€</p>');
+  // EPUB chapters in UTF-16 and in a declared Latin-1
+  const d = tmp(); t.after(() => rmSync(d, { recursive: true, force: true }));
+  const xh = (body, enc) => `<?xml version="1.0" encoding="${enc}"?><html xmlns="http://www.w3.org/1999/xhtml"><body>${body}</body></html>`;
+  const f = join(d, 'enc.epub');
+  writeFileSync(f, makeZip([
+    ['mimetype', 'application/epub+zip', { store: true }],
+    ['META-INF/container.xml', '<?xml version="1.0"?><container><rootfiles><rootfile full-path="c.opf"/></rootfiles></container>'],
+    ['c.opf', '<package><metadata><dc:title>Encodings</dc:title></metadata><manifest><item id="a" href="a.xhtml" media-type="application/xhtml+xml"/><item id="b" href="b.xhtml" media-type="application/xhtml+xml"/></manifest><spine><itemref idref="a"/><itemref idref="b"/></spine></package>'],
+    ['a.xhtml', u16(xh('<p>Sixteen “wide” café</p>', 'utf-16'))],
+    ['b.xhtml', Buffer.from(xh('<p>Caf\xe9 na\xefve</p>', 'iso-8859-1'), 'latin1')],
+  ]));
+  const b = L.epubBook(f);
+  assert.match(b.html, /Sixteen “wide” café/); assert.match(b.html, /Café naïve/);
+});
+test('markdown: entities stay entities; an EPUB link to another app’s scheme goes nowhere', (t) => {
+  assert.equal(L.mdToHtml('a &copy; &#169; &#xA9; &amp; b & c &nope d').html, '<p>a &copy; &#169; &#xA9; &amp; b &amp; c &amp;nope d</p>');
+  assert.equal(L.mdToHtml('# Caf&#233; &amp; Co').title, 'Café & Co');
+  const d = tmp(); t.after(() => rmSync(d, { recursive: true, force: true }));
+  const f = join(d, 's.epub');
+  writeFileSync(f, makeZip([
+    ['mimetype', 'application/epub+zip', { store: true }],
+    ['META-INF/container.xml', '<?xml version="1.0"?><container><rootfiles><rootfile full-path="c.opf"/></rootfiles></container>'],
+    ['c.opf', '<package><metadata><dc:title>S</dc:title></metadata><manifest><item id="a" href="a.xhtml" media-type="application/xhtml+xml"/></manifest><spine><itemref idref="a"/></spine></package>'],
+    ['a.xhtml', '<html><body><a href="file:///etc/passwd">f</a> <a href="x-app:do">x</a> <a href="https://e.org/">w</a> <a href="mailto:a@b.c">m</a></body></html>'],
+  ]));
+  assert.equal(L.epubBook(f).html.replace(/<\/?section[^>]*>/g, ''), '<a href="#">f</a> <a href="#">x</a> <a href="https://e.org/">w</a> <a href="mailto:a@b.c">m</a>');
+});
+
 // ---------------------------------------------------------------- files
 test('classify: hidden, partial, iCloud placeholders and types', () => {
   assert.deepEqual(L.classify('.DS_Store'), { skip: 'hidden' });

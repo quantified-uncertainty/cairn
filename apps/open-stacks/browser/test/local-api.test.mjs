@@ -5,7 +5,7 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'child_process';
-import { mkdtempSync, rmSync, readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from 'fs';
+import { mkdtempSync, rmSync, readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, symlinkSync } from 'fs';
 import { tmpdir } from 'os';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -159,6 +159,17 @@ test('the rest of the app: /ready, /cached, profiles and guides know local items
   assert.ok(!existsSync(join(S.jobs, 'open')) || !readdirSync(join(S.jobs, 'open')).length);
 });
 
+test('a file replaced by a link to somewhere else after the folder was read is not served', async () => {
+  const it = await find('Inner Paper');
+  const f = join(root, 'Books', 'Deep', 'Deeper', 'inner.pdf'), secret = join(dir, 'secret.txt');
+  writeFileSync(secret, 'NOT YOURS TO SERVE');
+  rmSync(f); symlinkSync(secret, f);
+  for (const u of [it.url, it.url.replace('/file/', '/doc/')]) {
+    const r = await get(u);
+    assert.equal(r.status, 404, u); assert.ok(!/NOT YOURS/.test(await r.text()));
+  }
+});
+
 test('watching: a file added while running appears within seconds; one removed goes', async () => {
   const v0 = (await (await get('/local/v')).json()).v;
   writeFileSync(join(root, 'Papers', 'Arrived.pdf'), makePdf({ pages: 3, title: 'Arrived While Running' }));
@@ -188,4 +199,13 @@ test('settings: other folders, the default again, too broad, the order, AI', asy
   s = await (await post('/local/settings', { dirs: null, order: 'name', autoAI: false })).json();
   assert.equal(s.from, 'env'); assert.equal(await find('The Only Paper'), undefined);
   assert.equal((await post('/local/reveal', { id: 'local:00000000000000000000' })).status, 404);
+  // One folder per line: a ':' is part of a name (Finder's '/'); a path relative to the server's folder is refused.
+  const colon = join(dir, 'Books: 2024'); mkdirSync(colon); writeFileSync(join(colon, 'c.pdf'), makePdf({ pages: 1, title: 'In A Colon Folder' }));
+  s = await (await post('/local/settings', { dirs: colon })).json();
+  assert.deepEqual(s.dirs, [colon]); assert.ok(await find('In A Colon Folder'));
+  r = await post('/local/settings', { dirs: 'notes' });
+  assert.equal(r.status, 400); assert.match((await r.json()).error, /full path/);
+  r = await post('/local/settings', { dirs: `${root}\n${join(root, 'Papers')}` });
+  assert.equal(r.status, 400, 'a folder inside another: its files would be there twice'); assert.match((await r.json()).error, /inside another/);
+  await post('/local/settings', { dirs: null });
 });

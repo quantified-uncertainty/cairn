@@ -117,6 +117,26 @@ test('ids: stable across indexes, from the folder name and the path; an iCloud p
   assert.deepEqual(a.ready(later.id), [1, 1]);
 });
 
+test('an iCloud placeholder beside its downloaded file: one item, the file (not two with one id)', async (t) => {
+  const { root, make } = setup(t);
+  writeFileSync(join(root, 'Papers', 'Later.pdf'), makePdf({ pages: 2, title: 'Later, Arriving' })); // .Later.pdf.icloud is still there
+  const ix = make(); await ix.scan(); await ix.settled();
+  const ids = ix.items.map((it) => it.id);
+  assert.equal(new Set(ids).size, ids.length, 'no id twice');
+  const it = ix.items.find((x) => x.id === idOf('My Reading', 'Papers/Later.pdf'));
+  assert.equal(it.kind, 'pdf'); assert.equal(it.cloud, undefined);
+});
+test('titles: text files in UTF-16 or Latin-1, and file names in decomposed Unicode (NFD)', async (t) => {
+  const { root, make } = setup(t);
+  writeFileSync(join(root, 'Books', 'wide.txt'), Buffer.from('﻿Title: A Wide Text\n\nBody.\n', 'utf16le'));
+  writeFileSync(join(root, 'Books', 'old.txt'), Buffer.from('Title: Caf\xe9 Text\n\nBody.\n', 'latin1'));
+  writeFileSync(join(root, 'Books', 'Café Notes.pdf'), makePdf({ pages: 1, title: 'Untitled' }));
+  const ix = make(); await ix.scan(); await ix.settled();
+  const T = byTitle(ix);
+  assert.ok(T['A Wide Text'] && T['Café Text'], Object.keys(T).join(', '));
+  assert.ok(T['Café Notes'], 'NFC, so a search typed on a keyboard finds it');
+});
+
 test('changes: a new file, a removed one (still answered, as gone), the version', async (t) => {
   const { root, make } = setup(t);
   let changes = 0;

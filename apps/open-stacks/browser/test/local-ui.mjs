@@ -147,8 +147,10 @@ try {
   for (const [t, kind, text] of [['Alpha paper', 'PDF', null], ['The Synthetic Book', 'EPUB', 'Opening of chapter 1'], ['Notes on Synthetic Things', 'Markdown', 'Longer notes']]) {
     await open(page, t);
     const h = await head(page);
-    const shown = text ? await page.evaluate((x) => document.querySelector('#spread')?.textContent.includes(x), text) : await page.evaluate(() => [...document.querySelectorAll('#spread canvas')].some((c) => c.width > 50 && c.height > 50));
-    check(`${kind} opens: “${t}”`, h.t === t && shown, h.pos);
+    // A PDF page is drawn on a canvas (cropped to its text: the synthetic pages are short), maybe a moment after the first spread.
+    const shown = text ? await page.evaluate((x) => document.querySelector('#spread')?.textContent.includes(x), text) : await page.waitForFunction(() => [...document.querySelectorAll('#spread canvas')].some((c) => c.width > 50 && c.height > 30), null, { timeout: 5000 }).then(() => true, () => false);
+    const cv = await page.evaluate(() => [...document.querySelectorAll('#spread canvas')].map((c) => `${c.width}×${c.height}`).join(' '));
+    check(`${kind} opens: “${t}”`, h.t === t && shown, `${h.pos}${text ? '' : ' · canvas ' + cv} · ${h.t}`);
     const tr = await turn(page);
     check(`${kind} turns pages`, tr.moved, `${tr.before} → ${tr.after}`);
     await page.screenshot({ path: join(SHOTS, `open-${kind.toLowerCase()}.png`) });
@@ -165,6 +167,11 @@ try {
   await open(page, 'Root Level Paper');
   const wl = await page.evaluate(() => [...document.querySelectorAll('#sec-why .lc-why > *')].map((x) => x.textContent));
   check('the why line: kind and size, Show in folder, the file, AI on request', wl.some((x) => /^PDF, /.test(x)) && wl.some((x) => /^Show in (Finder|folder)$/.test(x)) && wl.includes('The file ↗') && wl.includes('AI only on request'), wl.join(' · '));
+
+  // The reader's own clean-up of a local document (the server's is a first pass): SVG animation
+  // that sets a link to javascript:, a scheme split by a tab, handlers after a '/'.
+  const san = await page.evaluate(async () => (await import('/js/features/local.js')).localHtml('<article><svg><a><animate attributeName="href" values="javascript:alert(1)"/><set attributeName="href" to="javascript:alert(2)"/><text>t</text></a></svg><a href="java\tscript:alert(3)">x</a><img/src="x"/onerror="alert(4)"></article>'));
+  check('the reader drops what could run a script in a local document', !/animate|<set|javascript|onerror|alert/i.test(san), san);
 
   // Settings › Local folders.
   await page.keyboard.press(',');

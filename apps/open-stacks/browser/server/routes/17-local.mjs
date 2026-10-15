@@ -193,10 +193,11 @@ export default async function (app) {
     sendFile(req, res, real, L.mimeOf(real));
   });
 
-  app.route('GET', /^\/local\/epub\/(local(?::|%3A)[0-9a-f]{20})\/(.+)$/i, (req, res, url, m) => {
+  app.route('GET', /^\/local\/epub\/(local(?::|%3A)[0-9a-f]{20})\/(.+)$/i, async (req, res, url, m) => {
     if (!guard(req, res)) return;
     const x = itemFrom(m);
     if (!x || x.gone || x.e.type !== 'epub' || x.e.stubAbs || !within(x.e.abs)) return fail(res, 404, 'not found');
+    if (x.e.cloud === 'evicted') await readFile(x.e.abs).catch(() => {}); // fetched from iCloud without blocking (as in docOf)
     let name; try { name = decodeURIComponent(m[2]); } catch { return fail(res, 400, 'bad path'); }
     let z = null;
     try {
@@ -259,7 +260,9 @@ export default async function (app) {
       const files = e.kind === 'playlist' ? e.files : [{ name: basename(e.abs) }];
       return page(it.t, `<ol class="lc-playlist">${files.map((f) => `<li><p>${L.esc(L.cleanTitle(f.name))}</p><audio controls preload="none" src="/local/rel/${it.id}/${encodeURIComponent(f.name)}"></audio></li>`).join('\n')}</ol>`);
     }
-    if (e.cloud === 'evicted' && ['epub', 'word'].includes(e.type)) { /* reading it below downloads it (macOS fetches on read) */ }
+    // In iCloud only: macOS fetches it on the first read. Read it here without blocking, so the EPUB reader's
+    // synchronous reads below do not hold up the whole server while it downloads.
+    if (e.cloud === 'evicted' && e.type === 'epub' && !existsSync(cachePath(x))) await readFile(e.abs);
     switch (e.type) {
       case 'md': {
         const buf = await readFile(e.abs);
@@ -335,6 +338,8 @@ export default async function (app) {
         const bad = list.find((d) => d === '/' || d === homedir() || d === resolve(homedir(), '..'));
         if (bad) return json(res, { error: `${bad} is too broad: pick a folder inside it` }, 400);
         if (list.length > 20) return json(res, { error: 'at most 20 folders' }, 400);
+        const inside = list.find((d) => list.some((o) => o !== d && d.startsWith(o.endsWith(sep) ? o : o + sep)));
+        if (inside) return json(res, { error: `${inside} is inside another folder in the list: its files would be there twice` }, 400);
         next.dirs = list;
       }
     }
