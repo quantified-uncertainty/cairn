@@ -8,6 +8,7 @@ export const HUD_ICONS = {
  "arrow-down": "<path d=\"M12 5v14\" /> <path d=\"m19 12-7 7-7-7\" />",
  "arrow-down-up": "<path d=\"m3 16 4 4 4-4\" /> <path d=\"M7 20V4\" /> <path d=\"m21 8-4-4-4 4\" /> <path d=\"M17 4v16\" />",
  "arrow-left-right": "<path d=\"M8 3 4 7l4 4\" /> <path d=\"M4 7h16\" /> <path d=\"m16 21 4-4-4-4\" /> <path d=\"M20 17H4\" />",
+ "move": "<path d=\"M12 2v20\" /> <path d=\"m15 19-3 3-3-3\" /> <path d=\"m19 9 3 3-3 3\" /> <path d=\"M2 12h20\" /> <path d=\"m5 9-3 3 3 3\" /> <path d=\"m9 5 3-3 3 3\" />",
  "arrow-down-to-line": "<path d=\"M12 17V3\" /> <path d=\"m6 11 6 6 6-6\" /> <path d=\"M19 21H5\" />",
  "arrow-up-to-line": "<path d=\"M5 3h14\" /> <path d=\"m18 13-6-6-6 6\" /> <path d=\"M12 7v14\" />",
  "chevrons-down": "<path d=\"m7 6 5 5 5-5\" /> <path d=\"m7 13 5 5 5-5\" />",

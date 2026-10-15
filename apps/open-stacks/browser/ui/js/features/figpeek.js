@@ -5,7 +5,9 @@
 // figure spans two pages, and the figure itself is never covered. Move into
 // the enlargement to inspect it: the wheel zooms further, a drag pans, a
 // double-click fits it again. A click on a figure (or in the enlargement)
-// pins it; Esc, × or a click elsewhere closes it. Z turns peeking on or off.
+// pins it; Esc, × or a click elsewhere closes it. A figure already about as
+// large as the room beside it allows (a full-page plate) does not open on
+// hover; a click opens it pinned, to zoom into. Z turns peeking on or off.
 //
 // Finding figures happens lazily: in idle time after 'spread:settled', or on
 // the first hover over a page; never during a turn. A page becomes:
@@ -21,10 +23,14 @@
 // two-column page), into connected regions, which take in the small text
 // around them (axis labels, legends, sub-figure letters) but not prose or
 // their caption. Captions then claim the regions beside them (above for
-// figures, below for tables; sub-figures unite), and a caption with no region
-// proposes one: the ink between it and the prose above (or below). Regions
-// with no caption stay only when they are clearly graphics. Regions are kept
+// figures, below for tables; sub-figures side by side unite, stacked ones
+// share the caption), and a caption with no region proposes one: the ink
+// between it and the prose above (or below). Regions with no caption stay
+// only when they are clearly graphics (a plate takes the short line under it
+// as its legend). Scans add barriers at the page edges and close each
+// caption's column, as OCR boxes cover print less tightly. Regions are kept
 // in fractions of the page, so they serve every crop, column split and zoom.
+// Other features can use regionsOf(it, k) (e.g. for figure crops).
 //
 // The enlargement is sharp: PDFs re-render just the region from the PDF at
 // the size shown (an offset viewport), again for each zoom; scans crop the
@@ -561,7 +567,7 @@ export function regionsOf(it, k) {
       const vp = page.getViewport({ scale: 1 });
       const tc = tl?.pageModel ? (await tl.pageModel(it, k).catch(() => null))?.tc : null;
       const [text, ol] = await Promise.all([tc || page.getTextContent(), withTimeout(page.getOperatorList(), 2500).catch(() => null)]);
-      const c0 = performance.now(), grid = await inkGrid(it, k, vp.width, vp.height, false), c1 = performance.now();
+      const grid = await inkGrid(it, k, vp.width, vp.height, false), c1 = performance.now();
       res = { W: vp.width, H: vp.height, ...findRegions({ W: vp.width, H: vp.height, runs: pdfRuns(text, vp), imgs: ol ? imageBoxes(ol, lib.OPS, vp) : [], grid }) };
       res.cpu = [grid.ms, Math.round(performance.now() - c1)]; // ink grid, analysis (main thread)
     } else {
@@ -569,7 +575,7 @@ export function regionsOf(it, k) {
       const m = tl?.pageModel ? await tl.pageModel(it, k).catch(() => null) : null;
       let W = m?.o?.w, H = m?.o?.h;
       if (!W) { const p = panelsOf(it, k)[0]; W = p?.srcW || 1000; H = p?.srcH || 1500; }
-      const c0 = performance.now(), grid = await inkGrid(it, k, W, H, true), c1 = performance.now();
+      const grid = await inkGrid(it, k, W, H, true), c1 = performance.now();
       const runs = m?.o ? ocrRuns(m.o) : inkRuns(grid);
       res = { W, H, ...findRegions({ W, H, runs, grid, scan: true }) };
       res.cpu = [grid.ms, Math.round(performance.now() - c1)];
@@ -611,6 +617,7 @@ function paintBoxes(it, k, res) {
     const p = el._pnl;
     if (!p?.canvas || Number(el.dataset.k) !== k || el._fpRes === res) continue;
     el._fpRes = res;
+    marked.hot = marked.src = undefined;
     el.querySelectorAll(':scope > .fp-r').forEach((x) => x.remove());
     const b = p.box, bw = b.x1 - b.x0, bh = b.y1 - b.y0;
     res.regions.forEach((r, j) => {
@@ -622,7 +629,10 @@ function paintBoxes(it, k, res) {
     });
   }
 }
+const marked = {}; // class -> the region marked with it (so pointer moves do not touch the DOM)
 function markRegion(reg, cls) {
+  if (marked[cls] === reg) return;
+  marked[cls] = reg;
   for (const d of document.querySelectorAll(`#spread .fp-r.${cls}`)) d.classList.remove(cls);
   if (!reg) return;
   for (const el of document.querySelectorAll('#spread > .pg')) {
@@ -649,7 +659,7 @@ on('spread:settled', ({ it, els }) => {
 // ---------- hovering ----------
 const spread = $('#spread');
 let hoverEl = null, pending = null, enterAt = 0, showT = 0, closeT = 0, lastPt = null, swallowUntil = 0;
-const S = { reg: null, el: null, it: null, pinned: false, lay: null, z: 1, ox: 0, oy: 0, t0: 0 };
+const S = { reg: null, el: null, it: null, prep: null, pinned: false, lay: null, z: 1, ox: 0, oy: 0 }; // the enlargement on screen
 function hitAt(el, x, y) {
   const res = resOf(el); if (!res) return null;
   const b = el._pnl.box, R = el.getBoundingClientRect();
@@ -919,7 +929,7 @@ function paintMeta() {
 function open(reg, el, it, pinIt) {
   const k = Number(el.dataset.k); reg.k = k;
   let prep = pending?.reg === reg && pending.lay ? pending : prepare(reg, el, it, pinIt);
-  if (!prep.lay) { if (pinIt) toast('No room to enlarge', { icon: 'maximize', sub: 'There is no space beside this figure to show it larger' }); return; }
+  if (!prep.lay) { if (pinIt) toast('No room to enlarge', { icon: 'maximize', sub: 'Not enough space beside this figure' }); return; }
   if (!ov) buildOv();
   if (S.prep && S.prep !== prep) S.prep.job?.cancel();
   const t0 = enterAt || performance.now();

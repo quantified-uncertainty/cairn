@@ -67,6 +67,17 @@ export function openDoc(it) {
 }
 /** The cached document if it is already open (no fetch). */
 export const peekDoc = (it) => docs.get(docKey(it));
+/** Close one item's open document, or all of them (the profile benchmark measures cold opens). */
+export function dropDocs(it = null) {
+  for (const [k, v] of [...docs]) {
+    if (it && k !== docKey(it)) continue;
+    docs.delete(k); Promise.resolve(v).then((d) => d?.pdf?.destroy?.()).catch(() => {});
+  }
+}
+
+/** Feature hooks fn(doc, it) that edit a flow document's parsed HTML before layout and
+ *  paging, with img width/height still present (features/rescue.js routes images through /img). */
+export const flowFilters = [];
 
 const VP_WORDS = 280; // words per stable "page" of a flow document
 const BLOCKS = 'p,li,h1,h2,h3,h4,h5,h6,pre,table,figure,blockquote,dt,dd,img,iframe,hr';
@@ -77,6 +88,7 @@ export function prepareFlow(it, html) {
   const doc = new DOMParser().parseFromString(html, 'text/html');
   doc.querySelectorAll('script,style,noscript,form,object,embed,link,meta,.sl-anchor-link,.sr-only,.visually-hidden,.screen-reader-text,.anchor-link,.headerlink').forEach((x) => x.remove());
   doc.querySelectorAll('[style]').forEach((x) => { x.style.removeProperty('width'); x.style.removeProperty('max-width'); x.style.removeProperty('float'); });
+  for (const f of flowFilters) { try { f(doc, it); } catch (e) { console.warn('flow filter failed', e); } }
   doc.querySelectorAll('img').forEach((img) => { img.removeAttribute('loading'); img.decoding = 'async'; img.removeAttribute('width'); img.removeAttribute('height'); });
   doc.querySelectorAll('iframe').forEach((f) => { f.setAttribute('loading', 'lazy'); f.removeAttribute('width'); f.removeAttribute('height'); });
   doc.querySelectorAll('a[href]').forEach((a) => { if (!a.getAttribute('href').startsWith('#')) { a.target = '_blank'; a.rel = 'noopener'; } });

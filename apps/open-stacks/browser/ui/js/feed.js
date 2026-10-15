@@ -41,7 +41,10 @@ export async function showFeed() {
   // With a profile the page count, shapes and blank pages are known before the
   // PDF is even opened (and its display images may make opening it unnecessary).
   let pf = profileOf(it);
-  if (pf === undefined) { pf = await profileSoon(it); if (gen !== state.gen) return; }
+  // Not asked yet (planAround usually has asked): ask now, but do not wait when
+  // the opening pages are already in memory, so that spread still shows at once.
+  if (pf === undefined && n && renderedNow(it, Math.max(0, Math.min(startOf(i), n - 1)))) loadProfile(it);
+  else if (pf === undefined) { pf = await profileSoon(it); if (gen !== state.gen) return; }
   if (!n && pf?.n) n = it.n = pf.n;
   if (!n) {
     const stop = it.kind === 'pdf' ? showDownload(it, gen) : () => {};
@@ -132,9 +135,11 @@ async function showProfiled(gen, i, it, pf, s, n, per, boxW, boxH) {
   state.shown = slots.length;
   paintPos(it, s, slots.length, n);
   paintScrub(i, s, slots.length);
-  planAround(i, s);
+  // The pages on screen first: preparing the ones ahead starts once these are
+  // decoded (they would otherwise share the image decoders and the main thread).
   const results = await Promise.all(slots.map((x) => x.p.catch((e) => [{ err: e.message, k: x.k }])));
   if (gen !== state.gen) return;
+  planAround(i, s);
   finish(i, it, s, n, results, slots, boxW, boxH);
 }
 /** Show a full-page placeholder image cropped like the page will be. */
@@ -437,8 +442,11 @@ on('item:settled', ({ it }) => {
 // whatever is fastest: a full render already in memory, else a quick
 // low-resolution one (PDFs) or the small page image (scans).
 const quick = new Map(); // `${id}|${k}` -> Promise<canvas>, low-res PDF pages
+/** How many quick pdf.js renders scrubbing has made (the benchmark counts them). */
+export const scrubStats = { quick: 0 };
 function quickPdf(it, k, H) {
   return lru(quick, `${it.id}|${k}`, async () => {
+    scrubStats.quick++;
     const d = await openDoc(it);
     const page = await d.pdf.getPage(k + 1);
     const vp0 = page.getViewport({ scale: 1 });

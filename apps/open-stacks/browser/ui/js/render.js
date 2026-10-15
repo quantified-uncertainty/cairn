@@ -100,7 +100,7 @@ const done = new Map();
 // own ink) are not mixed with ones cropped to the profile's shared box.
 const keyOf = (it, k) => `${it.id}|${k}|${state.crop}|${state.cols}|${state.cropPad ?? ''}|${cropKey(profileOf(it))}`;
 /** Forget every render in memory (the benchmark measures cold paths with it). */
-export function dropRenders() { renders.clear(); done.clear(); }
+export function dropRenders() { renders.clear(); done.clear(); imgs.clear(); }
 export const renderedNow = (it, k) => { const key = keyOf(it, k); return renders.has(key) ? done.get(key) || null : null; };
 export function renderPage(it, k) {
   const key = keyOf(it, k);

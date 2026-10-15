@@ -220,6 +220,7 @@ function setFont(d) {
 // (zoom → spread → wall); it never zooms the app itself.
 on('gesture:step', (d) => {
   if (state.view !== 'feed') return;
+  if (state.stepHook?.(d)) return; // a mode that owns the wheel took the step (features/readaloud.js: sentences)
   const map = d.device === 'mouse' ? state.wheelMouse : state.wheelPad;
   const v = d.axis === 'v';
   let r;
@@ -245,29 +246,32 @@ attachWheel($('#stage'), {
 
 const MOUSE = { continue: '⇣ continue', items: '↕ items', pages: '↕ pages' };
 const PAD = { '2d': '↕ items ↔ pages', continue: 'continue' };
-// What each map does, in the words the notices and the keys overlay (?) both use: [main line, second line].
+// What each map does, in the words the notices and the keys overlay (?) both use:
+// [main line, second line (one glance: what down and up do), more (the overlay only)].
+// The end-of-document pause is told when it happens (showPull), not here.
 const WHEEL_SAY = {
   wheelMouse: {
-    continue: ['Wheel: continue', 'down = next page, then the next item · up = go back · Shift+wheel = pages'],
-    items: ['Wheel: items', 'down = next item · up = previous item · Shift+wheel = pages'],
-    pages: ['Wheel: pages', 'down = next page · at the end, pause and scroll again for the next item · Shift+wheel = items'],
+    continue: ['Wheel: continue', 'Down: next page, then next item · Up: go back', 'Shift+wheel: pages'],
+    items: ['Wheel: items', 'Down: next item · Up: previous item', 'Shift+wheel: pages'],
+    pages: ['Wheel: pages', 'Down: next page · Up: previous page', 'Shift+wheel: items'],
   },
   wheelPad: {
-    '2d': ['Trackpad: items and pages', 'up/down = items · sideways = pages'],
-    continue: ['Trackpad: continue', 'down = next page, then the next item · up = go back · sideways = pages'],
+    '2d': ['Trackpad: items and pages', 'Up/down: items · Sideways: pages'],
+    continue: ['Trackpad: continue', 'Down: next page, then next item · Up: go back', 'Sideways: pages'],
   },
   wheelDevice: {
     auto: ['Wheel: detect the device', 'Mouse or trackpad, for each gesture'],
     mouse: ['Wheel: always a mouse', ''], pad: ['Wheel: always a trackpad', ''],
   },
 };
-const WHEEL_ARROW = { continue: 'arrow-down', items: 'arrow-down-up', pages: 'arrow-down-up', '2d': 'arrow-down-up' };
-/** A notice for the device map `k` that just changed: the device, an arrow, the mode in a few words. */
+// Beside the device, what the wheel moves: on (an arrow), items (the next-item icon), pages (a book), or both ways.
+const WHEEL_ICON = { continue: 'arrow-down', items: 'skip-forward', pages: 'book-open', '2d': 'move' };
+/** A notice for the device map `k` that just changed: the device, what it moves, the mode in a few words. */
 function sayWheel(k) {
   const v = state[k], [main, sub] = WHEEL_SAY[k]?.[v] || [];
   if (!main) return;
   const dev = k === 'wheelPad' || (k === 'wheelDevice' && v === 'pad') ? 'touchpad' : 'mouse';
-  toast(main, { icon: k === 'wheelDevice' ? dev : `${dev}+${WHEEL_ARROW[v]}`, sub, kind: 'mode' });
+  toast(main, { icon: k === 'wheelDevice' ? dev : `${dev}+${WHEEL_ICON[v]}`, sub, kind: 'mode' });
 }
 function setWheel(k, v) { state[k] = v; store.set(k, v); paintWheel(); }
 /** W or a middle click: the mouse wheel's map, continue → items → pages. */
@@ -281,10 +285,11 @@ export function paintWheel() {
   b.textContent = MOUSE[state.wheelMouse] || MOUSE.continue;
   b.title = `Mouse wheel: ${state.wheelMouse} (middle-click or W cycles) · trackpad: ${PAD[state.wheelPad]} · click to set each device`;
   const f = $('#keys .k-foot')?.firstChild;
-  const [mName, mSays] = WHEEL_SAY.wheelMouse[state.wheelMouse] || WHEEL_SAY.wheelMouse.continue;
-  const [pName, pSays] = WHEEL_SAY.wheelPad[state.wheelPad] || WHEEL_SAY.wheelPad.continue;
-  if (f?.nodeType === 3) f.textContent = `${mName.replace(/^Wheel: (.*)/, 'Mouse wheel ($1)')}: ${mSays}. W or a middle click switches continue → items → pages. `
-    + `${pName.replace(/^Trackpad: (.*)/, 'Trackpad ($1)')}: ${pSays}; one step per stroke. At the end of a document the wheel stops: pause, then scroll again to go on. `
+  const [mName, mSays, mMore] = WHEEL_SAY.wheelMouse[state.wheelMouse] || WHEEL_SAY.wheelMouse.continue;
+  const [pName, pSays, pMore] = WHEEL_SAY.wheelPad[state.wheelPad] || WHEEL_SAY.wheelPad.continue;
+  const all = (says, more) => says + (more ? ' · ' + more : '');
+  if (f?.nodeType === 3) f.textContent = `${mName.replace(/^Wheel: (.*)/, 'Mouse wheel ($1)')} — ${all(mSays, mMore)}. W or a middle click switches continue → items → pages. `
+    + `${pName.replace(/^Trackpad: (.*)/, 'Trackpad ($1)')} — ${all(pSays, pMore)}; one step per stroke. At the end of a document the wheel stops: pause, then scroll again to go on. `
     + 'Pinch out to zoom into a page, pinch in to zoom back out. Click a page to zoom.';
 }
 /** The wheel button: the map for each device, and whether to detect the device. */

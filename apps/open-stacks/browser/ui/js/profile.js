@@ -11,8 +11,10 @@ import { state } from './state.js';
 import * as core from './profile-core.js';
 export { spreadStarts, snapStart, spreadAt, HINTS, GEN, SCHEMA, DEFAULT_PAD, toBox, toArr } from './profile-core.js';
 
-// Settings (spec 12.1): show display images when available. The benchmark turns it off.
+// Settings (spec 12.1): show display images and sprites when available. The
+// benchmark turns them off (useAssets) or ignores profiles altogether (useProfiles).
 state.useAssets ??= store.get('useAssets', true);
+state.useProfiles ??= true;
 
 const known = new Map(); // id -> Profile | null (known to have none)
 const inflight = new Map();
@@ -32,7 +34,7 @@ function remember(id, P) {
 }
 /** Sync: the item's profile, null (known to have none) or undefined (not asked yet). */
 export function profileOf(it) {
-  if (!it) return null;
+  if (!it || state.useProfiles === false) return null;
   const P = known.get(it.id);
   if (P === undefined) return undefined;
   return P && usable(it, P) ? P : null;
@@ -112,7 +114,7 @@ export function assetMissing(P, size, kj) {
 }
 /** CSS for page k's sprite cell shown `displayHeight` px tall: {backgroundImage, backgroundSize, backgroundPosition} or null. */
 export function spriteCell(P, k, displayHeight) {
-  const S = P?.assets?.sprite;
+  const S = state.useAssets !== false && P?.assets?.sprite;
   if (!S || !(k >= 0 && k < P.n)) return null;
   const j = Math.floor(k / S.per), i = k % S.per;
   const sheet = S.sheets.find((x) => x.j === j);
@@ -127,7 +129,7 @@ export function spriteCell(P, k, displayHeight) {
   };
 }
 /** Width / height of a sprite cell (cells are uniform; pages are letterboxed in them). */
-export const spriteAspect = (P) => (P?.assets?.sprite ? P.assets.sprite.cw / P.assets.sprite.ch : null);
+export const spriteAspect = (P) => (state.useAssets !== false && P?.assets?.sprite ? P.assets.sprite.cw / P.assets.sprite.ch : null);
 /** Preload the item's sprite sheets (10-50 KB for a paper) so scrubbing never waits. */
 const preloaded = new Set();
 export function preloadSprite(P) {

@@ -616,7 +616,7 @@ function selectionQuote() {
 }
 export function quoteSelection() {
   const q = selectionQuote();
-  if (!q) { toast('Select some text first', { icon: 'text-cursor', sub: 'then press q to quote it into your note' }); return; }
+  if (!q) { toast('Select some text first', { icon: 'text-cursor', sub: 'Then press q to quote it into your note' }); return; }
   appendQuote(items[current()], q.text, q.label);
   getSelection().removeAllRanges(); hideQuote();
 }

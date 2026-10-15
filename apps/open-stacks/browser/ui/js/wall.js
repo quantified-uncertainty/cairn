@@ -758,6 +758,8 @@ const KEYS = {
 window.addEventListener('keydown', (e) => {
   if (state.view !== 'wall' || e.metaKey || e.ctrlKey || e.altKey || !$('#keys').hidden || !$('#search').hidden) return;
   const t = e.target;
+  const st = document.getElementById('st'); // the Settings sheet (features/settings.js): keys in it, and Esc while it is open, are its own
+  if (st && !st.hidden && (e.key === 'Escape' || st.contains(t))) return;
   if (t.isContentEditable || /^(TEXTAREA|SELECT)$/.test(t.tagName) || (t.tagName === 'INPUT' && t.type !== 'range')) return;
   if (t.type === 'range' && /^(Arrow|Home|End|Page)/.test(e.key)) return;
   const fn = KEYS[e.key];

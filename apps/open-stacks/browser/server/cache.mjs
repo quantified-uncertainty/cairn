@@ -299,6 +299,11 @@ function start(u, job, held) {
   inflight.set(u, job);
   return job.p;
 }
+// Dead documents: onDead(fn) lets server/rescue.mjs replace a response that
+// failed for good, or a placeholder page, with an archived copy:
+// fn(url, {status, error?, type?, buf?, fg}) -> {buf, type, meta} | null.
+let deadHook = null;
+export const onDead = (fn) => { deadHook = fn; };
 async function fetchInto(u, job, held) {
   const h = hostOf(u);
   for (let attempt = 0; ; attempt++) {
@@ -317,18 +322,24 @@ async function fetchInto(u, job, held) {
       }
       else await res.body?.cancel().catch(() => {});
     } catch (e) { err = e; } finally { release(h, job); }
-    if (buf) {
-      h.strikes = 0;
+    const store = async (body, type, extra) => {
       const k = key(u), p = pathsK(k);
       await mkdir(p.d, { recursive: true });
-      await writeFile(p.body, buf);
-      const m = JSON.stringify({ url: u, type: res.headers.get('content-type') || 'application/octet-stream', size: buf.length, at: Date.now(), ...(res.url && res.url !== u ? { final: res.url } : {}) });
+      await writeFile(p.body, body);
+      const m = JSON.stringify({ url: u, type, size: body.length, at: Date.now(), ...extra });
       await writeFile(p.meta, m); // last: cached() means the body is complete
-      put(k, buf.length + m.length, nowSec());
-      stats.fetched++; stats.bytes += buf.length;
-      timing(u, Date.now() - job.t0, buf.length);
+      put(k, body.length + m.length, nowSec());
+      stats.fetched++; stats.bytes += body.length;
+      timing(u, Date.now() - job.t0, body.length);
       evictSoon();
-      return;
+    };
+    if (buf) {
+      h.strikes = 0;
+      const type = res.headers.get('content-type') || 'application/octet-stream';
+      // A document that now serves a placeholder page: its archived copy instead (onDead).
+      const alt = deadHook && await deadHook(u, { status: res.status, type, buf, fg: job.fg }).catch(() => null);
+      if (alt) return store(alt.buf, alt.type, alt.meta);
+      return store(buf, type, res.url && res.url !== u ? { final: res.url } : {});
     }
     // Rate limited or overloaded: pause the whole host, with exponential backoff.
     if (res && (res.status === 429 || res.status === 503)) {
@@ -342,6 +353,9 @@ async function fetchInto(u, job, held) {
     }
     // Transient gateway errors and dropped connections: one quick retry.
     if (attempt < 1 && (err || res.status === 502 || res.status === 504)) { await new Promise((r) => setTimeout(r, 400 + Math.random() * 400)); continue; }
+    // Gone for good (404, 410, 451, a vanished host): an archived copy if there is one (onDead).
+    const alt = deadHook && await deadHook(u, { status: res?.status || 0, error: err && (err.cause?.code || err.code || err.message), fg: job.fg }).catch(() => null);
+    if (alt) return store(alt.buf, alt.type, alt.meta);
     throw err || new Error(`HTTP ${res.status}`);
   }
 }

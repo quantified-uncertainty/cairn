@@ -24,6 +24,8 @@ function pumpSched() {
     Promise.resolve().then(next.fn).catch(() => {}).finally(() => { sched.running--; sched.q.delete(next.key); pumpSched(); });
   }
 }
+/** Prepared-ahead work queued or running (the benchmark waits for it to finish). */
+export const schedBusy = () => sched.running + [...sched.q.values()].filter((t) => !t.started).length;
 export function serverPrefetch(urls, pri, group) {
   if (urls.length) fetch('/prefetch', { method: 'POST', body: JSON.stringify({ urls, pri, group }) }).catch(() => {});
 }

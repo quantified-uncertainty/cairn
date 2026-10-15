@@ -100,7 +100,7 @@ function nextUnit() {
 }
 
 class Job {
-  constructor(it, depth, far = false) { Object.assign(this, { it, depth, far, phase: 'check', k: 0, pages: [], keep: [], busy: false }); }
+  constructor(it, depth, far = false) { Object.assign(this, { it, depth, far, phase: 'check', k: 0, pages: [], keep: [], busy: false, missed: 0 }); }
   drop() { this.phase = 'dropped'; this.pdf?.destroy?.(); this.pdf = null; this.keep = []; }
   /** The next unit of work, or null (nothing left, or waiting for one under way). */
   next() {
@@ -163,7 +163,20 @@ class Job {
   async page() {
     const k = this.k, it = this.it;
     const keep = this.n <= 400;
-    const p = it.kind === 'scan' ? await scanPage(it, k, this.texts?.[k]) : await pdfPage(this.pdf, k, keep);
+    const one = () => (it.kind === 'scan' ? scanPage(it, k, this.texts?.[k]) : pdfPage(this.pdf, k, keep));
+    let p;
+    try { p = await one(); } catch (e) {
+      if (/cancel/i.test(e?.name || e?.message || '')) throw e;
+      // One page that will not load (an archive.org hiccup, a broken PDF page) is
+      // shown whole rather than failing the item; many of them stop the job.
+      await new Promise((r) => setTimeout(r, 1500));
+      try { p = await one(); } catch (e2) {
+        if (/cancel/i.test(e2?.name || e2?.message || '')) throw e2;
+        if (++this.missed > Math.max(3, this.n * 0.1)) throw e2;
+        const prev = this.pages[k - 1];
+        p = { w: prev?.w || 1000, h: prev?.h || 1400, blank: false, ink: [0, 0, 1, 1], gut: null, dens: 0, words: it.kind === 'scan' && this.texts?.[k] != null ? core.countWords(this.texts[k]) : -1, lines: [], text: this.texts?.[k] || '' };
+      }
+    }
     if (this.phase === 'dropped') return;
     if (this.labels?.[k]) p.lab = String(this.labels[k]);
     this.pages[k] = p;
@@ -419,7 +432,7 @@ on('profile:updated', ({ id }) => { if (items[state.order[state.pos]]?.id === id
 
 // ------------------------------------------------------------------ batch ----
 /** compile.mjs drives this in headless Chromium: compile one item now (not in idle time). */
-window.__stacksCompile = async (id, { assets = 'core', height = RENDER_H } = {}) => {
+window.__stacksCompile = async (id, { assets = 'core', height = RENDER_H, all = false } = {}) => {
   const it = items.find((x) => x.id === id);
   if (!it) return { id, error: 'unknown id' };
   if (isFlow(it)) return { id, skipped: 'flow' };
@@ -427,23 +440,25 @@ window.__stacksCompile = async (id, { assets = 'core', height = RENDER_H } = {})
   const job = new Job(it, 'sprite');
   for (let guard = 0; guard < 20000 && job.phase !== 'done' && job.phase !== 'dropped'; guard++) {
     const u = job.next(); if (!u) break;
-    await u();
+    try { await u(); } catch (e) { return { id, error: e?.message || String(e), ms: Math.round(performance.now() - t0) }; }
   }
   const Pf = storedProfile(it);
   let display = 0;
-  if (assets === 'full' && Pf?.n && it.kind === 'pdf') display = await batchDisplay(it, Pf, job, height);
+  if (assets === 'full' && Pf?.n && it.kind === 'pdf') display = await batchDisplay(it, Pf, job, height, all);
   job.release();
   return { id, ok: !!Pf, n: Pf?.n || 0, ms: Math.round(performance.now() - t0), display, sprite: !!Pf?.assets?.sprite, failed: S.failed.has(id) };
 };
 /** Display images for the pages most likely to be seen: the opening spread and the best pages. */
-async function batchDisplay(it, Pf, job, H) {
+async function batchDisplay(it, Pf, job, H, all = false) {
   const pri = new Map();
   for (const k of openingPages(it, Pf)) pri.set(k, 90);
   for (const k of it.best || []) if (!pri.has(k) && k < Pf.n) pri.set(k, 70);
   for (const p of Pf.pages) if (!pri.has(p.k) && p.fig?.length) pri.set(p.k, 50);
+  if (all) for (const p of Pf.pages) if (!pri.has(p.k) && !p.blank) pri.set(p.k, 10 - p.k / Pf.n); // --all-pages: the rest, front first
   if (!job.pdf) { const lib = await pdfjs(); const buf = await (await fetch(P(it.url))).arrayBuffer(); worker ||= new lib.PDFWorker({ name: 'compile' }); job.pdf = await lib.getDocument({ data: buf, isEvalSupported: false, disableFontFace: true, worker, ...PDF_ASSETS }).promise; }
   let made = 0;
   for (const [k, p] of [...pri].sort((a, b) => b[1] - a[1])) {
+    if (Pf.assets?.display?.[k]?.H >= 0.9 * H) continue; // have it already
     const c = cropOf(Pf, k, DEFAULT_PAD); if (!c) continue;
     const b = { x0: Math.max(0, c.x0 - 0.02), y0: Math.max(0, c.y0 - 0.02), x1: Math.min(1, c.x1 + 0.02), y1: Math.min(1, c.y1 + 0.02) };
     const page = await job.pdf.getPage(k + 1);
@@ -458,10 +473,11 @@ async function batchDisplay(it, Pf, job, H) {
     cut.getContext('2d').drawImage(full, sx, sy, sw, sh, 0, 0, sw, sh);
     const box = [sx / full.width, sy / full.height, (sx + sw) / full.width, (sy + sh) / full.height].map((v) => Math.round(v * 1e4) / 1e4);
     const blob = await encode(cut, 0.8);
-    const r = await fetch(`/profile/asset?id=${enc(it.id)}&size=display&k=${k}&w=${sw}&h=${sh}&box=${box.join(',')}&H=${full.height}&pri=${p}`, { method: 'POST', body: blob });
+    const r = await fetch(`/profile/asset?id=${enc(it.id)}&size=display&k=${k}&w=${sw}&h=${sh}&box=${box.join(',')}&H=${full.height}&pri=${Math.max(1, Math.round(p))}`, { method: 'POST', body: blob });
     if (r.status === 409) break; // the budget is full at this priority
     if (r.ok) made++;
   }
+  if (made) await loadProfile(it, { force: true });
   return made;
 }
 

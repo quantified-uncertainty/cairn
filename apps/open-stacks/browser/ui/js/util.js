@@ -102,7 +102,7 @@ export function registerView(name, v) { views.set(name, v); emit('views:changed'
 // an optional smaller second line. One at a time: a new one replaces the old.
 //   toast('Saved')                                     plain text still works
 //   toast('Saved', { icon: 'star', kind: 'ok' })       options may come second
-//   toast('Wheel: pages', 2600, { icon: 'mouse+arrow-down-up', sub: 'down = next page', kind: 'mode' })
+//   toast('Wheel: pages', 2600, { icon: 'mouse+book-open', sub: 'Down: next page', kind: 'mode' })
 // icon: a name from hud-icons.js ('a+b' puts two side by side).
 // kind: 'mode' (a setting changed: accent, shown longer), 'ok' (done: accent),
 // 'edge' (the start or end of something: dim), 'bad' (failed: red, longer),
@@ -121,12 +121,12 @@ export function toast(text, ms, opts = {}) {
     el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
     document.body.append(el);
   }
-  // Low and centred on the stage (the pages), else on the window.
+  // Low and centred on the stage (the pages) while it shows, else on the window.
+  // It lives inside #stage so CSS places it: nothing here reads layout, so a
+  // notice never forces a layout of the page in the middle of a page turn.
   const st = document.getElementById('stage');
-  const r = st?.getClientRects().length ? st.getBoundingClientRect() : null;
-  el.style.left = r ? `${Math.round(r.left + r.width / 2)}px` : '';
-  el.style.bottom = r ? `${Math.round(Math.max(0, innerHeight - r.bottom) + Math.min(84, Math.max(40, r.height * 0.07)))}px` : '';
-  el.style.maxWidth = r ? `${Math.round(Math.min(720, r.width - 32))}px` : '';
+  const host = st && !st.hidden ? st : document.body;
+  if (el.parentNode !== host) host.append(el);
   const ic = el.querySelector('.hud-i'), m = el.querySelector('.hud-m'), s = el.querySelector('.hud-s');
   const changed = m.textContent !== String(text) || ic.dataset.icon !== icon;
   if (ic.dataset.icon !== icon) { ic.innerHTML = hudIcon(icon); ic.dataset.icon = icon; }

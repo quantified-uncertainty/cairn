@@ -236,7 +236,7 @@ registerStepper((dir, e) => {
 }, 30);
 function toggleSkim() {
   store.set('skim', !S.skim);
-  if (S.skim) toast('Skim path on', { icon: 'route', kind: 'mode', sub: 'Space goes to the next stop of the reading guide' });
+  if (S.skim) toast('Skim path on', { icon: 'route', kind: 'mode', sub: 'Space: next stop of the reading guide' });
   else toast('Skim path off', { icon: 'route', kind: 'mode', sub: 'Space turns pages' });
   const it = items[current()]; if (it) { paintGuide(it); paintBadge(); }
 }
@@ -519,9 +519,11 @@ async function paintNotes() {
 function flowNotes(it, a, gen) {
   if (!flowHere(it)) return;
   const [lo, hi] = flowRange(state.start.get(current()) ?? 0);
-  const notes = (a.notes || []).filter((n) => n.k >= lo - 1 && n.k <= hi + 1);
+  // Pages of a guide made from the cached HTML (a batch) are approximate: look a little wider.
+  const slack = a.textSrc === 'html-approx' ? 3 : 1;
+  const notes = (a.notes || []).filter((n) => n.k >= lo - slack && n.k <= hi + slack);
   if (!notes.length) return;
-  const words = flowWords(lo - 1, hi + 1);
+  const words = flowWords(lo - slack, hi + slack);
   const sheet = live.sheet, port = live.port;
   if (gen !== notesGen || !sheet.isConnected) return;
   const sr = sheet.getBoundingClientRect(), pr = port.getBoundingClientRect();

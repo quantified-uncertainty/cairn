@@ -212,18 +212,24 @@ a { color: var(--accent); }
 ::highlight(find) { background-color: #ffe36e; color: #1a1611; }
 /* HUD notice (util.js toast): a big icon, a few words, an optional second line;
    low and centred on the stage, one at a time, quick to come and go. Its own
-   colours, so it reads the same over a white page and the dark room. */
-#toast { position: fixed; left: 50%; bottom: 64px; z-index: 50; transform: translate(-50%, 6px); display: flex; align-items: center; gap: 16px; max-width: min(720px, calc(100vw - 32px)); min-height: 76px; padding: 12px 26px 12px 18px; border-radius: 14px; overflow: hidden; background: rgb(17 15 12 / .86); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: #f4efe6; box-shadow: 0 12px 40px #000a, inset 0 0 0 1px #ffffff1c; font-family: var(--sans); opacity: 0; pointer-events: none; transition: opacity .2s ease-in, transform .2s ease-in; }
+   colours, so it reads the same over a white page and the dark room. Sized in em
+   from one font size that grows with the screen: the main line is 22 px at 1728 px
+   wide, 26 px at 2560 (a 4K screen at 150 %) and 33 px at 3840 (4K at 100 %). */
+#toast { position: fixed; left: 50%; bottom: 64px; z-index: 50; transform: translate(-50%, 6px); display: flex; align-items: center; gap: .9em; max-width: min(44em, calc(100vw - 32px)); min-height: 4.7em; padding: .7em 1.5em .7em 1.05em; border-radius: .85em; overflow: hidden; background: rgb(17 15 12 / .86); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: #f4efe6; box-shadow: 0 12px 40px #000a, inset 0 0 0 1px #ffffff1c; font-family: var(--sans); font-size: clamp(16px, calc(9.6px + .39vw), 26px); line-height: 1.3; opacity: 0; pointer-events: none; transition: opacity .2s ease-in, transform .2s ease-in; }
+/* While the feed shows, util.js puts it inside #stage, so CSS centres it on the pages
+   (no layout reads); it sits low, over the pages' bottom margin more than their text. */
+#stage > #toast { position: absolute; bottom: clamp(26px, 3.2%, 48px); max-width: min(44em, calc(100% - 32px)); }
 #toast.on { opacity: 1; transform: translate(-50%, 0); transition-duration: .09s; transition-timing-function: ease-out; }
-#toast .hud-i { flex: none; display: flex; align-items: center; gap: 4px; color: #f4efe6; position: relative; }
-#toast .hud-i svg { display: block; width: 48px; height: 48px; stroke-width: 1.75; }
-#toast .hud-i svg + svg { width: 32px; height: 32px; stroke-width: 2.25; }
-#toast .hud-t { position: relative; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-#toast .hud-m { font-size: 21px; font-weight: 600; line-height: 1.25; letter-spacing: -.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-#toast .hud-s { font-size: 15px; line-height: 1.35; color: #cfc6b6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+#toast .hud-i { flex: none; display: flex; align-items: center; gap: .25em; color: #f4efe6; position: relative; }
+#toast .hud-i svg { display: block; width: 3.2em; height: 3.2em; stroke-width: 1.75; }
+#toast .hud-i svg + svg { width: 2.1em; height: 2.1em; stroke-width: 2.25; }
+#toast .hud-t { position: relative; min-width: 0; display: flex; flex-direction: column; gap: .12em; }
+#toast .hud-m { font-size: 1.35em; font-weight: 600; line-height: 1.25; letter-spacing: -.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#toast .hud-s { font-size: .95em; line-height: 1.35; color: #cfc6b6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 #toast.k-mode .hud-i, #toast.k-ok .hud-i { color: var(--accent); }
 #toast.k-edge .hud-i { color: #b5ac9c; }
 #toast.k-bad .hud-i { color: #e58c78; }
+#toast.k-bad { box-shadow: 0 12px 40px #000a, inset 0 0 0 1.5px #e58c7899; }
 #toast.k-busy .hud-i svg { animation: hud-busy 1.1s ease-in-out infinite; }
 #toast.k-busy .hud-i svg.hi-loader-circle { animation: hud-spin .9s linear infinite; }
 /* The fill: the card fills from the left as you keep scrolling at the end of an item (nav.js). */
@@ -231,7 +237,6 @@ a { color: var(--accent); }
 #toast:not(.fill) .hud-f { display: none; }
 @keyframes hud-spin { to { transform: rotate(1turn); } }
 @keyframes hud-busy { 50% { opacity: .45; } }
-@media (min-width: 2200px) { #toast { gap: 18px; min-height: 84px; } #toast .hud-i svg { width: 56px; height: 56px; } #toast .hud-i svg + svg { width: 36px; height: 36px; } #toast .hud-m { font-size: 22px; } #toast .hud-s { font-size: 16px; } }
 @media (prefers-reduced-motion: reduce) { #toast, #toast.on { transition: opacity .12s; transform: translate(-50%, 0); } #toast .hud-i svg { animation: none !important; } }
 .k-foot { color: var(--ink-3); font-size: 11.5px; margin: 12px 0 0; max-width: 520px; }
 

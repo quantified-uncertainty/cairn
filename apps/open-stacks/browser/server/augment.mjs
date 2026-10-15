@@ -326,13 +326,14 @@ export function checkAugment(raw, o) {
     return hit ? { ok: true, k: hit.page ? Math.max(0, Math.min(n - 1, hit.page - 1)) : null } : { ok: false };
   };
   // Skip ranges first: the plan avoids them.
+  // A "skip" over (nearly) the whole document is no guidance; the rest merge when they touch.
   const skip = [];
-  for (const x of arr(raw.skip).map((x) => { let a = clampK(x.from), b = clampK(x.to ?? x.from); if (a > b) [a, b] = [b, a]; return { a, b, why: cut(x.why, 140) }; }).sort((p, q) => p.a - q.a)) {
+  const ranges = arr(raw.skip).map((x) => { let a = clampK(x.from), b = clampK(x.to ?? x.from); if (a > b) [a, b] = [b, a]; return { a, b, why: cut(x.why, 140) }; })
+    .filter((x) => !(n >= 5 && x.b - x.a + 1 >= 0.9 * n)).sort((p, q) => p.a - q.a);
+  for (const x of ranges) {
     const last = skip.at(-1);
     if (last && x.a <= last.b + 1) { last.b = Math.max(last.b, x.b); if (x.why && !last.why.includes(x.why)) last.why = cut(`${last.why}; ${x.why}`, 200); } else skip.push(x);
   }
-  // A "skip" over (nearly) the whole document is no guidance.
-  for (let j = skip.length - 1; j >= 0; j--) if (n >= 5 && skip[j].b - skip[j].a + 1 >= 0.9 * n) skip.splice(j, 1);
   const refs = Array.isArray(o.profile?.ranges?.refs) ? o.profile.ranges.refs : null;
   const inSkip = (k) => skip.some((x) => k >= x.a && k <= x.b) || (refs && k >= refs[0] && k <= refs[1]);
 
@@ -355,14 +356,17 @@ export function checkAugment(raw, o) {
     stops.push(st);
   }
 
-  const toc = (o.profile?.toc || []).filter((e) => e && e.t);
+  // Titles match the table of contents with or without their section numbers ("Results" = "3 Results").
+  const bare = (t) => skel(String(t).replace(/^\s*(\d+(\.\d+)*|[A-H](\.\d+)+|[IVX]+)[.):]?\s+/, ''));
+  const same = (a, b) => a && b && (a === b || (Math.min(a.length, b.length) >= 4 && (a.startsWith(b) || b.startsWith(a))));
+  const toc = (o.profile?.toc || []).filter((e) => e && e.t).map((e) => ({ ...e, sk: skel(e.t), bk: bare(e.t) }));
   const sections = [];
   for (const x of arr(raw.sections)) {
     const t = cut(x.title, 140); if (!t) continue;
     let k = clampK(x.page), fromToc = false;
-    const sk = skel(t);
+    const sk = skel(t), bk = bare(t);
     if (sk.length >= 3 && toc.length) {
-      const e = toc.find((e) => { const es = skel(e.t); return es && (es === sk || (Math.min(es.length, sk.length) >= 4 && (es.startsWith(sk) || sk.startsWith(es)))); });
+      const e = toc.find((e) => same(e.sk, sk)) || toc.find((e) => same(e.bk, bk));
       if (e) { fromToc = true; if (Number.isInteger(e.k)) k = Math.max(0, Math.min(n - 1, e.k)); }
     }
     if (sections.length && k < sections.at(-1).k) continue; // pages never go backwards
@@ -582,8 +586,8 @@ export function createAugmenter(app) {
     const P = await prepare(b, it, model);
     const release = ai.reserve(model, P.chars, 3500);
     let lastSent = 0, lastJson = '';
-    const push = (a, force) => {
-      if (!force && Date.now() - lastSent < 120) return;
+    const push = (a) => {
+      if (Date.now() - lastSent < 120) return;
       const j = JSON.stringify(a);
       if (j === lastJson) return;
       lastSent = Date.now(); lastJson = j; job.last = a;
@@ -606,7 +610,7 @@ export function createAugmenter(app) {
       if (!parsed) throw new Error(r.stop === 'max_tokens' ? 'The reading guide was cut off' : 'No reading guide returned');
       const out = checkAugment(parsed, { ...P.o, model: r.model + (r.mock ? ' (mock)' : ''), cost });
       if (complete) { writeAtomic(f, JSON.stringify(out)); made++; cachedN = null; } else out.truncated = true;
-      push(out, true);
+      job.last = out; // late joiners get the final at once (it reaches current listeners as the final, not a partial)
       return out;
     } finally { release(); }
   }

@@ -12,6 +12,7 @@ import { state, current } from '../state.js';
 import { openDoc, isFlow, pdfjs } from '../docs.js';
 import { goPage, jumpTo } from '../nav.js';
 import { setView } from '../chrome.js';
+import { attachPeek, showPeek, closePeek, pinPeek, peekState } from './peek.js';
 
 // ---------- figure lists ----------
 const AID = /arxiv\.org\/(?:abs|pdf|html)\/((?:\d{4}\.\d{4,5}|[a-z-]+(?:\.[A-Z]{2})?\/\d{7}))(?:v\d+)?(?:\.pdf)?(?:[?#].*)?$/;
@@ -141,7 +142,7 @@ let afterRender = null;
 on('spread:rendered', ({ i }) => { if (afterRender?.i === i) { const fn = afterRender.fn; afterRender = null; fn(); } });
 
 /** Open the item in the feed at the figure's page (the first page if it is not found). */
-async function openFigure(i, f) {
+export async function openFigure(i, f) {
   const it = items[i];
   hidePop(); closeLb();
   const p = findPage(it, f).catch(() => null);
@@ -168,7 +169,7 @@ async function openFigure(i, f) {
 const MIN_AR = 0.62, MAX_AR = 3.2, TABLE_AR = 1.3;
 /** The figure's images in their arrangement (`lay`: rows and columns of
  *  parts, from the server), sized in px to fit w × h. */
-function figArt(f, w, hgt, onFail) {
+export function figArt(f, w, hgt, onFail) {
   const parts = f.parts || [{ img: f.img, w: f.w || 4, h: f.h || 3 }];
   const lay = f.lay ?? (parts.length > 1 ? ['r', ...parts.map((_, j) => j)] : 0);
   const arOf = (n) => {
@@ -335,7 +336,6 @@ function hoverTile(t) {
   select(t.k, { scroll: false, pop: false });
   if (!t.f) return;
   const it = items[t.i];
-  popTimer = setTimeout(() => showPop(t.el, t.i, t.f), 280);
   warmHover = setTimeout(() => { openDoc(it).catch(() => {}); findPage(it, t.f).catch(() => {}); }, 220); // so the click lands at once
 }
 root.addEventListener('mousemove', (e) => {
@@ -404,7 +404,7 @@ function select(k, { scroll = true, pop = true } = {}) {
   R.sel = k; t.el.classList.add('sel');
   if (scroll) t.el.scrollIntoView({ block: 'nearest' });
   if (lbOpen()) paintLb();
-  else if (pop && t.f) { clearTimeout(popTimer); hidePop(); popTimer = setTimeout(() => showPop(t.el, t.i, t.f), 450); }
+  else if (pop && t.f && peekState().pinned) showPeek(root, t, t.el); // a pinned peek follows the keyboard
 }
 const live = () => R.tiles.filter((t) => !t.gone);
 const figTiles = () => R.tiles.filter((t) => !t.gone && t.f);
@@ -493,7 +493,7 @@ function openLb() {
   if (!R.tiles[R.sel]) step(0);
   if (R.tiles[R.sel]?.rest) select(R.tiles.slice(R.sel).find((x) => x.f && !x.gone)?.k ?? -1, { scroll: false });
   if (!R.tiles[R.sel]?.f) return;
-  hidePop(); lb.hidden = false; paintLb();
+  hidePop(); closePeek(); lb.hidden = false; paintLb();
 }
 function closeLb() { lb.hidden = true; }
 
@@ -509,9 +509,10 @@ document.addEventListener('keydown', (e) => {
     ArrowDown: () => (lbOpen() ? step(1) : spatial(0, 1)), ArrowUp: () => (lbOpen() ? step(-1) : spatial(0, -1)),
     Enter: () => t && (t.rest ? expand(t) : openFigure(t.i, t.f)),
     z: () => (lbOpen() ? closeLb() : openLb()),
+    Z: () => { if (pinPeek() && !peekState().open && t?.f) showPeek(root, t, t.el); },
     o: () => t?.f && window.open(t.f.href, '_blank', 'noopener'),
     ' ': () => root.scrollBy({ top: (e.shiftKey ? -1 : 1) * root.clientHeight * 0.85 }),
-    Escape: () => (lbOpen() ? closeLb() : setView('feed')),
+    Escape: () => (peekState().open ? (pinPeek(false), closePeek()) : lbOpen() ? closeLb() : setView('feed')),
   }[e.key];
   if (!act) return;
   e.preventDefault(); e.stopPropagation();
@@ -525,9 +526,28 @@ registerView('figures', {
     if (R.lane !== state.lane || !R.papers.length) build();
     else { if (back) root.scrollTop = R.scroll; layoutCols(false); loadMore(); }
   },
-  hide() { R.away = true; hidePop(); closeLb(); },
+  hide() { R.away = true; hidePop(); closeLb(); closePeek(); },
 });
-keyHelp.push({ label: 'R', text: 'figure river: the figures of the lane’s arXiv papers (j k ← → move · Enter open at the figure · z enlarge · o arXiv)', order: 64 });
+keyHelp.push({ label: 'R', text: 'figure river: the figures of the lane’s arXiv papers (hover to see one large · j k ← → move · Enter open at the figure · z enlarge · Z pin the large view · o arXiv)', order: 64 });
+
+// Peek (peek.js): rest on a tile to see it large on the right, with its full
+// caption and the paper's other figures (hover a thumbnail to swap it in).
+attachPeek(root, { selector: '.fg-tile', cardOf: (el) => (tileOf.get(el)?.f ? tileOf.get(el) : null), render: peekFigure });
+function peekFigure(t, body, { width }) {
+  const it = items[t.i]; const W = width - 40, H = innerHeight * 0.62;
+  const show = (f) => [h('div', { className: 'pk-art' + (f.table && f.html ? ' tbl' : '') }, f.table && f.html ? Object.assign(h('div', { className: 'pk-tbl fg-tbl-in' }), { innerHTML: f.html }) : figArt(f, W, H)),
+    h('figcaption', { className: 'pk-cap' }, h('b', { textContent: f.label }), f.caption || '')];
+  const fig = h('figure', { className: 'pk-fig' }, ...show(t.f));
+  const others = (ready.get(it.id) || []).filter((f) => !f.table && f.img);
+  const strip = others.length > 1 ? h('div', { className: 'pk-strip' }, h('div', { className: 'pk-sl', textContent: `All ${others.length} figures · hover to look` }), ...others.map((f) => {
+    const ar = Math.max(0.5, Math.min(3, (f.w || 4) / (f.h || 3)));
+    const b = h('button', { className: 'pk-th' + (f === t.f ? ' cur' : ''), title: f.label, style: `width:${Math.round(64 * ar) + 6}px` }, figArt(f, Math.round(64 * ar), 64));
+    b.onmouseenter = () => { fig.replaceChildren(...show(f)); strip.querySelector('.cur')?.classList.remove('cur'); b.classList.add('cur'); };
+    return b;
+  })) : null;
+  body.append(fig, strip || '', h('div', { className: 'pk-meta' }, h('div', { className: 'pk-title', textContent: it.t }), h('div', { className: 'pk-by', textContent: [it.a, yearOf(it)].filter(Boolean).join(' · ') })),
+    h('div', { className: 'pk-keys', textContent: 'Enter open at the figure · z enlarge · Z pin · o arXiv' }));
+}
 
 // ---------- panel section: the current paper's figures ----------
 let scanFor = null;

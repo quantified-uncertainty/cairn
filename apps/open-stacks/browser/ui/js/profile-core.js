@@ -167,7 +167,7 @@ export function headsOf(lines, k, body = 0) {
   for (const l of lines) {
     const t = String(l.t || '').replace(/\s+/g, ' ').trim();
     if (!t || t.length > 90) continue;
-    const pat = NUMBERED.test(t) || NAMED.test(t.replace(/^(\d+(\.\d+)*|[A-H]|[IVX]+)\.?\s+/, ''));
+    const pat = (NUMBERED.test(t) && !/^0[.\s]/.test(t)) || NAMED.test(t.replace(/^(\d+(\.\d+)*|[A-H]|[IVX]+)\.?\s+/, ''));
     const styled = body > 0 ? (l.size >= 1.15 * body || l.bold) && (l.block || l.second) : t.length <= 60;
     if (pat && styled) out.push({ t, k, head: true });
     else if (t.length <= 40 && (REFS.test(t) || APPX.test(t) || TOC_HEAD.test(t) || FRONT_END.test(t))) out.push({ t, k, head: false });
@@ -195,8 +195,10 @@ export function pageRoles(pages, heads = [], kind = 'pdf', ixf = []) {
     if (fe < 0) { const lim = Math.ceil(n * 0.15); const l = hs.find((x) => x.k <= lim && FRONT_END.test(tx(x))); fe = l ? l.k : 0; }
     for (let k = 1; k < fe; k++) if (!role[k]) role[k] = hs.some((l) => l.k === k && TOC_HEAD.test(tx(l))) ? 'toc' : 'front';
   }
-  const r0 = Math.floor(n * 0.4);
-  const refL = hs.find((l) => l.k >= r0 && (l.head || tx(l).length <= 40) && REFS.test(tx(l)));
+  // From 40% of the document on; papers with long appendices put their references
+  // earlier, so failing that, from 15% on.
+  const isRef = (l) => (l.head || tx(l).length <= 40) && REFS.test(tx(l));
+  const refL = hs.find((l) => l.k >= Math.floor(n * 0.4) && isRef(l)) || hs.find((l) => l.k >= Math.floor(n * 0.15) && isRef(l));
   const refs = refL ? refL.k : -1;
   const a0 = refs >= 0 ? refs + 1 : Math.floor(n * 0.5);
   const appL = hs.find((l) => l.k >= a0 && l.head && (APPX.test(tx(l)) || (refs >= 0 && LETTERED.test(tx(l)))));

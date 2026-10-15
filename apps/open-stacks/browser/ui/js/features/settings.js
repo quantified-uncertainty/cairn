@@ -497,7 +497,7 @@ async function setBudget(usd) {
     if (j.error) throw new Error(j.error);
     serverInfo = j;
     if (state.status.spend) state.status.spend.budget = j.budget;
-    toast(`AI budget: $${j.budget} a day`, { icon: 'wallet', kind: 'ok', sub: j.override ? '' : 'the default' });
+    toast(`AI budget: $${j.budget} a day`, { icon: 'wallet', kind: 'ok', sub: j.override ? '' : 'The default' });
   } catch (e) { toast('Budget not changed', 3000, { icon: 'circle-alert', kind: 'bad', sub: e.message }); }
   sync(); repaintPanel();
 }
@@ -724,7 +724,8 @@ on('spread:rendered', () => { if (sheet && !sheet.hidden) sync(); }); // [ ] + -
 // never passes it to the page, so , alone or the gear is the way in there.
 // While the sheet is open, Esc closes it and keys pressed in it stay in it
 // (keys pressed on the page still work, to look).
-const typing = (t) => /^(INPUT|TEXTAREA|SELECT)$/.test(t?.tagName) || t?.isContentEditable;
+// Typing contexts keep their commas: fields, and widgets that type to filter (the library tree).
+const typing = (t) => /^(INPUT|TEXTAREA|SELECT)$/.test(t?.tagName) || t?.isContentEditable || !!t?.closest?.('[role=tree], [role=listbox], [role=combobox]');
 const commaFree = () => { const b = keymap.get(','); return !b || (b.view && b.view !== state.view); };
 addEventListener('keydown', (e) => {
   const chord = (e.metaKey || e.ctrlKey) && !e.altKey && !e.shiftKey;
