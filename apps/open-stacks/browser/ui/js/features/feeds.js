@@ -459,7 +459,7 @@ function makeFeeder(S) {
     if (!S.alive || !S.visible()) return;
     const now = performance.now(); const batch = [];
     let k = 0;
-    while (k < S.q.length && batch.length < 40) {
+    while (k < S.q.length && batch.length < 24) {
       const r = S.q[k];
       if (r.ready === undefined) { if (now - r.t < 300) break; k++; continue; } // a slow picture: let the rest go ahead
       S.q.splice(k, 1);
@@ -496,12 +496,8 @@ function makeBoard(type, lane) {
   };
   B.place = (batch) => {
     if (!B.n) { B.geom(); B.colH = Array(B.n || 1).fill(0); B.n ||= 1; }
-    const T = [performance.now()]; void B.el.offsetHeight; T.push(performance.now());
     for (const r of batch) { r.el = renderCard(r.card, B.L, B.colW, r.ready); recOf.set(r.el, r); B.meas.append(r.el); }
-    T.push(performance.now());
     for (const r of batch) measureRead(r);
-    T.push(performance.now());
-    (window.__T ||= []).push(T.slice(1).map((t, k) => Math.round(t - T[k])));
     for (const r of batch) {
       measureWrite(r);
       let c = 0;

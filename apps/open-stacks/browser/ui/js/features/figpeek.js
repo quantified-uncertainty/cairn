@@ -39,7 +39,7 @@ import { $, h, P, on, store, toast, lru, registerKey } from '../util.js';
 import { items } from '../corpus.js';
 import { state, current } from '../state.js';
 import { openDoc, pdfjs, scanUrl } from '../docs.js';
-import { loadImg, analyze } from '../render.js';
+import { loadImg, analyze, renderedNow } from '../render.js';
 
 const REST_MS = 150; // pointer rest before the enlargement opens
 const GRACE_MS = 450; // time to move from the figure into the enlargement
@@ -185,7 +185,10 @@ async function pageSource(it, k) {
 }
 /** Ink per grid cell (1 = ink), the grid about 240 cells across (300 for scans). */
 async function inkGrid(it, k, W, H, scan) {
+  // The page as on screen, or as rendered for the screen a moment ago (a turn
+  // came while it was being looked at): never a new render for the reader's pages.
   let srcs = panelsOf(it, k).map((p) => ({ src: p.canvas, box: p.box }));
+  if (!srcs.length) srcs = (renderedNow(it, k) || []).filter((p) => p.canvas).map((p) => ({ src: p.canvas, box: p.box }));
   if (!srcs.length) srcs = await pageSource(it, k);
   const t0 = performance.now();
   const GW = scan ? 300 : 240, cs = W / GW, GH = Math.max(8, Math.round(H / cs));
@@ -795,9 +798,10 @@ function markRegion(reg, cls) {
     if (j >= 0) el.querySelector(`:scope > .fp-r[data-j="${j}"]`)?.classList.add(cls);
   }
 }
-let settleGen = 0;
+let settleGen = 0, settled = false;
+on('spread:rendered', () => { settled = false; });
 on('spread:settled', ({ it, els }) => {
-  const gen = ++settleGen;
+  const gen = ++settleGen; settled = true;
   if (!enabled || !raster(it)) return;
   const ks = [...new Set(els.filter((e) => e._pnl?.canvas).map((e) => Number(e.dataset.k)))];
   // Pages already done paint at once; the rest are found one at a time in idle time.
@@ -813,7 +817,7 @@ on('spread:settled', ({ it, els }) => {
 
 // ---------- hovering ----------
 const spread = $('#spread');
-let hoverEl = null, pending = null, enterAt = 0, showT = 0, closeT = 0, lastPt = null, swallowUntil = 0;
+let hoverEl = null, pending = null, enterAt = 0, showT = 0, closeT = 0, lastPt = null, swallowUntil = 0, waitKey = null;
 const S = { reg: null, el: null, it: null, prep: null, pinned: false, lay: null, z: 1, ox: 0, oy: 0 }; // the enlargement on screen
 function hitAt(el, x, y) {
   const res = resOf(el); if (!res) return null;
@@ -837,12 +841,17 @@ function onMove(e) {
   const it = items[current()];
   if (!hoverEl || !raster(it)) { leaveRegion(); return; }
   const k = Number(hoverEl.dataset.k);
-  if (!ready.has(keyOf(it, k))) {
+  const key = keyOf(it, k);
+  if (!ready.has(key)) {
     leaveRegion();
+    // Not looked at yet: once the spread has settled (never in a run of turns),
+    // look now rather than waiting for idle time; once per page.
+    if (!settled || waitKey === key) return;
+    waitKey = key;
     regionsOf(it, k).then((r) => {
       paintBoxes(it, k, r);
       if (hoverEl && Number(hoverEl.dataset.k) === k && lastPt && items[current()]?.id === it.id) onMove({ clientX: lastPt.x, clientY: lastPt.y, target: document.elementFromPoint(lastPt.x, lastPt.y) || hoverEl, buttons: 0 });
-    }).catch(() => {});
+    }).catch(() => {}).finally(() => { if (waitKey === key) waitKey = null; });
     return;
   }
   // A scan page with figures: start fetching its full-size image now, for a sharp enlargement sooner.
