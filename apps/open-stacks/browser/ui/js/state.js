@@ -22,9 +22,10 @@ export function score(i) {
   const it = items[i];
   const lane = state.aff.lane[it.lane] || 0;
   const tok = Math.max(-2, Math.min(2, tokens(it).reduce((s, w) => s + (state.aff.tok[w] || 0), 0)));
-  const q = Math.log(1 + (it.score || 0)) / Math.log(1 + laneMax[it.lane]);
+  const q = it.q ?? Math.log(1 + (it.score || 0)) / Math.log(1 + laneMax[it.lane]); // quality percentile in lane
   const rel = it.rel ?? 0.5; // enrichment relevance, 0-1
-  return noise(i) * 0.9 + 0.5 * lane + 0.25 * tok + 0.8 * q + 0.8 * (rel - 0.5);
+  const doc = it.kind === 'pdf' ? 0.35 : 0; // the reader prefers technical PDFs
+  return noise(i) * 0.9 + 0.5 * lane + 0.25 * tok + 0.8 * q + 0.8 * (rel - 0.5) + doc;
 }
 export function buildOrder(keepHead = true) {
   let pool = items.map((_, i) => i).filter((i) => state.lane === 'all' || items[i].lane === state.lane);
