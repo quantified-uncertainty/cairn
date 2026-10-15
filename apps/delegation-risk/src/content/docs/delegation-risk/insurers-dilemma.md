@@ -8,7 +8,7 @@ sidebar:
   order: 7
 ---
 
-Insurance is the obvious way to move delegation risk off a principal's books, and it creates a second delegation problem. Once Alice is insured against Bob's failures, her insurer has to trust Alice. It must trust her to keep supervising Bob after the loss is no longer hers (moral hazard), and to be the kind of client she says she is (adverse selection). Economics worked out much of this between the 1960s and 1970s. Two real markets show the results in use: fidelity insurance, which has priced employee dishonesty for a long time, and AI liability insurance, which appeared in 2025.
+Insurance is the obvious way to move delegation risk off a principal's books, and it creates a second delegation problem. Once Alice is insured against Bob's failures, her insurer has to trust Alice. It must trust her to keep supervising Bob after the loss is no longer hers (moral hazard), and to be the kind of client she says she is (adverse selection). Economics worked out much of this between the 1960s and 1970s. Two real markets show the results in use: fidelity insurance, which has priced employee dishonesty for a long time, and AI liability insurance, a niche product since 2018 that became a visible market in 2025.
 
 ## The framework in principal–agent terms
 
@@ -37,7 +37,7 @@ That gives three standard ways to keep the principal's incentive alive:
 - **Co-insurance.** Alice pays a fixed share of every loss, so every dollar lost costs her something.
 - **Cap.** Cover stops at a limit. Alice keeps the catastrophic tail, and with it an incentive to prevent catastrophes.
 
-There is also a substitute for all three: **monitoring**. If the insurer can see that Alice supervises Bob, through audits, reports or access to logs, it needs less of her money at risk to keep her careful. Holmström's informativeness principle says why: any signal correlated with her effort improves the contract. How much retention a given level of monitoring can replace depends on the case. There is no general table.
+There is also a substitute for all three: **monitoring**. If the insurer can see that Alice supervises Bob, through audits, reports or access to logs, it needs less of her money at risk to keep her careful. Holmström's informativeness principle says why: a signal that carries information about her effort beyond what the insurer already observes improves the contract. How much retention a given level of monitoring can replace depends on the case. There is no general table.
 
 ## Adverse selection: why pools unravel
 
@@ -53,7 +53,7 @@ Insurers face a second tail problem, across their portfolio. Pooling works when 
 
 ### Fidelity and crime insurance
 
-Fidelity bonds and commercial crime policies cover theft and fraud by employees, the defection channel for human delegates. The underlying losses are well measured. The Association of Certified Fraud Examiners' *Occupational Fraud 2024: A Report to the Nations* analyzes 1,921 cases from 138 countries. It reports:
+Fidelity bonds and commercial crime policies cover theft and fraud by employees, the defection channel for human delegates. The underlying losses are well measured. The Association of Certified Fraud Examiners' *Occupational Fraud 2024: A Report to the Nations* analyzes 1,921 cases from 138 countries and territories. It reports:
 
 - a median loss of \$145,000 per case;
 - a median of 12 months between the start of a fraud and its detection;
@@ -68,7 +68,7 @@ A premium is not exposure, and it is not delegation risk either. It is the insur
 
 ### AI liability insurance
 
-Since 2025 there has been a small market that prices AI delegation risk directly.
+A small market now prices AI delegation risk directly.
 
 - **Munich Re** has insured AI performance failures since 2018. Its [aiSure](https://www.munichre.com/en/solutions/for-industry-clients/insure-ai.html) products cover losses when a model fails to perform as specified, and can back an AI vendor's performance guarantee.
 - **Armilla** [launched](https://www.armilla.ai/resources/armilla-launches-affirmative-ai-liability-insurance-with-lloyds-underwriter-chaucer) an AI liability policy in April 2025, underwritten by Lloyd's syndicates including Chaucer. It responds when an AI system fails to perform as intended, including through hallucinations and errors.

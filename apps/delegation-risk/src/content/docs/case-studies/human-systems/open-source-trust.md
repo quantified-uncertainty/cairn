@@ -67,7 +67,7 @@ Two 2025 compromises targeted AI tooling directly: the Nx release that drove dev
 | Tarball-versus-source and reproducibility checks | Artifacts that differ from their source (the xz trigger) | Malicious source |
 | Two-factor authentication | Password reuse and simple credential theft | Real-time phishing of the second factor (chalk, debug) |
 
-Every row moves trust from the artifact to a person or a repository. None removes the need to trust the maintainer, which is why xz, event-stream and node-ipc would have passed all of them.
+Every row moves trust from the artifact to a person or a repository. None removes the need to trust the maintainer, which is why event-stream and node-ipc would have passed all of them, and xz would have been caught only by the tarball-versus-source check.
 
 ## Dependency discipline for agents
 

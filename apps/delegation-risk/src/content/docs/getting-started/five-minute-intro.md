@@ -67,10 +67,10 @@ Suppose 1% of the Answerer's drafts would leak something it shouldn't, at \$500 
 
 - **Assuming independence**, both miss 1% of bad drafts, so the Answerer's risk is \$50 and the system total is \$56/month, well inside budget.
 - **With the correction** for two layers, the miss rate is (1−ρ)·0.01 + ρ·0.1. At ρ = 0.2 that is 2.8%, giving \$140 for the Answerer and \$146 in total: inside budget. At ρ = 0.5 it is 5.5%, giving \$275 and \$281: over budget.
-- **If the leaks come from instructions planted in the docs** (prompt injection), the attacker chooses the input. Assume ρ near 1: both checks miss 10% of bad drafts, giving \$500 and \$506.
+- **If the leaks come from instructions planted in the docs** (prompt injection), the attacker chooses the input. Assume ρ near 1: the pair is no better than one check, giving at least \$500 and \$506.
 
 Whether the design ships depends on a number you have not measured. The fixes: measure ρ on a labeled challenge set, replace one check with a non-LLM rule or another provider's model, or tighten the envelope so a leak costs less.
 
-Humans have long run exposure-limited delegation: nuclear launch requires two officers, and double-entry bookkeeping exists so no one clerk can cook the books. The [case studies](/case-studies/) read such institutions as delegation engineering.
+Humans have long run exposure-limited delegation: nuclear launch requires two officers, and accounting separates the clerk who records a payment from the one who approves it. The [case studies](/case-studies/) read such institutions as delegation engineering.
 
 Next: [the Core Path](/getting-started/reading-order/#the-core-path), [For Engineers](/getting-started/for-engineers/), or the [FAQ](/getting-started/faq/).

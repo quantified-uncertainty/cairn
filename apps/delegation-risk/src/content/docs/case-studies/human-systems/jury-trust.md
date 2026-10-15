@@ -30,7 +30,7 @@ The decision rule matters more than the size. Suppose (illustratively) a juror v
 | 10 to convict | 5.5 × 10⁻⁹ | 26% |
 | Unanimous | 1.0 × 10⁻¹² | 86% |
 
-These are exact binomial sums. On this model unanimity makes wrongful conviction effectively impossible and acquits most of the guilty. Neither half matches the record. In US federal court in fiscal 2022, 1,379 of the 1,669 defendants who went to trial were convicted ([Pew Research Center 2023](https://www.pewresearch.org/short-reads/2023/06/14/fewer-than-1-of-defendants-in-federal-criminal-cases-were-acquitted-in-2022/)), and wrongful convictions by unanimous juries are documented (below). Selection explains part of the first gap: prosecutors take strong cases to trial, where jurors are more than 85% likely to vote guilty. Correlation explains much of the rest.
+These are exact binomial sums. On this model unanimity makes wrongful conviction effectively impossible and acquits most of the guilty. Neither half matches the record. In US federal court in fiscal 2022, 1,379 of the 1,669 defendants who went to trial were convicted ([Pew Research Center 2023](https://www.pewresearch.org/short-reads/2023/06/14/fewer-than-1-of-defendants-in-federal-criminal-cases-were-acquitted-in-2022/)), and wrongful convictions by unanimous juries are documented (below). Selection explains part of the first gap: prosecutors take strong cases to trial, so in tried cases a guilty defendant's per-juror conviction probability is presumably well above the illustrative 0.85. Correlation explains much of the rest.
 
 ## Correlated jurors
 

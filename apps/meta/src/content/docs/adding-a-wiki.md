@@ -49,7 +49,7 @@ sidebar: [
 ],
 ```
 
-Each entry must be exactly `{ label: '…', slug: '…' }` or `{ label: '…', link: '…' }`, keys in that order, values single-quoted, and no apostrophe in the label. Anything else, such as an entry with a `badge`, is skipped. A group without `collapsed:` right after its `label` still lists its pages, but gets no heading in `llms.txt`. An `autogenerate` group contributes nothing, and a sidebar with no parseable chapters fails the build.
+Each entry must be exactly `{ label: '…', slug: '…' }` (optionally followed by a one-line `badge: { … }`) or `{ label: '…', link: '…' }`, keys in that order, values single-quoted, and no straight apostrophe in the label (use ’). Anything else is skipped. A group without `collapsed:` right after its `label` still lists its pages, but gets no heading in `llms.txt`. An `autogenerate` group contributes nothing, and a sidebar with no parseable chapters fails the build.
 
 The explicit sidebar also lets Evaluation Engineering and Robust Reasoning Processes read as books. Chapter numbers live in the sidebar labels and are mirrored in a contents table on each site's index page.
 

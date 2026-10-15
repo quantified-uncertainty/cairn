@@ -30,7 +30,7 @@ Greenblatt et al. ([arXiv:2312.06942](https://arxiv.org/abs/2312.06942); ICML 20
 - **A control safety case sketch** (Korbak et al. 2025, [arXiv:2501.17315](https://arxiv.org/abs/2501.17315)) argues from a control evaluation to a deployment decision.
 - **Factor(T,U)** (Sandoval & Rushing 2025, [arXiv:2512.02157](https://arxiv.org/abs/2512.02157)) found that adding factored cognition to trusted monitoring raised safety from 41% to 63% in the APPS setting. The same paper reports that factoring made backdoors no harder to write, and that its protocols had low usefulness.
 
-**Mapping the vocabularies.** Control's *auditing budget* limits how many actions humans can inspect. This site's *risk budget* limits tolerated expected loss. They are related but not equivalent. Control's tradeoff term is *usefulness cost*, and "control tax" is not their term.
+**Mapping the vocabularies.** Control's *auditing budget* limits how many actions humans can inspect. This site's *risk budget* limits tolerated expected loss. They are related but not equivalent. Control's tradeoff term is *usefulness cost*; "control tax" is not Redwood's term.
 
 Control's stated scope is the defection channel, especially concentrated failures. A model that behaves well under evaluation in order to be deployed is the case where every pre-deployment estimate of P(defection) is unreliable. In the literature this is *deceptive alignment* (Hubinger et al. 2019, [arXiv:1906.01820](https://arxiv.org/abs/1906.01820)); alignment faking has been demonstrated experimentally (Greenblatt et al. 2024, [arXiv:2412.14093](https://arxiv.org/abs/2412.14093)). This framework's answer to that case is not a better estimate. It is the envelope, which bounds damage regardless of intent, together with Control's runtime protocols.
 
@@ -60,7 +60,7 @@ These are the strongest current defenses for the hijack channel; this site's pat
 
 ## Reliability engineering: common-cause failure
 
-The closest prior art for the entanglement tax is common-cause failure analysis. The beta-factor model and its successors are documented in NUREG/CR-4780 (Mosleh et al. 1988). Knight & Leveson (1986) showed the same effect in software: independently written versions of one program failed together far more often than independence predicts.
+The closest prior art for the entanglement tax is common-cause failure analysis. The beta-factor model and its successors are documented in NUREG/CR-4780 (Mosleh et al. 1988). Knight & Leveson (1986) showed the same effect in software: independently written versions of one program failed together more often than independence predicts.
 
 The propagation rule used across this site, (1−ρ)·∏pᵢ + ρ·min pᵢ, *is* the beta-factor mixture. What [Risk Propagation](/delegation-risk/risk-propagation/) adds is narrow:
 

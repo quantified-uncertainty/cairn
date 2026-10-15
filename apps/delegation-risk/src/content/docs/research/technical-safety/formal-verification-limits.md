@@ -42,7 +42,7 @@ Every GS AI guarantee is relative to its world model and complete only to the ex
 
 ## Runtime verification
 
-Runtime verification checks a single execution against a formal specification as it runs (Leucker & Schallhart, "A brief account of runtime verification", *JLAP* 2009). Monitors are synthesised from temporal logic: LTL for orderings of events, and metric variants for deadlines (Havelund & Roşu, "Synthesizing monitors for safety properties", TACAS 2002). Two facts shape what a monitor can promise:
+Runtime verification checks a single execution against a formal specification as it runs (Leucker & Schallhart, "A brief account of runtime verification", *JLAP* 2009). Monitors are synthesised from temporal logic, for example from past-time LTL safety properties (Havelund & Roşu, "Synthesizing monitors for safety properties", TACAS 2002); metric variants add deadlines. Two facts shape what a monitor can promise:
 
 - **Safety properties are monitorable; liveness generally is not.** A violation of "never write outside directory D" shows up in a finite prefix, so a monitor can detect it and block it. "Eventually answers" cannot be refuted by any finite prefix. Monitors over finite prefixes therefore give three-valued verdicts: satisfied, violated, or inconclusive. Envelope rules should be written as safety properties.
 - **A monitor proves something about this run, not all runs.** It is sound and complete only relative to what it can observe. A monitor that sees the model's prose instead of the process's system calls inherits the model's ambiguity.

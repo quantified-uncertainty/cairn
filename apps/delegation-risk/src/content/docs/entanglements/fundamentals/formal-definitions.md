@@ -157,8 +157,6 @@ Note the striking pattern: beyond modest correlation, effective redundancy is se
 
 ---
 
----
-
 See also:
 - [Types of Entanglement](/entanglements/fundamentals/types/) — Conceptual overview
 - [Measuring Entanglement](/entanglements/detection/correlation-calculator/) — φ, lookup tables, thresholds and priors

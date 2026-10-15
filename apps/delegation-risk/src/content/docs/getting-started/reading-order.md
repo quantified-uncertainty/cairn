@@ -15,11 +15,11 @@ The site has about 65 pages, but its argument lives in about a dozen stops. If y
 
 2. **[Risk Propagation](/delegation-risk/risk-propagation/)**: one composition rule instead of a menu. Multiply, correct for common-cause correlation with the beta-factor mixture, and note that correlation helps serial chains but hurts parallel checks.
 
-3. **[Runtime Accounting](/delegation-risk/runtime-accounting/)**: the math moved into the agent harness. It has three parts. The risk preflight estimates expected damage before each consequential action. The exposure envelope is a hard bound enforced regardless of intent. The exposure ledger is a per-delegate account, reconciled against outcomes. This page also explains why the preflight estimator must sit below the actor on the verifiability hierarchy.
+3. **[Runtime Accounting](/delegation-risk/runtime-accounting/)**: the math moved into the agent harness. It has three parts. The risk preflight estimates expected damage before each consequential action. The exposure envelope is a hard bound enforced regardless of intent. The exposure ledger is a per-delegate account, reconciled against outcomes. This page also explains why the preflight estimator must be more verifiable than the actor it checks.
 
 4. **[Delegation Accounting](/delegation-risk/delegation-accounting/)**: risk as a balance-sheet item. Every delegation moves exposure onto someone's books, and the same key carries different exposure for delegates of different capability.
 
-5. **[The Insurer's Dilemma](/delegation-risk/insurers-dilemma/)**: why transferring risk to an insurer breaks down under moral hazard and adverse selection, and why that pushes toward architectural limits rather than purely financial ones.
+5. **[The Insurer's Dilemma](/delegation-risk/insurers-dilemma/)**: what moral hazard and adverse selection do to transferring delegation risk to an insurer, what real fidelity and AI liability cover does, and where insurance stops working against adversarial agents.
 
 6. **[Entanglements](/entanglements/)**, **[Types](/entanglements/fundamentals/types/)** and **[Formal Definitions](/entanglements/fundamentals/formal-definitions/)**: why stacked checks that share a model, data or context are not independent, and the entanglement tax that results. The site's most distinctive contribution.
 
@@ -37,9 +37,9 @@ The site has about 65 pages, but its argument lives in about a dozen stops. If y
 
 13. **[Empirical Scheming Reduction](/research/trust-behavior/empirical-scheming-reduction/)**: what control evaluations, monitoring studies and anti-scheming training have actually measured, with their caveats.
 
-14. **[Nuclear Launch Authority](/case-studies/human-systems/nuclear-launch-authority/)** and **[Jury Systems](/case-studies/human-systems/jury-trust/)**: two human institutions built for delegation under distrust. The first uses two-person integrity and deliberate friction; the second engineers an asymmetry between kinds of error.
+14. **[Nuclear Launch Authority](/case-studies/human-systems/nuclear-launch-authority/)** and **[Jury Systems](/case-studies/human-systems/jury-trust/)**: two human institutions built for delegation under distrust. Nuclear command trades unauthorized launch against failure to retaliate, using two-person rules; juries show the independence arithmetic for unanimity failing when jurors share evidence and deliberate together.
 
-15. **[Sydney / Bing Chat](/case-studies/ai-systems/case-study-sydney/)**: a real failure analysed against the framework, with the architecture that would have contained it.
+15. **[Sydney / Bing Chat](/case-studies/ai-systems/case-study-sydney/)**: a real failure analysed against the framework, and the scaffold-enforced limit that contained it.
 
 **After the Core Path**, go applied with the [Quick Start](/design-patterns/tools/quick-start/), or go deeper with the [Research section](/research/).
 

@@ -43,9 +43,9 @@ so the contributions $RC_i = x_i \, \partial\rho/\partial x_i$ add up exactly to
 | VaR (continuous case) | $E[L_i \mid L = \mathrm{VaR}_\alpha(L)]$ |
 | ES (continuous case) | $E[L_i \mid L \ge \mathrm{VaR}_\alpha(L)]$ |
 
-Under multivariate normality the VaR contribution reduces to $x_i \beta_i \mathrm{VaR}_p$, known as component VaR. It is not CoVaR, which is Adrian and Brunnermeier's (2016) systemic-risk measure: the VaR of the financial system conditional on one institution being in distress.
+Under multivariate normality with zero means, the VaR contribution reduces to $x_i \beta_i \mathrm{VaR}_p$, known as component VaR. It is not CoVaR, which is Adrian and Brunnermeier's (2016) systemic-risk measure: the VaR of the financial system conditional on one institution being in distress.
 
-An illustration of why the choice of measure matters, with made-up distributions computed by Monte Carlo: two components whose losses share a common factor and one independent component have expected losses of 1.56, 1.57 and 1.00. The independent component carries 24% of the expected loss and 6% of the 99% ES. A budget set on expected loss and a budget set on ES allocate differently, and correlated components dominate the tail.
+An illustrative Monte Carlo example, with made-up distributions: two lognormal losses that share a common normal factor, $L_1 = e^{0.5Z + 0.8W_1}$ and $L_2 = e^{0.9Z + 0.3W_2}$, and an independent exponential loss $L_3$ with mean 1. Their expected losses are 1.56, 1.57 and 1.00, so $L_3$ carries 24% of the expected loss but only about 6% of the 99% ES. The two lognormal components are both heavier-tailed and positively correlated, and both features raise their share of the tail. A budget set on expected loss and one set on ES can allocate very differently.
 
 ### When Euler does not apply
 

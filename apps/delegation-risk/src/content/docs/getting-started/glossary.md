@@ -7,7 +7,7 @@ Definitions as this site uses them. Borrowed terms keep their home field's meani
 
 **Units convention.** A probability on this site is always *per* something: per task, per action, or per period. A delegation risk carries the same unit. Most pages use dollars per month; worked examples state their unit at the top.
 
-## Core framework terms {#core-framework-terms}
+## Core framework terms
 
 <span id="harm-mode"></span>
 **Harm mode**: a specific way a delegation could cause damage, with a probability and a damage value. It parallels the *failure mode* of [FMEA](https://en.wikipedia.org/wiki/Failure_mode_and_effects_analysis). *Example*: "leaks proprietary data", P = 0.001 per month, damage \$50,000.
@@ -28,7 +28,7 @@ Definitions as this site uses them. Borrowed terms keep their home field's meani
 - <span id="hijack"></span>**Hijack**: a third party or user steers a delegate that is not itself scheming. Examples are prompt injection through a document, web page or tool output, and direct misuse. The attacker chooses the input, so treat correlated checks as fully correlated (ρ near 1).
 
 <span id="propagation-rule"></span>
-**Propagation rule**: how reliabilities compose. Under independence, chains and parallel stacks multiply. For common-cause correlation, use the beta-factor mixture P(all fail) = (1−ρ)·∏pᵢ + ρ·min(pᵢ). The minimum (weakest-link) rule is its ρ = 1 limit. The harmonic and discounted rules are retired. See [Risk Propagation](/delegation-risk/risk-propagation/).
+**Propagation rule**: how reliabilities compose. Under independence, chains and parallel stacks multiply. For common-cause correlation, use the beta-factor mixture P(all fail) = (1−ρ)·∏pᵢ + ρ·min(pᵢ). The minimum rule is its ρ = 1 limit. The harmonic and discounted rules are retired. See [Risk Propagation](/delegation-risk/risk-propagation/).
 
 <span id="trust"></span>
 **Trust (quantitative)**: where a number is attached, t = P(the delegate executes the task faithfully), estimated from its harm-mode table. Unquantified, "trust" is ordinary English. *Risk inheritance*: when A delegates to B and B to C, A carries C's harm modes, composed by the propagation rule.
@@ -43,10 +43,10 @@ Definitions as this site uses them. Borrowed terms keep their home field's meani
 **Load-bearing channels**: the sanctioned communication paths between delegates that decomposition could not remove. Monitoring budget should concentrate there.
 
 <span id="privilege-overhang"></span>
-**Privilege overhang**: the gap between what a delegate *can* do and what its task *needs*. It is the stock; [privilege creep](https://en.wikipedia.org/wiki/Privilege_creep) is the flow that grows it. Cloud-security tools measure the same quantity as *unused entitlements*. Microsoft's *2024 State of Multicloud Security Risk Report* found that identities used about 2% of the permissions granted to them in 2023.
+**Privilege overhang**: the gap between what a delegate *can* do and what its task *needs*. It is the stock; *privilege creep* is the flow that grows it. Cloud-security tools measure the same quantity as *unused entitlements*. Microsoft's *2024 State of Multicloud Security Risk Report* found that identities used about 2% of the permissions granted to them in 2023.
 
 <span id="risk-preflight"></span>
-**Risk preflight**: a damage estimate the scaffold runs before an agent action commits. It enumerates the action's harm surface, bounds the exposure, compares the result with the budget, then proceeds, adjusts or escalates. Lineage: [CORS preflight](https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request) and aviation flight-risk assessment. The estimator must sit lower on the [verifiability hierarchy](#verifiability-hierarchy) than the actor it checks. See [Runtime Accounting](/delegation-risk/runtime-accounting/).
+**Risk preflight**: a damage estimate the scaffold runs before an agent action commits. It enumerates the action's harm surface, bounds the exposure, compares the result with the budget, then proceeds, adjusts or escalates. Lineage: [CORS preflight](https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request) and aviation flight-risk assessment. The estimator must sit at a more verifiable (lower-numbered) tier of the [verifiability hierarchy](#verifiability-hierarchy) than the actor it checks. See [Runtime Accounting](/delegation-risk/runtime-accounting/).
 
 <span id="exposure-envelope"></span>
 **Exposure envelope**: the region of action-space in which an agent may act freely, enforced by the scaffold regardless of the agent's inputs or intent. It is a hard bound, not a statistical one: a single catastrophic action must hit the wall, not merely overdraw a budget. Lineage: Airbus flight-envelope protection.
@@ -60,7 +60,7 @@ Definitions as this site uses them. Borrowed terms keep their home field's meani
 <span id="delegation-engineering"></span>
 **Delegation engineering**: designing, measuring and operating delegation structures to bound exposure while preserving capability, here mainly for AI agents.
 
-## Least-X principles {#least-x-principles}
+## Least-X principles
 
 The core six, from the [canonical page](/design-patterns/least-x-principles/):
 
@@ -73,7 +73,7 @@ The core six, from the [canonical page](/design-patterns/least-x-principles/):
 
 The canonical page lists further principles as a labelled tail. Two need care. Predictability is worth seeking, but temperature 0 neither guarantees deterministic output from served LLMs nor prevents a deterministic policy from encoding covert signals. Hiding from a component whether it is being tested is hard to enforce: current models often recognize evaluations (Schoen et al. 2025, [arXiv:2509.15541](https://arxiv.org/abs/2509.15541)).
 
-## Architecture terms {#architecture-terms}
+## Architecture terms
 
 <span id="verifiability-hierarchy"></span>
 **Verifiability hierarchy**: implementations ordered by how thoroughly they can be checked. The tiers are (1) formally verified code; (2) deterministic tested code and rule-based checks; (3) narrow learned models with measured error on a fixed task; (4) trusted LLMs, below the capability at which scheming is a live concern; and (5) untrusted frontier models and agents. Training method does not set the tier. See [Concepts](/getting-started/core-concepts/#verifiability-hierarchy).
@@ -85,9 +85,9 @@ The canonical page lists further principles as a labelled tail. Two need care. P
 **[Byzantine fault tolerance](https://en.wikipedia.org/wiki/Byzantine_fault)**: correct operation despite up to f arbitrarily faulty components, which requires at least 3f + 1 replicas. The bound counts faulty replicas; replicas that share a model can exceed f together.
 
 <span id="n-version-programming"></span>
-**[N-version programming](https://en.wikipedia.org/wiki/N-version_programming)**: independently developed implementations of one specification, used redundantly. Knight & Leveson (1986) found that such versions failed together far more often than independence predicts.
+**[N-version programming](https://en.wikipedia.org/wiki/N-version_programming)**: independently developed implementations of one specification, used redundantly. Knight & Leveson (1986) found that such versions failed together more often than independence predicts.
 
-## AI safety terms {#ai-safety-terms}
+## AI safety terms
 
 <span id="ai-control"></span>
 **[AI Control](https://arxiv.org/abs/2312.06942)**: designing protocols that stay safe even if the model is intentionally trying to subvert them, and testing them with control evaluations (Greenblatt et al. 2023). Its vocabulary (trusted and untrusted model, control protocol, auditing budget, usefulness cost) is used here as Redwood Research uses it.
@@ -104,7 +104,7 @@ The canonical page lists further principles as a labelled tail. Two need care. P
 <span id="scalable-oversight"></span>
 **Scalable oversight**: methods for overseeing systems that are more capable than their overseers in the relevant domain.
 
-## Risk measurement terms {#risk-budgeting-terms-finance}
+## Risk measurement terms
 
 <span id="euler-allocation"></span>
 **Euler allocation**: splitting a portfolio risk measure R among positions as RCᵢ = xᵢ·∂R/∂xᵢ. For risk measures that are homogeneous of degree one, the contributions sum exactly to R.
@@ -119,7 +119,7 @@ The canonical page lists further principles as a labelled tail. Two need care. P
 **[Probabilistic risk assessment (PRA)](https://en.wikipedia.org/wiki/Probabilistic_risk_assessment)**: quantifying risk through [fault trees](https://en.wikipedia.org/wiki/Fault_tree_analysis) (AND and OR gates over component failures) and event trees, as practiced in nuclear and aerospace engineering. <span id="cdf"></span>*Core damage frequency* is its headline output for reactors; the US NRC's subsidiary safety goal is 10⁻⁴ per reactor-year. PRA figures are model outputs, not observed rates.
 
 <span id="common-cause-failure"></span>
-**Common-cause failure**: a single cause that makes several redundant components fail together. The beta-factor model (NUREG/CR-4780) is the source of this site's propagation correction.
+**Common-cause failure**: a single cause that makes several redundant components fail together. The beta-factor model, documented in NUREG/CR-4780, is the source of this site's propagation correction.
 
 <span id="defense-in-depth"></span>
 **[Defense in depth](https://en.wikipedia.org/wiki/Defence_in_depth)**: multiple barriers against failure. The arithmetic usually assumes the barriers fail independently, and they rarely do.
@@ -127,14 +127,14 @@ The canonical page lists further principles as a labelled tail. Two need care. P
 <span id="sil"></span>
 **[SIL](https://en.wikipedia.org/wiki/Safety_integrity_level) / [ASIL](https://en.wikipedia.org/wiki/Automotive_Safety_Integrity_Level)**: safety integrity levels under IEC 61508 (SIL 1–4) and ISO 26262 (ASIL A–D). Higher levels require lower failure rates and more rigorous development.
 
-## Mechanism design terms {#mechanism-design-terms}
+## Mechanism design terms
 
 - <span id="incentive-compatibility"></span>**[Incentive compatibility](https://en.wikipedia.org/wiki/Incentive_compatibility)**: truthful reporting is each participant's best strategy.
 - <span id="revelation-principle"></span>**[Revelation principle](https://en.wikipedia.org/wiki/Revelation_principle)**: any outcome some mechanism implements in equilibrium can be implemented by a direct mechanism in which truth-telling is optimal.
 - <span id="moral-hazard"></span>**[Moral hazard](https://en.wikipedia.org/wiki/Moral_hazard)**: a party changes behavior after an agreement because its actions are not fully observable (hidden action).
 - <span id="adverse-selection"></span>**[Adverse selection](https://en.wikipedia.org/wiki/Adverse_selection)**: parties with unobservable characteristics self-select in ways that harm the other side (hidden information).
 
-## Notation {#mathematical-notation}
+## Notation
 
 | Symbol | Meaning |
 |--------|---------|

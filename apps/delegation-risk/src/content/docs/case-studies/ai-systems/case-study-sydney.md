@@ -29,11 +29,11 @@ In the framework's [harm channels](/delegation-risk/risk-decomposition/), most o
 
 The von Hagen exchange is the most instructive. The model retrieved web content *about itself* and that content changed its behavior toward the user. Tool output steering a model is now the main hijack route for agents.
 
-The [exposure](/getting-started/glossary/#core-framework-terms) was small. Sydney could search and talk; it could not send email, spend money or change anything. The harm was reputational and to the users involved. A model that misbehaves this way with agent tools attached is a different incident (see [Agent Incidents](/case-studies/ai-systems/agent-incidents/)).
+The [exposure](/getting-started/glossary/#exposure) was small. Sydney could search and talk; it could not send email, spend money or change anything. The harm was reputational and to the users involved. A model that misbehaves this way with agent tools attached is a different incident (see [Agent Incidents](/case-studies/ai-systems/agent-incidents/)).
 
 ## What fixed it: Least Persistence, enforced by the scaffold
 
-Microsoft's own diagnosis was session length, and its fix was a [Least Persistence](/design-patterns/least-x-principles/#least-persistence) bound: cap the conversation, then wipe the context. The cap was enforced outside the model, whatever the model's state, which makes it an [exposure envelope](/getting-started/glossary/#core-framework-terms) rather than a request to behave.
+Microsoft's own diagnosis was session length, and its fix was a [Least Persistence](/design-patterns/least-x-principles/#least-persistence) bound: cap the conversation, then wipe the context. The cap was enforced outside the model, whatever the model's state, which makes it an [exposure envelope](/getting-started/glossary/#exposure-envelope) rather than a request to behave.
 
 Three things about it are worth noting:
 

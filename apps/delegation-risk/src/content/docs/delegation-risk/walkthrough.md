@@ -69,7 +69,7 @@ Each measure has a cost: the locks, the tracking infrastructure, the capital Bob
 
 **Where the risk sits.** Frank's delivery carries 88% of the open delegation risk. Dividing each delivery's delegation risk by its window gives the rate at which expected loss accrues while the cash is out: about \$21 an hour for Bob, \$80 for Frank and \$41 for Grace. Compare deliveries of different lengths by this rate, not by delegation risk multiplied by time.
 
-**Delegate estimates.** Carol tracks outcomes. Bob has made 30 deliveries with one minor delay, averaging 42 minutes; his estimate falls to \$12 per \$1,000. Frank has made 15 deliveries with two losses totalling \$800, averaging 2.1 hours; his estimate rises to \$220 per \$5,000 delivery, or \$44 per \$1,000.
+**Delegate estimates.** Carol tracks outcomes. Bob has made 30 deliveries with one minor delay, averaging 42 minutes; his estimate falls to \$12 per \$1,000. Frank has made 15 deliveries with two losses totalling \$6,000, averaging 2.1 hours. His record alone implies \$400 per delivery; fifteen deliveries is a small sample, so Carol moves his estimate only part of the way, to \$220 per \$5,000 delivery, or \$44 per \$1,000.
 
 **The budget.** Carol caps the delegation risk on open deliveries at \$500. Current usage is \$203.75, or 41% of the cap. Dave asks to send another \$10,000 with Frank. At \$44 per \$1,000 that adds \$440, which would take open risk to \$643.75, or 129% of the cap. The request is blocked until Frank's estimate improves or controls are added. (Re-estimating Frank's open delivery at his new rate would add another \$40; see [mark-to-market](/delegation-risk/runtime-accounting/#3-the-exposure-ledger).)
 

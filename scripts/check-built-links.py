@@ -60,7 +60,7 @@ for host,root in SITES.items():
                     tf=page_file(troot,path)
                     if not tf:
                         bad+=1; print(f'MISSING PAGE  {src.replace(root,host)} -> {href}'); continue
-                if u.fragment and u.fragment not in ids(tf):
+                if u.fragment and unquote(u.fragment) not in ids(tf):
                     bad+=1; print(f'MISSING ANCHOR {src.replace(root,host)} -> {href}')
 kerr=0
 for host,root in SITES.items():

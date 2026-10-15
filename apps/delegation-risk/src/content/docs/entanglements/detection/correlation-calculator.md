@@ -89,7 +89,7 @@ Three things follow from the formula and show in the table:
 Two contrasting stacks, with ρ values assumed for illustration:
 
 - *Same model three times* (agent, checker, reviewer), ρ ≈ 0.9: P(all miss) ≈ 9%, a tax of about 90×, worth 1.05 independent layers.
-- *Diverse stack*: an LLM check (p = 0.1), a rule-based check (p = 0.05) and human review of flagged items (p = 0.01), ρ ≈ 0.15. Independence predicts 0.005%; the mixture gives 0.15%, a tax of about 31×. The ratio is large because the independent baseline is tiny, but the absolute risk is 60 times lower than the same-model stack's. Compare stacks by P(all miss), not by tax.
+- *Diverse stack*: an LLM check (p = 0.1), a rule-based check (p = 0.05) and human review of flagged items (p = 0.01), ρ ≈ 0.15. Independence predicts 0.005%; the mixture gives 0.15%, a tax of about 31×. The ratio is large because the independent baseline is tiny, but the absolute risk is about 60 times lower than the same-model stack's. Compare stacks by P(all miss), not by tax.
 
 ## The threshold set: a correlation budget
 

@@ -28,7 +28,7 @@ Diversity costs vendor relationships, expertise, integration work and latency, a
 Active entanglement mostly travels through context. Three rules cut it:
 
 - **Verifiers build their own context** from raw inputs. A check that reads only the agent's summary of its work inherits the agent's framing and omissions.
-- **Untrusted content is data, never instructions.** Anything read from a web page, file, email or tool output can carry an injected instruction to every component that reads it, including the checks. Architectures that keep untrusted data out of control flow remove this channel rather than making it less likely ([Debenedetti et al. 2025](https://arxiv.org/abs/2503.18813)).
+- **Untrusted content is data, never instructions.** Anything read from a web page, file, email or tool output can carry an injected instruction to every component that reads it, including the checks. Architectures that separate control flow from untrusted data stop injected text from choosing which actions run, by construction rather than by making it less likely; the data passed to those actions can still be manipulated ([Debenedetti et al. 2025](https://arxiv.org/abs/2503.18813)).
 - **Untrusted monitors see less.** Paraphrase what they see with a trusted model, and redact context they do not need ([Channel Integrity](/design-patterns/channel-integrity/#design-responses)).
 
 ## 3. Isolation boundaries

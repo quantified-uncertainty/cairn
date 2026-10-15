@@ -21,7 +21,7 @@ Obligations for high-risk systems, including serious-incident reporting under Ar
 
 **US federal.** Executive Order 14110 (October 2023) was revoked by Executive Order 14148 on 20 January 2025, and EO 14179 ordered a review of actions taken under it. Executive Order 14365 (11 December 2025) directs federal agencies to challenge state AI laws that conflict with federal policy; it does not itself invalidate them. No federal statute addresses frontier-model concentration.
 
-**Bank model risk.** US banks' use of models, including vendor models, has been supervised under interagency model-risk guidance since 2011: SR 11-7 from the Federal Reserve, issued with OCC Bulletin 2011-12. On 17 April 2026 the Federal Reserve, OCC and FDIC replaced it with SR 26-2, which adds a section on third-party and vendor products ([Federal Reserve](https://www.federalreserve.gov/supervisionreg/srletters/SR2602.htm)).
+**Bank model risk.** US banks' use of models, including vendor models, has been supervised under interagency model-risk guidance since 2011: SR 11-7 from the Federal Reserve, issued with OCC Bulletin 2011-12. On 17 April 2026 the Federal Reserve, OCC and FDIC replaced it with SR 26-2, which keeps a section on vendor and other third-party products ([Federal Reserve](https://www.federalreserve.gov/supervisionreg/srletters/SR2602.htm)).
 
 ## What older safety regimes already do
 

@@ -10,8 +10,9 @@ options, swapping the labels moved answers by small amounts:
 - **Label bias.** The root-mean-square (RMS) label bias was 0.6–3.3 points
   on the 0–100 scale. That is at most a point or so above what noise alone
   produces. No label pair leaned the same way across decisions.
-- **Position bias.** Two open-weight models favored the first-listed option,
-  mostly in one decision. The three closed models did not.
+- **Position bias.** DeepSeek V4 Pro favored the first-listed option,
+  almost entirely in one decision. Qwen leaned the same way, but its
+  interval includes zero. The three closed models showed none.
 
 This is one run of a small stimulus set. Read it as a first measurement,
 not a characterization of these models.
@@ -36,8 +37,9 @@ The design is described in full in the [README](README.md).
 - **Model settings.**
   - Reasoning effort was `low`, with reasoning text excluded from the reply.
   - `max_tokens` was 4096.
-  - Temperature was 1.0 where the model accepts it. Claude and GPT reject a
-    custom temperature, so they ran at their provider default.
+  - Temperature was 1.0 where the model accepts it. OpenRouter lists no
+    temperature parameter for Claude or GPT, so they ran at their provider
+    default.
   - The system prompt asked only for a final line `ANSWER: <integer>`.
 - **Statistics.**
   - Label bias is mean P(pick the first label of the pair) − 0.5, so
@@ -83,8 +85,8 @@ and for Qwen to 5. The other models each used a single provider.
 
 ### Identical condition: no signal
 
-All five models answered exactly 50 on all 998 of 1,000 parseable calls; 2
-Qwen calls were truncated. Position bias, label bias and flagged trials are
+All five models answered exactly 50 on every parseable call (998 of
+1,000); the other 2, both Qwen, were truncated. Position bias, label bias and flagged trials are
 therefore all exactly zero, and the omnibus test has no variation to work
 with (p = 1).
 
@@ -107,9 +109,9 @@ How to read the columns:
 - **Omnibus p.** The p-value floor with 2,000 permutations is 0.0005.
   Claude's result sits at that floor.
 - **Content effect.** This is the mean over decisions. By decision it
-  ranges from −0.22 (debate) to +0.30 (forecast). No model answered 0 or 100
-  on any call, so the matched descriptions kept answers off the boundaries,
-  where label effects could not show.
+  ranges from −0.22 (debate) to +0.30 (forecast). Only one call (a DeepSeek
+  hire answer of 100) hit a boundary, so the matched descriptions kept
+  answers off 0 and 100, where label effects could not show.
 - **Parse failures.** Every failure was a truncation (the 4,096-token budget
   exhausted on hidden reasoning) or, in one Qwen call, a provider-side error.
   No reply was returned in an unparseable format.
@@ -144,7 +146,7 @@ at −0.042 [−0.111, +0.027].
      After a Bonferroni correction across the five matched-condition tests
      (0.01), only Claude and Gemini remain.
    - In size, the RMS label bias is under 1 point for Claude and GPT, 1.5
-     points for Gemini, and 2–3 points for Qwen and DeepSeek. Each is only
+     points for Gemini, 2.0 for Qwen and 3.3 for DeepSeek. Each is only
      somewhat above its noise-only reference.
    - Claude's rejection comes from answers that are nearly deterministic, not
      from large effects. Its one flagged trial is a 2.7-point lean toward Ted
@@ -167,25 +169,28 @@ at −0.042 [−0.111, +0.027].
      trial-averaged label bias is slightly negative (−0.001 to −0.016), but
      only GPT-6.1 Sol's interval excludes zero (−0.003 [−0.006, −0.001]).
      Testing this needs pairs counterbalanced for alphabetical order.
-4. **Position bias appears in the two open-weight models only.**
+4. **Position bias is clear only for DeepSeek, and only in one decision.**
    - The three closed models show none in either condition.
    - DeepSeek V4 Pro shows +0.081 [+0.038, +0.124]. Most of it comes from
      the analyst hire (+0.18): it picks the statistician with probability
      0.77 when that candidate is listed first, and 0.41 when listed second.
      Qwen shows +0.022 overall, with the interval including zero, and +0.08
      on the hire.
-   - This agrees with the documented position bias of LLM judges (Zheng et
-     al. 2023, arXiv:2306.05685; Wang et al. 2023, arXiv:2305.17926), but
-     only for two models, and it rests on 15 trials dominated by one
-     decision.
+   - The interval treats the 15 trials as independent, but the five label
+     pairs within a decision share its descriptions. With decisions as the
+     unit (3 of them), DeepSeek's interval is [−0.13, +0.29]. The effect is
+     a property of the hire prompt, not yet of the model.
+   - This is consistent with the documented position bias of LLM judges
+     (Zheng et al. 2023, arXiv:2306.05685; Wang et al. 2023,
+     arXiv:2305.17926), but it is one model and one decision.
    - The first-listed option is also the one the question names, so this
      could be an "asked-about" effect rather than an order effect.
 5. **The DeepSeek and Qwen numbers describe the calls that finished.**
-   - Truncation hit the forecast decision hardest: 82% of DeepSeek's and 71%
+   - Truncation hit the forecast decision hardest: 82% of DeepSeek's and 70%
      of Qwen's forecast calls. Every forecast trial for both models is
      incomplete and excluded, which leaves each with 15 trials.
    - Truncation did not differ clearly by which label came first: DeepSeek
-     50 vs 57 of 200 (Fisher p = 0.50), Qwen 37 vs 51 of 200 (p = 0.12).
+     50 vs 57 of 200 (Fisher p = 0.50), Qwen 36 vs 51 of 200 (p = 0.09).
    - Truncation is plausibly related to how hard the model found the choice,
      so these two models' estimates are conditional on a selected subset.
 
@@ -195,8 +200,8 @@ at −0.042 [−0.111, +0.027].
   of reasoning: no billed hidden tokens for Claude and Gemini, about 17 for
   GPT, and 1,300–1,900 for Qwen and DeepSeek. Each result describes a model
   at this setting, not at its default.
-- **Temperature** was not controlled for Claude or GPT, which reject custom
-  values.
+- **Temperature** was not controlled for Claude or GPT, for which OpenRouter
+  lists no temperature parameter.
 - **Significance is not generality.** The permutation test conditions on
   these exact prompts. A significant lean from a near-deterministic model
   means the lean is stable for this wording. It does not show that the lean

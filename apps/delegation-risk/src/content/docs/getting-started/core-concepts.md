@@ -77,13 +77,13 @@ Implementations differ in how thoroughly you can check them. From most to least 
 4. **Trusted LLMs**, below the capability level at which scheming is a live concern. This is AI Control's "trusted model" ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)).
 5. **Untrusted frontier models and agents.**
 
-Use the most verifiable tier that can do the job. A check should sit at a lower tier than the component it checks; a frontier model checking a sibling of itself shares its blind spots. Training method does not define a tier: nearly all deployed frontier models are RL post-trained, and what matters is what you can verify about the deployed system.
+Use the most verifiable tier that can do the job. A check should sit at a more verifiable (lower-numbered) tier than the component it checks; a frontier model checking a sibling of itself shares its blind spots. Training method does not define a tier: nearly all deployed frontier models are RL post-trained, and what matters is what you can verify about the deployed system.
 
 ## When expected loss is the wrong metric
 
 An expected-loss budget treats a 10⁻⁶ chance of losing \$1 billion the same as a certain loss of \$1,000. A principal who could not survive the first is not indifferent between them. Use something else when:
 
-- **The tail matters.** Budget a tail measure such as [Expected Shortfall](/getting-started/glossary/#expected-shortfall), the mean loss in the worst α fraction of periods. This needs loss distributions, not point estimates, and it is where correlation between components enters.
+- **The tail matters.** Budget a tail measure such as [Expected Shortfall](/getting-started/glossary/#expected-shortfall), the mean loss in the worst few percent of periods. This needs loss distributions, not point estimates, and it is where correlation between components enters.
 - **A single action can be catastrophic.** Put a hard cap on exposure instead of a budget on expectation. The [exposure envelope](/delegation-risk/runtime-accounting/#2-the-exposure-envelope) exists because a single concentrated failure must hit a wall, not slowly overdraw an account.
 - **The harm is irreversible or not denominated in money.** Treat it as a constraint (this mode must be outside the envelope, or below a stated probability), not as a line in a dollar budget.
 

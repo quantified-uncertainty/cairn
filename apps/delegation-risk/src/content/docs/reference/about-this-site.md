@@ -13,12 +13,12 @@ This site was drafted quickly in early 2026 by Ozzie Gooen ([QURI](https://quant
 **June 2026: hardening.**
 
 - A nine-agent review covered the whole corpus, followed by a fix pass against its findings.
-- Flagged fabricated or misattributed citations were removed or corrected. Real-history claims (dates, court cases, nuclear and aviation figures) were checked against secondary sources, mostly Wikipedia plus a few official pages such as nrc.gov. They were not checked against primary documents.
+- Flagged fabricated or misattributed citations were removed or corrected. Real-history claims (dates, court cases, nuclear and aviation figures) were checked against secondary sources, mostly Wikipedia plus a few official pages such as nrc.gov. Few were checked against primary documents.
 - The propagation math was re-derived, and one canonical worked example replaced several inconsistent ones.
 - Hypothetical scenarios were labelled, and a ~25,000-word fiction section was removed.
 - Vocabulary was consolidated against a written terminology canon.
 
-**October 2026: audit and contraction.** Model-written audits found that problems remained: retired terms still in use, formulas that contradicted the core one, invented numbers presented as data, citation errors, and examples frozen in 2023. The site was cut from about 300,000 words to roughly 100,000 <!-- TODO(verify): replace with the final word count after the October 2026 integration step -->. Deleted pages redirect to their nearest surviving page, and the surviving core was corrected. The audit reports, with quoted evidence, are in the source repository under `audits/2026-10/`.
+**October 2026: audit and contraction.** Model-written audits found that problems remained: retired terms still in use, formulas that contradicted the core one, invented numbers presented as data, citation errors, and examples frozen in 2023. The site was cut from about 300,000 words to roughly 90,000 <!-- TODO(verify): replace with the final word count after the October 2026 integration step -->. Deleted pages redirect to their nearest surviving page, and the surviving core was corrected. The audit reports, with quoted evidence, are in the source repository under `audits/2026-10/`.
 
 ## Limitations
 

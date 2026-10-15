@@ -41,7 +41,7 @@ Capabilities sit in nested zones. Computation and public data need nothing. Read
 
 Rate and spend limits are the envelope's walls along the time axis. A cap on rows deleted per operation, messages sent per hour or dollars spent per day bounds the damage from a runaway or hijacked loop whether or not anyone notices it. Limits that tighten automatically under suspicion are a reasonable refinement, but fit their tiers to observed traffic.
 
-The gateway is only as good as its coverage. If any path to the resource bypasses it, the agent or an attacker will eventually find that path, and the gateway then adds logging but no bound. It is also a single point of failure, so it should be simple, deterministic and on the top two tiers of the verifiability hierarchy (verified or tested code and rule-based checks), not an LLM judging requests.
+The gateway is only as good as its coverage. If any path to the resource bypasses it, the agent or an attacker will eventually find that path, and the gateway then adds logging but no bound. It is also a single point of failure, so it should be simple, deterministic and in tiers 1 and 2 of the [verifiability hierarchy](/design-patterns/least-x-principles/#least-intelligence) (verified or tested code and rule-based checks), not an LLM judging requests.
 
 **Prior art.** The reference monitor: always invoked, tamper-proof, small enough to verify (Anderson 1972). Least privilege (Saltzer & Schroeder 1975). API gateways, egress proxies and syscall filters. Airbus flight-envelope protection, the lineage of the canon term.
 

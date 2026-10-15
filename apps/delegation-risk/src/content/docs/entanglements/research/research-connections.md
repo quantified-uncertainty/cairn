@@ -39,7 +39,7 @@ This is the site's mixture to leading order: the common-cause term is ρ·min p�
 - **Replicas cannot beat the floor.** Adding components that share the cause shrinks only the independent term; nothing gets the system below βλ. The same holds for k-of-n voting and Byzantine fault tolerance, whose guarantees ("tolerates f faulty replicas of 3f + 1") assume independent faults.
 - **Diversity is the remedy**, in nuclear terms: different designs, manufacturers, procedures and physical locations, so that no single cause reaches every train.
 
-The ensemble-learning literature measures the same thing with different statistics, such as the double-fault rate and Yule's Q ([Kuncheva & Whitaker 2003](https://doi.org/10.1023/A:1022859003006)). Neither is the phi coefficient; see [Measuring Entanglement](/entanglements/detection/correlation-calculator/).
+The ensemble-learning literature measures the same thing with several statistics ([Kuncheva & Whitaker 2003](https://doi.org/10.1023/A:1022859003006)). Their correlation coefficient on correct/incorrect outputs is the phi coefficient used here; the double-fault rate and Yule's Q, also common there, are not, and do not substitute for it ([Measuring Entanglement](/entanglements/detection/correlation-calculator/)).
 
 ### Correlation under stress
 

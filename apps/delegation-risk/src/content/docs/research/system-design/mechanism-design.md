@@ -23,7 +23,7 @@ the welfare others would get if $i$ were absent, minus the welfare they get with
 
 $$p_i = C_{-i}(a^*) \;-\; \min_a C_{-i}(a) \;\ge\; 0$$
 
-Agent $i$ pays the extra cost its presence imposes on others. An earlier page on this site wrote the difference the other way round, which pays the agent for the harm it causes.
+Agent $i$ pays the extra cost its presence imposes on others. Reversing the difference would pay the agent for the harm it causes.
 
 A delegation-risk use: teams or vendors compete for a fixed risk budget. Each reports the value its deployment creates and the risk it adds; the allocation maximizes reported value net of risk cost, and each pays for the risk it displaces from others.
 
@@ -43,7 +43,7 @@ $$\frac{G'(x - s(x))}{U'(s(x))} = \lambda + \mu \,\frac{f_a(x, a)}{f(x, a)}$$
 
 where $\lambda$ and $\mu$ are the multipliers on the participation and incentive constraints. Pay rises with the likelihood ratio $f_a/f$, which measures how strongly an outcome indicates effort. The informativeness principle follows: an additional signal is worth putting in the contract when it carries information about effort that the outcome does not already carry.
 
-Holmström and Milgrom (1991) supply the warning. When an agent splits effort across several tasks and only some of them are measurable, strong incentives on the measured tasks pull effort away from the unmeasured ones. The optimal response can be weak incentives or none. For safety this is the central result. Paying a team on red-team pass rates or incident counts rewards effort that moves those numbers, which is not the same as effort that reduces risk. It is Goodhart's law in contract form, and a precise version of approval theater. An earlier version of this site cited Holmström and Milgrom for the opposite conclusion, that every safety metric should enter compensation.
+Holmström and Milgrom (1991) supply the warning. When an agent splits effort across several tasks and only some of them are measurable, strong incentives on the measured tasks pull effort away from the unmeasured ones. The optimal response can be weak incentives or none. For safety this is the central result. Paying a team on red-team pass rates or incident counts rewards effort that moves those numbers, which is not the same as effort that reduces risk. It is Goodhart's law in contract form, and a precise version of approval theater.
 
 The practical reading: treat measured safety metrics as inputs to judgment, audit the dimensions the metrics miss, and keep incentive weights low on any metric that is cheap to move without reducing risk.
 

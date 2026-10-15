@@ -35,7 +35,7 @@ Related pages in the [Entanglements](/entanglements/) section cover institutions
 |---|---|
 | [Least Persistence](/design-patterns/least-x-principles/#least-persistence) | Sydney's session cap |
 | [Privilege overhang](/getting-started/glossary/#privilege-overhang) | Replit; Amazon Q's CI token |
-| [Exposure envelope](/getting-started/glossary/#core-framework-terms) | Destructive-action limits that Replit and Amazon Q lacked |
+| [Exposure envelope](/getting-started/glossary/#exposure-envelope) | Destructive-action limits that Replit and Amazon Q lacked |
 | Hijack through tools and supply chain | Amazon Q, Nx, `postmark-mcp`, open-source incidents |
 | [Correlated checks](/delegation-risk/risk-propagation/) | Jury unanimity; rating agencies; same-family LLM verifiers |
 | Error asymmetry | Juries; nuclear command |

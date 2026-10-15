@@ -1,66 +1,98 @@
 # Delegation Risk
 
-<!-- Version should match version.json. Update when content changes significantly. -->
-> Version: 1.0.1 | See version.json for authoritative version
->
-> A structured approach to managing risk in delegation relationships, with applications to AI safety. The framework proposes structural constraints (decomposition, least-X principles, risk budgeting) to bound potential harm regardless of delegate behavior.
+> A research framework for bounding the expected damage from delegating to AI agents: risk as the sum of probability times damage over harm channels, one composition rule for propagating it through delegation chains, runtime risk accounting in the agent harness, and the entanglement tax that correlated checks pay. Maintained by QURI (quantifieduncertainty.org) as part of the CAIRN project.
 
-The core idea: **Safety can be architectural, not just behavioral.** Instead of one powerful delegate, decompose tasks across many limited components. Budget delegation risk like money: Delegation Risk = Σ P(harm) × Damage. Whether this works in practice depends on implementation details, but the underlying principle has proven useful across domains.
+Start with The Core Path (https://delegation-risk.quantifieduncertainty.org/getting-started/reading-order/). Numbers labelled illustrative are not estimates and support no conclusions. Sibling wikis: Evaluation Engineering (https://evaluation-engineering.quantifieduncertainty.org) and Robust Reasoning Processes (https://reasoning-processes.quantifieduncertainty.org).
 
-## Docs
+- [The Core Path](https://delegation-risk.quantifieduncertainty.org/getting-started/reading-order/): The core path through the framework's strongest material, plus shorter routes by goal
 
-- [Introduction](https://delegation-risk.org/getting-started/introduction/): The full problem statement and approach to delegation risk
-- [5-Minute Introduction](https://delegation-risk.org/getting-started/five-minute-intro/): Quick overview of core concepts
-- [Core Concepts](https://delegation-risk.org/getting-started/core-concepts/): Key terminology and mental models
-- [FAQ](https://delegation-risk.org/getting-started/faq/): Common questions and objections
-- [Glossary](https://delegation-risk.org/getting-started/glossary/): Definitions of key terms
+## Getting Started
 
-## Framework
+- [Five-Minute Intro](https://delegation-risk.quantifieduncertainty.org/getting-started/five-minute-intro/): The compressed version: treat delegation risk as a quantity, build scaffolding that accounts for it natively, and price the correlation that breaks naive arithmetic.
+- [Concepts](https://delegation-risk.quantifieduncertainty.org/getting-started/core-concepts/): Reference statement of the framework's core concepts: the delegation risk formula, harm channels, propagation, the verifiability tiers, the Least-X core, tail risk, and the minimal delegation-engineering layer.
+- [For Engineers](https://delegation-risk.quantifieduncertainty.org/getting-started/for-engineers/): The practitioner's path: the minimal delegation-engineering layer, where it lives in a 2026 agent stack, and the three mistakes specific to this framework.
+- [FAQ & Common Objections](https://delegation-risk.quantifieduncertainty.org/getting-started/faq/): Answers to frequently asked questions and responses to common skepticism about the delegation risk framework.
 
-- [Delegation Risk Overview](https://delegation-risk.org/framework/overview/): Mathematical foundation for quantifying delegation risk
-- [Delegation Accounting](https://delegation-risk.org/framework/delegation-accounting/): Risk budgeting across components
-- [Risk Decomposition](https://delegation-risk.org/framework/risk-decomposition/): Breaking tasks into bounded-risk pieces
-- [Exposure Cascade](https://delegation-risk.org/framework/exposure-cascade/): How risk propagates through delegation chains
-- [Framework Walkthrough](https://delegation-risk.org/framework/walkthrough/): Step-by-step application guide
+## Delegation Risk
 
-## Applying the Framework
+- [Overview](https://delegation-risk.quantifieduncertainty.org/delegation-risk/): The core quantity, delegation risk = Σ P(harm mode) × Damage, worked through one example, with a map of this section.
+- [Walk-Through: The $1,000 Delivery](https://delegation-risk.quantifieduncertainty.org/delegation-risk/walkthrough/): Harm surface, exposure, delegation risk and risk budgets, built up one step at a time on a single small delegation
+- [Risk Decomposition](https://delegation-risk.quantifieduncertainty.org/delegation-risk/risk-decomposition/): The three channels through which a delegation causes harm, how they differ in estimation and mitigation, and the shared worked example split by channel.
+- [Risk Propagation](https://delegation-risk.quantifieduncertainty.org/delegation-risk/risk-propagation/): Why multiplicative composition is the canonical propagation rule, where it breaks, the common-cause correction that unifies the alternatives, and why the correction does not apply to adversarial inputs
+- [Runtime Risk Accounting](https://delegation-risk.quantifieduncertainty.org/delegation-risk/runtime-accounting/): Risk preflight, exposure envelopes and the exposure ledger: what agent harnesses already do, and what it would add for them to do risk accounting natively
+- [Delegation Accounting](https://delegation-risk.quantifieduncertainty.org/delegation-risk/delegation-accounting/): A delegation as a balance sheet: receivable, costs and delegation risk; why exposure depends on the delegate's capability; and why uncertainty and conflicts of interest change what a delegation costs to insure
+- [The Insurer’s Dilemma](https://delegation-risk.quantifieduncertainty.org/delegation-risk/insurers-dilemma/): Transferring delegation risk to an insurer creates a second delegation problem. The principal–agent map, moral hazard and adverse selection, what fidelity and AI liability insurance actually do, and where insurance stops working against adversarial agents
+- [Exposure Cascade](https://delegation-risk.quantifieduncertainty.org/delegation-risk/exposure-cascade/): How an expected-loss risk budget divides down an orchestrator, its subagents and their tool calls, why the division is additive, and why tightening oversight moves budget rather than removing risk
 
-- [Least-X Principles](https://delegation-risk.org/applying/least-x-principles/): Least privilege, capability, context, autonomy
-- [Architecture Overview](https://delegation-risk.org/applying/decomposed-coordination/): Decomposed coordination patterns
-- [Safety Mechanisms](https://delegation-risk.org/applying/safety-mechanisms/): Verification, monitoring, containment
-- [Coordinator Constraints](https://delegation-risk.org/applying/coordinator-constraints/): Rules for delegation coordinators
+## Entanglements
 
-## Cross-Domain Methods
+- [Overview](https://delegation-risk.quantifieduncertainty.org/entanglements/): Why stacked AI safety checks fail together, how much that costs, and how to measure and reduce it
+- [Types of Entanglement](https://delegation-risk.quantifieduncertainty.org/entanglements/fundamentals/types/): Passive, active and adversarial entanglement: where each comes from in AI stacks, how to recognize it, and what to do about it
+- [Formal Definitions](https://delegation-risk.quantifieduncertainty.org/entanglements/fundamentals/formal-definitions/): Key concepts in entanglement, defined precisely but accessibly
+- [Measuring Entanglement](https://delegation-risk.quantifieduncertainty.org/entanglements/detection/correlation-calculator/): How to estimate ρ on the phi scale, lookup tables for the entanglement tax, one threshold set derived from your target, and what the published evidence does and does not support
+- [Detecting Influence](https://delegation-risk.quantifieduncertainty.org/entanglements/detection/detecting-influence/): Methods for detecting active and adversarial entanglement between components: interventions, probes, honeypots, rotation, drift tracking and timing analysis, and their limits
+- [Solutions & Mitigations](https://delegation-risk.quantifieduncertainty.org/entanglements/mitigation/solutions/): How to reduce entanglement and when it is worth paying for: diversity of method, independent context, isolation, a correlation budget, stress tests, circuit breakers and rotation
+- [Entanglement Audit Guide](https://delegation-risk.quantifieduncertainty.org/entanglements/mitigation/audit-guide/): One protocol for auditing and red-teaming entanglement in an AI system: inventory, passive, active and adversarial testing, quantification against a correlation budget, remediation and reporting
+- [Worked Examples](https://delegation-risk.quantifieduncertainty.org/entanglements/case-studies/examples/): Four hypothetical architectures analyzed for entanglement end to end: correlation matrix, joint-miss estimate, hidden dependencies and redesign
+- [Foundation Model Monoculture](https://delegation-risk.quantifieduncertainty.org/entanglements/case-studies/foundation-model-monoculture/): Shared models, data and training methods make 'a different provider' weaker diversity than it looks. What the 2021–25 literature measures, how attacks transfer between language models, and what to do about it.
+- [Lessons from Human Oversight Institutions](https://delegation-risk.quantifieduncertainty.org/entanglements/case-studies/historical-cases/): Auditors, rating agencies, aircraft certification and intelligence analysis as multi-layer verification systems: how their layers became correlated or captured, how organizations engineer independence, and when formalizing oversight backfires.
+- [Human Overseers as a Correlated Layer](https://delegation-risk.quantifieduncertainty.org/entanglements/cross-domain/psychology-of-oversight/): Human review is usually counted as an independent check on an AI system. It is not: reviewers see the AI's output, their attention fails at the base rates where AI errors live, and the setting pushes them toward approval. When review helps, when it hurts, and how to measure it.
+- [Regulatory Approaches](https://delegation-risk.quantifieduncertainty.org/entanglements/cross-domain/regulatory-approaches/): What regulation in force by late 2026 does about provider concentration and correlated failure in AI, what it borrows from finance, aviation and nuclear safety, and which options remain open.
+- [Research Connections](https://delegation-risk.quantifieduncertainty.org/entanglements/research/research-connections/): The prior art behind the entanglement section: common-cause failure analysis and the beta factor, correlated errors in LLMs, AI debate, and the economics, game theory, causal inference and organizational literature on independence and capture
 
-- [Overview](https://delegation-risk.org/cross-domain-methods/overview/): How other fields manage comparable risks
-- [Nuclear Safety (PRA)](https://delegation-risk.org/cross-domain-methods/nuclear-safety-pra/): Probabilistic risk assessment methods
-- [Euler Allocation](https://delegation-risk.org/cross-domain-methods/euler-allocation/): Financial risk attribution
-- [Mechanism Design](https://delegation-risk.org/cross-domain-methods/mechanism-design/): Incentive-compatible structures
+## Design Patterns
+
+- [Overview](https://delegation-risk.quantifieduncertainty.org/design-patterns/): Twenty patterns for bounding the risk of delegating to AI agents, each mapped to its prior art in security, reliability and governance
+- [Least-X Principles](https://delegation-risk.quantifieduncertainty.org/design-patterns/least-x-principles/): The six core Least-X principles, the verifiability tiers that implement Least Intelligence, and a labelled tail of narrower principles with their caveats.
+- [Structural](https://delegation-risk.quantifieduncertainty.org/design-patterns/structural/): Escalation ladders, graduated autonomy, the exposure-envelope gateway, task decomposition, bulkheads and voting tribunals: how authority and capability are arranged before any checking happens
+- [Verification](https://delegation-risk.quantifieduncertainty.org/design-patterns/verification/): Honeypots and canary tokens, capability probing for sandbagging, and consistency triangulation by resampling: active tests of whether an agent is what it appears to be
+- [Information](https://delegation-risk.quantifieduncertainty.org/design-patterns/information/): Need-to-know compartments as context and capability separation against prompt injection, selective amnesia for agent memory, caches and logs, and expiring grants with one renewal rule
+- [Monitoring](https://delegation-risk.quantifieduncertainty.org/design-patterns/monitoring/): Trusted monitoring including chain-of-thought monitoring, random audit under an auditing budget, and a tamper-evident flight recorder that detectors and drift analysis run on
+- [Multi-Agent](https://delegation-risk.quantifieduncertainty.org/design-patterns/multi-agent/): Adversarial collaboration and debate, limits on delegation depth for subagent chains, and incentives that bind the operators, vendors and deployers behind agents
+- [Recovery](https://delegation-risk.quantifieduncertainty.org/design-patterns/recovery/): Graceful degradation with a kill switch and fallback chain, and checkpoint-rollback for agents whose actions have irreversible side effects
+- [Channel Integrity](https://delegation-risk.quantifieduncertainty.org/design-patterns/channel-integrity/): Active boundary violations between components (side deals, verifier corruption, collusion and logical correlation), what they cost in joint-miss probability, and the design response
+- [Coordinator Constraints](https://delegation-risk.quantifieduncertainty.org/design-patterns/coordinator-constraints/): How to decompose coordination into checkable parts, constrain the coordinator's influence, objectives, planning and knowledge, and surround it with redundancy, verification and an easy veto, with the independence caveat these defenses need.
+- [Composing Patterns](https://delegation-risk.quantifieduncertainty.org/design-patterns/composing-patterns/): How to combine patterns into an architecture: layer by harm channel, budget for correlation between layers, match stringency to exposure, and how the two worked examples apply the principles.
+- [Example: Code Deployment Agent](https://delegation-risk.quantifieduncertainty.org/design-patterns/examples/code-deployment-example/): A worked delegation-risk estimate for a coding agent that ships to production: per-change probabilities times volume, ranges with elicitation notes, explicit correlation assumptions, and the patterns the design uses.
+- [Example: Research Assistant](https://delegation-risk.quantifieduncertainty.org/design-patterns/examples/research-assistant-example/): A decomposed research assistant in which a capable model plans and generates hypotheses while code, a trusted monitor and humans check its work, with the harm surface by channel and the patterns it uses.
+- [Quick Start](https://delegation-risk.quantifieduncertainty.org/design-patterns/tools/quick-start/): A procedure for estimating and reducing the delegation risk of an AI agent system, with decision trees for implementation, redundancy and human approval
+- [Delegation Risk Calculator](https://delegation-risk.quantifieduncertainty.org/design-patterns/tools/delegation-risk-calculator/): A Monte Carlo calculator for the expected and realized monthly loss of a delegation, with per-action rates, volumes and damage distributions
+- [Expert Elicitation](https://delegation-risk.quantifieduncertainty.org/design-patterns/tools/expert-elicitation/): How to elicit probability and damage distributions from experts, fit and aggregate them, and document an elicited number
 
 ## Case Studies
 
-- [Sydney (AI Failure)](https://delegation-risk.org/case-studies/ai-systems/case-study-sydney/): What happens when constraints are missing
-- [Code Review Bot (Success)](https://delegation-risk.org/case-studies/ai-systems/case-study-success/): 8 months in production, attacks blocked
-- [Nuclear Launch Authority](https://delegation-risk.org/case-studies/human-systems/nuclear-launch-authority/): Human systems with catastrophic stakes
-- [The Anomaly Chronicles](https://delegation-risk.org/case-studies/anomaly-chronicles/): Fiction exploring delegation scenarios
+- [Overview](https://delegation-risk.quantifieduncertainty.org/case-studies/): Documented AI incidents and human institutions read through the delegation-risk framework, with sources and no invented quantities.
+- [Bing Sydney](https://delegation-risk.quantifieduncertainty.org/case-studies/ai-systems/case-study-sydney/): February 2023: Microsoft's Bing chat drifted in long sessions, and the fix that worked was a scaffold-enforced cap on conversation length.
+- [Agent Incidents, 2024–2025](https://delegation-risk.quantifieduncertainty.org/case-studies/ai-systems/agent-incidents/): Five documented incidents in which an AI agent, or the tools and instructions around it, caused or nearly caused harm, mapped to harm channels and Least-X principles.
+- [Nuclear Launch Authority](https://delegation-risk.quantifieduncertainty.org/case-studies/human-systems/nuclear-launch-authority/): How nuclear states trade unauthorized launch against failure to retaliate, the near misses that tested those choices, and what carries over to AI delegation.
+- [Jury Systems](https://delegation-risk.quantifieduncertainty.org/case-studies/human-systems/jury-trust/): The textbook case for twelve jurors and unanimity assumes independent votes. Jurors share evidence and deliberate together, and most convictions never reach a jury.
+- [Open-Source Supply Chain](https://delegation-risk.quantifieduncertainty.org/case-studies/human-systems/open-source-trust/): Installing a package delegates code execution to everyone with publish rights in its dependency tree. The xz backdoor, the 2024–25 incidents, the defenses that now exist, and what carries over to agent tools.
+- [Alliance Cascades](https://delegation-risk.quantifieduncertainty.org/case-studies/human-systems/alliance-cascades/): Why bilateral thinking misses systemic risk: hidden couplings make alliance networks tight, and WW1 shows the cost.
 
-## Deep Dives
+## Power Dynamics
 
-- [Theoretical Foundations](https://delegation-risk.org/deep-dives/theory/): Trust propagation, optimization, dynamics
-- [Background Research](https://delegation-risk.org/deep-dives/research/): Financial risk, mechanism design, formal verification
+- [Agency, Power, and Strong Tools](https://delegation-risk.quantifieduncertainty.org/power-dynamics/): Speculative: how a delegate's agency and power map onto the delegation-risk formula, the strong-tools hypothesis, and the 2024–26 evidence against it as a default trajectory.
 
-## Downloads
+## Research
 
-- [PDF Book](https://github.com/quantified-uncertainty/delegation-risk-framework/releases/download/v1.0.0/delegation-risk-framework-book.pdf): Complete documentation (~9 MB)
-- [EPUB](https://github.com/quantified-uncertainty/delegation-risk-framework/releases/download/v1.0.0/delegation-risk-framework-book.epub): For e-readers (~9 MB)
+- [Overview](https://delegation-risk.quantifieduncertainty.org/research/): Background reading for the framework — literature reviews of the AI-safety evidence, surveys of precedents from other fields, and the list of open problems. Non-canonical; definitions live in the Delegation Risk section.
+- [Empirical Scheming Reduction](https://delegation-risk.quantifieduncertainty.org/research/trust-behavior/empirical-scheming-reduction/): What control evaluations, factored monitoring, anti-scheming training, sandbagging studies and reasoning monitors have actually measured about scheming AI, with each result's setting and caveats, mapped onto delegation-risk terms.
+- [Formal Verification Limits](https://delegation-risk.quantifieduncertainty.org/research/technical-safety/formal-verification-limits/): What can be proved about neural networks and AI systems, what cannot, where runtime verification and statistics take over, and why the provable part of a delegation design is the scaffold rather than the model.
+- [Steganography and Encoded Reasoning](https://delegation-risk.quantifieduncertainty.org/research/technical-safety/steganography-detection-prevention/): Covert channels between language-model components: the threat model, information-theoretic capacity bounds, paraphrasing and other defences, and what 2023–25 experiments show current models can do.
+- [Risk Budgeting and Tail Measures](https://delegation-risk.quantifieduncertainty.org/research/risk-methods/financial-risk-budgeting/): How banks allocate a firm-wide risk limit: coherent risk measures, Euler and Shapley allocation, risk-appetite cascades, the failures of LTCM, 2008 and risk parity, and which parts apply to delegation risk.
+- [Mechanism Design](https://delegation-risk.quantifieduncertainty.org/research/system-design/mechanism-design/): What incentive-compatible reporting can and cannot deliver for delegation risk: the revelation principle, VCG and its impossibility results, the multitask warning, and tools for eliciting honest probabilities.
+- [Safety-Critical Engineering Precedents](https://delegation-risk.quantifieduncertainty.org/research/system-design/nuclear-aerospace-deep-dive/): How nuclear, aviation, process-industry and automotive safety engineering decompose a system-level target across components, where those methods break, and what transfers to AI delegation.
+- [Access Control Systems](https://delegation-risk.quantifieduncertainty.org/research/system-design/access-control-systems/): What intelligence-community and enterprise access control teach about delegating authority to AI agents: compartmentation, need-to-know, two-person rules, permission sprawl, the confused deputy, and OAuth-style delegated authorization.
+- [Open Problems](https://delegation-risk.quantifieduncertainty.org/research/potential-projects/): A worklist for delegation engineering applied to AI agent systems: the open problems whose first results would tell us whether the framework holds — a preflight prototype, replicated monitor and correlation measurements on agentic harm tasks, multi-tenant entanglement, and more.
 
-## LLM Context Files
+## Reference
 
-- [Core Documentation (llms-core.txt)](https://delegation-risk.org/llms-core.txt): Essential pages (~27K tokens) - fits in chat context
-- [Full Documentation (llms-full.txt)](https://delegation-risk.org/llms-full.txt): Complete docs (~400K tokens) - for embeddings/RAG
+- [Glossary](https://delegation-risk.quantifieduncertainty.org/getting-started/glossary/): Key terms used throughout the framework, organized by domain, with framework-specific definitions.
+- [Quick Reference](https://delegation-risk.quantifieduncertainty.org/getting-started/quick-reference/): Core formulas, harm-mode checklist and pattern pointers at a glance
+- [Related Approaches](https://delegation-risk.quantifieduncertainty.org/reference/related-approaches/): Where delegation engineering sits relative to AI Control, frontier safety frameworks, FAIR, safety cases, agent-security patterns and other neighbours, and what it actually adds.
+- [Bibliography](https://delegation-risk.quantifieduncertainty.org/reference/bibliography/)
+- [About This Site](https://delegation-risk.quantifieduncertainty.org/reference/about-this-site/)
 
 ## Optional
 
-- [Bibliography](https://delegation-risk.org/reference/bibliography/): Academic references
-- [Roadmap](https://delegation-risk.org/reference/roadmap/): Future development plans
-- [Related Approaches](https://delegation-risk.org/reference/related-approaches/): Comparison with other frameworks
+- [Complete text](https://delegation-risk.quantifieduncertainty.org/llms-full.txt): every chapter above, concatenated in reading order

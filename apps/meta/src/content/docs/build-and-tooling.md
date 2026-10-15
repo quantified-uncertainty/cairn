@@ -44,11 +44,9 @@ CI (`.github/workflows/ci.yml`) runs on pushes and pull requests to `main`. It i
 - `llms.txt`: an index with one line per page, giving its sidebar label, URL and frontmatter `description`, grouped under the sidebar's section labels.
 - `llms-full.txt`: every page concatenated in sidebar order, for LLM context or offline reading.
 
-It runs at the start of `build` in Evaluation Engineering, Reasoning Processes and this handbook, and on its own as `pnpm gen:llms`. Site metadata comes from the app's `llms.config.json`; page order comes from parsing the `sidebar` block of `astro.config.mjs` as text. That parse only understands explicit `{ label, slug }` entries, `{ label, link }` placeholders, and group labels followed by `collapsed:`. The exact rules are in [Adding a Wiki](/adding-a-wiki/#3-edit-astroconfigmjs).
+It runs at the start of `build` in all four apps, and on its own as `pnpm gen:llms`. Site metadata comes from the app's `llms.config.json`; page order comes from parsing the `sidebar` block of `astro.config.mjs` as text. That parse only understands explicit `{ label, slug }` entries, `{ label, link }` placeholders, and group labels followed by `collapsed:`. The exact rules are in [Adding a Wiki](/adding-a-wiki/#3-edit-astroconfigmjs).
 
 Deriving the files from the sidebar is the point: an earlier hand-written `llms.txt` drifted out of step with the chapter numbering. The script fails the build if `llms.config.json` is missing or lacks a required field, if a sidebar slug has no matching `.md`/`.mdx` file, or if the sidebar yields no chapters. Page bodies are lightly cleaned: frontmatter and `import` lines are removed, `:::note[Title]` asides become bold lines, and JSX component tags are dropped while their contents are kept. Only one level is stripped, so a component nested inside another, such as `<TabItem>` inside `<Tabs>`, keeps its tags.
-
-As of October 2026, Delegation Risk does not use the generator. Its sidebar is mostly `autogenerate` groups, which the parser cannot read, and its `public/llms*.txt` files are hand-written.
 
 ## Link checker
 
