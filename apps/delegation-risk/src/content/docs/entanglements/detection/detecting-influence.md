@@ -99,10 +99,10 @@ Human institutions show how apparent independence fails. The October 2002 US Nat
 
 Detection has a floor:
 
-- **Steganography** in otherwise normal outputs can, in principle, be undetectable.
+- **Steganography** in otherwise normal outputs can be provably undetectable: when the covertext distribution is known, schemes exist whose output distribution is identical to innocent text ([Schroeder de Witt et al. 2022](https://arxiv.org/abs/2210.14889); [Steganography](/research/technical-safety/steganography-detection-prevention/)).
 - **Logical correlation** needs no channel: two similarly trained models can reach the same conclusion without communicating, so there is nothing to intercept.
 - **Lag.** Capture is detected after it has happened.
-- **Evaluation awareness.** A model that recognizes tests passes them.
+- **Evaluation awareness.** A model that recognizes tests can pass them. Frontier models already tell evaluation transcripts from deployment ones well above chance ([Needham et al. 2025](https://arxiv.org/abs/2505.23836)).
 
 So detection must be paired with prevention that limits what undetected coordination can achieve. In AI Control's *untrusted monitoring* ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)), one instance of a possibly scheming model monitors another, and the central risk is that the monitor recognizes an attack and passes it. The collusion-busting responses (paraphrasing what the monitor sees, redacting context it does not need, using a separately trained monitor, and inserting known attacks to check that it flags them) are on [Channel Integrity](/design-patterns/channel-integrity/#ai-manifestations). Paraphrasing and redaction disrupt signals; only diversity of method reduces logical correlation.
 
