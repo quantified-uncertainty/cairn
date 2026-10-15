@@ -63,7 +63,7 @@ html[data-st-density="roomy"] #panel { padding: 20px 24px 36px; gap: 22px; }
 #st-btn.on { background: none; color: var(--accent); border-color: var(--accent); }
 
 /* ---------- the sheet ---------- */
-#st { position: fixed; right: 0; bottom: 0; top: 37px; z-index: 18; width: min(820px, 94vw); display: flex; flex-direction: column; background: var(--bg-2); border-left: 1px solid var(--line); box-shadow: -24px 0 60px #0008; color: var(--ink); font-size: 13px; }
+#st { position: fixed; right: 0; bottom: 0; top: 37px; z-index: 18; width: min(900px, 94vw); display: flex; flex-direction: column; background: var(--bg-2); border-left: 1px solid var(--line); box-shadow: -24px 0 60px #0008; color: var(--ink); font-size: 13px; }
 #st .st-head { display: flex; align-items: center; gap: 12px; padding: 12px 18px 11px; border-bottom: 1px solid var(--line); }
 #st .st-head h2 { font: 500 18px var(--serif); margin: 0; }
 #st .st-sub { color: var(--ink-3); font-size: 11.5px; }
@@ -75,7 +75,7 @@ html[data-st-density="roomy"] #panel { padding: 20px 24px 36px; gap: 22px; }
 #st .st-nav button { border: 0; text-align: left; padding: 6px 10px; border-radius: 4px; color: var(--ink-2); }
 #st .st-nav button:hover { background: var(--bg-3); color: var(--ink); }
 #st .st-nav button.cur { background: var(--bg-3); color: var(--ink); box-shadow: inset 2px 0 0 var(--accent); }
-#st .st-main { overflow-y: auto; padding: 4px 22px 40vh; scroll-behavior: smooth; }
+#st .st-main { position: relative; overflow-y: auto; padding: 4px 22px 40vh; scroll-behavior: smooth; outline: none; }
 @media (prefers-reduced-motion: reduce) { #st .st-main { scroll-behavior: auto; } }
 #st .st-sec { padding: 16px 0 6px; border-bottom: 1px solid var(--line); }
 #st .st-sh { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
@@ -83,7 +83,7 @@ html[data-st-density="roomy"] #panel { padding: 20px 24px 36px; gap: 22px; }
 #st .st-sh .st-note { color: var(--ink-3); font-size: 11.5px; }
 #st .st-reset { margin-left: auto; font-size: 11px; color: var(--ink-3); padding: 1px 8px; }
 #st .st-reset:hover { color: var(--ink); }
-#st .st-row { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 4px 16px; align-items: center; padding: 8px 0; }
+#st .st-row { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 4px 16px; align-items: center; padding: 8px 0; }
 #st .st-row + .st-row { border-top: 1px solid color-mix(in srgb, var(--line) 55%, transparent); }
 #st .st-row.off { opacity: .45; }
 #st .st-l label, #st .st-l .st-lt { color: var(--ink); }

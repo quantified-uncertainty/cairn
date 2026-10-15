@@ -207,6 +207,9 @@ for (const host of ['www.lesswrong.com', 'forum.effectivealtruism.org']) {
   }
 }
 
+// Only forum posts are fetched as GraphQL JSON; other HTML pages are web articles.
+for (const it of items) if (it.kind === 'html' && !/\/graphql\b/.test(it.url)) it.kind = 'web';
+
 // 5. Quality as a percentile within each lane and family (posts vs documents),
 // so karma and citation-style scores are comparable; unscored curated items
 // sit at the median.

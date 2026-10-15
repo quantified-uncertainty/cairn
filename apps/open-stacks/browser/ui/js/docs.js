@@ -13,7 +13,11 @@ export const scanUrl = (it, k, w) => `https://archive.org/download/${it.ia}/page
 // Extractors turn a fetched response into article HTML, by item kind. A
 // feature module can replace one (e.g. a better web extractor).
 export const extractors = {
-  async html(it, r) { const j = await r.json(); return j?.data?.post?.result?.htmlBody || '<p>(empty)</p>'; },
+  // Forum posts come as GraphQL JSON; anything else marked html is a web page.
+  async html(it, r) {
+    if (!/\/graphql\b/.test(it.url)) return extractors.web(it, r);
+    const j = await r.json(); return j?.data?.post?.result?.htmlBody || '<p>(empty)</p>';
+  },
   async text(it, r) {
     let txt = (await r.text()).replace(/\r\n/g, '\n');
     const s = txt.search(/\*\*\* ?START OF (THE|THIS) PROJECT GUTENBERG[^\n]*\n/i);

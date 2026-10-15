@@ -529,7 +529,7 @@ async function sample(msg) {
   } catch (e) { msg.textContent = 'Could not play: ' + e.message; msg.className = 'st-msg bad'; }
 }
 
-const size = (b) => (b >= 1e9 ? (b / 1e9).toFixed(1) + ' GB' : (b / 1e6).toFixed(0) + ' MB');
+const size = (b) => (b >= 1024 ** 3 ? (b / 1024 ** 3).toFixed(1) + ' GB' : (b / 1024 ** 2).toFixed(0) + ' MB');
 function secData() {
   const meter = h('div', { className: 'st-meter' }, h('i'));
   const used = h('span', { className: 'st-msg' });
@@ -625,7 +625,7 @@ function flash(text, undo = false) {
 function build() {
   ups.length = 0;
   const secs = [secAppearance(), secText(), secPages(), secNav(), secPanel(), secAI(), secVoice(), secData()];
-  const main = h('div', { className: 'st-main' });
+  const main = h('div', { className: 'st-main', tabIndex: -1 });
   const nav = h('nav', { className: 'st-nav', ariaLabel: 'Settings sections' });
   for (const s of secs) {
     const el = h('section', { className: 'st-sec', id: 'st-' + s.id },
@@ -672,7 +672,7 @@ export async function toggleSheet(show) {
   const main = sheet.querySelector('.st-main');
   main.style.scrollBehavior = 'auto'; main.scrollTop = section0; main.style.scrollBehavior = '';
   main.dispatchEvent(new Event('scroll'));
-  (sheet.querySelector('.st-nav button.cur') || sheet.querySelector('.st-x')).focus({ preventScroll: true });
+  main.focus({ preventScroll: true }); // keys stay in the sheet; arrows and PgDn scroll it
 }
 on('status', () => { if (sheet && !sheet.hidden) sync(); });
 on('spread:rendered', () => { if (sheet && !sheet.hidden) sync(); }); // [ ] + - c C changed by key while the sheet is open
