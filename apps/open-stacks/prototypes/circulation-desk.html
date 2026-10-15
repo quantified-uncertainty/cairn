@@ -84,7 +84,7 @@ a{color:var(--link);text-underline-offset:2px}
 .hint{color:var(--ink-3);font-size:13px;margin:0}
 
 /* intake */
-#intake{width:100%;min-height:212px;resize:vertical;border:1px solid var(--line-2);background:var(--panel-2);padding:10px 11px;font:400 12.5px/1.6 var(--f-mono);color:var(--ink);border-radius:0;background-image:repeating-linear-gradient(transparent 0 19px,var(--line) 19px 20px);background-attachment:local;background-position:0 9px;line-height:20px}
+#intake{width:100%;min-height:212px;resize:vertical;white-space:pre;overflow-x:auto;border:1px solid var(--line-2);background:var(--panel-2);padding:10px 11px;font:400 12.5px/1.6 var(--f-mono);color:var(--ink);border-radius:0;background-image:repeating-linear-gradient(transparent 0 19px,var(--line) 19px 20px);background-attachment:local;background-position:0 9px;line-height:20px}
 .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .btn{border:1px solid var(--ink);background:var(--panel);color:var(--ink);padding:7px 12px 6px;font:700 13px/1.1 var(--f-ui);letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border-radius:2px}
 .btn:hover{background:var(--panel-2)}
@@ -129,10 +129,10 @@ details.intake-d>summary .tog{font:400 12px/1 var(--f-mono);color:var(--sign-ink
 .nk-top .gain .g{color:var(--free)}
 .nk-top .fr{font-size:12.5px;color:var(--ink-3);margin:3px 0 10px}
 .nk-list{list-style:none;margin:12px 0 0;padding:0;border-top:1px solid var(--line)}
-.nk-list li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px;align-items:baseline}
+.nk-list li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px;align-items:baseline}
 .nk-list .k{font-weight:700;display:flex;gap:6px;align-items:center;min-width:0}
-.nk-list .k span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nk-list .v{font:400 12px/1.2 var(--f-mono);color:var(--ink-2);text-align:right;white-space:nowrap}
+.nk-list .c{font:700 12px/1.2 var(--f-mono);color:var(--ink-2);text-align:right;white-space:nowrap}
+.nk-list .v{grid-column:1/-1;font:400 11.5px/1.3 var(--f-mono);color:var(--ink-3);padding-left:16px}
 .nk-list .v b{color:var(--free)}
 .nk-list .zero{color:var(--ink-4)}
 .path{margin-top:14px}
@@ -167,6 +167,9 @@ details.intake-d>summary .tog{font:400 12px/1 var(--f-mono);color:var(--sign-ink
 .tot .note{font-size:12.5px;line-height:1.3;color:var(--board-ink-2);min-height:2.6em}
 .tot .note b{color:var(--board-ink);font-weight:600}
 .tot select{background:#1a1b1e;border:1px solid #34363a;color:var(--board-ink);font:700 11px/1 var(--f-mono);padding:3px 4px;border-radius:2px}
+.tot .n-gain{display:inline-flex;gap:3px;margin-left:4px}
+.tot .val.nk .flap.w{--fs:17px;--fp:8px}
+.tot .val.nk .flap.c{--cw:22px;--fs:21px}
 .tot .take{margin-top:6px;background:var(--flap-ink);color:#0b0b0c;border:0;font:700 11.5px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 9px 5px;border-radius:2px;cursor:pointer}
 .tot .take:hover{background:#fff}
 .tot .take[hidden]{display:none}
@@ -177,7 +180,7 @@ details.intake-d>summary .tog{font:400 12px/1 var(--f-mono);color:var(--sign-ink
 .flap .h{position:absolute;inset:0;padding:0 var(--fp,7px);border-radius:inherit;overflow:hidden;backface-visibility:hidden;transform-origin:50% 50%}
 .flap .h.t{clip-path:inset(0 0 50% 0);background:linear-gradient(180deg,var(--flap-top),var(--flap-top-2))}
 .flap .h.b{clip-path:inset(50% 0 0 0);background:var(--flap-bot)}
-.flap::after{content:"";position:absolute;left:0;right:0;top:calc(50% - .5px);height:1px;background:var(--flap-seam);box-shadow:0 1px 0 rgba(255,255,255,.05);z-index:4;pointer-events:none}
+.flap::after{content:"";position:absolute;left:0;right:0;top:calc(50% - .5px);height:1px;background:rgba(0,0,0,.5);box-shadow:0 1px 0 rgba(255,255,255,.04);z-index:4;pointer-events:none}
 .flap::before{content:"";position:absolute;left:-1px;right:-1px;top:calc(50% - 2px);height:4px;background:linear-gradient(90deg,#000 0 2px,transparent 2px calc(100% - 2px),#000 calc(100% - 2px));z-index:5;pointer-events:none}
 .flap .leaf{z-index:3;will-change:transform}
 .flap.c{--fp:0px;min-width:0;width:var(--cw,19px);text-align:center}
@@ -267,7 +270,7 @@ table.tt .terms{font-size:12px;color:var(--ink-3);margin-top:3px;line-height:1.3
 .shadow-l{font-size:13px}
 
 /* tray */
-.tray-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.tray-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:start}
 .slip{border:1px solid var(--line-2);background:var(--panel);padding:11px 12px 12px;position:relative;background-image:linear-gradient(90deg,transparent 0 22px,color-mix(in srgb,var(--buy) 35%,transparent) 22px 23px,transparent 23px)}
 .slip .raw{font:400 13px/1.45 var(--f-mono);padding-left:20px;color:var(--ink)}
 .slip .ln{position:absolute;left:5px;top:12px;font:700 10px/1 var(--f-mono);color:var(--ink-4)}
@@ -314,16 +317,19 @@ dialog .x{background:transparent;border:1px solid #4a4d52;color:var(--sign-ink);
   .c-hrs{display:block}
 }
 @media (max-width:980px){
-  .hall{grid-template-columns:minmax(0,1fr)}
-  .rail{order:2}
-  .main{order:1}
+  .hall{display:flex;flex-direction:column;align-items:stretch}
+  .rail,.main{display:contents}
+  #intakeP{order:0}#board{order:1}#nextP{order:2}#keysP{order:3}#trayP{order:4}#rulesP{order:5}
   .totals{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:760px){
-  .sign h1{font-size:24px}
+  .sign h1{font-size:23px;white-space:nowrap}
   .sign p{font-size:12.5px}
+  .picto{display:none}
+  .tot:nth-child(3),.tot:nth-child(4){grid-column:1/-1}
+  .tot .note{min-height:0}
   .clock{display:none}
-  .sbtn .lbl{display:none}
+  .sbtn{padding:6px 8px;font-size:12px}
   .hall{padding-top:14px;gap:16px}
   .board{margin:3px;border-radius:4px}
   .btop{padding:13px 12px 9px}
@@ -364,7 +370,7 @@ dialog .x{background:transparent;border:1px solid #4a4d52;color:var(--sign-ink);
     </div>
     <div class="sign-r">
       <span class="clock" id="clock" aria-label="Local time">LOCAL <b>--:--</b></span>
-      <button class="sbtn" id="aboutBtn" type="button"><span class="lbl">About</span><span class="sr"> this prototype</span><svg class="ic" viewBox="0 0 16 16" aria-hidden="true" style="display:none"></svg></button>
+      <button class="sbtn" id="aboutBtn" type="button"><span class="lbl">About</span><span class="sr"> this prototype</span></button>
       <button class="sbtn" id="themeBtn" type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 1.8a6.2 6.2 0 0 1 0 12.4z" fill="currentColor"/></svg></button>
     </div>
   </div>
@@ -372,15 +378,15 @@ dialog .x{background:transparent;border:1px solid #4a4d52;color:var(--sign-ink);
 
 <main class="hall">
   <aside class="rail" aria-label="Reading list and keys">
-    <section class="panel">
+    <section class="panel" id="intakeP">
       <details class="intake-d" id="intakeD" open>
         <summary class="band"><span class="num">1</span><h2>Call slip</h2><span class="tog" id="intakeTog">paste a list</span></summary>
         <div class="pbody">
           <label for="intake" class="hint" style="display:block;margin-bottom:7px">One title per line: titles, authors, nicknames (PRML, BDA3, CLRS), ISBNs. Lines starting with # are ignored.</label>
-          <textarea id="intake" spellcheck="false" aria-describedby="parseStat"></textarea>
+          <textarea id="intake" spellcheck="false" wrap="off" aria-describedby="parseStat"></textarea>
           <div class="btns">
-            <button class="btn primary" id="routeBtn" type="button">Route this list</button>
-            <button class="btn" id="sampleBtn" type="button">Sample list</button>
+            <button class="btn primary" id="routeBtn" type="button">Route list</button>
+            <button class="btn" id="sampleBtn" type="button">Sample</button>
             <button class="btn" id="clearBtn" type="button">Clear</button>
           </div>
           <div class="parse-stat" id="parseStat" aria-live="polite">Loading the registry…</div>
@@ -388,7 +394,7 @@ dialog .x{background:transparent;border:1px solid #4a4d52;color:var(--sign-ink);
       </details>
     </section>
 
-    <section class="panel" aria-labelledby="keysH">
+    <section class="panel" id="keysP" aria-labelledby="keysH">
       <div class="band"><span class="num">2</span><h2 id="keysH">Keyring</h2><span class="aside">keys you hold</span></div>
       <div class="pbody">
         <p class="hint" style="margin-bottom:10px">A route opens when you hold its key. Toggle a key and the board re-routes. Library keys use the Bay Area systems sampled in the research as a worked example.</p>
@@ -396,7 +402,7 @@ dialog .x{background:transparent;border:1px solid #4a4d52;color:var(--sign-ink);
       </div>
     </section>
 
-    <section class="panel" aria-labelledby="nextH">
+    <section class="panel" id="nextP" aria-labelledby="nextH">
       <div class="band"><span class="num">3</span><h2 id="nextH">Next key</h2><span class="aside">most doors per dollar</span></div>
       <div class="pbody" id="advisor"></div>
     </section>
@@ -415,7 +421,7 @@ dialog .x{background:transparent;border:1px solid #4a4d52;color:var(--sign-ink);
         <div class="tot"><div class="cap"><span class="lamp tonight"></span>Readable tonight</div><div class="val" id="tTonight"></div><div class="note" id="nTonight"></div></div>
         <div class="tot"><div class="cap">Fare tonight</div><div class="val" id="tFare"></div><div class="note" id="nFare"></div></div>
         <div class="tot"><div class="cap">Reading time</div><div class="val" id="tHours"></div><div class="note" id="nHours"></div></div>
-        <div class="tot"><div class="cap">Next key</div><div class="val" id="tNext"></div><div class="note" id="nNext"></div><button class="take" id="takeBtn" type="button" hidden>Take this key</button></div>
+        <div class="tot"><div class="cap">Next key</div><div class="val nk" id="tNext"></div><div class="note" id="nNext"></div><button class="take" id="takeBtn" type="button" hidden>Take this key</button></div>
       </div>
       <div class="bhead" aria-hidden="true"><span>No.</span><span>Reading</span><span>Route</span><span class="h-via">Via</span><span>Departs</span><span>Fare</span><span class="r">Hrs</span></div>
       <ol class="rows" id="rows"><li class="loading">LOADING BOARD…</li></ol>
@@ -431,7 +437,7 @@ dialog .x{background:transparent;border:1px solid #4a4d52;color:var(--sign-ink);
       </div>
     </section>
 
-    <section class="panel" aria-labelledby="trayH">
+    <section class="panel" id="trayP" aria-labelledby="trayH">
       <div class="band"><span class="num">4</span><h2 id="trayH">Unresolved slips</h2><span class="aside" id="trayCount"></span></div>
       <div class="pbody">
         <p class="hint" id="trayHint" style="margin-bottom:10px">Lines the matcher could not pin to one record. Pick a candidate, or ask Claude, which may only choose among real records.</p>
@@ -441,7 +447,7 @@ dialog .x{background:transparent;border:1px solid #4a4d52;color:var(--sign-ink);
       </div>
     </section>
 
-    <section class="panel" aria-labelledby="rulesH">
+    <section class="panel" id="rulesP" aria-labelledby="rulesH">
       <div class="band"><span class="num">5</span><h2 id="rulesH">Rulebook</h2><span class="aside">every route cites one</span></div>
       <div class="pbody">
         <p class="hint" style="margin-bottom:8px">Routing is deterministic: each route comes from one of these rules, with its source in the Open Stacks research dossiers. Claude's explanations must cite them too. No rule routes to shadow libraries.</p>
@@ -1030,13 +1036,13 @@ dialog .x{background:transparent;border:1px solid #4a4d52;color:var(--sign-ink);
     const tN = $('#tNext');
     const name = top ? top.k.short : 'ALL KEYS';
     const gain = top ? '+' + (top.tonight || top.sooner || top.maybe) : '';
-    const html = flapHTML(name, 'w n-name', 'style="--fw:calc(11ch + 14px)"') + `<span class="n-gain">${charFlaps(gain, 3)}</span>`;
+    const html = flapHTML(name, 'w n-name') + `<span class="n-gain">${charFlaps(gain, 3)}</span>`;
     if (!tN.querySelector('.n-name')) tN.innerHTML = html;
     else { setFlap(tN.querySelector('.n-name'), name, { delay: d + 260 }); setChars(tN.querySelector('.n-gain'), gain, 3, d + 320); }
     $('#nNext').innerHTML = top ? `${top.tonight ? `<b>+${top.tonight} tonight</b>` : ''}${top.sooner ? `${top.tonight ? ', ' : ''}<b>+${top.sooner} sooner</b>` : ''}${top.maybe ? `, +${top.maybe} maybe` : ''} · ${top.cost ? money(top.cost) + '/mo' : 'free'}` : 'No key opens more of this list.';
     const tb = $('#takeBtn');
     tb.hidden = !top; tb.dataset.k = top ? top.k.id : '';
-    tb.textContent = top ? `Take the ${top.k.name.replace(/^the /i, '')}` : '';
+    tb.textContent = top ? 'Take this key' : '';
   }
   function keyUse(k) {
     let n = 0;
@@ -1076,12 +1082,13 @@ dialog .x{background:transparent;border:1px solid #4a4d52;color:var(--sign-ink);
         <div class="fr">${esc(top.k.friction)}${per}</div>
         <button class="btn primary small" type="button" data-take="${top.k.id}">Take this key</button></div>`;
     } else h += `<div class="nk-top"><div class="lbl">Next key</div><div class="name">None</div><div class="fr">No key you lack would open more of this list. The rest is a purchase or a wait.</div></div>`;
-    h += `<ul class="nk-list" aria-label="All keys you do not hold, ranked">` + adv.filter((a) => a !== top).map((a) => `<li><span class="k"><span class="dot" style="background:${KCOLOR[a.k.id]}"></span><span>${esc(a.k.name)}</span></span><span class="v">${a.tonight || a.sooner || a.maybe ? `<b>${a.tonight ? '+' + a.tonight : ''}</b>${a.sooner ? (a.tonight ? ' ' : '') + '+' + a.sooner + ' sooner' : ''}${a.maybe ? ' +' + a.maybe + '?' : ''}` : '<span class="zero">+0</span>'} · ${a.cost ? money(a.cost) : 'free'}</span></li>`).join('') + `</ul>`;
+    const gainTxt = (a) => [a.tonight ? `<b>+${a.tonight} tonight</b>` : '', a.sooner ? `+${a.sooner} sooner` : '', a.maybe ? `+${a.maybe} maybe` : ''].filter(Boolean).join(' · ') || '<span class="zero">opens nothing more on this list</span>';
+    h += `<ul class="nk-list" aria-label="All keys you do not hold, ranked">` + adv.filter((a) => a !== top).map((a) => `<li><span class="k"><span class="dot" style="background:${KCOLOR[a.k.id]}"></span><span>${esc(a.k.name)}</span></span><span class="c">${a.cost ? money(a.cost) + '/mo' : 'free'}</span><span class="v">${gainTxt(a)}</span></li>`).join('') + `</ul>`;
     // cheapest complete path as a line map
     const tonightNow = S.board.T.tonight;
     const stops = [`<li><b>Now: ${tonightNow} of ${S.items.length} tonight</b><span class="m">${[...S.held].map((k) => S.D.keys.find((x) => x.id === k)?.short).join(' + ')}</span></li>`];
     let running = tonightNow;
-    for (const s of path.steps) { running += s.tonight; stops.push(`<li><b>${esc(s.k.name)}</b> · +${s.tonight} → ${running} tonight<span class="m">${s.cost ? money(s.cost) + ' for a month' : 'free'} · ${esc(s.k.friction.split(';')[0])}</span></li>`); }
+    for (const s of path.steps) { running += s.tonight; stops.push(`<li><b>${esc(s.k.name)}</b> · +${s.tonight} → ${running} tonight<span class="m">${s.cost ? money(s.cost) + ' for one month' : 'free · ' + esc(s.k.friction.split(';')[0])}</span></li>`); }
     if (pb.buyN) stops.push(`<li><b>Buy ${pb.buyN} used</b> · ${money(pb.buyTotal)}<span class="m">${S.items.filter((_, i) => pb.st[i] === 'buy' && pb.picks[i]?.fare != null).map((it) => it.w.t.split(':')[0]).slice(0, 4).join(' · ')}${pb.buyN > 4 ? ' …' : ''}</span></li>`);
     const waits = pb.T.wait + pb.T.maybe + pb.T.partial;
     stops.push(`<li class="term"><b>${pb.T.tonight} tonight${waits ? `, ${waits} waiting or partial` : ''}</b><span class="m">${pb.unpriced ? pb.unpriced + ' still to buy, unpriced · ' : ''}holds and library checks finish the list</span></li>`);
@@ -1100,10 +1107,12 @@ dialog .x{background:transparent;border:1px solid #4a4d52;color:var(--sign-ink);
   function templateWhy(it, p) {
     if (!p) return 'No route is open with the keys you hold.';
     const r = S.D.rules[p.rule];
-    const alt = it.routes.find((x) => x !== p && x.cls !== 'warn' && !DC.usable(x, S.held) && DC.rank(x) < DC.rank(p));
-    let s = `Routed by ${p.rule} (${r.name.toLowerCase()}; ${r.src}).`;
+    const cands = it.routes.filter((x) => x !== p && !['warn', 'pd'].includes(x.cls) && !DC.usable(x, S.held) && DC.rank(x) < DC.rank(p));
+    const alt = cands.find((x) => x.conf !== 'estimate') || cands[0];
+    let s = `Routed by ${p.rule}: ${r.name.toLowerCase()} (${r.src}).`;
     if (p.terms) s += ' ' + p.terms;
-    if (alt) s += ` With ${keyName(alt)} it would depart ${DC.depText(alt).toLowerCase()} via ${alt.label.toLowerCase()} (${alt.rule}).`;
+    if (alt) s += ` With ${keyName(alt)} the route would be ${alt.label} instead (departs ${DC.depText(alt).toLowerCase()}; ${alt.rule}, ${alt.conf}).`;
+    else if (DC.status(p) !== 'tonight') s += ' No key on the keyring improves on this.';
     return s;
   }
   function renderDetail(i) {
@@ -1117,7 +1126,8 @@ dialog .x{background:transparent;border:1px solid #4a4d52;color:var(--sign-ink);
     if (w.src === 'claude') notes.unshift('Identified by Claude from your line; not in the local catalog and not verified. Routes below follow the rules for its stated publisher and year.');
     if (it.check) notes.unshift('Matched with moderate confidence. If this is the wrong book, pick an alternative below.');
     if (w.facts.libby && w.facts.libby.checked && !it.routes.some((r) => r.cls === 'library')) notes.push('No Libby ebook at any of the nine library systems R03 checked.');
-    const rows = it.routes.map((r) => {
+    const ordered = [...it.routes].sort((a, b) => (b === p) - (a === p) || (a.cls === 'warn') - (b.cls === 'warn') || DC.usable(b, S.held) - DC.usable(a, S.held) || DC.rank(a) - DC.rank(b));
+    const rows = ordered.map((r) => {
       const ok = DC.usable(r, S.held);
       const isBest = r === p;
       const link = r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.cls === 'buy' ? 'AbeBooks' : r.cls === 'library' ? 'OverDrive' : 'open')}</a>` : '<span class="hint">in app</span>';
@@ -1329,7 +1339,7 @@ Reply with only JSON: {"match_id": string|null, "identified": {"title": string, 
     const day = new Date().toISOString().slice(0, 10);
     L.push(`TONIGHT PACKET · The Circulation Desk · ${day}`, `Keys: ${[...S.held].map((k) => S.D.keys.find((x) => x.id === k)?.name).join(', ')}`, '');
     const sec = (title, filt, fmt) => { const rows = S.items.map((it, i) => [it, B.picks[i], B.st[i]]).filter(([it, p, st]) => filt(st, p)); if (!rows.length) return; L.push(title); rows.forEach((r) => L.push(fmt(...r))); L.push(''); };
-    sec('READ TONIGHT', (st) => st === 'tonight', (it, p) => `- ${it.w.t} · ${p.label} · ${p.url || keyName(p) + ' app'}`);
+    sec('READ TONIGHT', (st) => st === 'tonight', (it, p) => `- ${it.w.t} · ${p.label} · ${p.url || p.via + ' (' + keyName(p) + ')'}`);
     sec('START TONIGHT (PARTIAL)', (st) => st === 'partial', (it, p) => `- ${it.w.t} · ${p.terms} · ${p.url}`);
     sec('PLACE HOLDS / CHECK THE LIBRARY', (st) => st === 'wait' || st === 'maybe', (it, p) => `- ${it.w.t} · ${p.label} · ${p.via}${p.url ? ' · ' + p.url : ''}`);
     sec('BUY (SHIPS 3–5 DAYS)', (st) => st === 'buy', (it, p) => `- ${it.w.t} · ${p.fare != null ? money(p.fare) : 'price not checked'}${p.isbn ? ' · ISBN ' + p.isbn : ''}${p.url ? ' · ' + p.url : ''}`);

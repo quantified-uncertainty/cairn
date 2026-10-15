@@ -238,7 +238,7 @@ button { cursor: pointer; }
   .plate p { display: none; }
   .ask { left: var(--gut-l); top: calc(var(--gut-t) + 34px); transform: none; width: min(420px, calc(100% - 420px)); min-width: 0; }
   .card { top: var(--gut-t); max-height: calc(100% - var(--gut-t) - 150px); width: 360px; }
-  .crumb { left: calc(var(--gut-l) + 190px); right: var(--gut-r); bottom: calc(var(--gut-b) + 112px); }
+  .crumb { left: calc(var(--gut-l) + 190px); right: 390px; bottom: calc(var(--gut-b) + 112px); }
   .legend { max-width: 420px; }
 }
 @media (max-width: 860px) {
@@ -456,7 +456,7 @@ async function loadJSON(url, onProgress) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
   const total = Number(res.headers.get('content-length')) || 0;
-  if (!res.body || !total || !onProgress) return res.json();
+  if (!res.body || !total || !onProgress || !window.ReadableStream) return res.json();
   const reader = res.body.getReader();
   const chunks = []; let got = 0;
   for (;;) {
@@ -478,7 +478,7 @@ async function fontsReady() {
 let D;
 try {
   const [data] = await Promise.all([
-    loadJSON('data/round-reading-room/room.json', (p) => { loadBar.style.width = `${Math.round(p * 100)}%`; }),
+    loadJSON('data/round-reading-room/room.json', null),
     fontsReady(),
   ]);
   D = data;
@@ -1430,6 +1430,7 @@ const trailMat = new THREE.ShaderMaterial({
     }`,
   transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
 });
+const markerOpacity = { value: 1 };
 const numCanvas = document.createElement('canvas'); numCanvas.width = 1024; numCanvas.height = 256;
 {
   const g = numCanvas.getContext('2d');
@@ -1483,7 +1484,7 @@ function drawTrail(stops) {
     const u0 = (k % 8) / 8, u1 = u0 + 1 / 8, v1 = 1 - Math.floor(k / 8) / 2, v0 = v1 - 0.5;
     verts.push([th0, y, 0.38, u0, v0, 1], [th1, y, 0.38, u1, v0, 1], [th1, y + sz, 0.38, u1, v1, 1], [th0, y + sz, 0.38, u0, v1, 1]);
   });
-  const nm = wallMesh(verts, { material: texMat(numTex, { value: 1 }, 0), order: 6 });
+  const nm = wallMesh(verts, { material: texMat(numTex, markerOpacity, 0), order: 6 });
   trailGroup.add(nm);
 }
 
@@ -2557,6 +2558,7 @@ function stepXR(dt, frame) {
     U.uLamp.value.set(s.theta, s.y, Math.max(2.2, s.t * 0.5));
     nearOpacity.spine.value = 1 - smooth(1.6, 2.4, s.t); nearOpacity.lip.value = 1 - smooth(2.4, 3.4, s.t);
     plateOpacity.value = smooth(2.5, 4, s.t) * (1 - smooth(14, 19, s.t));
+    markerOpacity.value = smooth(1.2, 2.5, s.t);
     // ~20 px per degree; titles only when a spine spans about a degree
     labelTick(performance.now(), { theta: s.theta, y: s.y, dist: s.t, pxPerRad: 1150, halfW: s.t * 0.9, halfH: s.t * 0.7, minPx: 18 });
   }
@@ -2657,6 +2659,7 @@ renderer.setAnimationLoop((tms, frame) => {
     plateOpacity.value = smooth(2.4, 4.4, dd) * (1 - smooth(15, 19, dd));
     nearOpacity.spine.value = 1 - smooth(1.9, 3.1, dd);
     nearOpacity.lip.value = 1 - smooth(2.7, 4.0, dd);
+    markerOpacity.value = smooth(2.2, 4.5, dd);
     const H = canvas.clientHeight || 800;
     const vf = (camera.fov * Math.PI) / 180;
     const halfH = st.d * Math.tan(vf / 2), halfW = halfH * camera.aspect;

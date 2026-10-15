@@ -469,6 +469,7 @@ details summary { cursor: pointer; color: var(--accent); }
 }
 @media (max-width: 520px) {
   .book-btn .bk-t { display: none; }
+  .claude-chip { display: none; } /* each view carries its own provenance badge */
   .tools .tbtn.about .txt { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -567,6 +568,8 @@ const store = {
 };
 const norm = (s) => String(s).replace(/[_*]/g, '').replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, ' ').trim();
 const keyify = (s) => s.replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
+/* Typographic quotes for AI-authored prose only (verbatim quotations are shown exactly as printed). */
+const sq = (s) => String(s ?? '').replace(/(^|[\s(\[{—–-])"/g, '$1“').replace(/"/g, '”').replace(/(^|[\s(\[{—–-])'/g, '$1‘').replace(/'/g, '’');
 const wc = (s) => (String(s).match(/[A-Za-zÀ-ÿ0-9]+(?:['’][A-Za-z]+)?/g) || []).length;
 function fmtTime(sec) {
   if (sec == null || !isFinite(sec)) return '—';
@@ -885,6 +888,11 @@ function surpriseColor(bits) {
   const t = clamp(bits / 5, 0, 1);
   const cs = getComputedStyle(document.documentElement);
   return mix(hexOf('#8a93a8'), hexOf(cs.getPropertyValue('--verm').trim()), t);
+}
+/* Dark or light text, whichever reads on an rgb() swatch. */
+function textOn(rgb) {
+  const [r, g, b] = (rgb.match(/\d+/g) || [0, 0, 0]).map((v) => Number(v) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.2 ? '#14182a' : '#ffffff';
 }
 function hexOf(h) { h = h.replace('#', ''); return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)); }
 function mix(a, b, t) { return 'rgb(' + a.map((x, i) => Math.round(x + (b[i] - x) * t)).join(',') + ')'; }
@@ -1212,7 +1220,7 @@ function richHTML(p, { claims = [], targets = [], glosses = null, glossSeen = nu
   const ranges = p.it.map(([s, e]) => ({ s, e, tag: 'em' }));
   for (const c of claims) {
     const i = p.key.indexOf(keyify(norm(c.quote)));
-    if (i >= 0) ranges.push({ s: i, e: i + norm(c.quote).length, tag: 'mark', cls: 'claim', attr: ` data-tip="${esc('Key claim: ' + c.claim)}"` });
+    if (i >= 0) ranges.push({ s: i, e: i + norm(c.quote).length, tag: 'mark', cls: 'claim', attr: ` data-tip="${esc('Key claim: ' + sq(c.claim))}"` });
   }
   for (const t of targets) {
     const q = keyify(norm(t));
@@ -1227,8 +1235,8 @@ function richHTML(p, { claims = [], targets = [], glosses = null, glossSeen = nu
       while ((m = re.exec(plain))) {
         const s = m.index, e = s + m[0].length;
         if (ranges.some((r) => r.tag === 'gl' && r.s < e && s < r.e)) continue;
-        ranges.push({ s, e, tag: 'span', cls: 'gl', attr: ` data-tip="${esc(g.short + (g.more ? ' — ' + g.more : ''))}"`, gl: true });
-        if (glossSeen && !glossSeen.has(g.re)) { glossSeen.add(g.re); inserts.push({ at: e, html: `<span class="gl-in">${esc(g.short)}</span>` }); }
+        ranges.push({ s, e, tag: 'span', cls: 'gl', attr: ` data-tip="${esc(sq(g.short + (g.more ? ' — ' + g.more : '')))}"`, gl: true });
+        if (glossSeen && !glossSeen.has(g.re)) { glossSeen.add(g.re); inserts.push({ at: e, html: `<span class="gl-in">${esc(sq(g.short))}</span>` }); }
       }
     }
   }
@@ -1368,7 +1376,7 @@ function viewSkim() {
     return `${part}<div class="srow ${ci === S.pos.ch ? 'cur' : ''}" data-ch="${ci}" id="s-${ci}" tabindex="0" role="button" aria-label="Chapter ${esc(c.label)}: ${esc(c.title)}">
       <div class="numeral">${numHTML(c)}</div>
       <div style="min-width:0"><div class="st">${esc(c.title)}</div>
-        ${a ? `<div class="sg">${esc(a.gist)}</div><ul class="sc">${a.claims.slice(0, 4).map((x) => `<li>${esc(x.claim)}</li>`).join('')}</ul>`
+        ${a ? `<div class="sg">${esc(sq(a.gist))}</div><ul class="sc">${a.claims.slice(0, 4).map((x) => `<li>${esc(sq(x.claim))}</li>`).join('')}</ul>`
             : `<div class="sg extr">Opening line: “${esc(trunc(opening(c), 220))}”</div>`}</div>
       <div class="smeta num"><span>${chapterPages(c)} · ${fmtInt(c.words)} w</span><span>${fmtTime(cost(ci, 2))} to read</span>
         ${bits != null ? `<button class="gear-chip g${gearForBits(bits)}" data-go="${ci}" data-gear="${gearForBits(bits)}" title="Planned gear from your bet">${bits.toFixed(1)} bits → <b>${gearForBits(bits)}</b> ${GEARS[gearForBits(bits)].name}</button>` : ''}
@@ -1389,10 +1397,10 @@ function viewRead() {
     const bits = bitsFor(ci);
     const side = des.length ? `<h5 class="caps" style="color:var(--ink-3)">Dog-ears · later books on this chapter</h5>${des.map(deCard).join('')}` : '';
     const body = a
-      ? `<p class="summary">${esc(a.summary)}</p>
+      ? `<p class="summary">${esc(sq(a.summary))}</p>
          <ol class="claims">${a.claims.map((x) => {
            const p = B.paraByLine.get(x.line);
-           return `<li><div class="ct">${esc(x.claim)}</div><blockquote><q>${esc(x.quote)}</q><button class="linkish cite num" data-jump="${ci}" data-line="${x.line}" data-quote="${esc(x.quote)}" data-gear="2">${p ? esc(pageLabel(B.pages[p.page])) : ''} → text</button></blockquote></li>`;
+           return `<li><div class="ct">${esc(sq(x.claim))}</div><blockquote><q>${esc(x.quote)}</q><button class="linkish cite num" data-jump="${ci}" data-line="${x.line}" data-quote="${esc(x.quote)}" data-gear="2">${p ? esc(pageLabel(B.pages[p.page])) : ''} → text</button></blockquote></li>`;
          }).join('')}</ol>`
       : ci === S.pos.ch ? genPanel(ci, 'summary')
       : `<p class="summary" style="color:var(--ink-2);font-style:italic;font-size:16px">Opening line (extractive): “${esc(trunc(opening(c), 260))}”</p>${sampleFn && !genJob ? `<button class="linkish" data-gen="${ci}">Generate this chapter's apparatus with Claude</button>` : ''}`;
@@ -1438,7 +1446,7 @@ function viewText(study) {
     const cls = p.kind === 'pre' ? 'ptext pre' : p.kind === 'sub' ? 'ptext sub' : p.kind === 'fn' ? 'ptext fn' : 'ptext';
     const html = richHTML(p, { claims: p.kind === 'p' ? claims.filter((x) => x.line === p.line) : [], targets: flash && flash.line === p.line ? targets : [], glosses: p.kind === 'p' ? glosses : null, glossSeen: seen });
     let marg = '';
-    for (const n of notesBy.get(p.line) || []) marg += `<div class="mnote"><span class="mq">“${esc(trunc(n.at, 60))}”</span>${esc(n.note)}</div>`;
+    for (const n of notesBy.get(p.line) || []) marg += `<div class="mnote"><span class="mq">“${esc(trunc(n.at, 60))}”</span>${esc(sq(n.note))}</div>`;
     for (const d of desBy.get(p.line) || []) {
       const m = bookMeta(d.book);
       marg += `<button class="mde ${d.kind === 'kindred' ? 'kin' : ''}" data-dog="${LAP.dogears.indexOf(d)}"><span class="tri"></span><span><b>${esc(m.a.split(' ').pop())} ${m.y}</b> ${d.kind === 'kindred' ? 'makes the same argument' : d.kind === 'quotes' ? 'quotes this' : 'cites this'}</span></button>`;
@@ -1479,7 +1487,7 @@ function viewBet() {
     const bits = bitsFor(i);
     const b = S.bets[i];
     const has = !!app(i)?.bet;
-    return `<button class="pk ${b ? 'done' : ''} ${b?.example ? 'ex' : ''} ${i === ci ? 'cur' : ''}" data-betch="${i}" style="${b && bits != null ? `background-color:${surpriseColor(bits)}` : ''}${!has ? ';opacity:.45' : ''}" title="${esc(cc.title)}${bits != null ? ' · ' + bits.toFixed(1) + ' bits' : ''}">${esc(numLabel(cc))}</button>`;
+    return `<button class="pk ${b ? 'done' : ''} ${b?.example ? 'ex' : ''} ${i === ci ? 'cur' : ''}" data-betch="${i}" style="${b && bits != null ? `background-color:${surpriseColor(bits)};color:${textOn(surpriseColor(bits))}` : ''}${!has ? ';opacity:.45' : ''}" title="${esc(cc.title)}${bits != null ? ' · ' + bits.toFixed(1) + ' bits' : ''}">${esc(numLabel(cc))}</button>`;
   }).join('')}</div>`;
   if (!a || !a.bet) {
     return `<div class="view">${viewHead('N')}${picker}<div style="height:16px"></div>${genPanel(ci, 'bet')}</div>`;
@@ -1494,7 +1502,7 @@ function viewBet() {
   const opts = bet.options.map((o, i) => {
     const right = revealed && i === bet.answer;
     return `<div class="opt ${right ? 'right' : ''}">
-      <span class="ol">${LETTERS[i]}</span><label for="bw${i}">${esc(o)}</label><span class="pct num" id="bp${i}">${Math.round(ps[i] * 100)}%</span>
+      <span class="ol">${LETTERS[i]}</span><label for="bw${i}">${esc(sq(o))}</label><span class="pct num" id="bp${i}">${Math.round(ps[i] * 100)}%</span>
       <input type="range" id="bw${i}" min="0" max="10" step="1" value="${w[i]}" data-bw="${i}" ${revealed ? 'disabled' : ''} aria-label="Confidence in option ${LETTERS[i]}">
       ${revealed && right ? `<span class="verdict" style="color:var(--ok)">✓ What Laplace argues${B.isLap ? '' : ''}</span>` : ''}</div>`;
   }).join('');
@@ -1506,9 +1514,9 @@ function viewBet() {
     const p = B.paraByLine.get(bet.line);
     reveal = `<div class="reveal">
       <div class="bits"><span class="caps bu">Surprise</span><div class="bn num">${bits.toFixed(2)}</div><span class="bu">bits${prior.example ? ' (example bet)' : ''}</span>
-        <div class="gauge"><i style="left:${clamp(bits / 6.64, 0, 1) * 100}%"></i></div><div class="gauge-l num"><span>0 knew it</span><span>2 = no idea</span><span>6.6</span></div></div>
+        ${gaugeHTML(bits)}</div>
       <div class="rec"><div>You gave the right answer <b class="num">${Math.round(probs(prior.w)[bet.answer] * 100)}%</b>. Recommended: <button class="gear-chip g${g}" data-go="${ci}" data-gear="${g}"><b>${g}</b> ${GEARS[g].name}</button> <span class="num" style="color:var(--ink-3)">${fmtTime(cost(ci, g))} instead of ${fmtTime(cost(ci, 2))}</span></div>
-        <div class="why">${esc(GEAR_WHY[g])} ${esc(bet.why || '')}</div>
+        <div class="why">${esc(GEAR_WHY[g])} ${esc(sq(bet.why || ''))}</div>
         ${bet.quote ? `<div class="decisive"><span class="cl caps">Decisive passage · ${p ? esc(pageLabel(B.pages[p.page])) : ''}</span>“${esc(bet.quote)}”</div>` : ''}
         <div class="bet-actions" style="justify-content:flex-start"><button class="btn primary" data-jump="${ci}" data-line="${bet.line ?? ''}" data-quote="${esc(bet.quote || '')}" data-gear="${g}">Shift to gear ${g} ${g <= 2 ? 'at this passage' : 'for this chapter'}</button>
         <button class="btn" id="betAgain">Change bet</button>${nextUnbet(ci) != null ? `<button class="btn" data-betch="${nextUnbet(ci)}">Next bet: ${esc(B.chapters[nextUnbet(ci)].label)} →</button>` : ''}</div></div></div>`;
@@ -1519,12 +1527,22 @@ function viewBet() {
       <div class="pre-h caps num"><span>Before you read · Chapter ${esc(c.label)}</span><span>${chapterPages(c)} · ${fmtInt(c.words)} words · ${fmtTime(cost(ci, 2))} at gear 2</span></div>
       <div class="bt">${esc(c.title)}</div>
       ${prev ? `<div class="ctx"><span class="cl caps">Where chapter ${esc(B.chapters[ci - 1].label)} leaves off</span>“${esc(prev)}”</div>` : `<div class="ctx"><span class="cl caps">The first chapter</span>All you have is the title and the table of contents.</div>`}
-      <p class="q">${esc(bet.q)}</p>
+      <p class="q">${esc(sq(bet.q))}</p>
       <div style="color:var(--ink-3);font-size:12px">Spread your confidence over the four claims (drag each bar). Scored by surprise, −log₂ of the probability you gave the right one.</div>
       ${dist}${opts}
       ${revealed ? '' : `<div class="bet-actions"><button class="btn" id="betEven">Spread evenly</button><button class="btn verm" id="betPlace">Place bet and reveal</button></div>`}
       ${reveal}
     </div></div></div>`;
+}
+/* Surprise gauge: 0 to 6.64 bits (the 1% floor), split into the bands that pick the gear. */
+function gaugeHTML(bits) {
+  const MAX = -Math.log2(0.01);
+  const bands = [[0, 0.5, 4], [0.5, 1.5, 3], [1.5, 3, 2], [3, MAX, 1]];
+  const segs = bands.map(([a, b, g]) => { const col = surpriseColor((a + b) / 2); return `<span class="seg" style="flex:${b - a} 1 0;background:${col};color:${textOn(col)}" title="${a}–${b === MAX ? '6.6' : b} bits → gear ${g} ${GEARS[g].name}">${g}</span>`; }).join('');
+  const lab = [0.5, 1.5, 3].map((x) => `<span style="left:${(x / MAX) * 100}%">${x}</span>`).join('');
+  return `<div class="gauge" role="img" aria-label="${bits.toFixed(2)} bits: gear ${gearForBits(bits)}">${segs}<i style="left:${clamp(bits / MAX, 0, 1) * 100}%"></i></div>
+    <div class="gauge-l num" aria-hidden="true">${lab}<span>6.6 bits</span></div>
+    <div class="gauge-cap">Numerals are the gear each band picks. 2 bits = even odds on all four.</div>`;
 }
 function lastSentences(c) {
   const ps = c.paras.filter((p) => p.kind === 'p');
@@ -1591,12 +1609,12 @@ function ledgerMap() {
     return `<li class="sm-row ${ci === S.pos.ch ? 'cur' : ''}" data-ch="${ci}" data-plan="${g}" tabindex="0" role="button" aria-label="Chapter ${esc(c.label)}, planned gear ${g}">
       <span class="numeral">${esc(numLabel(c))}</span>
       <span style="min-width:0"><span class="nm" style="display:block">${esc(B.isLap ? LAP.chapters[ci].short : c.title)}</span><span class="len" style="width:${Math.max(4, (c.words / maxW) * 100)}%"></span></span>
-      ${bits != null ? `<span class="sw num" style="background:${surpriseColor(bits)}" title="${bits.toFixed(2)} bits${S.bets[ci].example ? ' (example)' : ''}">${bits.toFixed(1)}</span>` : `<span class="sw none" title="No bet yet">${app(ci)?.bet ? 'bet' : '—'}</span>`}
+      ${bits != null ? `<span class="sw num" style="background:${surpriseColor(bits)};color:${textOn(surpriseColor(bits))}" title="${bits.toFixed(2)} bits${S.bets[ci].example ? ' (example)' : ''}">${bits.toFixed(1)}</span>` : `<span class="sw none" title="No bet yet">${app(ci)?.bet ? 'bet' : '—'}</span>`}
       <span class="tm num"><span class="gpip g${g}" title="Planned gear ${g}: ${GEARS[g].name}">${g}</span>${fmtTime(cost(ci, g))}</span></li>`;
   }).join('');
   const moved = anyBet
     ? `Moved <b>${fmtTime(pl.saved)}</b> out of ${pl.nSaved} chapter${pl.nSaved === 1 ? '' : 's'} you already knew${pl.nSpent ? ` and put <b>${fmtTime(pl.spent)}</b> into ${pl.nSpent} that surprised you` : ''}. Chapters without a bet are planned at gear 2, the full text.`
-    : betable ? 'Bet on a chapter (gear N) to see where your reading time should go.' : 'No bets for this book yet; generate a chapter\'s apparatus with Claude to get one.';
+    : betable ? 'Bet on a chapter (gear N) to see where your reading time should go.' : sampleFn ? 'No bets for this book yet: generate a chapter\'s apparatus with Claude (gear 3 or N) to get one.' : 'No bets for this book yet. Bets come with each chapter\'s apparatus, which Claude generates when this page is opened in Claude.';
   return `${S.usingExample ? `<div class="example-note"><b>Example bets.</b> Six bets by a hypothetical reader, to show the map. Shift to <b>N</b> to bet on a chapter before you read it; your first bet clears these. <button class="linkish" id="clearExample">Clear now</button></div>` : ''}
     <div class="plan-head"><span class="caps" style="color:var(--ink-3)">Your reading plan</span>
       <div class="big"><div><b class="num">${fmtTime(pl.total)}</b><span>planned</span></div><div><b class="num" style="color:var(--ink-3)">${fmtTime(pl.straight)}</b><span>straight through, gear 2</span></div></div>
@@ -1640,7 +1658,7 @@ function openDogPop(i, anchorEl) {
     <span class="kind ${kin ? 'kin' : ''}">${kin ? 'Kindred passage · same argument, no citation' : d.kind === 'quotes' ? 'Dog-ear · quotes Laplace' : 'Dog-ear · cites Laplace'}</span>
     <h4>${esc(m.a)}, <i>${esc(m.t)}</i></h4><div class="src num">${m.y} · ${esc(srcCh.label)}: ${esc(trunc(srcCh.title, 60))}</div>
     <p class="ex">“${inlineIt(d.excerpt, d.book === 74864)}”</p>${d.excerpt2 ? `<p class="ex">“${inlineIt(d.excerpt2, d.book === 74864)}”</p>` : ''}
-    <div class="note"><span class="ai-badge" style="margin-right:6px">AI note</span>${esc(d.note)}</div>
+    <div class="note"><span class="ai-badge" style="margin-right:6px">AI note</span>${esc(sq(d.note))}</div>
     <div class="acts">
       <button class="btn primary" data-open-src="${i}">Open ${esc(m.a.split(' ').pop())} at this passage</button>
       ${B.isLap ? `<button class="btn" data-jump="${d.ch - 1}" data-line="${d.line}" data-quote="${esc(d.anchor)}" data-gear="2">Laplace, ch. ${ROMANS[d.ch - 1]} →</button>` : `<button class="btn" data-open-lap="${i}">Laplace, ch. ${ROMANS[d.ch - 1]}: ${esc(lp.short)} →</button>`}
@@ -1751,8 +1769,9 @@ function onMainScroll() {
       }
     } else if (g === 3) {
       const y = main.scrollTop + 60;
-      let ci = S.pos.ch;
-      for (const sec of $$('.rsec', main)) { if (sec.offsetTop <= y) ci = Number(sec.dataset.ch); else break; }
+      const secs = $$('.rsec', main);
+      let ci = secs.length ? Number(secs[0].dataset.ch) : S.pos.ch;
+      for (const sec of secs) { if (sec.offsetTop <= y) ci = Number(sec.dataset.ch); else break; }
       if (ci !== S.pos.ch) { S.pos = { ch: ci, line: null }; S.page = B.chapters[ci].page0; syncPosition(); }
     }
   });
@@ -1914,7 +1933,9 @@ function wire() {
   $('#main').addEventListener('scroll', onMainScroll, { passive: true });
   document.addEventListener('click', (e) => {
     const t = e.target.closest('button, [data-ch], [data-dog], [data-betch], .sm-row, .srow');
-    if (!t) { if (!e.target.closest('#pop')) closePop(); if (!e.target.closest('.bookpick')) { $('#shelf').hidden = true; } return; }
+    if (!e.target.closest('#pop, [data-dog], [data-portal]')) closePop();
+    if (!e.target.closest('.bookpick')) { $('#shelf').hidden = true; $('#bookBtn').setAttribute('aria-expanded', 'false'); }
+    if (!t) return;
     if (t.id === 'bookBtn') { const sh = $('#shelf'); sh.hidden = !sh.hidden; t.setAttribute('aria-expanded', String(!sh.hidden)); return; }
     if (t.dataset.book) { openBook(Number(t.dataset.book)); return; }
     if (t.id === 'aboutBtn') { openAbout(); return; }
@@ -2089,5 +2110,6 @@ function cycleTheme() {
   } catch { sampleFn = null; }
   setClaudeChip();
   if (!B.isLap || S.gear === 1 || S.gear === 3 || S.gear === 'N') renderMain({ keepScroll: true });
+  renderLedger();
 })();
 </script>

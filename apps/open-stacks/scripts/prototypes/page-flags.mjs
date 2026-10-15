@@ -78,7 +78,7 @@ mkdirSync(join(OUT, 'si'), { recursive: true });
 const FIELDS = {
   prob: {
     lcc: ['B', 'H', 'Q', 'T5', 'R', 'U'],
-    subj: /probab|statist|chance|logic|philosoph|knowledge|epistem|inference|induct|decision|bayes|econom|game theor|risk|uncertain|forecast|reason|mathemat|psycholog|judg|belief|evidence|cognit|gambl|insur|actuar|science|predict|financ|invest|rational|operations research|machine learning|artificial intelligence|data|comput|meteor|weather|climat|medic|clinic|health|epidem|biostat|engineer|account|manag|business|betting|lotter|ethic/i,
+    subj: /probab|statist|chance|logic|philosoph|knowledge|epistem|inference|induct|decision|bayes|econom|game theor|risk|uncertain|forecast|reason|mathemat|psycholog|judg|belief|evidence|cognit|gambl|insur|actuar|science|predict|financ|invest|rational|operations research|machine learning|artificial intelligence|data|comput|meteor|weather|climat|medic|clinic|health|epidem|biostat|engineer|account|manag|business|betting|lotter|ethic|hume|miracle|testimon|witness|jury|tribunal|blackjack|poker|horse rac|casino|wall street|securities|stock|speculat/i,
   },
   evo: {
     lcc: ['QH', 'QL', 'QE', 'QK', 'QR', 'QP', 'GN', 'B', 'BL', 'H', 'Q1', 'Q12', 'Q17'],
@@ -86,7 +86,7 @@ const FIELDS = {
   },
   rel: {
     lcc: ['B', 'BL', 'BR', 'BT', 'BS', 'BX', 'BV', 'Q', 'H'],
-    subj: /miracle|relig|theolog|apologet|christian|god|faith|deism|skeptic|scepti|hume|philosoph|belief|evidence|testimon|probab|natural theology|bible|historical/i,
+    subj: /miracle|relig|theolog|apologet|christian|god|faith|deism|skeptic|scepti|hume|philosoph|belief|evidence|testimon|probab|natural theology|bible|historical|knowledge|empiric|intellect|mental|mind|jesus|christ|supernatural|church|gospel/i,
   },
   pol: {
     lcc: ['J', 'K', 'H', 'B'],

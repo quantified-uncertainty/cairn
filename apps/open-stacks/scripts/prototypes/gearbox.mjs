@@ -50,6 +50,8 @@ for (const b of index.books) lines[b.id] = readFileSync(join(TEXTS, `${b.id}.txt
 // ---------- shared text rules (mirrored in the page) ----------
 const norm = (s) =>
   s.replace(/[_*]/g, '').replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, ' ').trim();
+// Same characters as norm() minus the quote straightening, so offsets line up; used for text we display.
+const shown = (s) => s.replace(/[_*]/g, '').replace(/\s+/g, ' ').trim();
 const words = (s) => (s.match(/[A-Za-zÀ-ÿ0-9]+(?:['’][A-Za-z]+)?/g) || []).length;
 
 /** Paragraphs of a line range: [{line, text}] where text is the joined, normalized paragraph. */
@@ -61,7 +63,7 @@ function paragraphs(id, from, to) {
   for (let i = from; i <= to; i++) {
     const l = i < to ? L[i] : '';
     if (l === undefined || l.trim() === '') {
-      if (buf.length) out.push({ line: start, text: norm(buf.join(' ')) });
+      if (buf.length) out.push({ line: start, text: norm(buf.join(' ')), shown: shown(buf.join(' ')) });
       buf = [];
       start = -1;
     } else {
@@ -361,7 +363,7 @@ for (const b of index.books) {
       if (m) {
         const s = Math.max(0, p.text.lastIndexOf(' ', Math.max(0, m.index - 90)));
         const e = p.text.indexOf(' ', Math.min(p.text.length, m.index + 110));
-        const snip = p.text.slice(s, e < 0 ? undefined : e).trim();
+        const snip = p.shown.slice(s, e < 0 ? undefined : e).trim(); // keeps the source's curly quotes
         // Linked if it is a dog-ear's paragraph, or a footnote within a few lines after one.
         const linked = dogears.some((d) => d.book === b.id && (p.line === d.src.line || p.line === d.src.line2 || (/^\[\d+\]/.test(p.text) && p.line > d.src.line && p.line - d.src.line < 30)));
         mentions.push({ book: b.id, ch: k, line: p.line, snip, linked });

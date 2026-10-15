@@ -80,6 +80,21 @@ export async function runFetch(pgPath) {
     await sleep(1100);
   }
 
+  // 2b. edition years for early-dated catalog works (to catch placeholder first-publish years)
+  cache.eds = cache.eds || {};
+  const todoE = catalog.filter((w) => w.y && w.y < 1930 && !(w.id in cache.eds)).map((w) => w.id);
+  console.log(`\nearly works needing edition years: ${todoE.length}`);
+  for (let i = 0; i < todoE.length; i += 100) {
+    const ids = todoE.slice(i, i + 100);
+    const q = 'key:(' + ids.map((id) => '/works/' + id).join(' OR ') + ')';
+    const url = 'https://openlibrary.org/search.json?' + new URLSearchParams({ q, fields: 'key,publish_year', limit: '200' });
+    const j = await getJson(url);
+    const got = new Map((j.docs || []).map((d) => [d.key.replace('/works/', ''), d]));
+    for (const id of ids) cache.eds[id] = [...new Set(got.get(id)?.publish_year || [])].sort((a, b) => a - b);
+    save();
+    await sleep(1100);
+  }
+
   // 3. Gutenberg books on the two questions -> Open Library first-publish year
   const pgMeta = await loadPgCatalog(pgPath);
   const todoG = gut.filter((b) => QUESTIONS.some((Q) => gutMatches(Q, b) || Q.pinned.includes('g:' + b.id))).filter((b) => !(b.id in cache.gut));

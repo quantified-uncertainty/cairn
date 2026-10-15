@@ -620,7 +620,7 @@ var SIEVE = (function () {
     return w;
   }
   function words(str) {
-    var m = str.toLowerCase().replace(/[’']s\b/g, '').match(/[\p{L}][\p{L}\p{N}\-]*/gu) || [];
+    var m = str.normalize('NFC').toLowerCase().replace(/[’']s\b/g, '').match(/[\p{L}][\p{L}\p{M}\p{N}\-]*/gu) || [];
     var out = [];
     for (var i = 0; i < m.length; i++) {
       var w = m[i].replace(/^-+|-+$/g, '');
@@ -1037,7 +1037,7 @@ if (typeof self !== 'undefined' && typeof self.postMessage === 'function' && typ
   /* ---------------- rendering: trays ---------------- */
   function termsHTML(p) {
     if (!p.terms.length) return '<em>no distinctive terms</em>';
-    return p.terms.slice(0, 5).map(function (t) { return esc(t.t); }).join(' <i>/</i> ');
+    return p.terms.slice(0, 5).map(function (t) { return esc(t.t); }).join('&nbsp;<i>/</i> ');
   }
   function repsHTML(p) {
     return p.reps.slice(0, 4).map(function (id) {
@@ -1187,7 +1187,7 @@ if (typeof self !== 'undefined' && typeof self.postMessage === 'function' && typ
         counts.forEach(function (c, i) { if (c) c.textContent = fmt(piles[i].m); });
         resolve(); return;
       }
-      S.anim = true; sizeFx();
+      S.anim = true; S.pouring = true; sizeFx();
       piles.forEach(function (p, i) { drawHeap(st, i, 0, 0, true); counts[i].textContent = '0'; });
       var T = Math.min(1700, 650 + N * 0.15) * (opts.fast ? 0.6 : 1);
       var rand = rng(0x5EED ^ N);
@@ -1227,7 +1227,7 @@ if (typeof self !== 'undefined' && typeof self.postMessage === 'function' && typ
         }
         for (var q = 0; q < 5; q++) { fxc.fillStyle = PAL[q][0]; fxc.fill(paths[q]); }
         hopN.textContent = fmt(Math.max(0, N - launchedAll));
-        if (done) { clearFx(); S.anim = false; resolve(); return; }
+        if (done) { clearFx(); S.anim = false; S.pouring = false; resolve(); return; }
         requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
@@ -1301,7 +1301,7 @@ if (typeof self !== 'undefined' && typeof self.postMessage === 'function' && typ
 
   /* ---------------- actions ---------------- */
   function toggle(i) {
-    if (S.busy || S.view !== 'trays') return;
+    if ((S.busy && !S.pouring) || S.view !== 'trays') return;
     var st = curStep(); if (!st || i < 0 || i >= st.piles.length) return;
     if (st.gathered.has(i)) st.gathered.delete(i); else st.gathered.add(i);
     updateTrayState(i); updateHopper(); renderLog();
@@ -1391,8 +1391,8 @@ if (typeof self !== 'undefined' && typeof self.postMessage === 'function' && typ
     S.man = sc; S.view = 'list'; S.manLimit = 120; hideTip();
     $('trays').hidden = true; $('stepHead').hidden = true; $('manifest').hidden = false;
     renderManifest();
-    $('manifest').scrollIntoView({ block: 'start', behavior: 'auto' });
-    window.scrollBy(0, -90);
+    var top = $('manifest').getBoundingClientRect().top + window.scrollY - $('hopper').offsetHeight - 34;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'auto' });
     $('manBack').focus({ preventScroll: true });
   }
   function closeManifest(silent) {

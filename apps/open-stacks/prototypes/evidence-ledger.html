@@ -115,6 +115,8 @@ button { font: inherit; color: inherit; }
 .post-side .mono { font-size: 12.5px; }
 .bal-foot { margin-top: 12px; padding-top: 9px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; }
 .bal-foot b { color: var(--ink-2); font-weight: 600; }
+.bal-foot { align-items: center; }
+.bal-foot .post-cta { margin-left: auto; }
 
 /* ranges */
 input[type=range] { -webkit-appearance: none; appearance: none; background: transparent; width: 100%; height: 22px; margin: 0; cursor: pointer; }
@@ -483,7 +485,7 @@ mark.c { background: none; color: inherit; text-decoration: underline; text-deco
       <div class="bal-close">
         <div class="kicker">Closing balance <span>· probability the proposition holds</span></div>
         <div class="post">
-          <span class="post-num" id="postNum" aria-live="polite">–</span>
+          <span class="post-num" id="postNum">–</span><span class="sr" id="postLive" aria-live="polite"></span>
           <div class="post-side">
             <div id="postOdds"></div>
             <div id="postKent"></div>
@@ -655,7 +657,7 @@ const pts = (d) => (d >= 0 ? '+' : '−') + Math.abs(d * 100).toFixed(Math.abs(d
 const lastName = (n) => { const p = String(n).trim().split(/\s+/); return p[p.length - 1]; };
 const authShort = (a) => !a || !a.length ? '' : a.length === 1 ? lastName(a[0]) : a.length === 2 ? `${lastName(a[0])} & ${lastName(a[1])}` : `${lastName(a[0])} et al.`;
 const authLine = (a) => !a || !a.length ? '' : a.length <= 3 ? a.join(', ') : `${a.slice(0, 3).join(', ')} et al.`;
-const kent = (p) => p >= 0.87 ? 'almost certain' : p >= 0.6 ? 'probable' : p >= 0.4 ? 'chances about even' : p >= 0.15 ? 'probably not' : p >= 0.02 ? 'almost certainly not' : 'near-impossible';
+const kent = (p) => p >= 0.87 ? 'almost certain' : p >= 0.6 ? 'probable' : p >= 0.4 ? 'chances about even' : p >= 0.15 ? 'probably not' : 'almost certainly not';
 const oddsTxt = (p) => { const o = p / (1 - p); const f = (x) => x >= 10 ? Math.round(x).toString() : (+x.toFixed(1)).toString(); return o >= 1 ? `${f(o)} : 1 for` : `1 : ${f(1 / o)} against`; };
 const dirOf = (lr) => lr > 1.001 ? 'for' : lr < 0.999 ? 'against' : 'neutral';
 
@@ -848,28 +850,46 @@ function updateRows(ev, run) {
 }
 
 // ---------------------------------------------------------------- header
-let lastP = null;
+let lastP = null, shownP = null, tweenRAF = 0, liveT = 0;
+// The closing balance counts to its new value, interpolating in log-odds (the space the ledger adds in).
+function setPost(p) {
+  const pn = $('#postNum');
+  cancelAnimationFrame(tweenRAF);
+  const from = shownP;
+  if (from == null || reduced || Math.round(from * 100) === Math.round(p * 100)) { shownP = p; pn.textContent = pct(p); return; }
+  const t0 = performance.now(), dur = 420, a = Math.log(from / (1 - from)), b = Math.log(p / (1 - p));
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    shownP = k < 1 ? 1 / (1 + Math.exp(-(a + (b - a) * e))) : p;
+    pn.textContent = pct(shownP);
+    if (k < 1) tweenRAF = requestAnimationFrame(step);
+  };
+  tweenRAF = requestAnimationFrame(step);
+}
 function updateHeader(ev) {
-  const read = readList();
+  const read = readList(), nWait = ENTRIES.length - read.length;
   $('#prior').value = Math.round(S.prior * 100);
   $('#priorOut').textContent = pct(S.prior);
   const pn = $('#postNum');
-  pn.textContent = pct(ev.p);
-  if (lastP != null && Math.round(lastP * 100) !== Math.round(ev.p * 100) && !reduced) { pn.classList.add('flash'); setTimeout(() => pn.classList.remove('flash'), 350); }
+  setPost(ev.p);
+  if (lastP != null && Math.round(lastP * 100) !== Math.round(ev.p * 100) && !reduced) { pn.classList.add('flash'); setTimeout(() => pn.classList.remove('flash'), 600); }
   lastP = ev.p;
+  clearTimeout(liveT); liveT = setTimeout(() => { $('#postLive').textContent = `Closing balance ${pct(ev.p)}`; }, 450);
   $('#postOdds').innerHTML = `odds <b class="mono">${esc(oddsTxt(ev.p))}</b>`;
   $('#postKent').innerHTML = `in words: <b>“${kent(ev.p)}”</b> <span style="color:var(--muted)">(Kent, 1964)</span>`;
   const bits = ev.s / Math.LN2;
   $('#postBits').innerHTML = `net evidence <b class="mono">${bits >= 0 ? '+' : '−'}${Math.abs(bits).toFixed(2)} bits</b> <span style="color:var(--muted)">(×${(+Math.exp(ev.s).toFixed(2))} on the odds)</span>`;
-  $('#balFoot').innerHTML = `<span><b>${read.length}</b> of ${ENTRIES.length} entries read</span><span>dependence: <b>${DEP_LAB[S.d]}</b></span>${S.blind ? '<span><b>blind mode</b></span>' : ''}`;
+  $('#balFoot').innerHTML = `<span><b>${read.length}</b> of ${ENTRIES.length} entries read</span><span>dependence: <b>${DEP_LAB[S.d]}</b></span>${S.blind ? '<span><b>blind mode</b></span>' : ''}` +
+    (nWait ? `<button class="post-cta" type="button" data-post-waiting ${posting ? 'disabled' : ''} title="Tick the unread entries one at a time, in date order">Post ${nWait === 1 ? 'the waiting entry' : `the ${nWait} waiting entries`} →</button>` : '');
   $('#depOut').textContent = `${DEP_LAB[S.d]} · ${DEP_FRAC[S.d]}`;
   $('#dep').value = S.d;
   $('#dep').setAttribute('aria-valuetext', `${DEP_LAB[S.d]}: ${DEP_FRAC[S.d]}`);
   $('#blind').checked = !!S.blind;
   const nT = Object.keys(S.lr).length;
+  const waitMon = [...new Set(ENTRIES.filter((e) => !isRead(e)).map((e) => ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][+e.y.slice(5, 7) - 1]))].join(' and ');
   $('#stateNote').innerHTML = S.custom
     ? `<span class="stamp yours">Your ledger</span> Saved in this browser${nT ? ` · ${nT} LR${nT > 1 ? 's' : ''} set by you` : ''}. <button class="linkbtn" type="button" data-reset-all>Reset to the example</button>`
-    : `<span class="stamp">Example state</span> Entries up to July 2026 are ticked as read; the three September papers are waiting. Prior 40%, Claude's proposed LRs.`;
+    : `<span class="stamp">Example state</span> Entries up to July 2026 are ticked as read${nWait ? `; the ${['', 'one', 'two', 'three', 'four', 'five'][nWait] || nWait} ${waitMon} paper${nWait > 1 ? 's are' : ' is'} waiting` : ''}. Prior ${pct(S.prior)}, Claude's proposed LRs.`;
   $('#lheadBal').textContent = pct(ev.p);
   $('#ledgerCount').textContent = `${read.length}/${ENTRIES.length} read`;
   const lf = $('#lfoot');
@@ -1036,13 +1056,14 @@ function renderChart(ev, run) {
       const raw = m.c.fig || m.c.value || '';
       const txt = raw.length > 16 ? raw.slice(0, 15) + '…' : raw;
       const w = textW(txt, '400 10.5px "Red Hat Mono", monospace') + 2, h = 12;
-      const cands = [[m.x - w / 2, m.y - 22], [m.x - w / 2, m.y + 10], [m.x + 9, m.y - 6], [m.x - w - 9, m.y - 6]];
-      for (const [lx, ly] of cands) {
-        const b = { x: lx, y: ly, w, h };
+      const cands = [[m.x - w / 2, m.y - 25, -1], [m.x - w / 2, m.y + 13, 1]];
+      for (const [lx, ly, dir] of cands) {
+        const b = { x: lx - 5, y: ly, w: w + 10, h };
         if (lx < x0 - 4 || lx + w > W - 2) continue;
         if (overlaps(b)) continue;
         boxes.push(b);
-        labels.push(`<text class="ch-vlbl" x="${lx + 1}" y="${ly + 9.5}">${esc(txt)}</text>`);
+        const ya = dir < 0 ? ly + h + 1 : m.y + 6.5, yb = dir < 0 ? m.y - 6.5 : ly - 1;
+        labels.push(`<line class="ch-lead" x1="${m.x}" y1="${ya}" x2="${m.x}" y2="${yb}"/><text class="ch-vlbl${isRead(m.e) ? '' : ' dim'}" x="${lx + 1}" y="${ly + 9.5}">${esc(txt)}</text>`);
         break;
       }
     }
@@ -1334,6 +1355,7 @@ function onSearch() {
   }, 140);
 }
 async function pick(id) {
+  if (liveCtl && id !== pickId) { liveCtl.abort(); liveCtl = null; }
   pickId = id; pickResult = null;
   let p = paperById(id);
   if (!p || !p.ab) { await loadPapers(); p = paperById(id); }
@@ -1444,20 +1466,25 @@ const ERR_COPY = {
 async function runLive() {
   const p = paperById(pickId);
   if (!p || !sample || liveCtl) return;
-  liveCtl = new AbortController();
-  const ctl = liveCtl;
+  const ctl = liveCtl = new AbortController();
+  const ex = exampleFor(p.id);
+  const restore = () => { pickResult = ex ? { paper: ex, res: validate(ex, ex.result), source: 'example' } : null; };
   pickResult = null;
   renderPick('Thinking… (Claude is reading the abstract)');
   try {
-    const res = await sample.json(buildPrompt(p), { signal: ctl.signal, onText: ({ text }) => { const s = $('#pkStatus'); if (s) s.textContent = `Receiving… ${text.length.toLocaleString()} characters`; } });
+    const res = await sample.json(buildPrompt(p), { signal: ctl.signal, onText: ({ text }) => { const s = $('#pkStatus'); if (s && pickId === p.id) s.textContent = `Receiving… ${text.length.toLocaleString()} characters`; } });
+    if (liveCtl === ctl) liveCtl = null;
+    if (pickId !== p.id) return; // the reader picked another paper meanwhile
     pickResult = { paper: p, res: validate(p, res), source: 'live' };
-    liveCtl = null;
-    renderPick(`Checked ${pickResult.res.kept.length + pickResult.res.dropped.length} claim${pickResult.res.kept.length + pickResult.res.dropped.length === 1 ? '' : 's'} against the abstract.`);
+    const n = pickResult.res.kept.length + pickResult.res.dropped.length;
+    renderPick(`Checked ${n} claim${n === 1 ? '' : 's'} against the abstract.`);
   } catch (e) {
-    liveCtl = null;
+    if (liveCtl === ctl) liveCtl = null;
+    if (pickId !== p.id) return;
+    restore();
     const code = e && e.code;
     if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code)) { sample = null; setLiveMode('off'); renderPick('Claude isn’t available in this view, so only the precomputed examples work.'); return; }
-    if (code === 'cancelled') { renderPick('Stopped.'); return; }
+    if (code === 'cancelled') { renderPick(ex ? 'Stopped. Showing the precomputed example again.' : 'Stopped.'); return; }
     renderPick(esc(ERR_COPY[code] || 'Interrupted before Claude finished. Try again.'));
   }
 }
@@ -1492,6 +1519,24 @@ function admit(id) {
   loadPapers().then(() => finish(PAPERS && PAPERS.find((x) => x.id === id)));
 }
 
+let posting = false;
+async function postWaiting() {
+  const waiting = ENTRIES.filter((e) => !isRead(e));
+  if (posting || !waiting.length) return;
+  posting = true;
+  $('#balanceBox').classList.add('posting');
+  const S0 = S;
+  for (const e of waiting) {
+    if (S !== S0) break; // reset mid-sequence
+    S.read[e.id] = true; freshIds.add(e.id);
+    touch(); render();
+    if (!reduced) await new Promise((r) => setTimeout(r, clamp(4800 / waiting.length, 200, 750)));
+  }
+  posting = false;
+  $('#balanceBox').classList.remove('posting');
+  render();
+}
+
 // ---------------------------------------------------------------- render loop
 function render() {
   const ev = evaluate(readList());
@@ -1514,6 +1559,7 @@ function wire() {
   const resetAll = () => { clearStore(); S = exampleState(); rebuildEntries(); buildRows(); renderSetAside(); render(); };
   $('#resetAll').addEventListener('click', resetAll);
   $('#stateNote').addEventListener('click', (e) => { if (e.target.closest('[data-reset-all]')) resetAll(); });
+  $('#balFoot').addEventListener('click', (e) => { if (e.target.closest('[data-post-waiting]')) postWaiting(); });
   const rows = $('#rows');
   rows.addEventListener('change', (e) => {
     const art = e.target.closest('.entry'); if (!art) return;
@@ -1590,7 +1636,16 @@ function wire() {
   $('#aboutBtn').addEventListener('click', openAbout);
   $('#aboutClose').addEventListener('click', closeAbout);
   $('#scrim').addEventListener('click', closeAbout);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#about').hidden) closeAbout(); });
+  document.addEventListener('keydown', (e) => {
+    const dr = $('#about');
+    if (dr.hidden) return;
+    if (e.key === 'Escape') closeAbout();
+    if (e.key === 'Tab') {
+      const f = $$('a[href], button', dr); const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === dr)) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
 
   // resize
   let lastW = 0;

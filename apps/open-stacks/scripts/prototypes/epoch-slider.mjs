@@ -51,12 +51,12 @@ if (args.includes('--fetch')) { await runFetch(args.find((a) => a.endsWith('.csv
 const EPOCHS = [1750, 1820, 1880, 1920, 1960, 2000, 2026];
 const Y0 = 1700, Y1 = 2026, BIN = 5;
 const { catalog, gut, papers, texts } = loadBase();
-const ol = existsSync(join(HERE, 'epoch-slider/ol-cache.json')) ? readJson(join(HERE, 'epoch-slider/ol-cache.json')) : { works: {}, authors: {}, gut: {} };
+const ol = existsSync(join(HERE, 'ol-cache.json')) ? readJson(join(HERE, 'ol-cache.json')) : { works: {}, authors: {}, gut: {} };
 const pgMeta = await loadPgCatalog(args.find((a) => a.endsWith('.csv')));
 
 // ---------------------------------------------------------------- lanes
 // Eight river lanes, in the validated categorical order (see the page's palette).
-export const LANES = [
+const LANES = [
   { id: 'phil', label: 'Philosophy', lc: 'B · BD · BH · BJ' },
   { id: 'logic', label: 'Logic', lc: 'BC' },
   { id: 'psych', label: 'Psychology', lc: 'BF' },
@@ -133,6 +133,13 @@ function olAuthorDates(id) {
   return null;
 }
 
+function isolatedEarly(id, y) {
+  const eds = (ol.eds || {})[id];
+  if (!eds || !eds.length) return null;
+  const next = eds.find((e) => e > y);
+  return next && next - y > 60 ? next : null;
+}
+
 for (const w of catalog) {
   audit.catalog.total++;
   const key = 'c:' + w.id;
@@ -150,6 +157,11 @@ for (const w of catalog) {
     if (cy && cy >= ad.b + 15) { y = cy; yc = 'x'; note = `Catalog says ${was}, but the author was born in ${ad.b}; re-dated to the ${cy} edition in its call number.`; audit.catalog.corrected++; }
     else { audit.catalog.dropped++; if (audit.examples.length < 40) audit.examples.push({ t: w.t, a: shortAuthors(w.a), was, why: `author born ${ad.b}`, now: null }); continue; }
     if (audit.examples.length < 40) audit.examples.push({ t: w.t, a: shortAuthors(w.a), was, why: `author born ${ad.b}`, now: y });
+  } else if (!(ad && (ad.b || ad.d)) && y < 1930 && isolatedEarly(w.id, y)) {
+    const was = y, next = isolatedEarly(w.id, y);
+    y = next; yc = 'x'; note = `Catalog says ${was}, but Open Library holds no other edition within 60 years of it and no author dates; re-dated to its next edition (${next}).`;
+    audit.catalog.corrected++;
+    if (audit.examples.length < 40) audit.examples.push({ t: w.t, a: shortAuthors(w.a), was, why: 'isolated early year', now: y });
   } else if ((y === 1900 || y === 1899) && !(ad && ad.b && ad.b < 1880)) {
     const was = y;
     if (cy && cy > 1900) { y = cy; yc = 'x'; note = `Catalog says ${was}, a common placeholder; re-dated to the ${cy} edition in its call number.`; audit.catalog.placeholder++; }
@@ -234,6 +246,13 @@ for (const r of records.values()) {
   if (id && TEXT_IDS.has(Number(id))) r.tx = Number(id);
 }
 
+// aliases: Gutenberg keys merged into catalog records
+const ALIAS = new Map();
+for (const r of records.values()) if (r.alt) ALIAS.set(r.alt, r.k);
+const canon = (k) => (records.has(k) ? k : ALIAS.get(k) || k);
+for (const v of Object.values(TEXT_SOURCES)) v.key = canon(v.key);
+for (const sd of SENSE_DRIFT) for (const l of sd.kwic) l.key = canon(l.key);
+
 // citable-from year: estimates are only citable once the author was dead (conservative)
 for (const r of records.values()) r.cy = r.yc === 'e' ? Math.max(r.y, r.hi || r.y) : r.y;
 
@@ -245,9 +264,9 @@ const shelfKeys = new Set();
 for (const Q of QUESTIONS) {
   const keys = new Set(Q.pinned.filter((k) => records.has(k)));
   for (const w of catalog) if (catMatches(Q, w) && records.has('c:' + w.id)) keys.add('c:' + w.id);
-  for (const b of gut) if (gutMatches(Q, b)) { const k = 'g:' + b.id; if (records.has(k)) keys.add(k); else { const m = [...records.values()].find((r) => r.alt === k); if (m) keys.add(m.k); } }
+  for (const b of gut) if (gutMatches(Q, b)) { const k = 'g:' + b.id; if (records.has(k)) keys.add(k); else if (ALIAS.has(k)) keys.add(ALIAS.get(k)); }
   for (const p of papers) if (paperMatches(Q, p)) keys.add('a:' + p.id);
-  for (const k of Q.pinned) { const m = [...records.values()].find((r) => r.alt === k); if (m) keys.add(m.k); }
+  for (const k of Q.pinned) if (ALIAS.has(k)) keys.add(ALIAS.get(k));
   const shelf = [...keys].map((k) => records.get(k)).filter(Boolean).sort((a, b) => a.y - b.y || a.k.localeCompare(b.k));
   shelf.forEach((r) => shelfKeys.add(r.k));
   const lanes = LANES.map(() => ({ books: new Array(nBins).fill(0), papers: new Array(nBins).fill(0) }));
@@ -294,6 +313,10 @@ async function getText(id) {
     }
     if (existsSync(p)) raw = readFileSync(p, 'utf-8');
   }
+  if (raw) {
+    const a = raw.search(/\*\*\* ?START OF (THE|THIS) PROJECT GUTENBERG/i), b = raw.search(/\*\*\* ?END OF (THE|THIS) PROJECT GUTENBERG/i);
+    if (a >= 0) raw = raw.slice(raw.indexOf('\n', a) + 1, b > a ? b : undefined);
+  }
   const flat = raw ? raw.replace(/_/g, '').replace(/\s+/g, ' ') : null;
   textCache.set(id, flat);
   return flat;
@@ -317,14 +340,14 @@ const lexicon = [];
     if (t) fullTexts.push({ id: Number(id), y: info.textYear, k: info.key, text: t });
   }
   for (const term of LEX) {
-    const re = new RegExp(term.re, 'i');
+    const re = new RegExp(term.re, term.cs ? '' : 'i');
     let best = null;
     for (const e of pool) if ((!best || e.y < best.y) && re.test(e.text)) best = { y: e.y, k: e.k, src: e.src, snip: snippet(e.text, re) };
     for (const ft of fullTexts) {
       if (best && ft.y >= best.y) continue;
       if (re.test(ft.text)) best = { y: ft.y, k: ft.k, src: 'full text', snip: snippet(ft.text, re) };
     }
-    lexicon.push({ term: term.term, re: term.re, first: best ? best.y : null, ev: best });
+    lexicon.push({ term: term.term, re: term.re, ...(term.cs ? { cs: 1 } : {}), first: best ? best.y : null, ev: best });
   }
 }
 function snippet(text, re) {
@@ -354,9 +377,13 @@ for (const Qo of outQuestions) {
   for (const ep of EPOCHS) {
     const ans = Qo.answers[ep];
     if (!ans) { errors.push(`${Qo.id} ${ep}: missing answer`); continue; }
+    if (ans.newNotes) for (const n of ans.newNotes) { n.k = canon(n.k); if (!records.has(n.k)) errors.push(`${Qo.id} ${ep}: note cites unknown ${n.k}`); }
     const cited = new Set();
     const plain = [];
     for (const b of ans.blocks) {
+      if (b.p) b.p = b.p.replace(CITE, (m, k) => `[[${canon(k)}]]`);
+      if (b.k) b.k = canon(b.k);
+      if (b.notes) for (const n of b.notes) n.k = canon(n.k);
       if (b.p) { for (const m of b.p.matchAll(CITE)) cited.add(m[1]); plain.push(b.p.replace(CITE, '')); }
       if (b.q) {
         cited.add(b.k);
@@ -378,7 +405,7 @@ for (const Qo of outQuestions) {
     ans.cites = [...cited];
     const text = plain.join(' ');
     for (const lx of lexicon) {
-      const re = new RegExp(lx.re, 'gi');
+      const re = new RegExp(lx.re, lx.cs ? 'g' : 'gi');
       if (re.test(text) && (lx.first == null || lx.first > ep)) errors.push(`${Qo.id} ${ep}: red-flag term "${lx.term}" (first attested ${lx.first ?? 'never'})`);
     }
     for (const am of amber) if (ep < am.until && new RegExp(am.re, 'i').test(text)) warnings.push(`${Qo.id} ${ep}: amber term "${am.term}" (sense shifts ${am.until})`);

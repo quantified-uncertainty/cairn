@@ -213,7 +213,7 @@ a { color: inherit; }
 .record::after { bottom: 3px; }
 .wrow {
   display: grid; grid-template-columns: 168px minmax(0, 1fr) 78px; align-items: stretch;
-  min-height: 60px; border-bottom: 1px dashed var(--rule);
+  min-height: 68px; border-bottom: 1px dashed var(--rule);
 }
 .wrow:last-child { border-bottom: 0; }
 .wrow .lbl { padding: 8px 10px 6px 16px; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
@@ -222,7 +222,7 @@ a { color: inherit; }
 .wrow .ttl { font-size: 12px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 3px; }
 .wrow .ttl a { text-decoration: none; }
 .wrow .ttl a:hover { text-decoration: underline; }
-.wrow canvas { display: block; width: 100%; height: 60px; cursor: crosshair; touch-action: pan-y; }
+.wrow canvas { display: block; width: 100%; height: 68px; cursor: crosshair; touch-action: pan-y; }
 .wrow canvas:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 .wrow .tot { padding: 6px 14px 6px 8px; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; gap: 1px; font: 600 14px/1.1 "Spline Sans Mono", monospace; }
 .wrow .tot .ta { color: var(--pen-a); }
@@ -431,12 +431,12 @@ mark.ab { background: var(--both-wash); box-shadow: inset 0 -2px 0 var(--both); 
   .mast { gap: 12px; }
   .pens { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .field input { font-size: 23px; }
-  .wrow { grid-template-columns: minmax(0, 1fr) 62px; grid-template-rows: auto 48px; }
+  .wrow { grid-template-columns: minmax(0, 1fr) 62px; grid-template-rows: auto 54px; }
   .wrow .lbl { grid-column: 1; grid-row: 1; flex-direction: row; justify-content: flex-start; align-items: baseline; gap: 8px; padding: 6px 4px 0 12px; }
   .wrow .ttl { margin: 0; }
   .wrow .tot { grid-column: 2; grid-row: 1; flex-direction: row; gap: 6px; padding: 6px 12px 0 0; font-size: 12px; align-items: baseline; }
   .wrow .tot small { display: none; }
-  .wrow canvas { grid-column: 1 / -1; grid-row: 2; height: 48px; }
+  .wrow canvas { grid-column: 1 / -1; grid-row: 2; height: 54px; }
   .wrow .code { font-size: 17px; }
   .axis { grid-template-columns: 0 minmax(0, 1fr) 0; padding: 6px 12px 0; }
   .srow { grid-template-columns: minmax(0, 1fr) 30px; padding-left: 10px; }
@@ -1193,8 +1193,9 @@ function drawRow(b) {
   }
   const A = b.res?.a?.pages, B = b.res?.b?.pages;
   const two = !!(A && B);
-  const mid = two ? (H - 7) / 2 : (H - 7) / 2;
-  const amp = (H - 7) / 2 - 3;
+  const TOP = 12; // room for the chapter label
+  const mid = TOP + (H - 7 - TOP) / 2;
+  const amp = (H - 7 - TOP) / 2 - 1.5;
   const sA = Math.sqrt(S.max.a), sB = Math.sqrt(S.max.b);
   const region = (p) => {
     const c = (p + 0.5) * PAGE;
@@ -1206,7 +1207,7 @@ function drawRow(b) {
   // co-occurrence wash: both pens on the same page
   if (two) {
     ctx.fillStyle = wash;
-    for (let p = 0; p < n; p++) if (A[p] && B[p]) { const x0 = (p / n) * W, x1 = ((p + 1) / n) * W; ctx.fillRect(Math.floor(x0) - 1, 0, Math.max(3, x1 - x0 + 2), H - 7); }
+    for (let p = 0; p < n; p++) if (A[p] && B[p]) { const x0 = (p / n) * W, x1 = ((p + 1) / n) * W; ctx.fillRect(Math.floor(x0) - 1, TOP - 1, Math.max(3, x1 - x0 + 2), H - 7 - TOP + 1); }
   }
   // baseline
   ctx.fillStyle = inkA; ctx.globalAlpha = 0.28; ctx.fillRect(0, Math.round(mid), W, 1); ctx.globalAlpha = 1;
@@ -1243,16 +1244,47 @@ function drawRow(b) {
   if (two) { drawPen(A, sA, inkA, -1); drawPen(B, sB, inkB, 1); }
   else if (A) drawPen(A, sA, inkA, 0);
   else if (B) drawPen(B, sB, inkB, 0);
+  // name the chapter that carries the most hits, when one clearly dominates
+  const top = topChapter(b);
+  if (top) {
+    ctx.font = '600 10px "Spline Sans Mono", monospace';
+    let label = top.label;
+    let tw = ctx.measureText(label).width;
+    while (tw > W * 0.42 && label.length > 12) { label = label.slice(0, -2); tw = ctx.measureText(label + '…').width; }
+    if (label !== top.label) label += '…';
+    tw = ctx.measureText(label).width;
+    const cx = Math.min(W - tw - 4, Math.max(4, top.x - tw / 2));
+    ctx.fillStyle = tok('--sheet'); ctx.fillRect(cx - 3, 0, tw + 6, TOP - 1);
+    ctx.fillStyle = ink2; ctx.fillText(label, cx, 9.5);
+  }
   // pins
   ctx.fillStyle = inkB;
-  for (const p of S.pins) if (p.id === b.id) { const x = ((p.page + 0.5) / n) * W; ctx.beginPath(); ctx.moveTo(x - 4, 0); ctx.lineTo(x + 4, 0); ctx.lineTo(x, 6); ctx.closePath(); ctx.fill(); }
+  for (const p of S.pins) if (p.id === b.id) { const x = ((p.page + 0.5) / n) * W; ctx.beginPath(); ctx.moveTo(x - 4, TOP - 7); ctx.lineTo(x + 4, TOP - 7); ctx.lineTo(x, TOP - 1); ctx.closePath(); ctx.fill(); }
   // riffle cursor
   const cur = S.riffle.id === b.id ? S.riffle.page : (S.hover && S.hover.id === b.id ? S.hover.page : null);
   if (cur != null) {
     const x0 = (cur / n) * W, x1 = ((cur + 1) / n) * W;
     ctx.strokeStyle = inkB; ctx.lineWidth = 1;
-    ctx.strokeRect(Math.round(x0) - 1.5, 0.5, Math.max(3, x1 - x0) + 2, H - 8);
+    ctx.strokeRect(Math.round(x0) - 1.5, TOP - 0.5, Math.max(3, x1 - x0) + 2, H - 7 - TOP);
   }
+}
+function topChapter(b) {
+  const st = b.st;
+  if (!st) return null;
+  const A = b.res?.a?.pages, B = b.res?.b?.pages;
+  if (!A && !B) return null;
+  const marks = st.marks.filter((m) => m[1] <= 1 && m[2] !== 'Contents' && m[2] !== 'Index');
+  let total = 0, best = null;
+  for (let i = 0; i < marks.length; i++) {
+    const c0 = marks[i][0], c1 = i + 1 < marks.length ? marks[i + 1][0] : (st.backStart ?? st.len);
+    let n = 0;
+    for (let p = Math.floor(c0 / PAGE); p * PAGE < c1 && p < st.nPages; p++) if (inBody(b, p)) n += (A ? A[p] : 0) + (B ? B[p] : 0);
+    total += n;
+    if (!best || n > best.n) best = { n, m: marks[i], x0: c0, x1: c1 };
+  }
+  if (!best || best.n < 4 || best.n < total * 0.3) return null;
+  const W = b.cv.clientWidth;
+  return { label: markText(best.m), x: ((best.x0 + best.x1) / 2 / st.len) * W };
 }
 function pageFromEvent(b, e) {
   const r = b.cv.getBoundingClientRect();
