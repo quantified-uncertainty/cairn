@@ -3,14 +3,14 @@
 :root { --mem-seen: rgba(226, 165, 74, .42); --mem-bar: rgba(226, 165, 74, .6); }
 
 /* ---- the chip in the item header, next to the position */
-.mem-chip { flex: none; margin-left: auto; display: inline-flex; align-items: baseline; gap: 6px; font: 11px var(--mono); color: var(--ink-2); white-space: nowrap; animation: mem-in .3s ease-out; }
+.mem-chip { flex: 0 1 auto; min-width: 0; overflow: hidden; margin-left: auto; display: inline-flex; align-items: baseline; gap: 6px; font: 11px var(--mono); color: var(--ink-2); white-space: nowrap; animation: mem-in .3s ease-out; }
 .mem-chip + .pos { margin-left: 10px; }
-.mem-chip .mem-dim { color: var(--ink-3); }
+.mem-chip > * { flex: none; }
+.mem-chip .mem-dim { color: var(--ink-3); flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .mem-chip .mem-start { border: 0; padding: 0 2px; color: var(--accent); font: inherit; background: none; }
 .mem-chip .mem-start:hover { text-decoration: underline; }
 .mem-chip kbd { font-size: 10px; padding: 0 3px; margin-left: 2px; }
 @keyframes mem-in { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: none; } }
-@media (max-width: 1500px) { .mem-chip .mem-dim { display: none; } }
 
 /* ---- the track: what you have seen, under the bright part */
 #track .tr-seen { position: absolute; inset: 0; border-radius: 2px; pointer-events: none; }
@@ -21,6 +21,8 @@
 .hy-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-bottom: 12px; border-bottom: 1px solid var(--line); position: sticky; top: -18px; background: var(--bg); z-index: 2; padding-top: 4px; }
 .hy-head h2 { font: 500 20px/1.2 var(--serif); margin: 0; }
 .hy-sum { color: var(--ink-3); font: 11px var(--mono); }
+.hy-brief { border: 0; padding: 0 2px; color: var(--ink-3); font: 11px var(--mono); }
+.hy-brief:hover, .hy-brief.on { color: var(--ink-2); background: none; text-decoration: underline; }
 .hy-tabs { display: flex; gap: 4px; margin-left: auto; }
 .hy-tabs button { border-radius: 99px; padding: 1px 10px; color: var(--ink-2); font-size: 12px; }
 .hy-tabs button.on { color: var(--bg); }

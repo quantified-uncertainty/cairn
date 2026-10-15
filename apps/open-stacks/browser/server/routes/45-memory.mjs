@@ -224,7 +224,7 @@ export default function (app) {
     const rows = [['id', 'title', 'author', 'year', 'lane', 'kind', 'url', 'unit', 'pages', 'pages_seen', 'seen_pct', 'furthest_page', 'last_page', 'active_minutes', 'visits', 'first_read', 'last_read', 'saved', 'less', 'more']];
     for (const [id, r] of list) {
       const c = corpusInfo(id), b = brief(r);
-      rows.push([id, c.title || r.ti || '', c.author || '', c.year || '', c.lane || r.lane || '', c.kind || r.kind || '', c.url || '', r.f ? 'stable page' : 'page',
+      rows.push([id, c.title || r.ti || '', c.author || '', c.year || '', c.lane || r.lane || '', c.kind || r.kind || '', c.url || '', r.pos ? (r.f ? 'stable page' : 'page') : '',
         r.n || '', r.sc, r.n ? Math.round((100 * r.sc) / r.n) : '', r.far >= 0 ? r.far + 1 : '', r.pos ? r.pos.k + 1 : '', (r.a / 60e3).toFixed(1), r.nv,
         iso(r.first), iso(r.last), b.saved ? 1 : 0, r.j.less ? 1 : 0, r.j.more ? 1 : 0]);
     }

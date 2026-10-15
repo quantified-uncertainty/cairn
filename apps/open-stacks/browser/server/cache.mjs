@@ -131,26 +131,40 @@ export async function reconcile() {
 
 // ------------------------------------------------------------- eviction ----
 let evicting = false, evictT = null;
-const evictSoon = () => { if (total > MAX && !evictT) evictT = setTimeout(() => { evictT = null; evict(); }, 1500); };
+const evictSoon = () => { if (total + tenantBytes() > MAX && !evictT) evictT = setTimeout(() => { evictT = null; evict(); }, 1500); };
+// Tenants: other stores (server/profile.mjs) join the size cap and the LRU order.
+// registerTenant(name, { entries: () => [{ k, s, a }], remove: async (k) => bytesFreed, bytes?: () => total })
+// k: the tenant's own key; s: bytes; a: last access (epoch seconds).
+const tenants = new Map();
+export function registerTenant(name, t) { tenants.set(name, t); }
+export function tenantGrew() { evictSoon(); }
+function tenantBytes() { let n = 0; for (const t of tenants.values()) { try { n += t.bytes ? t.bytes() : t.entries().reduce((m, e) => m + e.s, 0); } catch { /* a tenant's trouble is not the cache's */ } } return n; }
 /** Delete least-recently-used entries until the cache is under 90% of STACKS_CACHE_MAX. */
 export async function evict() {
-  if (evicting || total <= MAX) return 0;
+  if (evicting || total + tenantBytes() <= MAX) return 0;
   evicting = true;
   const target = MAX * 0.9, now = nowSec();
   // Anything touched in the last few seconds may be streaming to the reader right now.
-  const lru = [...idx].filter(([, e]) => now - e.a > 5).sort((a, b) => a[1].a - b[1].a);
+  const lru = [...idx].filter(([, e]) => now - e.a > 5).map(([k, e]) => [k, e.a]);
+  for (const t of tenants.values()) { try { for (const e of t.entries()) if (now - e.a > 5) lru.push([e.k, e.a, t, e.s]); } catch { /* skip this tenant */ } }
+  lru.sort((a, b) => a[1] - b[1]);
+  let tb = tenantBytes();
   let n = 0, freed = 0, i = 0;
   try {
-    while (i < lru.length && total > target) {
-      const chunk = []; let f = 0;
-      while (i < lru.length && chunk.length < 32 && total - f > target) {
-        const [k] = lru[i++]; const e = idx.get(k);
+    while (i < lru.length && total + tb > target) {
+      const chunk = [], their = []; let f = 0;
+      while (i < lru.length && chunk.length + their.length < 32 && total + tb - f > target) {
+        const [k, , t, s] = lru[i++];
+        if (t) { their.push([t, k]); f += s; continue; }
+        const e = idx.get(k);
         if (!e || nowSec() - e.a <= 5) continue; // read again since the pass began
         chunk.push(k); f += e.s;
       }
       // Meta first: cached() looks at the meta file, so the entry disappears atomically.
       await Promise.all(chunk.map(async (k) => { const p = pathsK(k); await unlink(p.meta).catch(() => {}); await unlink(p.body).catch(() => {}); drop(k); }));
-      n += chunk.length; freed += f;
+      for (const [t, k] of their) { try { await t.remove(k); } catch { /* skip */ } }
+      if (their.length) tb = tenantBytes();
+      n += chunk.length + their.length; freed += f;
     }
   } finally { evicting = false; }
   stats.evicted += n; stats.evictedBytes += freed;
@@ -158,13 +172,13 @@ export async function evict() {
   flush();
   return n;
 }
-export const cacheState = () => ({ cacheBytes: total, cacheEntries: idx.size, cacheMax: MAX, cacheIndexed: scanned });
+export const cacheState = () => ({ cacheBytes: total, cacheEntries: idx.size, cacheMax: MAX, cacheIndexed: scanned, tenantBytes: tenantBytes() });
 
 if (!loadIndex()) setTimeout(reconcile, 200).unref(); // first run: build the index now
 else setTimeout(reconcile, 60e3).unref();             // later runs: a quiet check a minute in
 setInterval(flush, 3000).unref();
-setInterval(() => { if (total > MAX) evict(); }, 10 * 60e3).unref();
-setTimeout(() => { if (total > MAX) evict(); }, 5000).unref();
+setInterval(() => { if (total + tenantBytes() > MAX) evict(); }, 10 * 60e3).unref();
+setTimeout(() => { if (total + tenantBytes() > MAX) evict(); }, 5000).unref();
 process.on('exit', flush);
 
 // ----------------------------------------------------------- politeness ----

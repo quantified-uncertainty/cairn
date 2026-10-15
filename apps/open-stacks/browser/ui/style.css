@@ -210,8 +210,29 @@ a { color: var(--accent); }
 ::highlight(tts-word) { background-color: #e2a54a; color: #1a1611; }
 ::highlight(tts-sentence) { background-color: #e2a54a33; }
 ::highlight(find) { background-color: #ffe36e; color: #1a1611; }
-#toast { position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 8px); background: var(--bg-3); color: var(--ink); border: 1px solid var(--line); padding: 5px 12px; border-radius: 4px; font-size: 12px; opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s; z-index: 50; }
-#toast.on { opacity: 1; transform: translate(-50%, 0); }
+/* HUD notice (util.js toast): a big icon, a few words, an optional second line;
+   low and centred on the stage, one at a time, quick to come and go. Its own
+   colours, so it reads the same over a white page and the dark room. */
+#toast { position: fixed; left: 50%; bottom: 64px; z-index: 50; transform: translate(-50%, 6px); display: flex; align-items: center; gap: 16px; max-width: min(720px, calc(100vw - 32px)); min-height: 76px; padding: 12px 26px 12px 18px; border-radius: 14px; overflow: hidden; background: rgb(17 15 12 / .86); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: #f4efe6; box-shadow: 0 12px 40px #000a, inset 0 0 0 1px #ffffff1c; font-family: var(--sans); opacity: 0; pointer-events: none; transition: opacity .2s ease-in, transform .2s ease-in; }
+#toast.on { opacity: 1; transform: translate(-50%, 0); transition-duration: .09s; transition-timing-function: ease-out; }
+#toast .hud-i { flex: none; display: flex; align-items: center; gap: 4px; color: #f4efe6; position: relative; }
+#toast .hud-i svg { display: block; width: 48px; height: 48px; stroke-width: 1.75; }
+#toast .hud-i svg + svg { width: 32px; height: 32px; stroke-width: 2.25; }
+#toast .hud-t { position: relative; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+#toast .hud-m { font-size: 21px; font-weight: 600; line-height: 1.25; letter-spacing: -.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#toast .hud-s { font-size: 15px; line-height: 1.35; color: #cfc6b6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+#toast.k-mode .hud-i, #toast.k-ok .hud-i { color: var(--accent); }
+#toast.k-edge .hud-i { color: #b5ac9c; }
+#toast.k-bad .hud-i { color: #e58c78; }
+#toast.k-busy .hud-i svg { animation: hud-busy 1.1s ease-in-out infinite; }
+#toast.k-busy .hud-i svg.hi-loader-circle { animation: hud-spin .9s linear infinite; }
+/* The fill: the card fills from the left as you keep scrolling at the end of an item (nav.js). */
+#toast .hud-f { position: absolute; inset: 0 auto 0 0; width: 0; background: color-mix(in srgb, var(--accent) 34%, transparent); box-shadow: inset -3px 0 0 var(--accent); transition: width .14s ease-out; }
+#toast:not(.fill) .hud-f { display: none; }
+@keyframes hud-spin { to { transform: rotate(1turn); } }
+@keyframes hud-busy { 50% { opacity: .45; } }
+@media (min-width: 2200px) { #toast { gap: 18px; min-height: 84px; } #toast .hud-i svg { width: 56px; height: 56px; } #toast .hud-i svg + svg { width: 36px; height: 36px; } #toast .hud-m { font-size: 22px; } #toast .hud-s { font-size: 16px; } }
+@media (prefers-reduced-motion: reduce) { #toast, #toast.on { transition: opacity .12s; transform: translate(-50%, 0); } #toast .hud-i svg { animation: none !important; } }
 .k-foot { color: var(--ink-3); font-size: 11.5px; margin: 12px 0 0; max-width: 520px; }
 
 /* Item type icons (icons.js) */
@@ -220,8 +241,4 @@ a { color: var(--accent); }
 .rel .ticon, .trail .ticon { margin-right: 0; margin-top: 2px; }
 #loadpct { font: 10px var(--mono); color: var(--accent); border: 1px solid var(--accent); border-radius: 99px; padding: 0 6px; flex: none; opacity: .85; }
 
-/* Pull to the next item (wheel/trackpad at the end of an item) */
-#pull { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); width: min(520px, 70%); background: var(--bg-3); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; z-index: 30; font: 12px var(--sans); color: var(--ink); box-shadow: 0 8px 24px #0008; }
-#pull .fill { position: absolute; inset: 0 auto 0 0; background: color-mix(in srgb, var(--accent) 35%, transparent); transition: width .12s; }
-#pull span { position: relative; display: block; padding: 7px 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #stage { position: relative; }

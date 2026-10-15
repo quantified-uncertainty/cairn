@@ -318,12 +318,14 @@ const progressLine = (r) => [r.n ? `${r.sc || 0} of ${r.n} pages seen` : null, r
 // ---------- History ----------
 const root = h('section', { id: 'history', hidden: true });
 $('#main').append(root);
-const H = { filter: '', tab: 'all', rows: [], shown: 0, sel: -1, days: {}, io: null };
+const H = { filter: '', tab: 'all', brief: false, hidden: 0, rows: [], shown: 0, sel: -1, days: {}, io: null };
+const BRIEF_MS = 10e3; // less reading than this, and no judgment: a brief look, hidden unless asked for
+const briefLook = (r, id) => (r.a || 0) < BRIEF_MS && !r.saved && !r.more && !r.less && !state.saved.includes(id);
 const TABS = { all: 'All', reading: 'In progress', done: 'Finished', saved: 'Saved' };
 
 function entries() {
   const q = H.filter.trim().toLowerCase();
-  const out = [];
+  const out = []; H.hidden = 0;
   for (const [id, r] of mem) {
     const i = byId.get(id), it = i != null ? items[i] : null;
     if (!r.last) continue;
@@ -331,6 +333,7 @@ function entries() {
     if (H.tab === 'done' && !finished(r)) continue;
     if (H.tab === 'saved' && !(r.saved || (it && state.saved.includes(id)))) continue;
     if (q && !`${it?.t || r.ti || id} ${it?.a || ''}`.toLowerCase().includes(q)) continue;
+    if (!H.brief && !q && briefLook(r, id)) { H.hidden++; continue; }
     out.push({ id, r, i, it });
   }
   return out.sort((a, b) => b.r.last - a.r.last);
@@ -373,6 +376,8 @@ function paintHistory() {
   const head = h('div', { className: 'hy-head' },
     h('h2', { textContent: 'History' }),
     h('span', { className: 'hy-sum', textContent: mem.size ? `${mem.size} items · ${dur(total)} read${Number.isFinite(since) ? ` since ${dateStr(since)}` : ''}` : '' }),
+    H.hidden || H.brief ? h('button', { className: 'hy-brief' + (H.brief ? ' on' : ''), title: `Items you looked at for less than ${BRIEF_MS / 1000} s`,
+      textContent: H.brief ? 'hide brief looks' : `+ ${H.hidden} brief look${H.hidden === 1 ? '' : 's'}`, onclick: () => { H.brief = !H.brief; paintHistory(); } }) : null,
     h('div', { className: 'hy-tabs' }, ...Object.entries(TABS).map(([k, label]) => h('button', { className: H.tab === k ? 'on' : '', textContent: label, onclick: () => { H.tab = k; paintHistory(); } }))),
     h('input', { className: 'hy-filter', type: 'search', placeholder: 'Filter by title or author', value: H.filter, spellcheck: false,
       oninput: (ev) => { H.filter = ev.target.value; const pos = ev.target.selectionStart; paintHistory(); const f = $('.hy-filter', root); f.focus(); f.setSelectionRange(pos, pos); } }),

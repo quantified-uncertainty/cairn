@@ -1,5 +1,6 @@
 // Shared helpers and the extension hooks feature modules use: an event bus,
 // a key registry, panel sections and top-level views.
+import { hudIcon } from './hud-icons.js';
 
 export const PDFJS = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/';
 export const P = (u) => '/proxy?u=' + encodeURIComponent(u);
@@ -95,11 +96,49 @@ export function registerSection(s) { sections.push(s); sections.sort((a, b) => (
 export const views = new Map();
 export function registerView(name, v) { views.set(name, v); emit('views:changed'); }
 
-/** A small transient message at the bottom of the screen. */
+// ---- HUD notices ----
+// toast(text, ms?, { icon, sub, kind, fill }): a notice low in the middle of
+// the stage: a big icon, a few words (keep the main line short: 2-5 words) and
+// an optional smaller second line. One at a time: a new one replaces the old.
+//   toast('Saved')                                     plain text still works
+//   toast('Saved', { icon: 'star', kind: 'ok' })       options may come second
+//   toast('Wheel: pages', 2600, { icon: 'mouse+arrow-down-up', sub: 'down = next page', kind: 'mode' })
+// icon: a name from hud-icons.js ('a+b' puts two side by side).
+// kind: 'mode' (a setting changed: accent, shown longer), 'ok' (done: accent),
+// 'edge' (the start or end of something: dim), 'bad' (failed: red, longer),
+// 'busy' (under way: the icon moves; shown until replaced, at most 4 s).
+// fill: 0-1 fills the card from the left (the pull to the next item, nav.js).
+// ms: 1.2 s by default, 1.8 s with a second line, longer for mode, bad and busy.
+const HUD_MS = { mode: 2600, bad: 2600, busy: 4000 };
 let toastT = null;
-export function toast(text, ms = 1600) {
+export function toast(text, ms, opts = {}) {
+  if (ms && typeof ms === 'object') { opts = ms; ms = opts.ms; }
+  const { icon = '', sub = '', kind = '', fill = null } = opts || {};
   let el = document.getElementById('toast');
-  if (!el) { el = h('div', { id: 'toast' }); document.body.append(el); }
-  el.textContent = text; el.classList.add('on');
-  clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), ms);
+  if (!el) {
+    el = h('div', { id: 'toast' }, h('div', { className: 'hud-f' }), h('div', { className: 'hud-i' }),
+      h('div', { className: 'hud-t' }, h('div', { className: 'hud-m' }), h('div', { className: 'hud-s' })));
+    el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
+    document.body.append(el);
+  }
+  // Low and centred on the stage (the pages), else on the window.
+  const st = document.getElementById('stage');
+  const r = st?.getClientRects().length ? st.getBoundingClientRect() : null;
+  el.style.left = r ? `${Math.round(r.left + r.width / 2)}px` : '';
+  el.style.bottom = r ? `${Math.round(Math.max(0, innerHeight - r.bottom) + Math.min(84, Math.max(40, r.height * 0.07)))}px` : '';
+  el.style.maxWidth = r ? `${Math.round(Math.min(720, r.width - 32))}px` : '';
+  const ic = el.querySelector('.hud-i'), m = el.querySelector('.hud-m'), s = el.querySelector('.hud-s');
+  const changed = m.textContent !== String(text) || ic.dataset.icon !== icon;
+  if (ic.dataset.icon !== icon) { ic.innerHTML = hudIcon(icon); ic.dataset.icon = icon; }
+  ic.hidden = !ic.innerHTML;
+  m.textContent = text; s.textContent = sub || ''; s.hidden = !sub;
+  const was = el.classList.contains('on');
+  el.className = 'on' + (kind ? ' k-' + kind : '') + (fill != null ? ' fill' : '');
+  el.querySelector('.hud-f').style.width = fill != null ? Math.round(Math.max(0, Math.min(1, fill)) * 100) + '%' : '0';
+  // Replacing a notice on screen: a small bump says the message changed.
+  if (was && changed && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    el.animate?.([{ scale: '.96' }, { scale: '1' }], { duration: 140, easing: 'ease-out' });
+  }
+  clearTimeout(toastT);
+  toastT = setTimeout(() => el.classList.remove('on'), ms ?? HUD_MS[kind] ?? (sub ? 1800 : 1200));
 }

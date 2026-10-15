@@ -99,7 +99,8 @@ function pdfRuns(tc, vp) {
     let S = null;
     for (const t of L.items) {
       const gap = S ? t.x0 - S.x1 : Infinity;
-      if (S && gap < 0.9 * fsl) {
+      // A caption beside wrapped text starts a run of its own.
+      if (S && gap < 0.9 * fsl && !(gap > 0.3 * fsl && /^\s*(fig(ure)?s?\.?|table)\s*\d/i.test(t.str))) {
         S.str += (gap > 0.12 * fsl ? ' ' : '') + t.str; S.fsw += t.fs * t.n; S.nw += t.n; S.n += t.n + 1; grow(S, t);
       } else { S = { ...t, fsw: t.fs * t.n, nw: t.n }; runs.push(S); }
     }
@@ -271,6 +272,12 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
   // 2. Prose: long body-size lines, and the short last lines of their paragraphs.
   for (const s of hz) { const [c0, c1] = colOf(s.x0, s.x1); s.prose = fsOk(s) && s.n >= 15 && textLike(s) && s.x1 - s.x0 >= 0.62 * (c1 - c0); }
   const byY = hz.slice().sort((a, b) => a.y0 - b.y0);
+  // Text wrapped beside a figure is narrow but justified: lines that share both edges with the lines around them.
+  for (const s of byY) {
+    if (s.prose || !fsOk(s) || !textLike(s) || s.n < 15) continue;
+    const mates = byY.filter((o) => o !== s && Math.abs(o.x0 - s.x0) < 0.5 * body && Math.abs(o.x1 - s.x1) < 0.5 * body && Math.abs(o.y0 - s.y0) < 4 * body && fsOk(o));
+    if (mates.length >= 2) s.prose = true;
+  }
   for (const s of byY) {
     if (s.prose || !fsOk(s) || !textLike(s)) continue;
     const c0 = colOf(s.x0, s.x1)[0];
