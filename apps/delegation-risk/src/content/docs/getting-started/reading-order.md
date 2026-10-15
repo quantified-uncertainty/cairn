@@ -11,7 +11,7 @@ The site has about 65 pages, but its argument lives in about a dozen stops. If y
 
 **Before you start**, read the [Five-Minute Intro](/getting-started/five-minute-intro/). Keep [Concepts](/getting-started/core-concepts/) and the [Glossary](/getting-started/glossary/) open for reference.
 
-1. **[Risk Decomposition](/delegation-risk/risk-decomposition/)**: the three harm channels, accident, defection and hijack. They need different mitigations. Capability affects them differently: a more capable delegate may err less per action, but it is given more consequential actions and is better at pursuing a wrong goal. Better models alone do not solve all three channels.
+1. **[Risk Decomposition](/delegation-risk/risk-decomposition/)**: the three harm channels, accident, defection and hijack (prompt injection, poisoned tools, misuse). They need different mitigations. Capability affects them differently: a more capable delegate may err less per action, but it is given more consequential actions and is better at pursuing a wrong goal. Better models alone do not solve all three channels.
 
 2. **[Risk Propagation](/delegation-risk/risk-propagation/)**: one composition rule instead of a menu. Multiply, correct for common-cause correlation with the beta-factor mixture, and note that correlation helps serial chains but hurts parallel checks.
 
@@ -39,7 +39,7 @@ The site has about 65 pages, but its argument lives in about a dozen stops. If y
 
 14. **[Nuclear Launch Authority](/case-studies/human-systems/nuclear-launch-authority/)** and **[Jury Systems](/case-studies/human-systems/jury-trust/)**: two human institutions built for delegation under distrust. Nuclear command trades unauthorized launch against failure to retaliate, using two-person rules; juries show the independence arithmetic for unanimity failing when jurors share evidence and deliberate together.
 
-15. **[Sydney / Bing Chat](/case-studies/ai-systems/case-study-sydney/)**: a real failure analysed against the framework, and the scaffold-enforced limit that contained it.
+15. **[Agent Incidents, 2024–2025](/case-studies/ai-systems/agent-incidents/)**: five documented incidents mapped to harm channels, three of them hijacks, with what would have bounded each. [Sydney / Bing Chat](/case-studies/ai-systems/case-study-sydney/) is the 2023 chat-only precursor.
 
 **After the Core Path**, go applied with the [Quick Start](/design-patterns/tools/quick-start/), or go deeper with the [Research section](/research/).
 
@@ -49,7 +49,7 @@ The site has about 65 pages, but its argument lives in about a dozen stops. If y
 
 **Assessing an existing system.** [Concepts](/getting-started/core-concepts/) → [Delegation Risk](/delegation-risk/) → [Risk Decomposition](/delegation-risk/risk-decomposition/) → [Entanglement Audit Guide](/entanglements/mitigation/audit-guide/) → [Solutions](/entanglements/mitigation/solutions/).
 
-**Skeptical it works.** [FAQ](/getting-started/faq/) → [Related Approaches](/reference/related-approaches/) → [Sydney](/case-studies/ai-systems/case-study-sydney/) → [Nuclear & Aerospace PRA](/research/system-design/nuclear-aerospace-deep-dive/) and [Historical Cases](/entanglements/case-studies/historical-cases/), for fields that already budget failure.
+**Skeptical it works.** [FAQ](/getting-started/faq/) → [Related Approaches](/reference/related-approaches/) → [Agent Incidents](/case-studies/ai-systems/agent-incidents/) → [Nuclear & Aerospace PRA](/research/system-design/nuclear-aerospace-deep-dive/) and [Historical Cases](/entanglements/case-studies/historical-cases/), for fields that already budget failure.
 
 **Following the math.** [Concepts](/getting-started/core-concepts/) → [Risk Propagation](/delegation-risk/risk-propagation/) → [Formal Definitions](/entanglements/fundamentals/formal-definitions/) → [Walkthrough](/delegation-risk/walkthrough/) → [Runtime Accounting](/delegation-risk/runtime-accounting/).
 

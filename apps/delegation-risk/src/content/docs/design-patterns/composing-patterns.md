@@ -28,7 +28,7 @@ Layers that share a model family, a prompt, a provider or a blind spot fail toge
 
 $$P(\text{all miss}) = (1-\rho)\prod_i p_i + \rho \cdot \min_i p_i .$$
 
-For three layers that each miss 10%, independence gives 0.001. At ρ = 0.1, 0.2 and 0.5 the figure is about 0.011, 0.021 and 0.051, an entanglement tax of roughly 11×, 21× and 50×. These ρ values are assumptions, not measurements ([Risk Propagation](/delegation-risk/risk-propagation/#how-sensitive-the-tax-is-to-ρ)). Against an adaptive attacker, assume ρ → 1: the stack is worth its best layer.
+For three layers that each miss 10%, independence gives 0.001. At ρ = 0.1, 0.2 and 0.5 the figure is about 0.011, 0.021 and 0.051, an [entanglement tax](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax) of roughly 11×, 21× and 50×. These ρ values are illustrative. [Measuring Entanglement](/entanglements/detection/correlation-calculator/#what-the-evidence-supports) estimates φ near 0.5 between the benchmark misses of strong LLMs even across providers, with stated caveats. Against an adaptive attacker, assume ρ → 1: the stack is worth its best layer.
 
 Diversity is the lever. One model family writing the code, reviewing it and writing its tests is one check, not three. Better: tests the model cannot see or edit, static analysis and a policy check at tiers 1–2, a reviewer model from a different provider, and a human sample. Different providers are necessary but not sufficient. Larger, more accurate models have highly correlated errors even across providers ([Kim et al. 2025](https://arxiv.org/abs/2506.07962)). A test suite, a static analyzer and a model buy more independence than three models. Write the rule down as a correlation budget: no two checks on the same action share a model family, and at least one sits at tier 1 or 2.
 
@@ -56,6 +56,8 @@ The common failures are a single layer (one bypass defeats everything), several 
 ## The principles in the two examples
 
 The [coding agent](/design-patterns/examples/code-deployment-example/) and the [research assistant](/design-patterns/examples/research-assistant-example/) apply the same principles to different problems.
+
+The rows are the six core [Least-X principles](/design-patterns/least-x-principles/).
 
 | Principle | Research assistant | Coding agent |
 |---|---|---|

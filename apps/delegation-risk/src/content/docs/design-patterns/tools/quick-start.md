@@ -10,7 +10,7 @@ This page is a procedure for applying delegation risk to an agent system, from s
 ## 1. Scope, exposure and budget
 
 - List what the system does, which tools and actions it can call, which data and credentials it can reach, and who its principals are.
-- **Bound the exposure.** Work out the worst loss the system could cause given that access. If the bound is unacceptable, shrink the access before estimating anything else: [Exposure-Envelope Gateway](/design-patterns/structural/#exposure-envelope-gateway), [Least Privilege](/design-patterns/least-x-principles/#least-privilege).
+- **Bound the exposure.** Work out the worst loss the system could cause given that access. If the bound is unacceptable, shrink the access before estimating anything else: [Exposure-Envelope Gateway](/design-patterns/structural/#exposure-envelope-gateway), [Least Privilege](/design-patterns/least-x-principles/#least-privilege). Most agent harnesses already supply the parts: OS sandboxes with egress allow-lists, per-tool permission rules and pre-tool-use hooks ([what exists](/delegation-risk/runtime-accounting/#what-exists-and-what-is-new)). Check what runs outside the sandbox and whether the agent can request an exit.
 - **Set a risk budget.** The budget is the expected loss per month the operator will accept. It is a choice, not something derived. Anchor it to what the operator can absorb or insure.
 
 ## 2. Build the harm table

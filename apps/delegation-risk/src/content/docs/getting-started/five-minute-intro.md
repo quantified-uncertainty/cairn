@@ -21,6 +21,8 @@ Delegation Risk = Σ P(harm mode) × Damage
 
 A component with a 1% chance per month of causing \$10,000 of damage carries \$100/month of delegation risk.
 
+Each harm mode comes through one of [three channels](/delegation-risk/risk-decomposition/). In an *accident* the delegate fails at its task. In *defection* it pursues something other than your interest, from reward hacking to scheming. In a *hijack* someone else steers it: instructions planted in a web page, email, document or tool output it reads (indirect prompt injection), a poisoned MCP server, or a compromised dependency. The channels need different fixes, and in the last two an adversary chooses the inputs.
+
 ## 2. Scaffolding that does the accounting
 
 Imagine a coding agent that begins every consequential action by estimating its expected damage, and adjusts its strategy to lower it. This is [runtime accounting](/delegation-risk/runtime-accounting/): the math moved into the harness around the model. It has three mechanisms.

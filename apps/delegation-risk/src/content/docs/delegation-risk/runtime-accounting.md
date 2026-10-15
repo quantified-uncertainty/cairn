@@ -9,7 +9,7 @@ sidebar:
 ---
 
 :::caution[Design proposal]
-Parts of this page exist in agent harnesses today; the ledger and its reconciliation do not. [What exists and what is new](#what-exists-and-what-is-new) draws the line. The page states its own failure modes at the end.
+Most of the mechanisms on this page exist in agent harnesses as of late 2026; the ledger and its reconciliation do not. [What exists and what is new](#what-exists-and-what-is-new) draws the line. The page states its own failure modes at the end.
 :::
 
 Imagine a coding agent that begins every consequential action by asking *"What is the expected damage of doing this with strategy X?"*, and adjusts the strategy to lower it. This is not a permission prompt, which is binary and easily rubber-stamped. It is an account: damage estimated before acting, budgeted across a session, and reconciled against what happens.
@@ -38,7 +38,7 @@ The lineage is Airbus's flight-envelope protection, which keeps the aircraft ins
 The envelope and the budget do different jobs:
 
 - The **budget** is statistical. Expected losses accumulate against it, and an agent can overdraw it gradually.
-- The **envelope** is a hard bound. A *single* catastrophic action, one credential exfiltration or one `DROP TABLE`, must hit the envelope wall, not merely overdraw an account. Risk accounting without hard bounds fails where it matters most, because the worst failures are concentrated in single actions. Shlegeris and Greenblatt ([2024](https://blog.redwoodresearch.org/p/the-case-for-ensuring-that-powerful)) call these *concentrated failures* and build the AI Control agenda around them.
+- The **envelope** is a hard bound. A *single* catastrophic action, one credential exfiltration or one `DROP TABLE`, must hit the envelope wall, not merely overdraw an account. Risk accounting without hard bounds fails where it matters most, because the worst failures are concentrated in single actions. Shlegeris and Greenblatt ([2024](https://blog.redwoodresearch.org/p/the-case-for-ensuring-that-powerful)) call these *concentrated failures*; AI Control is designed against them.
 
 Preflight decides whether an action is worth its estimated risk. The envelope decides what is possible at all. You need both.
 
@@ -69,14 +69,25 @@ Two design rules follow.
 
 ## What exists and what is new
 
-Several parts of this are already in agent harnesses:
+As of late 2026, agent harnesses already ship most of the parts. Compared one by one with the three mechanisms above:
 
-- **Pre-action hooks.** Some coding-agent harnesses expose hook points that run before a tool call and can allow, deny or escalate it. Claude Code's [`PreToolUse` hook](https://code.claude.com/docs/en/hooks) is one example. A preflight is a hook with a damage estimate inside.
-- **Permission and approval modes.** These are per-tool allow and ask rules, plus modes ranging from approving every action to approving none. They are envelopes and escalation rules, set by hand.
-- **Spend caps, sandboxes and egress allow-lists.** These are the envelope's mechanical parts.
-- **Trusted monitoring.** AI Control's protocol has a weaker, trusted model screen a stronger model's actions. [Baker et al. (2025)](https://arxiv.org/abs/2503.11926) show a weaker model catching a stronger one's reward hacking from its chain of thought.
+| Mechanism in use | What it does | What it is in these terms | What it lacks |
+|---|---|---|---|
+| Pre-action hooks, such as Claude Code's [`PreToolUse`](https://code.claude.com/docs/en/hooks) | Run before a tool call; can allow, deny or escalate it, or rewrite its arguments | The place a preflight would run | Any damage estimate; the rule is whatever the hook's author wrote |
+| Per-tool permission rules and approval modes | Allow, ask or deny by tool and pattern; modes from approving everything to approving nothing | A hand-set envelope plus an escalation rule | State: each decision ignores what has already been approved |
+| A model-based action classifier, such as Claude Code's [auto mode](https://www.anthropic.com/engineering/claude-code-auto-mode) | A separate model call reviews each action and blocks ones that exceed the user's request or look driven by injected content | The closest thing to a preflight in production | A budget, a damage estimate, and an estimator independent of the actor (below) |
+| OS sandboxes with egress allow-lists, such as Claude Code's [Bash sandbox](https://code.claude.com/docs/en/sandboxing) and [Codex](https://learn.chatgpt.com/docs/agent-approvals-security) | Writes confined to the workspace; network off, or routed through a proxy that admits listed domains | The envelope's mechanical wall | Coverage: see below |
+| Information-flow control: CaMeL ([Debenedetti et al. 2025](https://arxiv.org/abs/2503.18813)), FIDES ([Costa et al. 2025](https://arxiv.org/abs/2505.23643)) | Track where each value came from, and enforce at tool-call time a policy on where untrusted or private data may flow | Envelope rules that depend on data provenance; the strongest structural defense against hijack | Prices nothing; does not address accident or a defecting planner |
+| Spend and rate limits, such as per-workspace monthly caps in the [Anthropic Console](https://claude.com/blog/workspaces) | Cap what the agent costs to run | An envelope on compute | Bound the agent's cost, not the damage of its actions: a \$100 token cap permits a \$1M wire transfer |
+| Trusted monitoring | A weaker model screens a stronger one's actions or reasoning; [Baker et al. (2025)](https://arxiv.org/abs/2503.11926) show one catching a stronger model's reward hacking from its chain of thought | A tier-4 preflight | A ledger to book its verdicts in |
 
-What does not exist is the accounting. That means an expected-loss estimate attached to each consequential action, booked per delegate against a budget, and reconciled against what happened. Hooks and permission modes make stateless yes/no decisions by fixed rule. A ledger makes the decision depend on what has already been spent, and lets outcomes correct the estimates. The ledger, its reconciliation and the rule about who may estimate are what this page proposes.
+Three details in these systems bear on the rules above.
+
+- **Measured error rates exist, and they are not small.** Anthropic reports its auto-mode classifier, run on Sonnet 4.6, letting through 17% of a set of 52 real overeager actions, at a 0.4% false-positive rate on 10,000 actions of real internal traffic. It is tuned to overeager behavior and honest mistakes. Under rule 1 a classifier from the actor's own model family counts as a sibling, so against a schemer it is a tier-5 check. It does follow rule 2's spirit: the classifier sees user messages and the agent's tool calls but not tool results or the agent's own prose, so injected content and the agent's arguments do not reach it directly.
+- **Envelopes have doors.** Claude Code's sandbox covers shell commands only; its file tools, MCP servers and hooks run outside it. When a command fails in the sandbox the agent may request an unsandboxed retry, which is approved by the user, by the classifier, automatically, or not at all, depending on the mode. A setting removes the retry. An envelope the agent can ask to leave is as hard as whatever approves the exit.
+- **Spend caps sit on the wrong quantity.** API spend is what the operator pays the model provider. Delegation risk is what the agent's actions can cost. The two need not move together.
+
+What does not exist is the accounting: an expected-loss estimate attached to each consequential action, booked per delegate against a budget, and reconciled against what happened. Hooks, permission rules and classifiers make yes/no decisions with no running account. A ledger makes the decision depend on what has already been spent, and lets outcomes correct the estimates. The ledger, its reconciliation and the rule about who may estimate are what this page proposes.
 
 ## What this does not handle
 
@@ -86,7 +97,7 @@ What does not exist is the accounting. That means an expected-loss estimate atta
 
 ## Next steps
 
-The nearest buildable artifact is a pre-tool-use hook with a hard-coded envelope, a session ledger written from the harness's own logs, and a monthly reconciliation against incidents. The estimates will be crude; the reconciliation will be real. See [Open Problems](/research/potential-projects/) for this and the other gaps.
+Everything needed for a first version exists. A pre-tool-use hook looks up each consequential call in a harm table and books its estimate to a session ledger, written from the harness's own logs; a sandbox with the unsandboxed retry disabled supplies the envelope; a monthly job reconciles the ledger against incidents. The estimates will be crude; the reconciliation will be real. See [Open Problems](/research/potential-projects/) for this and the other gaps.
 
 ## See also
 

@@ -52,7 +52,7 @@ None implements the accounting end to end. The pieces:
 - **Agent harnesses**: pre-tool-use hooks, permission modes, MCP tool allow-lists, sandboxed execution and egress controls. These provide the envelope and a place for the preflight.
 - **Guard models**: classifiers such as Llama Guard ([arXiv:2312.06674](https://arxiv.org/abs/2312.06674)) and agent guardrail systems such as LlamaFirewall ([arXiv:2505.03574](https://arxiv.org/abs/2505.03574)). Count them toward your correlation budget like any other check.
 - **Prompt-injection designs**: CaMeL ([arXiv:2503.18813](https://arxiv.org/abs/2503.18813)) and related design patterns ([arXiv:2506.08837](https://arxiv.org/abs/2506.08837)).
-- **Control evaluations**: UK AISI's Inspect framework, and ControlArena (UK AISI with Redwood Research, 2025) for running control experiments.
+- **Evaluations**: UK AISI's Inspect framework; ControlArena (UK AISI with Redwood Research, 2025) for control experiments; AgentDojo ([arXiv:2406.13352](https://arxiv.org/abs/2406.13352)) for prompt-injection attacks and defenses on tool-using agents.
 - **Tracing**: OpenTelemetry or the harness's own logs, as raw material for a ledger.
 
 The [delegation risk calculator](/design-patterns/tools/delegation-risk-calculator/) does the arithmetic.
@@ -83,10 +83,10 @@ Structured interfaces and one-way information flows bound what components can ex
 
 ### "How do you handle adversarial users and third parties?"
 
-As a separate harm channel, *hijack*: someone steers a delegate that is not itself scheming, through prompt injection in a document or tool output, or through direct misuse. Input sanitization does not work reliably for natural-language inputs, so the defenses are structural:
+As a separate harm channel, *hijack*: someone steers a delegate that is not itself scheming, through direct misuse or through instructions planted in content it reads, including web pages, emails, issues, tool outputs and MCP tool descriptions ([routes](/delegation-risk/risk-decomposition/)). Filtering does not work reliably for natural-language inputs. Nasr et al. (2025) bypassed all 12 recent jailbreak and prompt-injection defenses they tested with adaptive attacks, most at above 90% success, although most had reported near-zero attack success against static attacks ([arXiv:2510.09023](https://arxiv.org/abs/2510.09023)). So the defenses are structural:
 
 - Keep untrusted data out of control flow, as CaMeL does.
 - Strip capabilities from any component that reads untrusted content.
 - Enforce a hard envelope, so that a hijacked delegate can reach little.
 
-Assume ρ near 1 across checks an attacker can probe.
+Assume ρ near 1 across checks an attacker can probe, and estimate P by adaptive red-teaming, for example with AgentDojo ([arXiv:2406.13352](https://arxiv.org/abs/2406.13352)), not against a fixed list of attack strings.

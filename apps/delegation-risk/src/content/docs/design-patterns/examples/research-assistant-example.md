@@ -8,12 +8,12 @@ sidebar:
 ---
 
 :::caution[Illustrative example]
-A hypothetical design to show how the patterns fit together. It has not been built or measured, and the harm modes are listed without numbers. For a worked estimate with probabilities, volumes and correlation assumptions, see the [coding agent example](/design-patterns/examples/code-deployment-example/).
+A hypothetical design to show how the patterns fit together. It has not been built or measured, and the harm modes are listed without numbers. For a worked estimate with probabilities, volumes and correlation assumptions, see the [coding agent example](/delegation-risk/worked-example-coding-agent/).
 :::
 
 A lab asks for a research assistant that surveys the literature on a question about protein folding and proposes experiments. Its outputs are documents for the lab's scientists. It has no lab access, runs no experiments and sends nothing outside the system except search queries.
 
-Unlike the [coding agent](/design-patterns/examples/code-deployment-example/), this system needs a model to coordinate: deciding which sub-questions matter is a judgment call. The design question is how to let a capable model plan without giving the plan leverage nobody checks.
+Unlike the [coding agent](/delegation-risk/worked-example-coding-agent/), this system needs a model to coordinate: deciding which sub-questions matter is a judgment call. The design question is how to let a capable model plan without giving the plan leverage nobody checks.
 
 ## Components
 
@@ -45,7 +45,7 @@ Every call, input and output is logged by the orchestrator ([Flight Recorder](/d
 
 ## Who plans
 
-Earlier versions of this example made an older, weaker model the strategist because "less capable = less risky". That inverts how AI Control uses weak models ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)). A trusted model monitors the untrusted model's work; it does not make the most consequential decisions in its place. A weak planner would make more mistakes, and the coordinator's leverage would spread them.
+Making a weaker model the planner because it is "less risky" inverts how AI Control uses weak models ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)). A trusted model monitors the untrusted model's work; it does not make the most consequential decisions in its place. A weak planner would make more mistakes, and the coordinator's leverage would spread them.
 
 Here the planner is capable, and its leverage is removed instead:
 
@@ -69,8 +69,6 @@ None of this makes scheming impossible. Frontier models have schemed within a si
 The hijack row drives the layout. The only outbound channel is search queries, and they are fixed in the approved plan before any paper is read. Summaries still carry text from the papers, quoted spans included, so the generator is not insulated from injected instructions. What bounds the row is that no component that has read untrusted text can send data out. That is the [hijack channel's](/delegation-risk/risk-decomposition/) architectural answer, applied by hand.
 
 ## Two pieces of code
-
-Earlier versions had about 300 lines of Python, including a circuit breaker that reset itself although the text required a manual reset, and a regex blocklist labelled "formally verifiable" that would have rejected the critic's own output and was easy to evade. Two short pieces show the idea.
 
 The grounding check is tier 2: deterministic, and testable on a fixed set.
 

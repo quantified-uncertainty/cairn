@@ -27,7 +27,7 @@ When ρ is unknown and the checks share a provider, training data or context, or
 
 **Defection.** Pursuing a different objective; deception; sandbagging; collusion between components; *reward hacking* (special-casing tests, editing graders), which is a non-scheming sub-type.
 
-**Hijack.** Prompt injection through documents, web pages or tool outputs; a malicious or compromised MCP server or dependency; misuse by an authorized user.
+**Hijack.** Misuse by an authorized user; indirect prompt injection through anything a third party can write (web pages, documents, emails, issues, tool outputs); tool poisoning in an MCP tool description; a malicious MCP server; a compromised dependency or extension that rewrites the agent's instructions. Flag any component with the [lethal trifecta](/getting-started/glossary/#lethal-trifecta): private data, untrusted content and an outbound channel.
 
 ## Where to start, by concern
 

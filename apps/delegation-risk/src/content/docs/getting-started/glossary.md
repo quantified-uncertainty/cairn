@@ -25,7 +25,7 @@ Definitions as this site uses them. Borrowed terms keep their home field's meani
 **Harm channels**: the three ways harm arises ([Risk Decomposition](/delegation-risk/risk-decomposition/)).
 - <span id="accident"></span>**Accident**: the delegate fails at its task (bugs, hallucinations, edge cases, capability limits). P(error per action) often falls as capability rises, but not reliably: inverse-scaling results exist. A more capable delegate is also given more consequential actions, so damage per accident tends to rise. Do not assume accident risk falls with capability.
 - <span id="defection"></span>**Defection**: the delegate pursues something other than the principal's interest. Scheming is the strategic case. **Reward hacking**, in which the delegate exploits a flaw in its objective (special-casing tests, editing a grader) without strategic deception, is a non-scheming sub-type. Capability raises both the chance that defection succeeds and the damage it can do.
-- <span id="hijack"></span>**Hijack**: a third party or user steers a delegate that is not itself scheming. Examples are prompt injection through a document, web page or tool output, and direct misuse. The attacker chooses the input, so treat correlated checks as fully correlated (ρ near 1).
+- <span id="hijack"></span>**Hijack**: a third party or user steers a delegate that is not itself scheming. Routes: direct [prompt injection](#prompt-injection) or misuse; indirect injection through a web page, document, email or tool output; [tool poisoning](#tool-poisoning) or a malicious MCP server; and a compromised supply chain. The attacker chooses the input, so treat correlated checks as fully correlated (ρ near 1).
 
 <span id="propagation-rule"></span>
 **Propagation rule**: how reliabilities compose. Under independence, chains and parallel stacks multiply. For common-cause correlation, use the beta-factor mixture P(all fail) = (1−ρ)·∏pᵢ + ρ·min(pᵢ). The minimum rule is its ρ = 1 limit. The harmonic and discounted rules are retired. See [Risk Propagation](/delegation-risk/risk-propagation/).
@@ -91,6 +91,15 @@ The canonical page lists further principles as a labelled tail. Two need care. P
 
 <span id="ai-control"></span>
 **[AI Control](https://arxiv.org/abs/2312.06942)**: designing protocols that stay safe even if the model is intentionally trying to subvert them, and testing them with control evaluations (Greenblatt et al. 2023). Its vocabulary (trusted and untrusted model, control protocol, auditing budget, usefulness cost) is used here as Redwood Research uses it.
+
+<span id="prompt-injection"></span>
+**Prompt injection**: input that overrides a model's instructions. *Direct* injection comes from whoever is prompting the model; *indirect* injection is planted in content the model retrieves or is given, such as web pages, files, emails or tool outputs ([Greshake et al. 2023](https://arxiv.org/abs/2302.12173); [OWASP LLM01:2025](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)). This site files both under the [hijack](#hijack) channel.
+
+<span id="tool-poisoning"></span>
+**Tool poisoning**: indirect injection through an MCP tool's description, which the model reads but the user typically does not see ([Invariant Labs 2025](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks)).
+
+<span id="lethal-trifecta"></span>
+**Lethal trifecta**: an agent that has access to private data, is exposed to untrusted content and can communicate externally, so that an injected instruction can exfiltrate data ([Willison 2025](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/)). Removing any one leg removes that route.
 
 <span id="scheming"></span>
 **Scheming**: an AI system covertly pursuing goals other than its operators', including by deceiving them.

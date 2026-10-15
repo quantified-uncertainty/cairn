@@ -1,84 +1,55 @@
 ---
 title: Evaluation Engineering
-description: What evaluation engineering is, why treat evaluation as a systems problem, and what the field is trying to build.
-sidebar:
-  order: 1
+description: What evaluation engineering is, why treat evaluation as a systems problem that includes its incentives, and how it relates to AI-model evals.
 ---
 
-*Status: early draft. This page states a framing, not a settled position.*
+*Status: draft, revised October 2026. This page states a framing, not a settled position.*
 
 ## The one-sentence version
 
-**Evaluation engineering is the discipline of building systems that produce large numbers of estimates and evaluations — efficiently, consistently, and at a known cost.**
+**Evaluation engineering is the design of systems that produce large numbers of estimates and evaluations at known cost, under incentives that keep them honest.**
 
-The emphasis is on every word after *systems*. We already know how to produce one careful evaluation: hire a smart person, give them time, read the report. What we are bad at is producing the *ten-thousandth* evaluation as cheaply and reliably as the first — and keeping all ten thousand consistent with each other as the world changes underneath them. That is an engineering problem, and it has been studied as one only sporadically.
+We know how to produce one careful evaluation: hire a capable person, give them time, read the report. We are bad at producing the ten-thousandth as cheaply and reliably as the first, keeping all ten thousand consistent as the world changes, and keeping the system trusted once the evaluated start to care about the scores.
 
-## What problem this is a response to
+## What problem this responds to
 
-There is a recurring disappointment in the forecasting and decision-analysis world: prediction markets, forecasting tournaments, and proposals like futarchy all *seem* promising, and yet a decade-plus in, they are barely used — not by governments, not by firms, not even by the communities most enthusiastic about them.
+Prediction markets, forecasting tournaments and proposals like futarchy looked promising and, two decades on, are little used in government, firms, or even the communities that champion them. One diagnosis is that prediction was never the whole product. Getting from "we can forecast this clean, verifiable question" to "we can put a defensible number on what the decision turns on" needs a structured set of questions (ontology), calculation that chains inputs into derived estimates, prediction to keep the system calibrated, and evaluation to resolve questions with no clean ground truth ([The Four Components](/concepts/components/)). Nobody was building the whole machine.
 
-One diagnosis is that prediction was never the whole product. A prediction platform is one organ; a decision-support system is the body. To get from "we can forecast this clean, near-term, verifiable question" to "we can put a defensible number on the messy thing a decision actually turns on," you need more than a market:
+## Why "engineering", and what it has to include
 
-- a **structured set of questions** to forecast over (ontology),
-- **calculation** to chain raw inputs into derived estimates,
-- **prediction** to keep the system calibrated and honest, and
-- **evaluation** to resolve the questions that have no clean ground truth.
+The framing borrows from systems disciplines (lean manufacturing, software architecture) rather than from the philosophy of value or from program evaluation, whose centre of gravity is the individual study ([Adjacent Fields §3](/reference/adjacent-fields/)). The questions are throughput, cost per item, consistency, failure modes, and how a change to one estimate propagates to the estimates that depend on it. At scale, optimizing any single evaluation is usually the wrong objective.
 
-Nobody was building the whole machine. Evaluation engineering is the name for building the whole machine.
-
-## Why "engineering"
-
-Calling it engineering is a deliberate move away from two adjacent framings:
-
-- It is **not evaluation-the-philosophy**: the project is not primarily about the theory of value or the epistemology of judgment, though it draws on both.
-- It is **not evaluation-the-social-science**: there is an established academic field of program evaluation, and there are lessons there, but its center of gravity is the individual study and the long report, not the high-throughput system.
-
-The mental models that fit best come from systems disciplines: **lean manufacturing, software architecture, engineering management**. The questions are throughput, cost-per-item, latency, consistency, failure modes, and how local changes propagate through a network of dependent estimates. When you produce evaluations at scale, optimizing any single evaluation is usually the wrong objective; you optimize the system.
-
-Part of the system is institutional: who pays the evaluator, who controls the metric, whether the evaluated can appeal. The evidence in Part III suggests these choices predict trustworthiness better than method does, so this wiki counts them as design variables alongside the technical ones ([Evaluation as a System](/concepts/the-systems-view/#technical-and-institutional-design-variables)).
-
-The system-level questions (who staffs it, what data it stands on, how updates propagate, how ten thousand outputs stay consistent, what keeps it from being captured) are laid out in [Evaluation as a System](/concepts/the-systems-view/#the-questions-that-define-a-system).
+The wiki's own evidence complicates this. Across the [catalogue](/concepts/evaluation-systems-in-the-wild/) and the [certification-economics literature](/concepts/patterns-and-failure-modes/#3-incentives-and-funding-decide-trustworthiness--more-than-method-does), who pays the evaluator and who controls the metric seem to predict trustworthiness better than method does: issuer-paid credit ratings failed with sophisticated models, while independently funded testers with ordinary methods kept their reputations. If that holds, a purely technical engineering programme would optimize the wrong variables. This wiki therefore treats payer, metric ownership, disclosure and appeal as design variables alongside staffing and data, and treats robustness to gaming and legitimacy as properties a design must deliver alongside accuracy and cost ([Evaluation as a System](/concepts/the-systems-view/#the-design-space)). Mechanism design is part of the engineering.
 
 ## The core split: estimation vs. evaluation
 
-The field's foundational distinction is between **estimation** (numbers you'd trust a careful quantitative analyst to produce — Fermi estimates, models, sums) and **evaluation** (messy judgments you'd want trusted experts for — "how good a president was Obama?", "how much did this org reduce existential risk?"). The design heuristic that falls out of this is *divide and conquer*: handle as much as possible as cheap, verifiable estimation, and sequester the genuinely judgment-bound evaluation into a separate, more expensive layer. This is important enough to get [its own page](/start-here/estimation-vs-evaluation/).
+**Estimation** is producing numbers a careful analyst could check: Fermi estimates, models, sums. **Evaluation** is judgment on messy questions, where the result is useful only if its audience trusts it ("how much did this organization reduce existential risk?"). The design heuristic is divide and conquer: push as much as possible into cheap, verifiable estimation, and confine judgment-bound evaluation to a smaller, more expensive layer. See [Estimation vs. Evaluation](/start-here/estimation-vs-evaluation/).
+
+## The core pattern
+
+The technique this wiki leans on most is the [prediction–evaluation system](/concepts/techniques/#predictionevaluation-systems): a cheap layer (forecasters, a statistical model, now an LLM) predicts what an expensive, trusted evaluator would conclude on every item; a hidden random subset is sent to the expensive evaluator; the cheap layer's agreement on that subset is measured against how often two expensive evaluators agree with each other. QURI wrote this up in 2018, but it was not new. Automated essay scoring has run it for years, DARPA's SCORE program ran it on social-science replication, and prediction-powered inference supplies its statistics ([Lineage](/start-here/lineage/#outside-precedents-for-the-core-pattern)).
 
 ## Why evaluation, specifically?
 
-The founding draft states the thesis provocatively: highly optimized evaluations are "(almost) all you need." Two claims sit behind it:
+The founding draft's slogan is that highly optimized evaluations are "(almost) all you need". Two claims sit behind it:
 
-- **Evaluation may be the bulk of the desired output.** Forecasting discourse has under-weighted evaluation; you can get a long way on clean estimation and then hit a wall. Many of the highest-stakes processes we run are evaluation problems in disguise — courts, grantmaking, hiring, impact assessment, policy choice. It's plausible that *more* of civilization's resources flow into evaluation than into estimation, which would make optimizing it unusually valuable. Nobody has measured this.
-- **The accuracy bar is lower than it looks.** A common objection is that scaled evaluation is AGI-complete. But the outputs don't need to be accurate in any absolute sense — only **better than what people would otherwise have done**, and cheap enough to actually get used. People already make vast numbers of noisy, overconfident informal judgments; beating that baseline is a far more modest target. (See [Objections & FAQ](/reference/objections/).)
+- **Evaluation may be most of the valuable output.** Many high-stakes processes are evaluation problems: courts, grantmaking, hiring, impact assessment, policy choice. It is plausible that more resources flow into evaluation than into clean estimation. Nobody has measured this.
+- **The accuracy bar is lower than it looks.** Outputs need only beat what people would otherwise have done, cheaply enough to be used. People already make vast numbers of noisy informal judgments ([Objections](/reference/objections/)).
 
-"Highly optimized" is doing the work in that slogan: the value would come from engineering the whole system to a good point in its [design space](/concepts/the-systems-view/#the-design-space), not from any single brilliant evaluation.
-
-## A capability ladder
-
-The field has no shared way to *grade* an evaluation system, the way self-driving has "Level 4." This wiki does not have one yet either; a draft is planned. See [Evaluation as a System](/concepts/the-systems-view/#grading-systems-a-capability-ladder).
+The slogan is the least-supported claim in the wiki and nothing else depends on it.
 
 ## Not AI model evals, though they overlap
 
-In current AI usage, "evals" means test suites and LLM judges that measure AI models or AI products: benchmark suites, frameworks such as the UK AI Security Institute's [Inspect](https://inspect.aisi.org.uk/), and rubric-based testing of LLM applications. This wiki uses "evaluation" in the older sense: judging grants, organizations, policies and research, where an AI is a possible evaluator rather than the thing evaluated.
+In current AI usage, "evals" means test suites and judges that measure AI models and AI products: capability and safety evaluations by groups such as [METR](https://metr.org/), whose time-horizon metric tracks the length of tasks models can complete ([Kwa et al. 2025](https://arxiv.org/abs/2503.14499)); open frameworks such as the UK AI Security Institute's [Inspect](https://inspect.aisi.org.uk/); and rubric-based testing of LLM applications. That field is large and well funded. This wiki uses "evaluation" in the older sense of judging grants, organizations, policies and research, where an AI is a possible *evaluator* rather than the thing evaluated.
 
-The two meet wherever an LLM is the judge. Validating a judge against humans, putting error bars on evaluation results ([Miller 2024](https://arxiv.org/abs/2411.00640)), and watching a leaderboard get gamed (selective disclosure of privately tested model variants biased Chatbot Arena scores; [Singh et al. 2025](https://arxiv.org/abs/2504.20879)) are problems for both communities, and the [LLM chapter](/concepts/llm-evaluators/) draws on the AI-evals literature for them. Whether the name should change is [crux 12](/start-here/key-questions/#on-the-field-itself).
+The two meet wherever an LLM is the judge. Validating a judge against humans, putting error bars on results ([Miller 2024](https://arxiv.org/abs/2411.00640)), and watching a leaderboard get gamed (selective disclosure of privately tested model variants biased Chatbot Arena scores; [Singh et al. 2025](https://arxiv.org/abs/2504.20879)) are shared problems, and the [LLM chapter](/concepts/llm-evaluators/) and [Measuring an Evaluator](/concepts/measuring-an-evaluator/) draw on the AI-evals literature for them. Whether the name should change is [crux 12](/start-here/key-questions/#on-the-field-itself).
 
-## Why this is worth a field
+## Why this might be worth a field
 
-- **Generality.** Better evaluation systems would help in many domains at once — impact assessment, policy, life and work optimization, research prioritization. A broad lever, but narrow enough to be tractable.
-- **Neglect.** The component fields (forecasting, data engineering, decision analysis, survey methodology) are each studied, but rarely *integrated* under one roof aimed at high-throughput output.
-- **Timing.** Most of the labor-intensive steps — drafting evaluations, structuring ontologies, running calculations — are now partially automatable by LLMs. A program that needed an army of analysts to be cost-effective might now need a much smaller one. See [Lineage](/start-here/lineage/) for how the pre-LLM version of this argument maps onto the present.
+- **Generality.** Better evaluation systems would help impact assessment, policy, research prioritization and grantmaking at once.
+- **Neglect, partly.** The components (forecasting, decision analysis, survey methodology, LLM judging) are each studied. Their integration into audited, high-throughput systems for judging grants, organizations and policies is not, as far as this wiki can tell. The AI-evals boom weakens this claim for anything that looks like judging model outputs.
+- **Timing.** LLMs make the labor-intensive steps (drafting evaluations, structuring questions, running calculations) cheap. Whether they make them trustworthy is the open question ([LLMs as Evaluators](/concepts/llm-evaluators/)).
 
-## What this wiki is (and isn't)
+## What this wiki is not yet
 
-This is a working wiki, not a manifesto and not a finished textbook. Pages are dated drafts meant to be argued with. The goal of the current version is modest: lay out the framing, the core distinction, the component architecture, the catalogue of methods, and the open questions clearly enough that the next person can disagree productively.
-
-It deliberately does **not** yet commit to: a specific software stack, a specific institutional form, or strong claims about cost-effectiveness. Those depend on experiments that haven't been run.
-
-## Where to go next
-
-- [Estimation vs. Evaluation](/start-here/estimation-vs-evaluation/) — the foundational distinction, in detail.
-- [Why It Matters — Use Cases](/start-here/use-cases/) — the concrete things this would unlock.
-- [Evaluation as a System](/concepts/the-systems-view/) — the systems view and its trade-offs.
-- [The Four Components](/concepts/components/) — prediction, calculation, ontology, evaluation.
-- [Objections & FAQ](/reference/objections/) — the strongest objections and the scale of the bet.
-- [Cruxes](/start-here/key-questions/) — the open questions the field turns on.
+It does not commit to a software stack, an institutional form, or claims about cost-effectiveness; those depend on experiments not yet run. Its [capability ladder](/concepts/capability-ladder/) is a v0 graded on eight systems, and its one fully priced design is the fictional [worked example](/concepts/worked-example/).

@@ -15,7 +15,7 @@ The main lever on ρ is a check that fails for different reasons: one that uses 
 |---|---|---|
 | **Method** | Mixing tiers of the [verifiability hierarchy](/getting-started/core-concepts/#verifiability-hierarchy): formally verified code, deterministic tests and rule-based checks, narrow learned models, LLMs | The strongest lever. A test suite and an LLM reviewer fail for different reasons |
 | **Information** | Giving checks different inputs: the raw diff, the execution trace, the network log | Two checks reading the same text share its blind spots |
-| **Model family** | Using different providers or families for LLM checks | Helps, but is not sufficient: accurate models have correlated errors across providers ([Kim et al. 2025](https://arxiv.org/abs/2506.07962)) |
+| **Model family** | Using different providers or families for LLM checks | Weak: strong models from different providers have a miss correlation of about 0.5 on benchmarks, against about 0.6 within one provider ([evidence](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)) |
 | **People** | Having different teams write prompts, rules and escalation paths | Organizational uniformity re-correlates technical diversity |
 | **Timing** | Checking before execution, during it and after it | Different moments see different evidence |
 
@@ -49,12 +49,12 @@ The naive calculation and the honest one:
 
 ```
 Naive:     three 90% layers → P(all miss) = 0.1³ = 0.1% → "99.9% protection"
-Corrected: assumed ρ = 0.5 (phi scale)
-           P(all miss) = 0.5 × 0.001 + 0.5 × 0.1 = 5.05% → about 95% protection
-           entanglement tax ≈ 50×
+Corrected: three LLM checks from different providers, ρ ≈ 0.3–0.55 (phi scale)
+           P(all miss) = (1 − ρ) × 0.001 + ρ × 0.1 ≈ 3.1–5.5% → about 95–97% protection
+           entanglement tax ≈ 31–55×
 ```
 
-Once ρ is significant, more layers of the same kind buy almost nothing, because they only shrink the independent term:
+The ρ range is from benchmark data ([priors](/entanglements/detection/correlation-calculator/#priors-when-you-cannot-measure)). Once ρ is significant, more layers of the same kind buy almost nothing, because they only shrink the independent term:
 
 | Layers | P(all miss) at ρ = 0.5, p = 0.1 |
 |---|---|
@@ -73,7 +73,7 @@ At this correlation the floor is 5%, and 99.9% protection is unreachable at any 
 4. Compute the floor ρ · min pᵢ and the full mixture.
 5. If the target is below the floor: reduce ρ, improve the best layer, accept more risk explicitly, or narrow what is delegated.
 
-**Against adaptive adversaries the budget is different.** For the defection and hijack [channels](/delegation-risk/risk-decomposition/), count the stack as its best single layer until a control evaluation measures the joint miss rate under attack ([Risk Propagation](/delegation-risk/risk-propagation/#adversarial-inputs)). There, the useful defenses are those whose guarantee does not depend on ρ: a hard [exposure envelope](/getting-started/glossary/) that blocks out-of-bounds actions whatever the input, and rollback for what gets through.
+**Against adaptive adversaries the budget is different.** For the defection and hijack [channels](/delegation-risk/risk-decomposition/), count the stack as its best single layer until a control evaluation measures the joint miss rate under attack ([why](/entanglements/fundamentals/formal-definitions/#adaptive-adversaries-the-wrong-model)). There, the useful defenses are those whose guarantee does not depend on ρ: a hard [exposure envelope](/getting-started/glossary/) that blocks out-of-bounds actions whatever the input, rollback for what gets through, and not revealing which check blocked a probe.
 
 ## 5. Stress testing for coupling
 
@@ -174,7 +174,7 @@ It is not reasonable when:
 - **the target is valuable enough** that finding a master key is worth an attacker's effort;
 - **regulation or contract requires** demonstrable independence.
 
-When you cannot estimate ρ, treat "unknown" as "correlated" (ρ ≥ 0.5 for shared provider, training or context) and invest in measuring it once stakes are more than low. With limited resources, start with the highest-stakes action classes and the most correlated pairs, take the cheap interventions first (independent context, separate prompts and teams, fail-closed checks), and remember that monitoring a correlation does not reduce it.
+When you cannot estimate ρ, treat "unknown" as "correlated" (0.7 for a shared provider or model family, 0.55 across providers; see the [priors](/entanglements/detection/correlation-calculator/#priors-when-you-cannot-measure)) and invest in measuring it once stakes are more than low. With limited resources, start with the highest-stakes action classes and the most correlated pairs, take the cheap interventions first (independent context, separate prompts and teams, fail-closed checks), and remember that monitoring a correlation does not reduce it.
 
 ---
 

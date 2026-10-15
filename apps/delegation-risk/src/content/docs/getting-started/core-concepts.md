@@ -35,9 +35,9 @@ Harm modes fall into [three channels](/delegation-risk/risk-decomposition/):
 
 - **Accident**: the delegate fails at its task (bugs, hallucinations, edge cases).
 - **Defection**: the delegate pursues something other than the principal's interest. Scheming is the strategic case; reward hacking, which is goal-directed but not scheming, is a sub-type.
-- **Hijack**: a third party or user steers a delegate that is not itself scheming, for example through prompt injection in a document or tool output, or through misuse.
+- **Hijack**: a third party or user steers a delegate that is not itself scheming. The routes are direct injection or misuse; indirect injection through retrieved content such as web pages, documents, emails and tool outputs ([Greshake et al. 2023](https://arxiv.org/abs/2302.12173)); poisoned or malicious tools and MCP servers; and a compromised supply chain that rewrites the delegate's instructions.
 
-The channels call for different mitigations. Testing and redundancy address accidents. Control protocols and monitoring address defection. Separating instructions from untrusted data, and keeping a hard envelope, address hijack.
+The channels call for different mitigations. Testing and redundancy address accidents. Control protocols and monitoring address defection. Separating instructions from untrusted data, and keeping a hard envelope, address hijack. A component that holds private data, reads untrusted content and can communicate externally (Willison's [lethal trifecta](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/)) needs one of the three removed.
 
 ## Propagation
 

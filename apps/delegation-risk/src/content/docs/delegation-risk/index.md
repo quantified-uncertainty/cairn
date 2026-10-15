@@ -36,7 +36,7 @@ flowchart LR
 
 ### Step 1: the harm table
 
-Each row is a harm mode, tagged with its [channel](/delegation-risk/risk-decomposition/). An *accident* is a failure at the task. *Defection* is the delegate pursuing something else, including reward hacking. A *hijack* is a third party steering a delegate that is not itself scheming.
+Each row is a harm mode, tagged with its [channel](/delegation-risk/risk-decomposition/). An *accident* is a failure at the task. *Defection* is the delegate pursuing something else, including reward hacking. A *hijack* is a third party, or the user, steering a delegate that is not itself scheming, most often through instructions injected into content or tools it reads.
 
 | Component | Harm mode | Channel | P per month | Damage | Risk per month |
 |---|---|---|---|---|---|
@@ -88,7 +88,7 @@ Earlier versions of this example put "trust" weights on the diagram's arrows wit
 | Page | Question |
 |---|---|
 | [A Walk-Through](/delegation-risk/walkthrough/) | How do harm surface, exposure and delegation risk work on one simple delegation? |
-| [Risk Decomposition](/delegation-risk/risk-decomposition/) | Does each harm mode come through accident, defection or hijack, and why does it matter? |
+| [Risk Decomposition](/delegation-risk/risk-decomposition/) | Does each harm mode come through accident, defection or hijack (prompt injection, poisoned tools, misuse), and why does it matter? |
 | [Risk Propagation](/delegation-risk/risk-propagation/) | How do reliabilities compose through chains and stacks of checks, and what does correlation do? |
 | [Runtime Risk Accounting](/delegation-risk/runtime-accounting/) | How would an agent harness preflight, bound and book risk as it runs? |
 | [Delegation Accounting](/delegation-risk/delegation-accounting/) | What does a delegation look like on a balance sheet, and why does exposure depend on capability? |

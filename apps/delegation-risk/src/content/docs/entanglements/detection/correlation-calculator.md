@@ -7,7 +7,7 @@ sidebar:
 
 This page holds the numbers for the entanglement section: how to estimate ρ, what it implies, which thresholds to use, and what to assume when you cannot measure. Other pages link here rather than restating them.
 
-Two scope notes first. [Delegation risk](/delegation-risk/) is an expected loss in dollars, and expected-loss roll-ups add whatever the correlation. Correlation matters for AND-structured defenses, where harm gets through only if every layer misses, and for the tails of total loss ([Runtime Accounting](/delegation-risk/runtime-accounting/)). The entanglement tax multiplies the P(all layers miss) term of such a stack. Second, everything here is benign-failure math. Against an adaptive adversary, use ρ = 1 unless a control evaluation measures the joint miss rate under attack ([Risk Propagation](/delegation-risk/risk-propagation/#adversarial-inputs)).
+Two scope notes first. [Delegation risk](/delegation-risk/) is an expected loss in dollars, and expected-loss roll-ups add whatever the correlation. Correlation matters for AND-structured defenses, where harm gets through only if every layer misses, and for the tails of total loss ([Runtime Accounting](/delegation-risk/runtime-accounting/)). The entanglement tax multiplies the P(all layers miss) term of such a stack. Second, everything here is benign-failure math. Against an adaptive adversary, use ρ = 1 unless a control evaluation measures the joint miss rate under attack ([why](/entanglements/fundamentals/formal-definitions/#adaptive-adversaries-the-wrong-model)).
 
 ## The formula
 
@@ -24,7 +24,7 @@ The second term is a floor. Adding layers shrinks only the first.
 1. Run every layer on the same labeled challenge set of harmful items. Record, per item, whether each layer missed it.
 2. For each pair, compute $\phi = \dfrac{P(\text{both miss}) - p_A p_B}{\sqrt{p_A(1-p_A)\,p_B(1-p_B)}}$.
 3. Use the largest pairwise φ as the mixture's ρ, or simulate the full matrix (below).
-4. When you cannot measure, round up (see [priors](#priors-when-you-cannot-measure)).
+4. When you cannot measure, use the upper end of the [priors](#priors-when-you-cannot-measure).
 
 Other statistics called "correlation" do not substitute for φ:
 
@@ -86,7 +86,7 @@ Three things follow from the formula and show in the table:
 2. **Past modest ρ, more layers buy nothing.** At ρ = 0.5, three and five layers are both worth 1.3 independent layers, because the floor ρ·p does not depend on the number of layers.
 3. **Two levers move the floor.** It is ρ·min pᵢ, so lower ρ (a check that uses a different method or different information) or improve the *best* layer.
 
-Two contrasting stacks, with ρ values assumed for illustration:
+Two contrasting stacks, with ρ values taken from the [priors](#priors-when-you-cannot-measure) and miss rates that are illustrative:
 
 - *Same model three times* (agent, checker, reviewer), ρ ≈ 0.9: P(all miss) ≈ 9%, a tax of about 90×, worth 1.05 independent layers.
 - *Diverse stack*: an LLM check (p = 0.1), a rule-based check (p = 0.05) and human review of flagged items (p = 0.01), ρ ≈ 0.15. Independence predicts 0.005%; the mixture gives 0.15%, a tax of about 31×. The ratio is large because the independent baseline is tiny, but the absolute risk is about 60 times lower than the same-model stack's. Compare stacks by P(all miss), not by tax.
@@ -114,33 +114,52 @@ This is the [correlation budget](/getting-started/glossary/): the practical face
 |---|---|
 | Measured max-pairwise φ (upper CI) ≤ ρ_max | Within budget |
 | Measured φ > ρ_max | Over budget: replace a layer with one that uses a different method, improve the best layer, or narrow what is delegated |
-| Cannot measure; layers share a provider, model family, training or context | Assume ρ ≥ 0.5 |
+| Cannot measure | Use the upper end of the matching [prior range](#priors-when-you-cannot-measure): 0.7 for a shared provider or model family, 0.55 across providers |
 | Defection or hijack channel (adaptive adversary) | Assume ρ = 1 until a control evaluation measures the joint miss rate |
 | Monitoring over time | Alert when φ's confidence interval moves above ρ_max, or when φ rises significantly over its own baseline |
 
+## What the evidence supports
+
+**Benchmark φ for LLM pairs.** [Kim et al. (2025)](https://arxiv.org/abs/2506.07962) released, for 71 models on HELM's MMLU set (14,042 multiple-choice questions; models released 2023–24), each model's accuracy and, for every pair, the both-correct rate and the agreement rates on errors ([data](https://github.com/nikhgarg/llm_correlated_errors_public)). Those fix the joint miss rate (P(both miss) = agreement-when-either-wrong × (1 − both-correct) ÷ agreement-when-both-wrong), so φ of the miss indicators can be computed directly. We did so; the reconstructed accuracies match the published ones to within 0.002, and with 14,042 items the sampling error of each φ is about ±0.01.
+
+| Pair type (both models ≥ 80% accurate) | Pairs | φ of misses |
+|---|---|---|
+| Dated versions of one model (GPT-4o 05→08, Claude 3.5 Sonnet 06→10, Gemini 1.5 Pro 001→002) | 3 | 0.80, 0.77, 0.66 |
+| Same provider, any two models (including the above) | 20 | median 0.61, range 0.56–0.93 |
+| Different providers | 151 | median 0.53, 80% of pairs in 0.48–0.56 |
+
+Across providers, φ rises with capability: the median is 0.30 for pairs where the weaker model scores below 60%, 0.44 at 60–70%, 0.48 at 70–80% and 0.53 above 80%. This is the trend [Goel et al. (2025)](https://arxiv.org/abs/2502.04313) report with a different metric (CAPA), on 130 models.
+
+**These are upper estimates for the models measured.** About 6.5% of MMLU questions have flawed answer keys ([Gema et al. 2024](https://arxiv.org/abs/2406.04127)), and a strong model that answers a mis-keyed item correctly is scored as missing it, as is every other strong model. Such items count as common-cause misses. If 3% of items are missed by every model for this reason, the cross-provider median falls from 0.53 to 0.44 and the same-provider median from 0.61 to 0.54; at 6.5% they fall to 0.27 and 0.40. Not every flawed item is missed by every model, so the truth lies between the raw and the 6.5% figures.
+
+**Mapping to ρ assumes:**
+
+1. That φ on knowledge questions resembles φ on the harmful items your checks see. Nothing establishes this. Harm detection may have its own items that every model finds hard, and checks share a prompt and a rubric more often than benchmark runs do.
+2. That the beta-factor mixture is the right model. For two layers with equal miss rates, the mixture's ρ equals φ exactly; for three or more it is conservative ([Formal Definitions](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax)).
+3. That the 2023–24 models represent current ones. Both studies find correlation increasing with capability, so the error is more likely to be on the low side.
+4. That the failures are benign. None of this applies to inputs chosen by an attacker.
+
 ## Priors when you cannot measure
 
-The values below are **assumed priors** on the φ scale: the site authors' judgment, not measurements. Use them to see whether a design could meet its budget, then measure. Where a range spans your ρ_max, the design question is open until you do.
+Ranges on the φ scale. The LLM rows come from the benchmark figures above, widened for label noise; the rest have no measurement behind them and are the site authors' judgment. Use them to see whether a design could meet its budget, then measure. Where a range spans your ρ_max, the design question is open until you do.
 
-| Configuration | Assumed ρ (φ scale) |
-|---|---|
-| Same model and prompt, separate calls | 0.8–1.0 |
-| Same provider or model family, different models | ≥ 0.5 (the canonical default) |
-| Frontier LLMs from different providers | 0.3–0.6 |
-| LLM check and rule-based or static check | 0.1–0.3 |
-| LLM check and formal verification of a narrow property | 0–0.1, on that property |
-| LLM check and a human who sees the LLM's output | 0.2–0.4 |
-
-The evidence these priors should be consistent with:
-
-| Source | What it measured | Bearing on ρ | Convertible to φ? |
+| Configuration | Range to assume | Basis | Tax, three layers at p = 0.1 |
 |---|---|---|---|
-| [Knight & Leveson (1986)](https://doi.org/10.1109/TSE.1986.6312924) | 27 independently written programs, 1 million test inputs | Coincident failures far above independence, even for separately developed software | No: different domain, reported as failure counts |
-| [Goel et al. (2025)](https://arxiv.org/abs/2502.04313) | Chance-adjusted agreement on mistakes (CAPA) across LLMs | Mistakes grow more similar with capability; LLM judges favor similar models | No: CAPA is agreement over output probabilities, not a miss-indicator correlation |
-| [Kim et al. (2025)](https://arxiv.org/abs/2506.07962) | Errors of 350+ LLMs on leaderboards and a resume-screening task | On one leaderboard dataset, two models that both err pick the same wrong answer 60% of the time; accurate models have highly correlated errors across providers | No: agreement conditional on both erring is a different quantity |
-| [Zou et al. (2023)](https://arxiv.org/abs/2307.15043) | Adversarial suffixes optimized on open models, tested on others | Attacks transfer, including to closed commercial models | No: adversarial; supports ρ → 1 under attack |
+| Same model and prompt, separate calls | 0.8–1.0 | Assumed; dated versions of one model already reach 0.66–0.80 | 80–100× |
+| Same provider, different models | 0.4–0.7 | Benchmark, 0.40–0.61 after noise adjustment, up to 0.93 for derived models | 41–70× |
+| Frontier LLMs from different providers | 0.3–0.55 | Benchmark, 0.27–0.53 | 31–55× |
+| LLM check and rule-based or static check | 0.1–0.3 | Assumed | 11–31× |
+| LLM check and formal verification of a narrow property | 0–0.1, on that property | Assumed | 1–11× |
+| LLM check and a human who sees the LLM's output | 0.2–0.4 | Assumed | 21–41× |
+| Any learned checks, adaptive attacker | 1 | [Adversarial case](/entanglements/fundamentals/formal-definitions/#adaptive-adversaries-the-wrong-model) | 100× (the best single layer) |
 
-We know of no published φ between same-provider LLM checks on harmful-action detection. The "~50×" figure used across this site is the ρ = 0.5 row of the table above, chosen as a round assumption, and the 11×–21× rows are as defensible as it is. Show the range.
+The tax column is $1 + 99\rho$; for other layer counts and miss rates use $(1-\rho) + \rho\,p^{1-n}$ or the [lookup table](#lookup-tables). The figure of about 50× that appears across this site is a point inside the cross-provider and same-provider ranges, not a measurement of anyone's stack. No published study reports φ between LLM checks on harmful-action detection.
+
+Other evidence the priors should be consistent with:
+
+- **[Knight & Leveson (1986)](https://doi.org/10.1109/TSE.1986.6312924):** 27 independently written versions of one program, run on a million inputs, failed together far more often than independence predicts. Separate development is not independence.
+- **[Goel et al. (2025)](https://arxiv.org/abs/2502.04313):** besides the capability trend, LLM judges favor models whose mistakes resemble their own. CAPA counts different wrong answers as disagreement and uses output probabilities, so it is not φ.
+- **[Zou et al. (2023)](https://arxiv.org/abs/2307.15043)** and later attack studies: adversarial inputs transfer between models. This bears on the adversarial case, not on benign φ.
 
 ## Asymmetric stacks: the matrix
 

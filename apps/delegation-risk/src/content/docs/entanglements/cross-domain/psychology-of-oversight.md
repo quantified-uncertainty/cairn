@@ -45,7 +45,7 @@ The evidence that the bad regime is common: a preregistered meta-analysis of 106
 - **Track the rubber-stamp rate:** the share of approvals issued faster than the minimum time needed to read the item.
 - **Rotate and rest reviewers,** and keep sessions short enough that the vigilance decrement does not set in.
 - **Name an accountable reviewer** for each decision.
-- **Route, do not blanket-review.** Use people where they are strong (novel situations, value judgments, spotting incoherence, high-stakes and irreversible actions) and not as a generic high-volume filter. A human asked to approve everything stops reading ([Least Autonomy](/design-patterns/least-x-principles/#least-autonomy)).
+- **Route, do not blanket-review.** Use people where they are strong (novel situations, value judgments, spotting incoherence, high-stakes and irreversible actions) and not as a generic high-volume filter. A human asked to approve everything stops reading. Claude Code users approve 93% of permission prompts, and Anthropic cites the resulting approval fatigue as a reason for offering a mode in which a classifier decides instead ([Anthropic, March 2026](https://www.anthropic.com/engineering/claude-code-auto-mode); [Least Autonomy](/design-patterns/least-x-principles/#least-autonomy)).
 
 ## Measuring a human layer
 

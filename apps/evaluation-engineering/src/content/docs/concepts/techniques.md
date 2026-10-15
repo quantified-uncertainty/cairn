@@ -1,67 +1,57 @@
 ---
 title: Techniques
-description: The system-level patterns that tie the components together — prediction–evaluation systems, scalable structured forecasting, estimation functions, and automated trust networks.
-sidebar:
-  order: 2
+description: System-level patterns that wire the components together (prediction–evaluation systems, structured forecasting, estimation functions, trust networks, robust aggregation), each with its evidence status.
 ---
 
-*Status: early draft, adapted from the 2021–22 estimation-theory notes.*
+*Status: draft, adapted from the 2021–22 estimation-theory notes. Each technique carries a status: **tested** (measured in a controlled or deployed setting), **deployed elsewhere** (in use, but not as proposed here), or **untested**.*
 
-The [components](/concepts/components/) are the parts; these are the patterns for wiring them into a working system. Most of them are answers to one question: *how do you get a small amount of expensive, trusted judgment to subsidize a large amount of cheap judgment — and keep the whole thing consistent and honest?*
+The [components](/concepts/components/) are the parts; these are ways to wire them into a system. Most answer one question: how can a small amount of expensive, trusted judgment discipline a large amount of cheap judgment?
 
 ## Prediction–evaluation systems
 
-The flagship technique, and the cleanest bridge across the [estimation/evaluation gap](/start-here/estimation-vs-evaluation/).
+*Status: tested.*
 
-The setup: ask predictors to forecast a large set of items — say 10,000 — and announce that a small random subset — say 50 — will be resolved by an expensive, trusted [evaluation](/concepts/evaluation-methods/). Reward the best predictors of that subset.
+Ask predictors to forecast a large set of items, say 10,000, and announce that a random subset, say 50, will be resolved by an expensive, trusted [evaluation](/concepts/evaluation-methods/). Reward accuracy on that subset. Because no predictor knows which items will be graded, each must treat every item as if it might be. A small evaluation budget then calibrates forecasts across the whole set.
 
-Why it works: expensive evaluation gives you *trust and ground truth*; cheap prediction gives you *calibration and scale*. The random-subset-resolution trick lets a tiny evaluation budget calibrate forecasts across an enormous question set, because predictors must treat every item as if it might be the one that gets graded.
+The incentive thins as the set grows: with 50 of 10,000 resolved, each item has a 1-in-200 chance of counting. A proper scoring rule stays proper under random resolution, but the reward for effort on any one item falls by that factor.
 
-The pattern can chain into **multiple training steps**. Once you have 10,000 human predictions calibrated against a small evaluated subset, those predictions themselves become a labeled dataset — you can train cheaper ML predictors on them, evaluate *those* against a fresh subset, and repeat. The hope is that each step trades a little accuracy for a large drop in marginal cost; nobody has measured this, and errors compound across steps. (The earlier write-up called this "prediction-augmented evaluation systems"; "prediction–evaluation" is the same idea, renamed for legibility.)
+The pattern can chain. Calibrated human predictions become training labels for cheaper ML predictors, which are audited against a fresh subset, and so on. Whether each step loses little accuracy has not been measured, and errors compound across steps.
 
-This is elegant on paper and surely messier in practice. The live questions: does the incentive hold up under gaming, and what happens when some participants are actively deceptive? (See [Cruxes](/start-here/key-questions/), and the sibling RRP wiki's [taxonomy of oversight protocols](https://reasoning-processes.quantifieduncertainty.org/concepts/oversight-protocols/) and [attack model for untrustworthy sources](https://reasoning-processes.quantifieduncertainty.org/concepts/untrustworthy-sources/).)
+The evidence runs in both directions. The idea was written up as [*Prediction-Augmented Evaluation Systems*](https://www.lesswrong.com/posts/kMmNdHpQPcnJgnAQF/prediction-augmented-evaluation-systems) (2018) and tested in [*Amplifying generalist research via forecasting*](https://forum.effectivealtruism.org/posts/ZTXKHayPexA6uSZqE/part-2-amplifying-generalist-research-via-forecasting) (2019). There, 19 forecasters predicting a trusted evaluator recovered 87% of the value of her direct evaluation at 120% of her cost; cheaper crowdworkers, at 52% of the cost, recovered negative value. The authors framed it as an existence proof, not a cost-effectiveness result.
 
-This isn't only theory. The idea was first written up as [*Prediction-Augmented Evaluation Systems*](https://www.lesswrong.com/posts/kMmNdHpQPcnJgnAQF/prediction-augmented-evaluation-systems) (2018) and tested in [*Amplifying generalist research via forecasting*](https://forum.effectivealtruism.org/posts/ZTXKHayPexA6uSZqE/part-2-amplifying-generalist-research-via-forecasting) (2019). The result is instructive in both directions: 19 network-adjacent forecasters predicting a trusted evaluator recovered **87% of the value** of her direct evaluation, but at **120% of her cost** (a 72% benefit/cost ratio); cheaper online crowdworkers, at 52% of the cost, recovered *negative* value — their aggregate was worse than her prior. Amplification worked; cheap amplification did not, yet. The authors framed it as an existence proof, not a cost-effectiveness result. See [Related Work](/reference/related-work/) for the rest of the empirical record.
+The largest tests use replication as the expensive evaluator. Across four forecasting studies run alongside replication projects, prediction markets called 73% of 104 replication outcomes correctly, and surveys of the same participants did somewhat worse; accuracy has to be read against each project's replication base rate ([Liu et al. 2020](https://arxiv.org/abs/2005.04543), summarizing [Dreber et al. 2015](https://doi.org/10.1073/pnas.1516179112) and three later studies). DARPA's SCORE program then had forecasters price about 3,000 social- and behavioural-science publications, of which about 250 would be replicated, using decision markets and surrogate scoring rules to keep incentives intact when most forecasts would never resolve (same source). The statistics for turning many cheap predictions plus a random audited subset into valid estimates is [prediction-powered inference](/concepts/measuring-an-evaluator/#prediction-powered-inference).
 
-The largest related test is replication forecasting, where the expensive evaluator is a re-run experiment rather than a judge. Four forecasting studies run alongside large replication projects covered 104 published findings; prediction markets called 73% of the replication outcomes correctly, and surveys of the same participants did somewhat worse ([Liu et al. 2020](https://arxiv.org/abs/2005.04543), summarizing [Dreber et al. 2015](https://doi.org/10.1073/pnas.1516179112) and three later studies). Accuracy has to be read against the replication base rate, which varied across projects. DARPA's SCORE program then used forecasting in this technique's shape: forecasters priced about 3,000 social- and behavioural-science publications, of which only about 250 would be replicated. To keep incentives intact when most forecasts would never meet a replication, the project used decision markets and surrogate scoring rules (same source). On the statistics side, [prediction-powered inference](/concepts/llm-evaluators/#the-design-pattern-llms-as-the-cheap-layer) is the formal method for estimating population quantities from many cheap predictions plus a small random audited subset.
+Open: whether the incentive survives gaming by the *evaluated* party rather than the predictors ([LLMs as Evaluators, step 3](/concepts/llm-evaluators/#the-design-pattern-llms-as-the-cheap-layer)), and what happens when participants are deceptive (see [Cruxes](/start-here/key-questions/) and the sibling RRP wiki's [oversight protocols](https://reasoning-processes.quantifieduncertainty.org/concepts/oversight-protocols/) and [untrustworthy sources](https://reasoning-processes.quantifieduncertainty.org/concepts/untrustworthy-sources/)).
 
-## Scalable forecasting over structured ontologies
+## Forecasting over structured ontologies
 
-Almost all Tetlock-style platforms rely on small sets of hand-written, unstructured questions. That's fine for a few hundred items and breaks past that. Many questions worth forecasting are inherently structured:
+*Status: deployed elsewhere, at benchmark scale.*
 
-> "For each country, each month for the next 20 years, what will each of 20 key metrics be?"
-
-Today's judgmental platforms choke on this. Making structured — and ideally continuous-domain — forecasting work at scale is one of the field's central unsolved tooling problems, and it leans directly on the [ontology](/concepts/components/) component. Fully continuous domains would be even more valuable and are harder still.
+Many questions worth forecasting are structured: "for each country, each month for 20 years, what will each of 20 metrics be?" Judgmental platforms, built around hand-written questions, handle this poorly. Automated generation from data sources now produces question sets in the thousands ([ForecastBench](https://arxiv.org/abs/2409.19839)), but continuous, high-dimensional forecasting at that scale remains a tooling problem that leans on the [ontology](/concepts/components/#ontology) component.
 
 ## Estimation functions
 
-A convenient unit of reuse for the [estimation](/start-here/estimation-vs-evaluation/) layer: **a programming function that efficiently returns estimates for large sets of parameters** (often via caching).
+*Status: deployed elsewhere; value at scale untested.*
 
-In principle a plain Python or JavaScript function suffices; in practice you want a lot of tooling on top — uncertainty handling, caching, composition, dependency tracking — before these become powerful. [Squiggle](https://www.squiggle-language.com/) is one early piece of work in this direction, and [Squiggle AI](/reference/related-work/) is a deployed LLM front-end that generates such models (with documented overconfidence in its outputs). (Guesstimate was an earlier, more limited gesture at the same vision.) The [*Scorable Functions*](https://www.lesswrong.com/posts/otFDNWGN3zhNXXGrH/scorable-functions-a-format-for-algorithmic-forecasting) (2024) writeup is worth reading with the author's later [comment](https://forum.effectivealtruism.org/posts/ZWQ5jbLxpd4JtQgu4/scorable-functions-a-format-for-algorithmic-forecasting) that he had "become much less enamored by this broad idea", expecting people to ask LLMs for estimates on demand instead.
+A function that returns estimates over large parameter sets, usually with caching: the unit of reuse for the [estimation](/start-here/estimation-vs-evaluation/) layer. It needs tooling for uncertainty, composition and dependency tracking. [Squiggle](https://www.squiggle-language.com/) is one attempt, and [Squiggle AI](/reference/related-work/) is a deployed LLM front-end that writes such models, with documented overconfidence. The [*Scorable Functions*](https://www.lesswrong.com/posts/otFDNWGN3zhNXXGrH/scorable-functions-a-format-for-algorithmic-forecasting) (2024) proposal should be read with the author's later [comment](https://forum.effectivealtruism.org/posts/ZWQ5jbLxpd4JtQgu4/scorable-functions-a-format-for-algorithmic-forecasting) that he had "become much less enamored by this broad idea", expecting people to ask LLMs for estimates on demand instead.
 
-Estimation functions matter for the systems view because they're what make [propagation and consistency](/concepts/the-systems-view/) tractable: if estimates are produced by composable functions over shared inputs, an update to one input can flow through to everything downstream automatically, instead of leaving a pile of silently-stale reports.
+Their systems value is [propagation](/concepts/the-systems-view/#consistency-and-propagation): if estimates are composable functions of shared inputs, an updated input flows through to everything downstream instead of leaving stale reports.
 
 ## Automated trust networks
 
-Centralized "truth agencies" are single points of capture, and the record shows them captured: issuer-paid credit ratings before 2008, and the World Bank's *Doing Business* index, discontinued in 2021 after audits found deliberate data manipulation (see [Patterns & Failure Modes](/concepts/patterns-and-failure-modes/#3-incentives-and-funding-decide-trustworthiness--more-than-method-does)). Over-trust in them is a real hazard. The proposed alternative is **networks of trust and reputation**: many evaluation agencies that evaluate the big ones and each other, with at least a few good ones earning appropriate trust from the parties that matter.
+*Status: untested.*
 
-The more advanced version: let agencies write *functions that adjust other agencies' outputs*. Trusted group X might accept group Y's economic forecasts but believe Y is overconfident about the steel industry — and so apply an automatic, declared correction to everything Y publishes. This turns "who do you trust" into composable, inspectable structure rather than a binary.
+Central evaluators are single points of capture: issuer-paid credit ratings before 2008, and the World Bank's *Doing Business* index, discontinued in 2021 after data irregularities ([Patterns §3](/concepts/patterns-and-failure-modes/#3-incentives-and-funding-decide-trustworthiness--more-than-method-does)). The proposed alternative is many agencies that evaluate the large ones and each other. A stronger version lets an agency publish declared corrections to another's outputs: X accepts Y's economic forecasts but shades Y's steel-industry forecasts for overconfidence. "Whom do you trust" becomes inspectable structure rather than a binary. The sibling RRP wiki develops the identity layer this needs in [identity and track records](https://reasoning-processes.quantifieduncertainty.org/environment/identity-and-track-records/).
 
-This is the technique that most directly addresses the capture/corruption crux, and it overlaps heavily with the sibling RRP wiki's work on [identity and track records](https://reasoning-processes.quantifieduncertainty.org/environment/identity-and-track-records/).
+## Robust aggregation
 
-## Cultural change toward candidness
+*Status: deployed elsewhere.*
 
-The least technical technique, and possibly the most important. No tooling helps if the evaluated parties can shut the system down: a high-throughput public evaluator faces pushback, libel suits, and capture before it stabilizes. Getting to a world where such evaluation is *tolerated* is partly a cultural-engineering problem. It has [its own chapter](/concepts/epistemic-culture/).
+How raw judgments become a score is never neutral ([Patterns §5](/concepts/patterns-and-failure-modes/#5-the-scale-and-the-aggregation-rule-are-not-neutral)). Defaults with evidence behind them:
 
-## Robust aggregation and format design
+- Regularize sparse items: a Wilson lower bound for binary votes, Bayesian shrinkage for scores.
+- Prefer pairwise comparison when raters are noisy; QURI's [relative value functions](/reference/related-work/#evaluation-methods--utility-elicitation) add uncertainty to the idea.
+- Pool with a median or trimmed mean, which one bad input cannot drag far; RRP develops this as [breakdown-point ratings](https://reasoning-processes.quantifieduncertainty.org/concepts/hardening-invariance/#worked-bound).
+- Tie each rating to a verified purchase, stay or identity, the recurring fix for fake and brigaded ratings ([Patterns §4](/concepts/patterns-and-failure-modes/#4-reputation-systems-converge-on-the-same-arms-race)).
 
-The 2021–22 techniques above assume someone has already decided how raw judgments become a score. The empirical literature says that choice is never neutral ([Patterns & Failure Modes §5](/concepts/patterns-and-failure-modes/#5-the-scale-and-the-aggregation-rule-are-not-neutral)), and it supplies defaults an evaluation system should start from:
-
-- **Regularize sparse items.** A naive mean ranks a 2-vote item above a 500-vote one. Use a Wilson lower bound for binary votes or Bayesian shrinkage toward a prior for scores.
-- **Prefer pairwise comparison when raters are noisy.** "Is A better than B?" is more reliable than "rate A from 1 to 5", and Bradley–Terry-style models recover a scale from the comparisons. QURI's [relative value functions](/reference/related-work/#evaluation-methods--utility-elicitation) are this idea with uncertainty attached.
-- **Pool robustly.** A mean of judges can be dragged anywhere by one bad input; a median or trimmed mean cannot. The sibling RRP wiki develops this as [breakdown-point ratings](https://reasoning-processes.quantifieduncertainty.org/concepts/hardening-invariance/#worked-bound).
-- **Verify who evaluates.** Across ~100 real systems, the recurring fix for fake and brigaded ratings is tying each rating to a verified purchase, stay, or identity ([Patterns §4](/concepts/patterns-and-failure-modes/#4-reputation-systems-converge-on-the-same-arms-race)).
-
-## How these fit together
-
-A toy end-to-end system: an **ontology** defines a large structured question set; **estimation functions** populate the parts that calculation can reach; a **prediction–evaluation system** calibrates cheap forecasts against a small budget of expensive **evaluation**; **trust networks** let consumers decide whose outputs to weight; and a supportive **epistemic culture** is what lets any of it be deployed without being destroyed on contact. None of these is solved — see [Open Problems](/open-questions/).
+Candidness, which the 2021–22 notes listed as a technique, is a precondition for deployment and has [its own chapter](/concepts/epistemic-culture/). For the operational sequence of standing up a system, see the [Launch Checklist](/concepts/launch-checklist/).

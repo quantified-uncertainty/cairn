@@ -92,7 +92,7 @@ The "~50×" figure quoted elsewhere on this site is the ρ = 0.5 row. **That ρ 
 
 The mixture is benign-failure math. It assumes inputs arrive independently of the defenses, and that layers fail together only through shared causes such as a common blind spot. The ρ in the recipe below is estimated on a fixed challenge set for the same reason.
 
-An adaptive adversary breaks that assumption. A scheming component, the author of a prompt injection, or someone holding a jailbreak that transfers between models *chooses* inputs that defeat every layer at once. On those inputs, the layers' misses are not a random draw from their benign miss rates. The effective correlation approaches 1, and the stack is worth at most its best single layer against that attack. It can be worth less, if the attacker searches until one input beats them all.
+An adaptive adversary breaks that assumption. A scheming component, the author of a prompt injection, or someone holding a jailbreak that transfers between models *chooses* inputs that defeat every layer at once. On those inputs, the layers' misses are not a random draw from their benign miss rates. The effective correlation approaches 1, and the stack is worth at most its best single layer against that attack. It can be worth less, if the attacker searches until one input beats them all. The single-layer numbers are themselves optimistic: [Nasr et al. (2025)](https://arxiv.org/abs/2510.09023) bypassed 12 recent jailbreak and prompt-injection defenses with adaptive attacks, most at above 90% success, although most had reported near-zero attack success when first published.
 
 So for the defection and hijack [channels](/delegation-risk/risk-decomposition/):
 

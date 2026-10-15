@@ -70,7 +70,7 @@ The defensible version is narrower. Withhold information the task does not need,
 
 ## See also
 
-- [Agent Incidents](/case-studies/ai-systems/agent-incidents/): 2024–25 incidents where the delegate could act
+- [Agent Incidents](/case-studies/ai-systems/agent-incidents/): 2024–26 incidents where the delegate could act
 - [Least-X Principles](/design-patterns/least-x-principles/)
 - [Coordinator Constraints](/design-patterns/coordinator-constraints/): decomposition and external safeguards
 - [Structural Patterns](/design-patterns/structural/): the Exposure-Envelope Gateway

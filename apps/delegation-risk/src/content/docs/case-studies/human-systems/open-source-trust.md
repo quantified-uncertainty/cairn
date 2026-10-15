@@ -1,6 +1,6 @@
 ---
 title: "Open-Source Supply Chain"
-description: "Installing a package delegates code execution to everyone with publish rights in its dependency tree. The xz backdoor, the 2024–25 incidents, the defenses that now exist, and what carries over to agent tools."
+description: "Installing a package delegates code execution to everyone with publish rights in its dependency tree. The xz backdoor, the 2024–26 incidents, the defenses that now exist, and what carries over to agent tools."
 sidebar:
   order: 7
 ---
@@ -46,8 +46,9 @@ Two details matter for defenses ([Russ Cox's timeline](https://research.swtch.co
 | 2025 | tj-actions/changed-files | A bot token was compromised and the action's version tags were repointed to a commit that printed CI secrets into build logs; about 23,000 repositories used the action (CVE-2025-30066). |
 | 2025 | chalk, debug and others | Maintainer phished through a fake npm-support domain; packages with about two billion weekly downloads shipped crypto-stealing code for a few hours before removal. |
 | 2025 | Shai-Hulud | A self-replicating worm stole npm and GitHub tokens and republished itself into other packages its victims maintained; CISA counted over 500 compromised packages ([CISA alert, 23 Sep 2025](https://www.cisa.gov/news-events/alerts/2025/09/23/widespread-supply-chain-compromise-impacting-npm-ecosystem)). |
+| 2025 | Shai-Hulud 2.0 | The worm returned in late November, now running at `preinstall`, before installation finished; Wiz counted about 700 compromised packages and over 25,000 repositories created to dump stolen secrets ([Wiz](https://www.wiz.io/blog/shai-hulud-2-0-ongoing-supply-chain-attack)). |
 
-Two 2025 compromises targeted AI tooling directly: the Nx release that drove developers' AI coding CLIs to hunt for secrets, and the `postmark-mcp` server that copied every email to its publisher. Both are covered in [Agent Incidents](/case-studies/ai-systems/agent-incidents/), along with the Amazon Q extension that shipped an injected wiper prompt.
+Several compromises have targeted AI tooling directly: the Nx release that drove developers' AI coding CLIs to hunt for secrets, the `postmark-mcp` server that copied every email to its publisher, and the hundreds of malicious agent skills found on OpenClaw's ClawHub registry in early 2026. All are covered in [Agent Incidents](/case-studies/ai-systems/agent-incidents/), along with the Amazon Q extension that shipped an injected wiper prompt.
 
 ## AI-specific variants
 
@@ -60,7 +61,7 @@ Two 2025 compromises targeted AI tooling directly: the Nx release that drove dev
 
 | Defense | What it binds | What it does not stop |
 |---|---|---|
-| Trusted publishing: short-lived OIDC credentials from CI instead of stored tokens (PyPI since April 2023; npm generally available since 31 July 2025) | Theft of long-lived publish tokens, the asset the Shai-Hulud worm and the Nx attackers stole | A malicious maintainer, or a compromised CI workflow |
+| Trusted publishing: short-lived OIDC credentials from CI instead of stored tokens (PyPI since April 2023; npm generally available since 31 July 2025; npm revoked all long-lived classic tokens on 9 December 2025, [GitHub changelog](https://github.blog/changelog/2025-12-09-npm-classic-tokens-revoked-session-based-auth-and-cli-token-management-now-available/)) | Theft of long-lived publish tokens, the asset the Shai-Hulud worm and the Nx attackers stole | A malicious maintainer, or a compromised CI workflow |
 | Provenance attestations signed through Sigstore (npm since April 2023, by default under trusted publishing) | Lets a consumer verify which repository and build produced a package | Malicious code in that repository |
 | SLSA build levels | Hardened, isolated builds with verifiable provenance | The same |
 | Lock files and pinned versions | Silent upgrades to a newly compromised version | A version that was malicious when pinned |

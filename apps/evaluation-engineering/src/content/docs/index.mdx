@@ -1,9 +1,9 @@
 ---
 title: Evaluation Engineering
-description: The discipline of designing, building, and operating systems that produce large numbers of estimates and evaluations at known cost.
+description: The design of systems that produce large numbers of estimates and evaluations at known cost, under incentives that keep them honest.
 template: splash
 hero:
-  tagline: Treating the production of estimates and evaluations as a systems-engineering problem rather than a series of one-off studies.
+  tagline: Treating the production of estimates and evaluations as a systems-design problem rather than a series of one-off studies.
   actions:
     - text: Start with Chapter 1
       link: /start-here/introduction/
@@ -16,52 +16,19 @@ hero:
 
 ## The field in one paragraph
 
-**Evaluation engineering** is the study and practice of building *systems* that produce large numbers of estimates and evaluations — efficiently, consistently, and at a known cost. Its unit of analysis is not the single estimate ("how good was this grant?") but the system that produces estimates by the thousand: who staffs it, what data it runs on, how it stays calibrated, how updates propagate, and how accuracy is traded against quantity and cost. Most existing evaluation is artisanal — bespoke reports written one at a time. The bet here is that the bottleneck has moved from *how to evaluate one thing well* to *how to evaluate ten thousand things well enough, cheaply enough, that the results actually get used*. That is an engineering problem, provided "engineering" includes the incentives around a system as well as its pipeline ([Evaluation as a System](/concepts/the-systems-view/#technical-and-institutional-design-variables)).
+**Evaluation engineering**, as this wiki uses the term, is the design of *systems* that produce large numbers of estimates and evaluations at known cost: grant reviews, charity assessments, research triage, policy appraisals. The unit of analysis is not one evaluation ("how good was this grant?") but the machinery that produces them by the thousand: who staffs it, what data it runs on, how it is audited, how updates propagate, and who pays for it. The bet is that the bottleneck has moved from evaluating one thing well to evaluating ten thousand things well enough, cheaply enough, that the results get used. The wiki's own evidence adds a constraint: who pays the evaluator and who controls the metric seem to predict trustworthiness better than method does. So the design variables are institutional as well as technical ([Evaluation as a System](/concepts/the-systems-view/)).
 
-Why evaluation in particular, rather than forecasting or estimation, is argued in [Chapter 1](/start-here/introduction/#why-evaluation-specifically); the case against is in [Objections & FAQ](/reference/objections/).
+The core pattern is old and has precedents outside this project: a cheap layer predicts an expensive, trusted evaluator, and a hidden random subset is audited. Its relatives include automated essay scoring, DARPA's replication-forecasting program and prediction-powered inference ([Lineage](/start-here/lineage/#outside-precedents-for-the-core-pattern)). This is not the AI-model "evals" field, though the two overlap wherever an LLM is the judge ([Chapter 1](/start-here/introduction/#not-ai-model-evals-though-they-overlap)).
 
-## Why now
+## The shape of the book
 
-This program was first sketched in 2021–22 (see [Lineage](/start-here/lineage/)) under the name *advanced / symbolic evaluation systems*. The argument then: prediction markets and forecasting tournaments had underdelivered not because prediction is useless, but because prediction is one component of a larger architecture — ontology, calculation, forecasting, evaluation — and nobody was building the whole machine. The missing piece was a cheap, general executor for the labor-intensive parts. Large language models are now a candidate for exactly that, which turns a speculative research agenda into a buildable one.
+- **The systems view.** Why a system is a different object from an evaluation, and the properties that define its design space: accuracy, unit cost, robustness to gaming, legitimacy. [Evaluation as a System](/concepts/the-systems-view/), [The Four Components](/concepts/components/).
+- **Methods and techniques.** Ways to produce evaluations, ways to tie cheap and expensive judgment together, what LLMs change, how to measure an evaluator, and how to grade and launch a system. [Evaluation Methods](/concepts/evaluation-methods/), [Techniques](/concepts/techniques/), [LLMs as Evaluators](/concepts/llm-evaluators/), [Measuring an Evaluator](/concepts/measuring-an-evaluator/), [a worked example](/concepts/worked-example/) with numbers, the [Capability Ladder](/concepts/capability-ladder/) and a [Launch Checklist](/concepts/launch-checklist/).
+- **Evidence.** About a hundred standing evaluation systems, and what the literature establishes across them: reactivity, Goodhart effects, certification economics, rating inflation. [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/), [Patterns & Failure Modes](/concepts/patterns-and-failure-modes/).
+- **The environment.** What happens when the evaluated push back. [Epistemic Culture](/concepts/epistemic-culture/).
 
-## The shape of the field
-
-- **The systems view** — why an evaluation *system* is a different object from an evaluation, and which properties (accuracy, unit cost, robustness to gaming, legitimacy) define its design space. See [Evaluation as a System](/concepts/the-systems-view/).
-- **The components** — the four reusable parts that show up in every serious system: prediction, calculation, ontology, and evaluation. See [The Four Components](/concepts/components/).
-- **The methods and techniques** — the catalogue of ways to actually produce evaluations (expert panels, surveys, statistical and composite measures), the system-level techniques that tie cheap and expensive judgments together, and what LLMs change about both. See [Evaluation Methods](/concepts/evaluation-methods/), [Techniques](/concepts/techniques/), [LLMs as Evaluators](/concepts/llm-evaluators/), and [a worked example](/concepts/worked-example/) with numbers.
-- **The evidence** — ~100 real-world evaluation systems and what the academic literature establishes across them: reactivity, Goodhart, certification economics, reputation inflation, aggregation. See [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/) and [Patterns & Failure Modes](/concepts/patterns-and-failure-modes/).
-- **The environment** — the cultural and institutional conditions a system needs to survive contact with the world. See [Epistemic Culture](/concepts/epistemic-culture/).
-
-## The pages
-
-| # | Page | Status |
-|---|------|--------|
-| 1 | [Evaluation Engineering](/start-here/introduction/) | draft |
-| 2 | [Estimation vs. Evaluation](/start-here/estimation-vs-evaluation/) | draft |
-| 3 | [Why It Matters — Use Cases](/start-here/use-cases/) | draft |
-| 4 | [Cruxes](/start-here/key-questions/) | draft |
-| **I** | **The Systems View** | |
-| 5 | [Evaluation as a System](/concepts/the-systems-view/) | draft |
-| 6 | [The Four Components](/concepts/components/) | draft |
-| **II** | **Methods & Techniques** | |
-| 7 | [Evaluation Methods](/concepts/evaluation-methods/) | draft |
-| 8 | [Techniques](/concepts/techniques/) | draft |
-| 9 | [LLMs as Evaluators](/concepts/llm-evaluators/) | draft |
-| — | [Interlude: A Worked Example](/concepts/worked-example/) | draft |
-| **III** | **Evidence from the Wild** | |
-| 10 | [Evaluation Systems in the Wild](/concepts/evaluation-systems-in-the-wild/) | catalogue |
-| 11 | [Patterns & Failure Modes](/concepts/patterns-and-failure-modes/) | draft |
-| **IV** | **The Environment** | |
-| 12 | [Epistemic Culture](/concepts/epistemic-culture/) | draft |
-| — | [Glossary](/reference/glossary/) | draft |
-| — | [Objections & FAQ](/reference/objections/) | draft |
-| — | [Lineage](/start-here/lineage/) | draft |
-| — | [Related Work (QURI)](/reference/related-work/) | draft |
-| — | [Adjacent Fields & Literature](/reference/adjacent-fields/) | draft |
-| — | [Open Problems](/open-questions/) | aggregated |
-
-**Read it offline or feed it to an LLM.** The whole wiki is also available as a single file — [llms-full.txt](/llms-full.txt) — with every page concatenated in reading order.
+The open questions are collected as [Cruxes](/start-here/key-questions/) and [Open Problems](/open-questions/). The whole wiki is also available as one file, [llms-full.txt](/llms-full.txt).
 
 ## Status
 
-This wiki is in an early, exploratory stage. Pages are working notes, not settled positions. It is a sibling to the [Robust Reasoning Processes](https://reasoning-processes.quantifieduncertainty.org/) wiki — the same 2021–22 corpus, pointed at corruption resistance rather than throughput — and part of the [CAIRN](https://github.com/quantified-uncertainty/cairn) project by [QURI](https://quantifieduncertainty.org/).
+Working notes, not settled positions; each page carries its own status line. The wiki is a sibling to [Robust Reasoning Processes](https://reasoning-processes.quantifieduncertainty.org/), which grew from the same 2021–22 notes and asks how reasoning resists corruption rather than how evaluation scales. Both are part of [CAIRN](https://github.com/quantified-uncertainty/cairn), a [QURI](https://quantifieduncertainty.org/) project.

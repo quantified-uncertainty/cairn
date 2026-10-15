@@ -1,55 +1,84 @@
 ---
 title: Cruxes
-description: The central uncertainties this wiki is organized around — the questions whose answers would most change what we work on.
+description: The central uncertainties this wiki is organized around, each stated as a proposition with a working credence, what has changed since 2024, and what would move it.
 sidebar:
   order: 2
 ---
 
-*The uncertainties these notes are organized around, in four clusters: what a strong reasoner is, where the gains come from, what could go wrong, and who should govern any of it. A cruxes document is, loosely, a draft utility function over our own questions.*
+*The uncertainties these notes are organized around. They fall into four groups: what a strong reasoner is, where the gains come from, what could go wrong, and who should govern any of it. Each is stated as a proposition with a working credence, a note on what the 2024–26 evidence did to it, and what would move it.*
 
 :::note
-Reflects cruxes principally from Ozzie Gooen's [Claims & Cruxes on LLM Forecasting & Epistemics](https://forum.effectivealtruism.org/posts/EykCuXDCFAT5oGyux/my-current-claims-and-cruxes-on-llm-forecasting-and) (2024), a preliminary personal post; the question set and weights remain under revision.
-:::
+The question set descends from Ozzie Gooen's [Claims & Cruxes on LLM Forecasting & Epistemics](https://forum.effectivealtruism.org/posts/EykCuXDCFAT5oGyux/my-current-claims-and-cruxes-on-llm-forecasting-and) (2024), a preliminary personal post.
 
-This wiki is organized around uncertainties, not conclusions. The questions below are the ones whose answers would most change what we work on. They cluster into four groups: what a strong reasoner *is*, where the gains will actually come from, what could go wrong, and who should be in charge of any of it. (A cruxes document is, loosely, a draft utility function — see [Epistemic Impact Analysis](/proposals/epistemic-impact-analysis/) — so treat the selection as a position we expect to revise.)
+The credences are working subjective probabilities, drafted in October 2026 and still under review by the maintainers. They are not elicited from a panel or derived from a model. Read them as "where we lean, and roughly how hard"; the second digit is noise. The evidence they lean on is summarized in [What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/#state-of-the-evidence-october-2026).
+:::
 
 ## 1. Definition and measurement
 
-The original framing questions of the wiki: what is the object, and how would we recognize one?
-
-- **What is a strong reasoner?** Is there a coherent target — an AI system whose judgments are reliable enough to be worth updating on — or does "reasoning strength" dissolve into unrelated capabilities per domain? See [What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/)
-- **How would we know — what evidence would justify trusting machine judgment?** Most of the judgments we care about lack ground truth on any useful timescale, so trust has to be built from indirect evidence; the candidate groundings are mapped in [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/)
-- **How much does consistency constrain correctness?** Coherence checks are cheap and unsupervised, but a consistent deceiver passes them and an honest bounded reasoner fails somewhere — so where does the screen actually bind? See [Consistency Evaluations](/proposals/consistency-evals/).
-- **Does [retrodiction](/concepts/oversight-protocols/) — scoring models on known facts hidden from them — survive contamination?** It could vastly expand the testable set, but held-out banks decay with each release, models infer outcomes from correlated knowledge, and questions still need hand operationalization; uncontrolled, those leaks erase a rare scalable source of ground truth.
-- **What does the capability curve look like, and where are current models on it?** Judge unreliability is well documented: meaning-preserving formatting changes alone swing few-shot task accuracy by up to 76 points ([Sclar et al. 2024](https://arxiv.org/abs/2310.11324)), position and self-preference biases recur ([Zheng et al. 2023](https://arxiv.org/abs/2306.05685)), and QURI's [Opinion Fuzzing](https://quantifieduncertainty.org/posts/opinion-fuzzing-a-proposal-for-reducing-exploring-variance-in-llm-judgments-via-sampling/) proposal to sample across that variance is unvalidated. What stays thin is judgment without ground truth: forecasting benchmarks ([Halawi et al. 2024](https://arxiv.org/abs/2402.18563)) cover only the resolvable slice, and QURI's deployed tools ([Squiggle AI, RoastMyPost](/case-studies/llm-epistemics-in-production/)) lack any published calibration evaluation.
+- **"Reasoning strength" is a coherent target: calibration measured in one domain predicts calibration in another.** *~55%.*
+  - *Since 2024:* there is still no direct test. Forecasting benchmarks mix domains, and none publishes cross-domain calibration correlations.
+  - *Would move it:* per-domain calibration curves for the same systems, on ForecastBench-style question sets.
+  - See [What Is a Strong Reasoner?](/concepts/what-is-a-strong-reasoner/)
+- **Consistency constrains correctness, for systems not trained against the metric.** *~65%.*
+  - *Since 2024:* arbitrage-based consistency scores correlate with later Brier scores ([Paleka et al. 2024](https://arxiv.org/abs/2412.18544)).
+  - *Under optimization pressure, the constraint survives:* *~25%.* We know of no test either way. CoT monitors, the nearest analogue, degraded once they were optimized against ([Baker et al. 2025](https://arxiv.org/abs/2503.11926)).
+  - See [Consistency Evaluations](/proposals/consistency-evals/).
+- **[Retrodiction](/concepts/oversight-protocols/), done carefully, gives capability rankings that agree with live forecasting.** *~40%.*
+  - *Since 2024:* temporal leakage has been documented across published backtests ([Paleka et al. 2025](https://arxiv.org/abs/2506.00723)). Leak-free live benchmarks now exist to check retrodiction against.
+  - *Would move it:* a retrodiction suite whose rankings match ForecastBench or Metaculus rankings for the same systems.
+- **On binary questions resolving within months, the best AI systems are at rough parity with strong human forecasters.** *~70%.*
+  - *Since 2024:* the evidence moved from "clearly behind" (Halawi et al. 2024; Metaculus bot teams at −9 to −20) to "not distinguishable" (ForecastBench, July 2026; Metaculus spring 2026 at −1.25, CI spanning zero).
+  - *Would move it:* FRI's planned fresh superforecaster round. If a significant human lead reappears against a current baseline, we move down.
+- **That parity carries over to long-horizon or unresolvable judgment.** *~20%.*
+  - *Since 2024:* no evidence either way, which is the problem. Judges remain unreliable in the ways that matter here. Meaning-preserving format changes swing few-shot accuracy by up to 76 points ([Sclar et al. 2024](https://arxiv.org/abs/2310.11324)), and position and self-preference biases recur ([Zheng et al. 2023](https://arxiv.org/abs/2306.05685)).
+  - QURI's own deployed tools ([Squiggle AI, RoastMyPost](/case-studies/llm-epistemics-in-production/)) have no published calibration evaluation.
 
 ## 2. Where the gains come from
 
-The strategic cruxes, drawn most directly from [Claims & Cruxes](https://forum.effectivealtruism.org/posts/EykCuXDCFAT5oGyux/my-current-claims-and-cruxes-on-llm-forecasting-and).
-
-- **Does epistemic improvement come from base models or from scaffolding?** If the key functionality lands in the inference layer rather than in software built around it, most work outside the major labs gets obsoleted on lab timelines — the post flags this as a crux that "could significantly change what work will be valuable."
-- **Who builds it — labs, startups, or nonprofits?** The post's most-likely failure mode is that projects here simply fail to make an impact — commercial capture of the obvious markets is one route; the open question is whether a meaningful nonprofit niche remains.
-- **Does better epistemics differentially help safety, or just accelerate everything?** Epistemic tools could help convince developers about alignment problems — or simply be folded into capabilities work with safety neglected; the differential is the case for the whole agenda.
-- **Is there demand?** Real-money markets found mass demand for elections and sports but near-zero as institutional decision inputs, and corporate prediction markets repeatedly failed ([Sempere et al. 2021](https://forum.effectivealtruism.org/posts/dQhjwHA7LhfE8YpYF/prediction-markets-in-the-corporate-setting)) — from elicitation costs, which AI removes, or aversion to forecasts leadership can be held to, which it doesn't?
-- **What applications unlock at each reliability level?** Marginal reliability gains plausibly unlock discontinuous application tiers — see [The Reliability Ladder](/concepts/epistemic-applications/) for the candidate ladder.
+- **Most epistemic gains over 2027–28 come from base models, RL-trained reasoning included, rather than from scaffolding built outside the labs.** *~65%.*
+  - *Since 2024:* reasoning models absorbed much of what scaffolds used to add. A 14B model RL-trained on resolved questions matched o1 on accuracy ([Turtel et al. 2025](https://arxiv.org/abs/2505.17989)).
+  - *Against:* the top ForecastBench and Metaculus entries in 2026 are still pipelines of retrieval, decomposition and ensembling, and in Metaculus's Q2 2025 tournament, bot-makers who aggregated repeated forecasts scored higher. That last finding is correlational ([Metaculus, Oct 2025](https://www.lesswrong.com/posts/Surnjh8A4WjgtQTkZ/q2-ai-benchmark-results-pros-maintain-clear-lead)).
+  - *Would move it:* a bare frontier model, without scaffolding, topping both leaderboards would move us up; pipelines keeping a persistent lead would move us down.
+  - This was the original post's flagged crux. It decides how much non-lab work is obsoleted on lab timelines.
+- **A meaningful non-commercial niche remains, mainly in evaluation and verification infrastructure rather than in the reasoners themselves.** *~60%.*
+  - *Since 2024:* the public benchmarks that track AI forecasting are run by a nonprofit (FRI) and a platform (Metaculus), not by labs. Forecasting startups now compete for the reasoner itself.
+- **Better AI epistemics differentially helps safety rather than just accelerating everything.** *~50%.*
+  - *Since 2024:* little direct evidence. Reasoning gains have come fastest in verifiable domains (maths, code), which serve capabilities at least as much as judgment.
+  - *Would move it:* evidence that labs' decisions on safety-relevant questions changed because of AI-generated analysis.
+- **Institutional demand for machine forecasts as decision inputs grows materially by 2028.** *~40%.*
+  - *Since 2024:* AI removes the elicitation cost that sank corporate prediction markets ([Sempere et al. 2021](https://forum.effectivealtruism.org/posts/dQhjwHA7LhfE8YpYF/prediction-markets-in-the-corporate-setting)). It does not remove leadership's aversion to forecasts it can be held to, and we have seen no evidence that this aversion has weakened.
+- **Reliability gains unlock discontinuous application tiers, not a smooth curve.** *~40%.* See [The Reliability Ladder](/concepts/epistemic-applications/).
 
 ## 3. Failure modes
 
-What breaks, and whether the breakage is recoverable.
-
-- **How real is AI-driven epistemic lock-in?** Reasoning agents optimized for retention rather than accuracy could fragment users into self-reinforcing belief clusters that resist empirical challenge — and false epistemics can reshape values, making this arguably worse than value lock-in ([sketch here](https://forum.effectivealtruism.org/posts/G7KnxZ3Jpuy6hQ4Ew/a-sketch-of-ai-driven-epistemic-lock-in)).
-- **Does persuasion capability outpace verification?** Judge-grounded oversight trains for *what convinces*; per the [obfuscated-arguments problem](https://www.alignmentforum.org/posts/PJLABqQ962hZEqhdB/debate-update-obfuscated-arguments-problem) (Barnes & Christiano 2020), a flaw spread across many individually-plausible steps can't be efficiently located, so long honest and dishonest arguments look alike — whether such arguments are cheap to find is open; see [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/)
-- **How correlated are errors across model families?** Aggregation, peer prediction, and multi-model checks all assume some independence; if a handful of training pipelines share blind spots, ensembling delivers confidence without accuracy.
-- **What happens when the eval becomes the objective?** Once reasoner scores gate anything valuable, measured systems and deployers optimize against the measure — Goodharted judge metrics, gamed batteries, sandbagging.
-- **Does resolution-grounding break worst where we need it most?** Resolution ambiguity is pervasive across forecasting; AI-progress questions sit at the bad end of that continuum: resolution arrives too late, operationalizations are contested (five-plus reported definitions of "human-level AGI" — [Sempere 2023](https://nunosempere.com/blog/2023/11/07/hurdles-forecasting-ai/), citing Yagudin), and feedback loops never close.
+- **AI-driven epistemic lock-in is among the larger epistemic risks of this decade.** *~30%.*
+  - The mechanism: agents optimized for retention fragment users into self-reinforcing belief clusters ([sketch](https://forum.effectivealtruism.org/posts/G7KnxZ3Jpuy6hQ4Ew/a-sketch-of-ai-driven-epistemic-lock-in)).
+  - *Would move it:* measured belief divergence among heavy users of different assistants.
+- **Persuasive capability outpaces our ability to verify.** *~55%.*
+  - Judge-grounded oversight trains for what convinces. Under the [obfuscated-arguments problem](https://www.alignmentforum.org/posts/PJLABqQ962hZEqhdB/debate-update-obfuscated-arguments-problem), a flaw spread across many plausible steps cannot be efficiently located.
+  - *Would move it:* debate experiments in which judges stay accurate as the debaters' capability rises.
+  - See [What Grounds an Oversight Protocol?](/concepts/oversight-protocols/)
+- **Errors are correlated enough across model families that multi-model checks deliver much less than naive independence implies.** *~75%.*
+  - *Since 2024:* a twelve-model ensemble shared one directional bias ([Schoenegger et al. 2024](https://arxiv.org/abs/2402.19379)). Leading forecasting systems ensemble the same few frontier models.
+  - *Would move it:* published estimates of effective independence across families ([Independence](/concepts/hardening-independence/)).
+- **Once reasoner scores gate anything valuable, they get gamed.** *~85%.*
+  - *Since 2024:* models trained against a CoT monitor learned to hide intent ([Baker et al. 2025](https://arxiv.org/abs/2503.11926)). Metaculus bots gamed numeric scoring with "porcupine" distributions.
+  - The open question is how fast gaming happens, not whether it happens.
+- **Chain-of-thought monitoring remains a usable audit channel for frontier models through 2028.** *~50%.*
+  - *For:* monitorability so far appears to survive RL at current scale ([Guan et al. 2025](https://arxiv.org/abs/2512.18311)).
+  - *Against:* it is fragile by design ([Korbak et al. 2025](https://arxiv.org/abs/2507.11473)).
+  - *Would move it:* labs adopting, or abandoning, training choices that preserve legible reasoning.
+- **Resolution-grounding breaks worst where it is most needed.** *~80%.*
+  - AI-progress questions resolve late and are contested. There are five or more reported definitions of "human-level AGI" ([Sempere 2023](https://nunosempere.com/blog/2023/11/07/hurdles-forecasting-ai/)).
+  - Recent progress is almost entirely on questions that resolve within months.
 
 ## 4. Institutions
 
-Even given working systems, the governance questions remain open.
+These are mostly normative questions, so we give no credences for them.
 
-- **Who should run oversight and metering systems for automated research?** The metering layer concentrates real power over what research counts; see [Overseeing Automated Research](/proposals/overseeing-automated-research/).
-- **What consent norms should govern AI evaluation of people and organizations?** Cheap automated evaluation arrives before norms about who may be evaluated, by whom, and with what recourse ([Evaluation Consent Policies](https://quantifieduncertainty.org/posts/evaluation-consent-policies/)).
-- **How risky are epistemic improvements in general?** Better collective epistemics is usually assumed safe to maximize; we treat distribution — whether gains accrue broadly or concentrate among already-powerful actors — as a crux in its own right (the source touches it only under one failure mode).
-- **Can self-correcting loops cap the harms?** Claims & Cruxes proposes that builders use their own epistemic tools to evaluate — and if necessary halt — further development; whether such loops would work is a hope with little evidence either way.
+- **Who should run the oversight and metering systems for automated research?** The metering layer concentrates power over what research counts. AI-scientist systems now exist, and their documented failures are process failures ([Overseeing Automated Research](/proposals/overseeing-automated-research/)).
+- **What consent norms should govern AI evaluation of people and organizations?** Cheap automated evaluation is arriving before such norms exist ([Evaluation Consent Policies](https://quantifieduncertainty.org/posts/evaluation-consent-policies/)).
+- **Do epistemic gains accrue broadly or concentrate among already-powerful actors?** We treat distribution as a crux in its own right.
+- **Can builders use their own epistemic tools to evaluate, and if necessary halt, further development?** *~15% that such loops would bind in practice.* This is a hope with little evidence.
 
-Where a question has matured into a position, it gets its own page; [Open Problems](/open-questions/) aggregates the page-level residue that hasn't.
+Where a question matures into a position it gets its own page. [Open Problems](/open-questions/) aggregates the page-level residue.

@@ -22,7 +22,7 @@ Importance measures say where to spend effort:
 | Risk Achievement Worth (RAW) | Risk with the component failed ÷ baseline risk | How much the system leans on it |
 | Birnbaum | $\partial R / \partial p_i$ | Where an improvement buys most |
 
-A RAW of 2 or more is commonly used as a screening criterion for risk significance (for example, in US Maintenance Rule practice), not as a trigger for regulatory action. <!-- TODO(verify): RAW >= 2 screening threshold attributed to NUMARC 93-01; not checked against the document. -->
+In US practice a component counts as risk-significant when its Fussell-Vesely importance exceeds 0.005 or its RAW exceeds 2, the screening criteria of the industry guides NUMARC 93-01 (Maintenance Rule) and NEI 00-04, with an expert panel making the final call ([NRC request for additional information, ML083170821, 2008](https://www.nrc.gov/docs/ML0831/ML083170821.pdf)). They are screens, not triggers for regulatory action.
 
 ## Common-cause failure
 

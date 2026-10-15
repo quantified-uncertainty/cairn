@@ -5,7 +5,7 @@ description: "The six core Least-X principles, the verifiability tiers that impl
 
 Least privilege gives each component the minimum access rights its function needs (Saltzer & Schroeder 1975). A delegated AI component has more dimensions than access rights: how capable it is, what it knows, what it remembers, how freely it acts and whom it can talk to. Each "Least X" principle bounds one of these. A component's exposure, the worst-case loss given what it can reach, is limited by whichever dimension binds first, so the principles are applied together.
 
-Six principles are the core. The rest of the page lists a tail of narrower or weaker ones, each with its caveat.
+Six principles are the core, and this page is their canonical statement. The rest of the page lists a tail of narrower or weaker ones, each with its caveat.
 
 | Principle | What it bounds |
 |---|---|

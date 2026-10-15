@@ -1,11 +1,11 @@
 ---
 title: Evaluation Systems in the Wild
-description: A catalogue of ~100 real-world evaluation systems — from RTINGS and IMDb to credit ratings, Michelin, and the Corruption Perceptions Index — and what they teach about building evaluation systems.
+description: A catalogue of about 160 real-world evaluation systems, from RTINGS and IMDb to credit ratings, Michelin and LMArena, coded by who pays and documented failure, and what they teach about building evaluation systems.
 sidebar:
   order: 3
 ---
 
-*Status: early draft / curated catalogue, assembled from a June 2026 sweep. This is the descriptive companion to the conceptual pages: the world is already full of standing systems that produce many evaluations of a repeated type. They are the field's natural experiments — its documented successes, failures, and capture stories. The founding program called for exactly this survey (the proto "process catalogue").*
+*Status: curated catalogue, assembled from a June 2026 sweep; coded by payer, method and documented failure in October 2026 ([below](#does-who-pays-predict-failure)). This is the descriptive companion to the conceptual pages: the world is already full of standing systems that produce many evaluations of a repeated type. They are the field's natural experiments — its documented successes, failures, and capture stories. The founding program called for exactly this survey (the proto "process catalogue").*
 
 :::caution
 A working catalogue, not a reference. Systems and links are verified, but **exact figures (coverage counts, market shares, percentages) are approximate and should be checked against the source** before relying on them. Where a number is load-bearing, follow the link.
@@ -13,16 +13,18 @@ A working catalogue, not a reference. Systems and links are verified, but **exac
 
 ## How to read this
 
-Every entry names **what it evaluates**, its **output format**, its **method**, and one **notable weakness or failure**. Before the catalogue, four cross-cutting lenses that the ~100 systems below keep illustrating:
+Every entry names **what it evaluates**, its **output format**, its **method**, and one **notable weakness or failure**. Before the catalogue, four cross-cutting lenses that the systems below keep illustrating:
 
 **Method archetypes.** Independent lab testing · professional anonymous inspection · expert panel/committee · critic aggregation · crowd reviews (often Bayesian/credibility-weighted) · two-sided/reciprocal rating · statistical/algorithmic model · composite index · market-based · regulatory review. These are the menu on [Evaluation Methods](/concepts/evaluation-methods/), seen in the wild.
 
 **Output formats.** Stars (1–5), points (0–100), letter grades (A–F, AAA–D), rankings, pass/fail certification, tiers, probabilities, and dollar estimates. The format is an editorial choice with consequences — binary "fresh/rotten" discards intensity; 100-point wine scales compress to 88–100.
 
-**Funding appears to determine capture risk.** In the catalogue's clearest contrasts it looks like the most predictive variable, echoing the [audit/ratings literature](/reference/adjacent-fields/#8-audit-assurance--ratings) and the [trust-network](/concepts/techniques/) and [candidness](/concepts/epistemic-culture/) discussions. The entries have not been coded to test this. Three archetypes:
-1. **Independent / nonprofit, buys its own units, no ads** (Consumer Reports, Which?, Stiftung Warentest, IIHS) — strongest independence.
+**Who pays.** Three funding archetypes recur:
+1. **Independent / nonprofit, buys its own units, no ads** (Consumer Reports, Which?, Stiftung Warentest, IIHS). Even here, Which? and Stiftung Warentest sell logo licences to makers whose products score well.
 2. **Affiliate / ad-funded editorial** (Wirecutter, RTINGS, CNET) — recommendation-revenue conflict.
-3. **Rated party pays** — issuer-pays ratings, fee-for-certification, award-licensing (Moody's/S&P, UL, ISO, LEED, J.D. Power, DXOMARK) — highest capture exposure.
+3. **Rated party pays** — issuer-pays ratings, fee-for-certification, award-licensing (Moody's/S&P, UL, ISO, LEED, J.D. Power, DXOMARK).
+
+How much this matters is tested [below](#does-who-pays-predict-failure); the answer is less than this page used to claim.
 
 **Recurring failure modes.** Fake reviews / astroturfing / review bombing · gaming and Goodharting (citations, ratings) · capture (credit ratings in 2008; the World Bank's *Doing Business* scandal) · pay-to-play · grade inflation · self-declaration abuse · snapshot-in-time validity · reciprocal retaliation in two-sided systems · opaque weighting.
 
@@ -91,7 +93,7 @@ Every entry names **what it evaluates**, its **output format**, its **method**, 
 
 ## Health, safety, standards & certification
 
-- **Hospital ratings** — **[CMS star ratings](https://www.medicare.gov/care-compare/)** (1–5, federal), **[Leapfrog](https://www.hospitalsafetygrade.org/)** (A–F safety), **[US News Best Hospitals](https://health.usnews.com/best-hospitals)**, **[Healthgrades](https://www.healthgrades.com/)**. *Weakness:* CMS criticized for penalizing complex/teaching hospitals; Healthgrades sells ads to the hospitals it rates.
+- **Hospital ratings** — **[CMS star ratings](https://www.medicare.gov/care-compare/)** (1–5, federal), **[Leapfrog](https://www.hospitalsafetygrade.org/)** (A–F safety), **[US News Best Hospitals](https://health.usnews.com/best-hospitals)**, **[Healthgrades](https://www.healthgrades.com/)**. *Weakness:* CMS criticized for penalizing complex/teaching hospitals; Healthgrades and Leapfrog charge hospitals to license their grades for marketing. In March 2026 a federal judge ruled that Leapfrog's method "has no scientific basis, unfairly penalizes nonparticipating hospitals" and ordered grades for five Florida hospitals withdrawn; Leapfrog is appealing ([WUSF](https://www.wusf.org/health-news-florida/2026-09-10/leapfrog-appeals-judges-ruling-for-south-florida-hospitals-over-safety-grades)).
 - **Restaurant hygiene** — **[NYC letter grades](https://www.nyc.gov/site/doh/business/food-operators/letter-grading-for-restaurants.page)** (A/B/C), **[UK Food Hygiene Rating Scheme](https://www.food.gov.uk/safety-hygiene/food-hygiene-rating-scheme)** (0–5). Unannounced inspections; municipal, no fee-for-grade. *Weakness:* snapshot validity; inspection inconsistency.
 - **Drug/device** — **[FDA](https://www.fda.gov/)**, **[EMA](https://www.ema.europa.eu/)**, **[NICE](https://www.nice.org.uk/)** (cost-per-QALY HTA). Approve/not. Expert regulatory review. *Weakness:* user-fee funding criticized as "cozy"; QALY thresholds called arbitrary.
 - **Crash tests** — **[IIHS](https://www.iihs.org/)** (Good–Poor + Top Safety Pick; insurer-funded, independent of makers), **[Euro NCAP](https://www.euroncap.com/)** (0–5 stars), **[NHTSA 5-Star](https://www.nhtsa.gov/ratings)** (most cluster at 4–5★). *Weakness:* limited scenario set; "test to the test".
@@ -112,7 +114,7 @@ Every entry names **what it evaluates**, its **output format**, its **method**, 
 - **[Google Reviews](https://maps.google.com/)** — places. 1–5 stars + AI moderation. *Weakness:* ~240M fake reviews removed in 2024; extortion scams at scale.
 - **[Booking.com](https://www.booking.com/reviews_guidelines.html)** / **Hotels.com** — accommodations. Score /10, **verified guests only**, recency-weighted. *Weakness:* commission model is a structural conflict.
 - **[Trustpilot](https://www.trustpilot.com/)** — businesses. TrustScore (Bayesian-weighted). *Weakness:* paying businesses get more tools (two-tier criticism).
-- **[BBB grades](https://www.bbb.org/)** — business trustworthiness. A+–F. Composite + accreditation fees. *Weakness:* a 2010 sting got a fake company an A+ for ~\$425 (pay-for-grade).
+- **[BBB grades](https://www.bbb.org/)** — business trustworthiness. A+–F. Composite + accreditation fees. *Weakness:* a 2010 ABC News sting got a fictitious business named "Hamas" accredited with an A− after it paid \$425 (pay-for-grade); a Los Angeles-area chapter was later expelled.
 - **[Glassdoor](https://www.glassdoor.com/)** — employers. 1–5 stars, anonymous, "give to get". *Weakness:* anonymity enables fakes; the rated employer pays the host.
 
 ## Online platforms & reputation systems

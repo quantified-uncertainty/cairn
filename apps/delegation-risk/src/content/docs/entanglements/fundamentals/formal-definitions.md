@@ -103,17 +103,31 @@ $$\text{Tax}(\rho) = \frac{(1-\rho)\prod_i p_i + \rho \min_i p_i}{\prod_i p_i}$$
 
 For $n$ identical layers at miss rate $p$, this simplifies to $\text{Tax} = (1-\rho) + \rho\, p^{1-n}$ — the tax grows *exponentially in layer count*, because each added layer improves your perceived risk but barely moves the common-cause floor.
 
-**Example**:
-- You have three 90%-effective safety layers
-- If independent: 0.1% failure rate (0.1 × 0.1 × 0.1)
-- If $\rho = 0.5$: (0.5 × 0.001) + (0.5 × 0.1) ≈ 5% failure rate
-- Entanglement tax: ~50× (your residual risk is 50× what the independence calculation says)
+**The tax as a function of ρ.** For three layers that each miss 10%, independence predicts 0.1% and the tax is $1 + 99\rho$:
+
+| ρ | 0 | 0.1 | 0.3 | 0.5 | 0.7 | 1 |
+|---|---|---|---|---|---|---|
+| P(all fail) | 0.10% | 1.1% | 3.1% | 5.1% | 7.0% | 10% |
+| Tax | 1× | 11× | 31× | 50× | 70× | 100× |
+
+Which row applies depends on what the layers share. On benchmark data, φ between the misses of strong LLMs is about 0.5 across providers and 0.6 within one, with dated versions of one model higher still; allowing for benchmark label noise gives ranges of roughly 0.3–0.55 across providers and 0.4–0.7 within one ([Measuring Entanglement](/entanglements/detection/correlation-calculator/#what-the-evidence-supports), which also states what this mapping assumes). For a three-layer LLM stack that is a tax of about 30–55× across providers and 40–70× within one. "About 50×", used elsewhere on this site, sits inside both ranges; it is not a measurement of any harm-detection stack, and none has been published.
 
 **Why this model**: it is exact for its stated mechanism (a genuine shared cause), and it recovers the product rule at $\rho = 0$ and the single-best-layer bound at $\rho = 1$. Against a smoother correlation structure (a Gaussian copula), fed a $\rho$ on the same phi scale, it is exact for two layers and conservative for three or more, which is the right direction for safety budgeting. The derivation, the simulation and the serial-chain counterpart are in [Risk Propagation: One Rule, Not a Menu](/delegation-risk/risk-propagation/).
 
-**How sensitive it is**: for three layers that each miss 10%, the tax is $1 + 99\rho$: about 11×, 21× and 50× at $\rho$ = 0.1, 0.2 and 0.5. The site's "~50×" is the $\rho = 0.5$ row, and that $\rho$ is assumed, not measured; [Measuring Entanglement](/entanglements/detection/correlation-calculator/) explains how to measure it and what to assume until you have. The formula is benign-failure math. Against an adaptive adversary (a scheming component, a prompt-injection author, a transferable jailbreak), inputs are chosen to beat every layer at once: assume $\rho \to 1$ unless a control evaluation measures the joint miss rate under attack ([Risk Propagation](/delegation-risk/risk-propagation/#adversarial-inputs)).
-
 **Limitation — higher-order structure**: a single $\rho$ treats all layers as symmetrically coupled to one shared cause. Real architectures have *structured* correlation (layers A and B share a provider; C shares context with A) and possible three-way interactions that no single parameter captures. Use the pairwise correlation-matrix method from the [worked examples](/entanglements/case-studies/examples/) when the architecture is asymmetric, and simulation when precision matters.
+
+### Adaptive adversaries: the wrong model
+
+The beta-factor model describes *passive* common cause: shared defects that a randomly arriving input happens to trigger. Its ρ is a frequency over the input distribution. An adversary does not sample from that distribution. It searches for inputs in the region where every layer misses, and the question becomes whether that region is non-empty and how expensive it is to find, not how much probability it carries.
+
+When attacks transfer between layers, the search succeeds against the whole stack at roughly the cost of beating its best layer, so P(all miss | attack) ≈ P(best layer misses | attack): ρ → 1. The evidence that they transfer and that layered defenses fall to adaptive search is direct. Adversarial suffixes optimized on open models worked on commercial ones ([Zou et al. 2023](https://arxiv.org/abs/2307.15043)). Attacks tuned to each defense's design bypassed 12 published jailbreak and prompt-injection defenses with success above 90% for most, though most had reported near-zero attack success ([Nasr et al. 2025](https://arxiv.org/abs/2510.09023)). Against a pipeline of input classifier, model and output classifier with 0% attack success on a catastrophic-misuse set, a staged attack that defeated the components one at a time reached 71%, and 33% when developed without access to the target pipeline ([McKenzie et al. 2025](https://arxiv.org/abs/2506.24068)).
+
+For design this means:
+
+- **Credit an LLM stack with its best layer** on the defection and hijack channels until a control evaluation, in which a red team that knows the full stack attacks it, measures the joint miss rate ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)).
+- **Rely on controls whose guarantee does not depend on the input**: permission scopes, hard limits on what an action can touch, rate limits, and rollback. An adversary cannot search its way past a capability the component does not have.
+- **Make the joint-miss region expensive to search.** The staged attack worked because the attacker could tell which component had blocked a query. Uniform refusals, running every stage even after one flags, and keeping safeguard models private and unlike public models the attacker could use as proxies all raise the cost ([McKenzie et al. 2025](https://arxiv.org/abs/2506.24068)).
+- **Do not drop diverse checks because the tax calculation no longer credits them.** Diversity raises the attacker's search cost and still lowers ρ for benign failures. It just cannot be counted as multiplying the protection.
 
 ### Effective Redundancy
 
@@ -139,7 +153,7 @@ Note the striking pattern: beyond modest correlation, effective redundancy is se
 
 **Claim**: Two AI systems with similar architectures and training should be assumed to have a baseline failure correlation that engineering will not remove.
 
-**Why**: Measured LLM errors are substantially correlated, more so for more capable models and even across providers ([Goel et al. 2025](https://arxiv.org/abs/2502.04313); [Kim et al. 2025](https://arxiv.org/abs/2506.07962)), and adversarial inputs found on one model often transfer to others ([Zou et al. 2023](https://arxiv.org/abs/2307.15043)).
+**Why**: Measured LLM errors are substantially correlated, more so for more capable models ([Goel et al. 2025](https://arxiv.org/abs/2502.04313); [Kim et al. 2025](https://arxiv.org/abs/2506.07962)). On MMLU, strong models from different providers have a miss correlation of about 0.5, only a little below that of two models from one provider, about 0.6 ([computed from Kim et al.'s data](/entanglements/detection/correlation-calculator/#what-the-evidence-supports)). Adversarial inputs found on one model often transfer to others ([Zou et al. 2023](https://arxiv.org/abs/2307.15043)).
 
 **Implication**: Independence between AI verifiers comes mainly from different methods and different information, not from different providers.
 

@@ -3,9 +3,9 @@ title: Related Work
 description: QURI's published work that this wiki draws on — the framing, the deployed tools, and the scarce empirical results behind evaluation engineering.
 ---
 
-*Status: early draft / working bibliography. Evaluation engineering is not a standalone idea — it's the accumulated agenda of the [Quantified Uncertainty Research Institute (QURI)](https://quantifieduncertainty.org/) and collaborators, restated. This page maps the most relevant published work to the parts of the field it bears on. See the [EA Forum QURI topic](https://forum.effectivealtruism.org/topics/quantified-uncertainty-research-institute) for the broader list, and [Adjacent Fields & Literature](/reference/adjacent-fields/) for the external academic literatures (forecasting, decision analysis, program evaluation, LLM evals, scalable oversight, estimation/ontology tooling).*
+*Status: working bibliography, links checked October 2026. This page maps QURI's published work to the parts of the field it bears on. See the [EA Forum QURI topic](https://forum.effectivealtruism.org/topics/quantified-uncertainty-research-institute) for the broader list and [Adjacent Fields & Literature](/reference/adjacent-fields/) for the academic literatures.*
 
-Two things in this corpus are scarce and worth foregrounding: **empirical results** (small but real experiments, listed below) and **deployed implementations** (running systems with published usage data and honest failure admissions). They are what distinguish a considered agenda from one more framework post.
+QURI's work is one strand of a wider literature. The closest outside work on the same core pattern, a cheap layer predicting an audited expensive evaluator, is larger than anything below: automated essay scoring's validation standard, DARPA SCORE and Replication Markets (whose human forecasts beat chance on 37 audited replications while AI imitators did not), prediction-powered inference and selective escalation. These are summarized in [Lineage](/start-here/lineage/#outside-precedents-for-the-core-pattern). What QURI's corpus adds is a small set of dated experiments and deployed tools with published failure admissions.
 
 ## Foundational framing
 

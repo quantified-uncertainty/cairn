@@ -15,7 +15,7 @@ Access control is delegation written down as policy. A security clearance, an IA
 
 **Two-person integrity** requires two authorized people to act together for critical operations, such as nuclear weapons handling and cryptographic key management. No single person can complete the action alone, so a single compromised or mistaken insider is not enough.
 
-**Vetting is continuous.** The US system has been moving from reinvestigation on a fixed multi-year cycle toward continuous vetting, in which automated checks of financial, criminal and travel records run between investigations. <!-- TODO(verify): name and dates of the Trusted Workforce 2.0 continuous-vetting reform; not checked against a primary source. -->
+**Vetting is continuous.** The government-wide Trusted Workforce 2.0 reform replaces periodic reinvestigation, formerly every five to ten years, with continuous vetting: automated record checks that run between investigations. The Defense Counterintelligence and Security Agency reported in October 2021 that all Department of Defense clearance holders were enrolled ([DCSA, 1 October 2021](https://www.dvidshub.net/news/406533/dcsa-enrolls-us-security-clearance-holders-continous-vetting-program)).
 
 ### The insider cases
 
@@ -59,7 +59,7 @@ Hardy (1988) described a compiler on a timesharing service that had permission t
 
 An agent that reads untrusted content and acts with its user's credentials is a confused deputy waiting to happen. Prompt injection is the attack: text from a web page, email or tool result instructs the agent, and the agent exercises the user's authority on the attacker's behalf.
 
-The Model Context Protocol's authorization specification (2025-06-18 revision) is an example of current practice. Authorization is optional. When it is used over HTTP, an MCP server acts as an OAuth 2.1 resource server, must accept only tokens issued for itself (clients must name the intended server using RFC 8707 resource indicators), and must not pass a client's token through to upstream APIs. The specification forbids token passthrough explicitly to avoid confused-deputy failures. These rules bound which services a token works at. They do not stop an injected instruction from using a correctly scoped token for the wrong purpose; that needs the controls below.
+The Model Context Protocol's authorization specification (2026-07-28 revision) is an example of current practice. Authorization is optional. When it is used over HTTP, an MCP server acts as an OAuth 2.1 resource server, must accept only tokens issued for itself (clients must name the intended server using RFC 8707 resource indicators), and must not pass a client's token through to upstream APIs. The specification forbids token passthrough explicitly to avoid confused-deputy failures. These rules bound which services a token works at. They do not stop an injected instruction from using a correctly scoped token for the wrong purpose; that needs the controls below.
 
 ## Lessons for AI delegation
 
@@ -94,7 +94,7 @@ The Model Context Protocol's authorization specification (2025-06-18 revision) i
 
 - Hardy, N. (1988). The confused deputy (or why capabilities might have been invented). *ACM SIGOPS Operating Systems Review* 22(4), 36–38.
 - IETF RFC 6749 (OAuth 2.0), RFC 6819 (OAuth 2.0 Threat Model, 2013), RFC 8707 (Resource Indicators), RFC 9700 (OAuth 2.0 Security Best Current Practice, 2025).
-- Model Context Protocol, [Authorization specification](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization) (2025-06-18).
+- Model Context Protocol, [Authorization specification](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) (2026-07-28).
 - US Department of Justice, Office of the Inspector General (August 2003). Review of the FBI's performance in the Hanssen case.
 - NIST SP 800-53 (security and privacy controls); NIST SP 800-162 (attribute-based access control); Intelligence Community Directive 704 (personnel security).
 - Stoll, C. (1989). *The Cuckoo's Egg*. An account of detecting an external intruder, Markus Hess, from a 75-cent accounting discrepancy; an example of anomaly detection from audit logs, not of insider threat.

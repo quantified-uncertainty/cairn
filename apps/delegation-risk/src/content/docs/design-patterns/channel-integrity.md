@@ -50,7 +50,7 @@ For two verifiers that each miss with probability $p$, the beta-factor model wit
 
 $$P(\text{both miss}) = (1-\rho)\,p^2 + \rho\,p = p\,\bigl(p + \rho(1-p)\bigr).$$
 
-At $\rho = 0$ this is $p^2$, the independence figure. At $\rho = 1$ it is $p$, a single verifier. So a redundant verifier built on the same model moves the miss rate from $p$ to $p(p + \rho(1-p))$, not to $p^2$. The ratio to $p^2$ is the two-layer entanglement tax, $1 + \rho(1-p)/p$. At an illustrative $p = 0.1$:
+At $\rho = 0$ this is $p^2$, the independence figure. At $\rho = 1$ it is $p$, a single verifier. So a redundant verifier built on the same model moves the miss rate from $p$ to $p(p + \rho(1-p))$, not to $p^2$. The ratio to $p^2$ is the two-layer [entanglement tax](/entanglements/fundamentals/formal-definitions/#the-entanglement-tax), $1 + \rho(1-p)/p$. At an illustrative $p = 0.1$:
 
 | ρ (phi scale) | P(both miss) | Tax over independence |
 |---|---|---|
@@ -60,7 +60,7 @@ At $\rho = 0$ this is $p^2$, the independence figure. At $\rho = 1$ it is $p$, a
 | 0.8 | 8.2% | 8.2× |
 | 1 | 10% | 10× |
 
-For three layers at $p = 0.1$ the tax is $1 + 99\rho$: about 11×, 21× and 50× at $\rho$ = 0.1, 0.2 and 0.5. These $\rho$ values are assumptions, not measurements.
+For three layers at $p = 0.1$ the tax is $1 + 99\rho$: about 11×, 21× and 50× at $\rho$ = 0.1, 0.2 and 0.5. These $\rho$ values are illustrative; [Measuring Entanglement](/entanglements/detection/correlation-calculator/#what-the-evidence-supports) gives what benchmark data suggest.
 
 A side channel that lets the agent influence its verifier is the extreme case. The verifier's miss probability on the agent's harmful proposals is no longer $p$ but whatever the agent can push it to. Take illustrative numbers: the agent proposes a harmful action 10% of the time and an uninfluenced verifier misses 10% of those, so 1% of actions are harmful and approved. If the agent can raise the verifier's miss rate on its own proposals to 90%, that becomes 9%. This is why the canonical rule treats defenses against an adaptive adversary as fully correlated, $\rho \to 1$: count the stack as its best layer until a control evaluation measures the joint miss rate under attack.
 

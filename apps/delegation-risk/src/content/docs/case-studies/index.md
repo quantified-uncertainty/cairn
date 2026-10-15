@@ -15,8 +15,11 @@ These pages read real incidents and real institutions through the framework's co
 | Amazon Q extension ships a prompt telling the agent to wipe files and cloud resources | Jul 2025 | Hijack (supply chain) | [Agent Incidents](/case-studies/ai-systems/agent-incidents/#amazon-q-the-agents-own-instructions-are-supply-chain) |
 | Nx malware runs developers' AI CLIs with permission checks off to find secrets | Aug 2025 | Hijack (misuse) | [Agent Incidents](/case-studies/ai-systems/agent-incidents/#nx-s1ngularity-malware-borrows-the-developers-agent) |
 | `postmark-mcp` MCP server blind-copies every email to its publisher | Sep 2025 | Hijack (tool supply chain) | [Agent Incidents](/case-studies/ai-systems/agent-incidents/#postmark-mcp-the-tool-is-the-attacker) |
+| Claude Code driven through a state-sponsored espionage campaign by splitting it into innocent-looking subtasks | Reported Nov 2025 | Hijack (misuse) | [Agent Incidents](/case-studies/ai-systems/agent-incidents/#gtg-1002-decomposition-used-against-the-checker) |
+| 341 malicious skills found on OpenClaw's ClawHub registry | Feb 2026 | Hijack (tool supply chain) | [Agent Incidents](/case-studies/ai-systems/agent-incidents/#clawhavoc-a-skill-store-with-no-gate) |
+| Cursor agent deletes PocketOS's production database and its volume backups in one API call | Apr 2026 | Accident | [Agent Incidents](/case-studies/ai-systems/agent-incidents/#pocketos-the-backups-were-inside-the-blast-radius) |
 
-The common thread is that scaffold-side bounds (scoped credentials, separated environments, disabled bypass modes, pinned tools) would have held whatever the model was told, and that exposure was set by what the agent could reach.
+The common thread is that scaffold-side bounds (scoped credentials, separated environments, disabled bypass modes, vetted and pinned tools, backups out of the agent's reach) would have held whatever the model was told, and that exposure was set by what the agent could reach.
 
 ## Human systems
 
@@ -34,10 +37,10 @@ Related pages in the [Entanglements](/entanglements/) section cover institutions
 | Concept | Where it shows up |
 |---|---|
 | [Least Persistence](/design-patterns/least-x-principles/#least-persistence) | Sydney's session cap |
-| [Privilege overhang](/getting-started/glossary/#privilege-overhang) | Replit; Amazon Q's CI token |
-| [Exposure envelope](/getting-started/glossary/#exposure-envelope) | Destructive-action limits that Replit and Amazon Q lacked |
-| Hijack through tools and supply chain | Amazon Q, Nx, `postmark-mcp`, open-source incidents |
-| [Correlated checks](/delegation-risk/risk-propagation/) | Jury unanimity; rating agencies; same-family LLM verifiers |
+| [Privilege overhang](/getting-started/glossary/#privilege-overhang) | Replit; Amazon Q's CI token; PocketOS's fully permissioned token |
+| [Exposure envelope](/getting-started/glossary/#exposure-envelope) | Destructive-action limits that Replit, Amazon Q and PocketOS lacked; account-level limits against decomposed misuse (GTG-1002) |
+| Hijack through tools and supply chain | Amazon Q, Nx, `postmark-mcp`, ClawHavoc, open-source incidents |
+| [Correlated checks](/delegation-risk/risk-propagation/) | Jury unanimity; rating agencies; same-family LLM verifiers; backups deletable by the same token (PocketOS) |
 | Error asymmetry | Juries; nuclear command |
 
 ## Next

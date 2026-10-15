@@ -27,7 +27,7 @@ All numbers on this page are illustrative.
 | Harm mode | Probability | Damage | Expected loss |
 |---|---|---|---|
 | Bob loses the gem | 2% | \$1,000 | \$20 |
-| Bob steals the gem | 1% | \$1,000 | \$10 |
+| Bob steals the gem and it is not recovered | 1% | \$1,000 | \$10 |
 | **Delegation risk** | | | **\$30** |
 
 The exposure, losing the whole gem, is \$1,000.
@@ -47,12 +47,12 @@ Bob has his own sheet, one per option.
 
 | Option | Calculation | Net |
 |---|---|---|
-| Deliver | \$50 fee − 2% × \$1,000 liability if he loses it | **\$30** |
+| Deliver | \$50 fee; an accidental loss falls on Alice, whose sheet already books it | **\$50** |
 | Steal | 20% he gets away with \$1,000; 80% he is caught, returns the gem and pays a \$1,000 fine: 0.2 × \$1,000 − 0.8 × \$1,000 | **−\$600** |
 
-Theft carries a *contingent liability*: a cost that materializes only if he is caught. It makes stealing a losing option, and Bob delivers.
+Theft carries a *contingent liability*: a cost that materializes only if he is caught. It makes stealing a losing option, and a courier who reasons this way delivers. Alice's 1% theft row is her estimate that Bob is not that courier.
 
-When Alice delegates through a manager who is liable for his couriers, Bob's expected loss moves onto the manager's books. Alice's sheet then holds only the manager's own failure modes, plus the chance that he cannot pay. Liability moves delegation risk between books. It does not remove it.
+When Alice delegates through a manager who is liable for his couriers, the \$30 of expected loss on Bob's deliveries moves onto the manager's books. Alice's sheet then holds only the manager's own failure modes, plus the chance that he cannot pay. Liability moves delegation risk between books. It does not remove it.
 
 ## Uncertainty about the estimate
 
@@ -68,13 +68,13 @@ Alice gives Bob a key to her office so he can collect gems when she is out. This
 
 What the key exposes depends on what Bob can do with it.
 
-**A courier who sees only a gem** has the options above: deliver (\$30) or steal the gem (−\$600).
+**A courier who sees only a gem** has the options above: deliver (\$50) or steal the gem (−\$600).
 
 **A courier who knows the trade** sees more:
 
 | Option | Calculation | Net |
 |---|---|---|
-| Deliver | as above | \$30 |
+| Deliver | as above | \$50 |
 | Steal the gem | as above | −\$600 |
 | Photograph the client list and sell it to a competitor | \$15,000 − 20% caught × \$10,000 fine | **\$13,000** |
 | Copy the supplier contracts and sell them | \$8,000 − 15% caught × \$8,000 fine | **\$6,800** |

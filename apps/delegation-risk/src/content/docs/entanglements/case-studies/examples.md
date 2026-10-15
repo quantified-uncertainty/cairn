@@ -304,20 +304,14 @@ flowchart TB
     Verifier --> Decision["Approve / Reject / Escalate"]
 ```
 
-The verifier reads the raw conversation, independent summaries break the agent's monopoly on framing, rotation prevents stable pairings, and sentiment analysis catches emotional filtering.
-
-| Metric | Before | After |
-|---|---|---|
-| Frame sensitivity | 31 points | 15 points |
-| Approval drift over six months | +13 points | +2 points |
-| Agreement across rotated verifiers | 0.72 | 0.91 |
+The verifier reads the raw conversation, independent summaries break the agent's monopoly on framing, rotation prevents stable pairings, and sentiment analysis catches emotional filtering. Whether the redesign worked is an empirical question: re-run the frame-variation test and track approval drift. It has helped only if frame sensitivity falls.
 
 ### Lessons
 
 1. **Information channels are influence channels**, with or without intent.
 2. **Influence is measured by intervention:** same facts, different framing.
 3. **Capture is gradual.** There was no discontinuity between influence and capture.
-4. **Independent context is the fix.** The verifier must build its own view of the case.
+4. **Independent context is the proposed fix,** to be confirmed by re-measuring: the verifier builds its own view of the case.
 
 ---
 
