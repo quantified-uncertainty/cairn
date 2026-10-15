@@ -74,10 +74,11 @@ function show(prev) {
 }
 
 // ---------- the API ----------
-/** Order the stack another way; the current item stays where it is on screen. */
-export function setSort(sort) {
+/** Order the stack another way; the current item stays where it is on screen.
+ *  force: rebuild even in the current sort (an order made by hand: search results, more like this). */
+export function setSort(sort, force = false) {
   if (!SORTS[sort] || !SORT_KEYS.includes(sort)) return false;
-  if (sort === state.sort) return false;
+  if (sort === state.sort && !force) return false;
   const cur = current();
   before('sort', { order: state.order.slice() });
   store.set('sort:' + state.lane, sort);

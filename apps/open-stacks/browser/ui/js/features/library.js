@@ -84,14 +84,21 @@ const stackNode = () => (state.scope && state.stack?.kind === 'folder' ? build()
 let flat = false; // true: a flat list of state.order
 let custom = false; // the order was made by hand (search results…), not by the sort: shown flat, as it is
 const member = (i) => (state.scope ? state.scope.has(i) : state.lane === 'all' || items[i].lane === state.lane);
-/** The order is in its sort: its members (each once; detours inserted between them aside) follow the sort. */
+/** The order is in its sort: it holds every member of the stack, and they (each once; single
+ *  detours, an item opened from elsewhere, aside) follow the sort. Search results lack members;
+ *  more like this puts a run of items in: both are orders made by hand, shown as they are. */
 function inSort() {
   const cmp = SORTERS[state.sort]; if (!cmp) return true; // the ranking keeps what you have seen first: any order is its own
   const o = state.order, seen = new Map();
   for (const i of o) seen.set(i, (seen.get(i) || 0) + 1);
-  let last = null;
+  let size = 0, have = 0;
+  if (state.scope) size = state.scope.size; else for (let i = 0; i < items.length; i++) if (member(i)) size++;
+  for (const i of seen.keys()) if (member(i)) have++;
+  if (have < size) return false;
+  let last = null, run = 0;
   for (const i of o) {
-    if (seen.get(i) > 1 || !member(i)) continue;
+    if (seen.get(i) > 1 || !member(i)) { if (++run > 1) return false; continue; }
+    run = 0;
     if (last != null && cmp(last, i) > 0) return false;
     last = i;
   }
@@ -241,7 +248,8 @@ const qn = h('span', { className: 'lib-qn' });
 const SORT_SAY = { topic: 'the lanes’ folders, in order, as the tree shows', ranked: 'the ranking: quality, relevance and what you liked', newest: 'by date, the latest first', oldest: 'by date, the earliest first' };
 const sortBar = h('div', { className: 'lib-sort', role: 'radiogroup', ariaLabel: 'Sort' },
   ...Object.entries(SORTS).map(([k, label]) => {
-    const b = h('button', { type: 'button', role: 'radio', textContent: label, title: `${label}: ${SORT_SAY[k]} (S cycles)`, onclick: () => { b.blur(); setSort(k); paintTop(); } });
+    // In an order made by hand ("own order"), even the current sort puts it back in order.
+    const b = h('button', { type: 'button', role: 'radio', textContent: label, title: `${label}: ${SORT_SAY[k]} (S cycles)`, onclick: () => { b.blur(); setSort(k, custom); paintTop(); } });
     b.dataset.sort = k; return b;
   }),
   h('span', { className: 'ls-n', title: 'Where you are in this stack' }),

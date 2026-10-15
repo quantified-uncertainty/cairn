@@ -74,4 +74,8 @@
 /* A taller spread just went up: out of its way until the strip measures again. */
 #upnext.under { visibility: hidden; }
 /* A cover image waiting its turn to load (upnext.js pumpImages): the cover's own colour meanwhile. */
-#upnext img[data-src] { visibility: hidden; }
+#upnext img[data-src], #upnext img[data-wait] { visibility: hidden; }
+/* A book whose cover scan has not arrived: its library label, set large, is the face meanwhile,
+   so a row of books never reads as blank covers. */
+#upnext .cv.book:has(> img[data-wait]) .lbl { --u: 1.8cqw; top: 10%; bottom: 10%; left: 8%; right: 8%; justify-content: center; }
+#upnext .cv.book:has(> img[data-wait]) .lbl .tt { -webkit-line-clamp: 4; }

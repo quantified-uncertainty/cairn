@@ -125,6 +125,7 @@ function holdImages(c) {
     im.loading = 'eager'; im.decoding = 'async';
     if (okImg.has(src)) continue;
     im.removeAttribute('src'); im.dataset.src = src; // before the fetch starts (it waits for a microtask)
+    im.dataset.wait = ''; // until it has loaded: upnext.css shows a book's label large meanwhile
   }
 }
 function pumpImages() {
@@ -133,7 +134,7 @@ function pumpImages() {
     if (budget <= 0 || active >= 2) break;
     const src = im.dataset.src; delete im.dataset.src;
     budget--; active++;
-    const done = (ok) => { active = Math.max(0, active - 1); if (ok) okImg.add(src); };
+    const done = (ok) => { active = Math.max(0, active - 1); delete im.dataset.wait; if (ok) okImg.add(src); };
     im.addEventListener('load', () => done(true), { once: true });
     im.addEventListener('error', () => done(false), { once: true });
     im.fetchPriority = 'low'; im.src = src;
@@ -167,17 +168,36 @@ function measure() {
 // no layout is read) are checked against the place the strip has, and the strip
 // steps aside until the next paint. Pages are centred in #spread.
 let geo = null, stripH = 0;
-on('spread:rendered', () => {
+function stepAside() {
   if (root.hidden || !geo) return;
   let ph = 0;
-  for (const el of $('#spread').children) {
+  for (const el of spreadEl.children) {
     if (!el.classList.contains('pg')) continue;
     const x = parseFloat(el.style.height);
     if (!(x > 0)) { ph = Infinity; break; } // a post's sheet fills the stage
     if (x > ph) ph = x;
   }
   if (geo.top + (geo.ch + ph) / 2 + 4 > geo.end - stripH) root.classList.add('under');
+}
+on('spread:rendered', stepAside);
+// The placeholders of pages still loading (zoom, an item not ready, scrubbing) go up
+// before any 'spread:rendered', and a scan's placeholders take their pages' shapes as
+// they become known (feed.js progressive): the same check when #spread's children
+// change or are resized (a microtask later, their inline sizes already set).
+const spreadEl = $('#spread');
+const spreadObs = new MutationObserver(() => {
+  for (const el of spreadEl.children) spreadObs.observe(el, { attributes: true, attributeFilter: ['style'] });
+  stepAside();
 });
+spreadObs.observe(spreadEl, { childList: true });
+// The stage itself changes size (the read-aloud bar, Focus, the side panel, the window):
+// the strip's place is stale, so it steps aside and measures again.
+let spreadH = 0;
+new ResizeObserver(([e]) => {
+  const ht = e.contentRect.height;
+  if (spreadH && Math.abs(ht - spreadH) > 1 && !root.hidden) { root.classList.add('under'); soon(); }
+  spreadH = ht;
+}).observe(spreadEl);
 
 let sig = '';
 function hide() { if (!root.hidden) root.hidden = true; sig = ''; }
@@ -187,7 +207,11 @@ function paint() {
   const mode = !m ? null : m.band >= TILES_MIN ? 'tiles' : m.band >= LINE_MIN ? 'line' : null;
   if (!mode) return hide();
   const st = stack();
-  const H = mode === 'tiles' ? Math.min(MAX_H, m.band) : LINE_H;
+  let H = mode === 'tiles' ? Math.min(MAX_H, m.band) : LINE_H;
+  // Tiles keep their height while it fits and is within 32 px of the room, so the strip
+  // does not jump with every spread, and a spread a little taller than the last (most
+  // item switches) leaves it in place instead of hiding it until the next paint.
+  if (mode === 'tiles' && !root.hidden && root.classList.contains('tiles') && stripH <= m.band && H - stripH <= 32) H = stripH;
   const coverH = H - HEAD_H - GAP_V - CAP_H - 5;
   let tw = Math.max(112, Math.min(160, Math.round(coverH * 0.78)));
   const prev = upPrev(1)[0];
