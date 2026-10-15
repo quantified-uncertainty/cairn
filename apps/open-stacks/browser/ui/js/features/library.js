@@ -383,12 +383,21 @@ function paintTop() {
 
 // ---------- where you are in the current item ----------
 // Under the current item's row: a position row (the whole document as a bar, the pages on
-// screen lit, "5–6 / 40", section ticks; click to go there) and its main sections, the one
-// on screen lit (click or Enter goes there). Outlines load after the item settles, from the
-// PDF's own outline, the post's headings, or the compiled profile's contents.
+// screen lit, "5–6 / 40", section ticks; click to go there). Its main sections, the one on
+// screen lit (click or Enter goes there), are listed only on request: § on that row, or →
+// on it (← closes), since the list is mostly for moving between items. Outlines load after
+// the item settles, from the PDF's own outline, the post's headings, or the compiled
+// profile's contents.
 const outlines = new Map(); // item id → [{t, k, d}] (k: 0-based page; stable page for posts), or null while loading
 let here = { i: null, s: 0, c: 1, n: 1 }; // pages on screen: first, count, total (stable pages for posts)
 const SEC_MAX = 12;
+let secsOn = store.get('libSecs', false);
+function showSecs(v = !secsOn) {
+  if (v === secsOn) return;
+  secsOn = v; store.set('libSecs', v);
+  if (!v && rows[selIndex()]?.here === 'sec') sel = 'hp';
+  elVer++; flatten(); paint(); // the position row's § shows the new state
+}
 /** The sections to list: the shallowest level with 2 or more, at most SEC_MAX around the one on screen. */
 function sections(i) {
   const ol = outlines.get(items[i]?.id) || [];
@@ -406,7 +415,7 @@ function withHere(out) {
   const c = current(); if (c == null) return out;
   const r = flat ? out.findIndex((x) => x.r === state.pos) : out.findIndex((x) => x.i === c);
   if (r < 0) return out;
-  const d = (out[r].d ?? 0) + 1, secs = sections(c);
+  const d = (out[r].d ?? 0) + 1, secs = secsOn ? sections(c) : [];
   secKey = c + ':' + secs.map((o) => o.k).join(',');
   out.splice(r + 1, 0, { here: 'pos', of: c, d }, ...secs.map((o, j) => ({ here: 'sec', o, j, of: c, d })));
   return out;
@@ -423,6 +432,10 @@ function hereEl(row, el) {
     }
     bar.onclick = (e) => { e.stopPropagation(); const b = bar.getBoundingClientRect(); goPage(Math.max(0, Math.min(n - 1, Math.floor(((e.clientX - b.left) / b.width) * n)))); };
     el.append(bar, h('span', { className: 'lh-n', textContent: ok ? pagesText() : '…' }));
+    const ns = (outlines.get(items[row.of].id) || []).length && sections(row.of).length;
+    if (ns) el.append(h('button', { type: 'button', className: 'lh-s' + (secsOn ? ' on' : ''), textContent: secsOn ? '§ ▴' : `§ ${ns}`,
+      title: secsOn ? 'Hide the sections (← on this row)' : `List the ${ns} sections here (→ on this row)`,
+      onclick: (e) => { e.stopPropagation(); showSecs(); } }));
     return el;
   }
   const o = row.o, secs = sections(row.of);
@@ -451,7 +464,7 @@ on('spread:rendered', ({ i, it, s, flow }) => {
   else here = { i, s, c: Math.max(1, state.shown || 1), n: Math.max(1, it.n || s + 1) };
   if (!showing()) return;
   // The listed sections shift only for long outlines; otherwise a repaint of the rows in view.
-  const key = current() + ':' + sections(current()).map((o) => o.k).join(',');
+  const key = current() + ':' + (secsOn ? sections(current()) : []).map((o) => o.k).join(',');
   if (key !== secKey) flatten();
   paint();
 });
@@ -621,9 +634,11 @@ function treeKey(e) {
     case 'End': move(rows.length - 1); break;
     case 'ArrowRight':
       if (row?.node) { if (!isOpen(row.node)) toggle(row.node, true); else move(r + 1); }
+      else if (row?.here === 'pos') { if (!secsOn) showSecs(true); else move(r + 1); }
       break;
     case 'ArrowLeft':
       if (row?.node && isOpen(row.node)) toggle(row.node, false);
+      else if (row?.here && secsOn) { sel = 'hp'; showSecs(false); }
       else if (!flat) { const p = row?.node ? row.node.parent : row ? parentOf.get(row.i) : null; if (p) { const k = rows.findIndex((x) => x.node === p); if (k >= 0) move(k); } }
       break;
     case 'Enter': activate(r); break;
