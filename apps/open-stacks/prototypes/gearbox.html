@@ -1,0 +1,2037 @@
+<title>Gearbox</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Spectral:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Archivo:wdth,wght@62..125,400..700&display=swap');
+
+:root {
+  --paper: #f4f4ef;
+  --paper-2: #eaebe4;
+  --paper-3: #dfe1d8;
+  --leaf: #fbfbf8;
+  --ink: #15192b;
+  --ink-2: #454b61;
+  --ink-3: #777d92;
+  --rule: #d6d8de;
+  --rule-2: #c2c6d0;
+  --plate: #17395c;
+  --plate-2: #1f4a74;
+  --plate-ink: #e8edf5;
+  --plate-dim: #9fb3cc;
+  --slot: #0c2238;
+  --accent: #1d4f87;
+  --verm: #d6402a;
+  --verm-ink: #b4321d;
+  --verm-soft: rgba(214, 64, 42, 0.11);
+  --kin: #3c6cb0;
+  --mark: rgba(214, 64, 42, 0.13);
+  --target: rgba(29, 79, 135, 0.14);
+  --ok: #2f7a55;
+  --shadow: 0 1px 0 rgba(21, 25, 43, 0.04), 0 10px 28px -14px rgba(21, 25, 43, 0.28);
+  --serif: 'Spectral', 'Iowan Old Style', Georgia, serif;
+  --didone: 'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif;
+  --ui: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0e1119; --paper-2: #141823; --paper-3: #1b202d; --leaf: #11151f;
+    --ink: #e7e8ee; --ink-2: #b1b6c6; --ink-3: #7d8398; --rule: #252b39; --rule-2: #323a4c;
+    --plate: #182b47; --plate-2: #213b5f; --plate-ink: #dfe6f3; --plate-dim: #8197b6; --slot: #0a1322;
+    --accent: #8db3e8; --verm: #ff6a4e; --verm-ink: #ff8b74; --verm-soft: rgba(255, 106, 78, 0.13);
+    --kin: #86a8df; --mark: rgba(255, 106, 78, 0.16); --target: rgba(141, 179, 232, 0.16); --ok: #6cc497;
+    --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 12px 30px -14px rgba(0, 0, 0, 0.7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0e1119; --paper-2: #141823; --paper-3: #1b202d; --leaf: #11151f;
+  --ink: #e7e8ee; --ink-2: #b1b6c6; --ink-3: #7d8398; --rule: #252b39; --rule-2: #323a4c;
+  --plate: #182b47; --plate-2: #213b5f; --plate-ink: #dfe6f3; --plate-dim: #8197b6; --slot: #0a1322;
+  --accent: #8db3e8; --verm: #ff6a4e; --verm-ink: #ff8b74; --verm-soft: rgba(255, 106, 78, 0.13);
+  --kin: #86a8df; --mark: rgba(255, 106, 78, 0.16); --target: rgba(141, 179, 232, 0.16); --ok: #6cc497;
+  --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 12px 30px -14px rgba(0, 0, 0, 0.7);
+  color-scheme: dark;
+}
+
+html, body { height: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--ui); font-size: 14px; line-height: 1.4; -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--verm); outline-offset: 2px; border-radius: 3px; }
+.num { font-variant-numeric: tabular-nums lining-nums; }
+.caps { font-family: var(--ui); font-stretch: 78%; text-transform: uppercase; letter-spacing: 0.09em; font-weight: 600; font-size: 11px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.app {
+  height: 100%; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- header ---------- */
+.top { display: flex; align-items: center; gap: 16px; height: 54px; border-bottom: 1px solid var(--rule); min-width: 0; }
+.brand { display: flex; align-items: center; gap: 10px; flex: none; }
+.brand svg { width: 26px; height: 26px; flex: none; }
+.brand .word { font-family: var(--didone); font-weight: 700; font-size: 23px; letter-spacing: 0.01em; line-height: 1; }
+.brand .tag { color: var(--ink-3); }
+.bookpick { position: relative; min-width: 0; flex: 1 1 auto; display: flex; }
+.book-btn { display: flex; align-items: baseline; gap: 10px; min-width: 0; max-width: 100%; background: none; border: 1px solid transparent; border-radius: 6px; padding: 6px 10px; cursor: pointer; text-align: left; }
+.book-btn:hover { border-color: var(--rule); background: var(--paper-2); }
+.book-btn .bk-a { font-weight: 600; flex: none; }
+.book-btn .bk-t { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.book-btn .bk-y { color: var(--ink-3); flex: none; }
+.book-btn .chev { color: var(--ink-3); flex: none; font-size: 11px; }
+.tools { display: flex; align-items: center; gap: 6px; flex: none; }
+.tbtn { background: none; border: 1px solid var(--rule); border-radius: 999px; height: 30px; padding: 0 12px; cursor: pointer; color: var(--ink-2); display: inline-flex; align-items: center; gap: 6px; }
+.tbtn:hover { background: var(--paper-2); color: var(--ink); }
+.tbtn.icon { width: 30px; padding: 0; justify-content: center; }
+.claude-chip { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-3); white-space: nowrap; }
+.claude-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-3); }
+.claude-chip.on .dot { background: var(--ok); }
+.claude-chip.on { color: var(--ink-2); }
+
+.shelf { position: absolute; top: calc(100% + 6px); left: 0; z-index: 40; background: var(--leaf); border: 1px solid var(--rule); border-radius: 10px; box-shadow: var(--shadow); padding: 14px; width: min(760px, calc(100vw - 32px)); }
+.shelf h3 { margin: 0 0 10px; }
+.spines { display: flex; gap: 6px; align-items: flex-end; overflow-x: auto; padding-bottom: 4px; }
+.spine { flex: none; width: 66px; border: 1px solid var(--rule-2); border-radius: 3px 3px 2px 2px; background: var(--paper-2); cursor: pointer; padding: 8px 4px 6px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; position: relative; }
+.spine:hover { background: var(--paper-3); }
+.spine[aria-selected="true"] { background: var(--plate); color: var(--plate-ink); border-color: var(--plate); }
+.spine .sp-t { writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--serif); font-size: 13px; line-height: 1.15; max-height: 150px; overflow: hidden; }
+.spine .sp-a { font-weight: 600; font-size: 11px; }
+.spine .sp-y { font-size: 10px; opacity: 0.75; }
+.spine .sp-tag { font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.8; }
+.shelf .note { color: var(--ink-3); margin: 10px 0 0; font-size: 12px; }
+
+/* ---------- fore-edge ---------- */
+.edge { padding: 10px 0 8px; border-bottom: 1px solid var(--rule); min-width: 0; }
+.edge-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; min-width: 0; }
+.edge-head .lbl { color: var(--ink-3); flex: none; }
+.edge-head .info { color: var(--ink-2); flex: none; }
+.chips { display: flex; gap: 6px; overflow-x: auto; min-width: 0; flex: 1 1 auto; scrollbar-width: none; padding: 2px; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; border: 1px solid var(--rule); background: none; border-radius: 999px; padding: 3px 10px; cursor: pointer; color: var(--ink-2); font-size: 12px; }
+.chip:hover { border-color: var(--rule-2); color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--verm); border-color: var(--verm); color: #fff; }
+.chip-input { flex: none; width: 112px; border: 1px dashed var(--rule-2); background: none; border-radius: 999px; padding: 3px 10px; font: inherit; font-size: 12px; color: var(--ink); }
+.chip-input::placeholder { color: var(--ink-3); }
+.edge-wrap { position: relative; height: 66px; touch-action: pan-y; }
+.edge-wrap canvas { display: block; width: 100%; height: 66px; cursor: pointer; }
+.ribbon { position: absolute; top: 4px; width: 10px; height: 52px; margin-left: -5px; pointer-events: none; transition: left 160ms ease; }
+.ribbon::before { content: ''; position: absolute; inset: 0 3px 8px; background: var(--accent); }
+.ribbon::after { content: ''; position: absolute; left: 3px; right: 3px; bottom: 0; height: 9px; background: linear-gradient(135deg, var(--accent) 50%, transparent 50%), linear-gradient(225deg, var(--accent) 50%, transparent 50%); background-size: 50% 100%; background-position: left, right; background-repeat: no-repeat; }
+.edge-tip { position: absolute; top: 70px; z-index: 30; background: var(--leaf); border: 1px solid var(--rule); border-radius: 8px; box-shadow: var(--shadow); padding: 8px 10px; width: 300px; pointer-events: none; font-size: 12px; }
+.edge-tip .t1 { display: flex; justify-content: space-between; gap: 8px; color: var(--ink-3); margin-bottom: 4px; }
+.edge-tip .g { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink); line-height: 1.35; }
+
+/* ---------- body grid ---------- */
+.body { display: grid; grid-template-columns: 250px minmax(0, 1fr) 330px; min-height: 0; }
+.gate-rail { border-right: 1px solid var(--rule); overflow-y: auto; padding: 16px 16px 24px 0; min-height: 0; }
+.main { overflow-y: auto; min-height: 0; position: relative; outline: none; scroll-behavior: auto; }
+.ledger { border-left: 1px solid var(--rule); overflow-y: auto; min-height: 0; padding: 14px 0 24px 16px; }
+
+/* ---------- gate ---------- */
+.gate { position: relative; width: 220px; height: 268px; margin: 0 auto; user-select: none; -webkit-user-select: none; }
+.gate svg { position: absolute; inset: 0; width: 220px; height: 268px; }
+.gate .plate { fill: var(--plate); }
+.gate .plate-edge { fill: none; stroke: var(--plate-2); stroke-width: 1.5; }
+.gate .slot { stroke: var(--slot); stroke-width: 20; stroke-linecap: round; fill: none; }
+.gate .slot-hi { stroke: rgba(255,255,255,0.07); stroke-width: 20; stroke-linecap: round; fill: none; transform: translate(0, 1.5px); }
+.gate .screw { fill: var(--plate-2); stroke: var(--slot); stroke-width: 1; }
+.gate .engr { fill: var(--plate-dim); font-family: var(--ui); font-stretch: 75%; font-size: 8.5px; letter-spacing: 0.14em; font-weight: 600; }
+.g-lab { position: absolute; width: 64px; margin-left: -32px; text-align: center; background: none; border: 0; padding: 2px 0; cursor: pointer; color: var(--plate-ink); border-radius: 4px; line-height: 1.1; }
+.g-lab .gn { font-family: var(--didone); font-weight: 700; font-size: 15px; display: block; }
+.g-lab .gname { font-family: var(--ui); font-stretch: 75%; font-weight: 600; letter-spacing: 0.12em; font-size: 10.5px; display: block; }
+.g-lab .gt { font-size: 10px; color: var(--plate-dim); display: block; margin-top: 1px; }
+.g-lab:hover .gname, .g-lab.on .gname { color: #fff; }
+.g-lab.on .gn { color: var(--verm); }
+.g-lab.gl-top { top: 8px; }
+.g-lab.gl-bot { top: 212px; }
+.g-lab.gl-mid { top: 127px; width: 26px; margin-left: -13px; pointer-events: none; }
+.g-lab.gl-mid .gname { color: var(--plate-dim); }
+.knob { position: absolute; width: 36px; height: 36px; margin: -18px 0 0 -18px; border-radius: 50%; background: radial-gradient(circle at 36% 30%, #ff8c75, var(--verm) 55%, #9e2a17 100%); box-shadow: 0 3px 0 rgba(0,0,0,0.35), 0 6px 14px rgba(0,0,0,0.35), inset 0 -2px 3px rgba(0,0,0,0.25); display: grid; place-items: center; color: #fff; font-family: var(--didone); font-weight: 700; font-size: 17px; cursor: grab; touch-action: none; z-index: 2; }
+.knob:active { cursor: grabbing; }
+.gate-cap { display: flex; justify-content: space-between; width: 220px; margin: 8px auto 0; color: var(--ink-3); }
+.costs { width: 100%; margin-top: 18px; border-collapse: collapse; }
+.costs caption { text-align: left; color: var(--ink-3); padding-bottom: 6px; }
+.costs th, .costs td { padding: 5px 4px; text-align: right; border-bottom: 1px solid var(--rule); font-size: 12px; }
+.costs th:first-child, .costs td:first-child { text-align: left; }
+.costs thead th { color: var(--ink-3); font-weight: 500; }
+.costs tr.on td { color: var(--ink); font-weight: 600; }
+.costs tr.on td:first-child { box-shadow: inset 3px 0 0 var(--verm); padding-left: 8px; }
+.costs td { color: var(--ink-2); }
+.costs .gnum { font-family: var(--didone); font-weight: 700; margin-right: 5px; }
+.here { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--rule); color: var(--ink-2); }
+.here b { color: var(--ink); font-weight: 600; }
+.here .bar { height: 3px; background: var(--rule); margin-top: 8px; border-radius: 2px; overflow: hidden; }
+.here .bar i { display: block; height: 100%; background: var(--accent); }
+
+/* ---------- shared main pieces ---------- */
+.view { padding: 22px 28px 120px; max-width: 1080px; margin: 0 auto; }
+.view-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; color: var(--ink-3); }
+.view-head .vh-gear { font-family: var(--didone); font-weight: 700; font-size: 20px; color: var(--verm); }
+.view-head .vh-name { color: var(--ink); }
+.ai-badge { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--rule-2); border-radius: 999px; padding: 1px 8px; font-size: 10.5px; color: var(--ink-3); letter-spacing: 0.04em; white-space: nowrap; }
+.ai-badge.live { border-color: var(--ok); color: var(--ok); }
+.ai-badge.det { border-style: dashed; }
+.numeral { font-family: var(--didone); font-weight: 700; line-height: 1; }
+.btn { border: 1px solid var(--rule-2); background: var(--leaf); border-radius: 6px; padding: 6px 12px; cursor: pointer; color: var(--ink); }
+.btn:hover { border-color: var(--ink-3); }
+.btn.primary { background: var(--plate); border-color: var(--plate); color: var(--plate-ink); }
+.btn.primary:hover { background: var(--plate-2); }
+.btn.verm { background: var(--verm); border-color: var(--verm); color: #fff; }
+.btn:disabled { opacity: 0.5; cursor: default; }
+.linkish { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.gear-chip { display: inline-flex; align-items: center; gap: 4px; border-radius: 4px; padding: 1px 6px; font-size: 11px; font-weight: 600; background: var(--paper-3); color: var(--ink-2); white-space: nowrap; cursor: pointer; border: 0; }
+.gear-chip b { font-family: var(--didone); font-size: 12px; }
+.gear-chip.g1 { background: var(--verm); color: #fff; }
+.gear-chip.g2 { background: var(--verm-soft); color: var(--verm-ink); }
+.gear-chip.g4, .gear-chip.g5 { background: var(--paper-3); color: var(--ink-3); }
+.empty { border: 1px dashed var(--rule-2); border-radius: 10px; padding: 20px; color: var(--ink-2); background: var(--paper-2); }
+.empty h4 { margin: 0 0 6px; font-family: var(--serif); font-size: 18px; font-weight: 500; color: var(--ink); }
+.empty p { margin: 6px 0; }
+.gen-job { margin-top: 10px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; color: var(--ink-2); }
+.gen-job .spin { width: 14px; height: 14px; border: 2px solid var(--rule-2); border-top-color: var(--verm); border-radius: 50%; animation: spin 0.9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.gen-msg { color: var(--verm-ink); }
+.gen-ok { color: var(--ok); }
+
+/* ---------- riffle ---------- */
+.riffle { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; }
+.stage { position: relative; width: min(620px, 100%); margin-top: 8px; perspective: 1400px; }
+.leaf { background: var(--leaf); border: 1px solid var(--rule); border-radius: 3px 10px 10px 3px; box-shadow: var(--shadow); padding: 26px 34px 28px; min-height: 430px; position: relative; overflow: hidden; }
+.leaf::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 18px; background: linear-gradient(90deg, rgba(0,0,0,0.06), transparent); pointer-events: none; }
+.leaf.ghost { position: absolute; inset: 0; min-height: 0; box-shadow: none; }
+.leaf.g1 { transform: translate(7px, 6px); opacity: 0.85; }
+.leaf.g2 { transform: translate(14px, 12px); opacity: 0.6; }
+.leaf.cur { position: relative; transform-origin: left center; }
+.leaf.turn { animation: turn 150ms ease-out; }
+@keyframes turn { from { transform: rotateY(-14deg); opacity: 0.65; } to { transform: none; opacity: 1; } }
+.leaf .run { display: flex; justify-content: space-between; align-items: baseline; color: var(--ink-3); border-bottom: 1px solid var(--rule); padding-bottom: 8px; margin-bottom: 18px; gap: 10px; }
+.leaf .run .pg { font-family: var(--didone); font-size: 26px; font-weight: 600; color: var(--ink); }
+.leaf .chap-open { margin: 4px 0 18px; }
+.leaf .chap-open .numeral { font-size: 44px; color: var(--verm); }
+.leaf .chap-open .ttl { font-family: var(--didone); font-size: 22px; line-height: 1.2; margin-top: 4px; }
+.leaf .glimpse { font-family: var(--serif); font-style: italic; font-size: 21px; line-height: 1.45; color: var(--ink); margin: 0 0 22px; text-wrap: pretty; }
+.leaf .glimpse::before { content: 'Glimpse'; display: block; font-family: var(--ui); font-style: normal; font-stretch: 78%; text-transform: uppercase; letter-spacing: 0.09em; font-weight: 600; font-size: 10.5px; color: var(--ink-3); margin-bottom: 6px; }
+.leaf .facets { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+.leaf .facet h5 { margin: 0 0 6px; }
+.leaf .facet .it { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); }
+.leaf .facet .fig { font-family: var(--ui); font-size: 15px; color: var(--ink); }
+.leaf .facet .none { color: var(--ink-3); font-size: 12px; }
+.leaf .heat { margin-top: 20px; display: flex; align-items: center; gap: 10px; color: var(--ink-2); font-size: 12px; }
+.leaf .heat .hb { flex: 1; height: 6px; background: var(--paper-3); border-radius: 3px; overflow: hidden; }
+.leaf .heat .hb i { display: block; height: 100%; background: var(--verm); }
+.leaf .bump { color: var(--verm-ink); font-weight: 600; }
+.dogear { position: absolute; top: 0; right: 0; width: 64px; height: 64px; border: 0; padding: 0; background: none; cursor: pointer; }
+.dogear::before { content: ''; position: absolute; top: 0; right: 0; border-style: solid; border-width: 0 46px 46px 0; border-color: transparent var(--paper) var(--verm) transparent; filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.15)); }
+.dogear.kin::before { border-color: transparent var(--paper) var(--kin) transparent; }
+.dogear span { position: absolute; top: 48px; right: 6px; font-size: 10px; color: var(--verm-ink); font-weight: 600; white-space: nowrap; }
+.dogear.kin span { color: var(--kin); }
+.riffle-ctrl { display: flex; align-items: center; gap: 8px; margin-top: 22px; flex-wrap: wrap; justify-content: center; }
+.riffle-ctrl .play { min-width: 128px; }
+.riffle-hint { color: var(--ink-3); margin-top: 10px; text-align: center; max-width: 560px; }
+kbd { font-family: var(--ui); font-size: 11px; border: 1px solid var(--rule-2); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--leaf); }
+
+/* ---------- skim ---------- */
+.skim-list { border-top: 1px solid var(--rule); }
+.srow { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 4px 16px; padding: 14px 6px 14px 0; border-bottom: 1px solid var(--rule); cursor: pointer; position: relative; }
+.srow:hover { background: var(--paper-2); }
+.srow.cur { background: var(--paper-2); box-shadow: inset 3px 0 0 var(--accent); }
+.srow .numeral { font-size: 30px; text-align: right; color: var(--ink-2); padding-top: 2px; }
+.srow .st { font-family: var(--didone); font-size: 17px; line-height: 1.25; }
+.srow .sg { font-family: var(--serif); font-size: 16px; line-height: 1.5; color: var(--ink); margin-top: 4px; }
+.srow .sg.extr { color: var(--ink-2); font-style: italic; }
+.srow .sc { margin: 6px 0 0; padding: 0; list-style: none; color: var(--ink-2); font-size: 13px; }
+.srow .sc li { padding-left: 14px; position: relative; margin: 2px 0; }
+.srow .sc li::before { content: '›'; position: absolute; left: 2px; color: var(--verm); }
+.srow .smeta { text-align: right; color: var(--ink-3); font-size: 12px; display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+.part-head { margin: 22px 0 6px; color: var(--ink-3); }
+
+/* ---------- read ---------- */
+.rsec { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 0 30px; padding: 26px 0 30px; border-bottom: 1px solid var(--rule); scroll-margin-top: 8px; }
+.rsec .rh { grid-column: 1 / -1; display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 0 14px; align-items: start; margin-bottom: 14px; }
+.rsec .rh .numeral { font-size: 46px; color: var(--verm); text-align: right; }
+.rsec .rh .ttl { font-family: var(--didone); font-size: 24px; line-height: 1.2; }
+.rsec .rh .meta { color: var(--ink-3); margin-top: 6px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.rsec .summary { font-family: var(--serif); font-size: 18px; line-height: 1.6; margin: 0 0 18px; text-wrap: pretty; }
+.claims { list-style: none; margin: 0; padding: 0; counter-reset: cl; }
+.claims li { margin: 0 0 16px; padding-left: 30px; position: relative; counter-increment: cl; }
+.claims li::before { content: counter(cl); position: absolute; left: 0; top: 0; font-family: var(--didone); font-weight: 700; color: var(--verm); font-size: 16px; }
+.claims .ct { font-weight: 600; font-size: 14.5px; }
+.claims blockquote { margin: 6px 0 0; font-family: var(--serif); font-size: 16px; line-height: 1.5; color: var(--ink-2); border-left: 2px solid var(--rule-2); padding: 1px 0 1px 12px; }
+.claims blockquote q::before { content: '“'; } .claims blockquote q::after { content: '”'; }
+.claims .cite { display: inline-block; margin-left: 6px; font-family: var(--ui); font-size: 11.5px; }
+.rside { min-width: 0; }
+.rside h5 { margin: 0 0 8px; }
+.de-card { border: 1px solid var(--rule); border-radius: 8px; padding: 10px 12px 10px 14px; margin-bottom: 10px; background: var(--leaf); position: relative; cursor: pointer; }
+.de-card:hover { border-color: var(--rule-2); }
+.de-card::before { content: ''; position: absolute; top: -1px; right: -1px; border-style: solid; border-width: 0 16px 16px 0; border-color: transparent var(--paper) var(--verm) transparent; }
+.de-card.kin::before { border-color: transparent var(--paper) var(--kin) transparent; }
+.de-card .who { font-size: 12px; color: var(--ink-3); display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; padding-right: 10px; }
+.de-card .who b { color: var(--ink); font-weight: 600; }
+.de-card .ex { font-family: var(--serif); font-size: 14px; line-height: 1.45; margin-top: 4px; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.kind { font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; color: var(--verm-ink); }
+.kind.kin { color: var(--kin); }
+
+/* ---------- text / study ---------- */
+.chap-head { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 0 18px; margin: 6px 0 26px; }
+.chap-head .numeral { font-size: 64px; color: var(--verm); text-align: right; }
+.chap-head .part { color: var(--ink-3); margin-bottom: 4px; }
+.chap-head .ttl { font-family: var(--didone); font-size: 30px; line-height: 1.15; font-weight: 500; }
+.chap-head .meta { color: var(--ink-3); margin-top: 10px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.prow { display: grid; grid-template-columns: 64px minmax(0, 40em) minmax(0, 1fr); gap: 0 18px; position: relative; }
+.prow .gut { text-align: right; color: var(--ink-3); font-size: 11px; padding-top: 6px; }
+.prow .gut .pg { display: inline-block; border-top: 1px solid var(--rule-2); padding-top: 2px; font-variant-numeric: tabular-nums; }
+.prow .gut .here-mark { display: block; margin-top: 4px; color: var(--accent); font-size: 16px; line-height: 1; }
+.ptext { font-family: var(--serif); font-size: 18.5px; line-height: 1.66; margin: 0 0 1em; text-wrap: pretty; hyphens: auto; }
+.ptext.pre { white-space: pre; font-family: var(--ui); font-size: 13px; line-height: 1.5; overflow-x: auto; background: var(--paper-2); padding: 10px 12px; border-radius: 6px; }
+.ptext.sub { font-family: var(--ui); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.08em; font-size: 12px; font-weight: 600; color: var(--ink-3); margin: 1.4em 0 0.8em; }
+.ptext.fn { font-size: 14px; line-height: 1.5; color: var(--ink-2); }
+.ptext em, .ex em, .glimpse em { font-style: italic; }
+.ptext mark { background: none; color: inherit; }
+.ptext mark.claim { background: linear-gradient(transparent 62%, var(--mark) 62%); box-shadow: 0 1px 0 var(--verm); }
+.ptext mark.target { background: var(--target); border-radius: 2px; transition: background 1.2s ease 1.8s; }
+.ptext mark.target.fade { background: transparent; }
+.gl { border-bottom: 1px dotted var(--accent); cursor: help; }
+.gl-in { font-family: var(--ui); font-stretch: 80%; font-size: 11.5px; color: var(--accent); margin-left: 3px; letter-spacing: 0.02em; white-space: nowrap; vertical-align: 1px; }
+.gl-in::before { content: '‹'; } .gl-in::after { content: '›'; }
+.marg { font-size: 12.5px; line-height: 1.45; color: var(--ink-2); padding-top: 4px; min-width: 0; }
+.mnote { border-left: 2px solid var(--verm); padding: 2px 0 2px 10px; margin-bottom: 10px; }
+.mnote .mq { font-family: var(--serif); font-style: italic; color: var(--ink-3); font-size: 12.5px; display: block; margin-bottom: 2px; }
+.mde { display: flex; gap: 6px; align-items: flex-start; margin-bottom: 8px; background: none; border: 0; padding: 0; text-align: left; cursor: pointer; color: var(--ink-2); font-size: 12px; }
+.mde .tri { flex: none; width: 0; height: 0; border-style: solid; border-width: 0 12px 12px 0; border-color: transparent var(--verm) transparent transparent; margin-top: 2px; }
+.mde.kin .tri { border-color: transparent var(--kin) transparent transparent; }
+.mde:hover b { text-decoration: underline; }
+.mde b { color: var(--ink); font-weight: 600; }
+.mportal { display: block; border: 1px solid var(--rule); background: var(--leaf); border-radius: 6px; padding: 6px 8px; font-size: 12px; cursor: pointer; text-align: left; color: var(--ink-2); margin-bottom: 8px; }
+.mportal b { color: var(--accent); }
+.study-banner { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: -8px 0 24px 82px; color: var(--ink-3); }
+.chap-foot { margin: 30px 0 0 82px; padding-top: 18px; border-top: 1px solid var(--rule); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.readline { position: sticky; top: 30%; height: 0; z-index: 1; pointer-events: none; }
+.readline::before { content: ''; position: absolute; left: 0; width: 46px; border-top: 1px solid var(--accent); opacity: 0.6; }
+
+/* ---------- bet ---------- */
+.betview { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+.picker { display: flex; gap: 4px; flex-wrap: wrap; }
+.pk { min-width: 36px; height: 30px; border: 1px solid var(--rule-2); border-radius: 4px; background: var(--leaf); cursor: pointer; font-family: var(--didone); font-weight: 700; font-size: 13px; color: var(--ink-2); position: relative; padding: 0 4px; }
+.pk.done { color: #fff; border-color: transparent; }
+.pk.ex { background-image: repeating-linear-gradient(135deg, transparent 0 3px, rgba(255,255,255,0.35) 3px 5px); }
+.pk.cur { outline: 2px solid var(--accent); outline-offset: 1px; }
+.card { background: var(--leaf); border: 1px solid var(--rule); border-radius: 12px; box-shadow: var(--shadow); padding: 24px 28px; }
+.card .pre-h { color: var(--ink-3); display: flex; gap: 10px; flex-wrap: wrap; }
+.card .bt { font-family: var(--didone); font-size: 28px; line-height: 1.15; margin: 8px 0 14px; font-weight: 500; }
+.card .ctx { font-family: var(--serif); font-size: 15px; color: var(--ink-2); border-left: 2px solid var(--rule-2); padding-left: 12px; margin: 0 0 18px; }
+.card .ctx .cl { font-family: var(--ui); font-size: 11px; color: var(--ink-3); display: block; margin-bottom: 3px; }
+.card .q { font-family: var(--serif); font-size: 19px; line-height: 1.45; font-weight: 500; margin: 0 0 6px; }
+.dist { display: flex; height: 10px; border-radius: 5px; overflow: hidden; margin: 12px 0 16px; background: var(--paper-3); }
+.dist i { display: block; height: 100%; transition: width 120ms; }
+.opt { display: grid; grid-template-columns: 22px minmax(0, 1fr) 54px; gap: 4px 10px; align-items: start; padding: 10px 0; border-top: 1px solid var(--rule); }
+.opt .ol { font-family: var(--didone); font-weight: 700; font-size: 16px; padding-top: 1px; }
+.opt label { font-family: var(--serif); font-size: 16px; line-height: 1.45; cursor: pointer; }
+.opt .pct { text-align: right; font-weight: 600; font-size: 15px; padding-top: 2px; }
+.opt input[type=range] { grid-column: 2 / 3; width: 100%; accent-color: var(--plate); margin: 4px 0 0; }
+.opt.right { background: linear-gradient(90deg, rgba(47,122,85,0.10), transparent); }
+.opt.right .ol { color: var(--ok); }
+.opt .verdict { grid-column: 2 / 4; font-size: 12px; font-weight: 600; }
+.bet-actions { display: flex; gap: 10px; align-items: center; justify-content: space-between; margin-top: 16px; flex-wrap: wrap; }
+.reveal { margin-top: 18px; border-top: 2px solid var(--ink); padding-top: 16px; display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 18px; }
+.bits { text-align: left; }
+.bits .bn { font-family: var(--didone); font-size: 52px; font-weight: 700; line-height: 1; }
+.bits .bu { color: var(--ink-3); }
+.gauge { position: relative; height: 8px; border-radius: 4px; margin: 10px 0 4px; background: linear-gradient(90deg, var(--paper-3), var(--verm)); }
+.gauge i { position: absolute; top: -4px; width: 3px; height: 16px; background: var(--ink); margin-left: -1px; }
+.gauge-l { display: flex; justify-content: space-between; color: var(--ink-3); font-size: 10px; }
+.rec { font-size: 15px; }
+.rec .why { font-family: var(--serif); color: var(--ink-2); margin: 8px 0 12px; font-size: 15px; line-height: 1.5; }
+.decisive { font-family: var(--serif); font-size: 16px; line-height: 1.5; background: var(--target); border-radius: 6px; padding: 10px 12px; margin: 10px 0; }
+.decisive .cl { font-family: var(--ui); font-size: 11px; color: var(--ink-3); display: block; margin-bottom: 4px; }
+
+/* ---------- ledger ---------- */
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--rule); margin-bottom: 14px; }
+.tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 6px 10px; cursor: pointer; color: var(--ink-3); margin-bottom: -1px; }
+.tab[aria-selected="true"] { color: var(--ink); border-color: var(--verm); }
+.plan-head { margin-bottom: 12px; }
+.plan-head .big { display: flex; gap: 16px; margin: 4px 0 6px; }
+.plan-head .big div { min-width: 0; }
+.plan-head .big b { display: block; font-family: var(--didone); font-size: 24px; font-weight: 700; line-height: 1.1; }
+.plan-head .big span { color: var(--ink-3); font-size: 11px; }
+.plan-head .moved { color: var(--ink-2); font-size: 12.5px; line-height: 1.45; }
+.example-note { background: var(--paper-2); border: 1px dashed var(--rule-2); border-radius: 8px; padding: 8px 10px; font-size: 12px; color: var(--ink-2); margin-bottom: 12px; }
+.example-note b { color: var(--ink); }
+.spine-map { list-style: none; margin: 0; padding: 0; }
+.sm-row { display: grid; grid-template-columns: 34px minmax(0, 1fr) 40px 70px; gap: 6px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--rule); cursor: pointer; font-size: 12px; }
+.sm-row:hover { background: var(--paper-2); }
+.sm-row.cur { box-shadow: inset 2px 0 0 var(--accent); }
+.sm-row .numeral { font-size: 13px; text-align: right; padding-right: 2px; }
+.sm-row .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink-2); }
+.sm-row .len { display: block; height: 3px; background: var(--rule-2); border-radius: 2px; margin-top: 3px; }
+.sm-row .sw { height: 20px; border-radius: 3px; display: grid; place-items: center; font-size: 11px; font-weight: 600; color: #fff; }
+.sm-row .sw.none { background: transparent; border: 1px dashed var(--rule-2); color: var(--ink-3); font-weight: 400; }
+.sm-row .tm { text-align: right; color: var(--ink-3); white-space: nowrap; }
+.gpip { display: inline-grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; font-family: var(--didone); font-weight: 700; font-size: 10px; margin-right: 5px; vertical-align: 1px; background: var(--paper-3); color: var(--ink-2); }
+.gpip.g1 { background: var(--verm); color: #fff; }
+.gpip.g2 { background: var(--verm-soft); color: var(--verm-ink); }
+.legend { display: flex; align-items: center; gap: 8px; color: var(--ink-3); font-size: 11px; margin: 10px 0 0; }
+.legend .ramp { flex: 1; height: 6px; border-radius: 3px; background: linear-gradient(90deg, #8a93a8, var(--verm)); }
+.ledger h4 { margin: 18px 0 8px; }
+.mention-list { margin: 8px 0 0; padding: 0; list-style: none; font-size: 12px; color: var(--ink-2); }
+.mention-list li { padding: 5px 0; border-bottom: 1px solid var(--rule); }
+.mention-list li b { color: var(--ink); font-weight: 600; }
+details summary { cursor: pointer; color: var(--accent); }
+
+/* ---------- popover / drawer ---------- */
+.pop { position: fixed; z-index: 60; background: var(--leaf); border: 1px solid var(--rule-2); border-radius: 10px; box-shadow: var(--shadow); padding: 14px 16px; width: min(420px, calc(100vw - 24px)); max-height: min(70vh, 560px); overflow-y: auto; }
+.pop .x { position: absolute; top: 8px; right: 8px; background: none; border: 0; cursor: pointer; color: var(--ink-3); font-size: 18px; width: 28px; height: 28px; }
+.pop h4 { margin: 0 24px 2px 0; font-family: var(--serif); font-weight: 500; font-size: 17px; }
+.pop .src { color: var(--ink-3); font-size: 12px; margin-bottom: 10px; }
+.pop .ex { font-family: var(--serif); font-size: 15px; line-height: 1.5; margin: 0 0 8px; }
+.pop .note { font-size: 12.5px; color: var(--ink-2); border-top: 1px solid var(--rule); padding-top: 8px; margin-top: 8px; }
+.pop .acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.tip { position: fixed; z-index: 70; max-width: 280px; background: var(--ink); color: var(--paper); padding: 7px 10px; border-radius: 6px; font-size: 12px; line-height: 1.4; pointer-events: none; }
+.drawer-bg { position: fixed; inset: 0; background: rgba(10, 14, 24, 0.38); z-index: 80; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(560px, 100vw); background: var(--leaf); z-index: 81; overflow-y: auto; padding: 26px 30px 40px; box-shadow: var(--shadow); border-left: 1px solid var(--rule); }
+.drawer h2 { font-family: var(--didone); font-size: 30px; margin: 0 0 4px; font-weight: 600; }
+.drawer h3 { margin: 22px 0 6px; }
+.drawer p, .drawer li { font-family: var(--serif); font-size: 15.5px; line-height: 1.55; color: var(--ink-2); }
+.drawer ul { padding-left: 18px; }
+.drawer a { color: var(--accent); }
+.drawer .close { position: absolute; top: 16px; right: 16px; }
+.ledger-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(380px, 100vw); background: var(--paper); z-index: 81; overflow-y: auto; padding: 18px 18px 40px; border-left: 1px solid var(--rule); box-shadow: var(--shadow); }
+
+/* ---------- mobile shifter ---------- */
+.shifter { display: none; }
+.ledger-btn { display: none; }
+
+@media (max-width: 1220px) {
+  .body { grid-template-columns: 236px minmax(0, 1fr); }
+  .ledger { display: none; }
+  .ledger-btn { display: inline-flex; }
+  .rsec { grid-template-columns: minmax(0, 1fr); }
+  .rside { margin-top: 10px; }
+}
+@media (max-width: 1000px) {
+  .prow { grid-template-columns: 40px minmax(0, 1fr); }
+  .prow .marg { grid-column: 2 / 3; padding: 0 0 12px; }
+  .prow .marg:empty { display: none; }
+  .chap-head { grid-template-columns: 40px minmax(0, 1fr); }
+  .chap-head .numeral { font-size: 44px; }
+  .study-banner, .chap-foot { margin-left: 58px; }
+}
+@media (max-width: 860px) {
+  .body { grid-template-columns: minmax(0, 1fr); }
+  .gate-rail { display: none; }
+  .brand .tag { display: none; }
+  .shifter { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 3px; padding: 6px 0 calc(6px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--rule); background: var(--paper); }
+  .shifter button { border: 1px solid var(--rule); background: var(--leaf); border-radius: 6px; padding: 5px 0 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; line-height: 1.1; min-width: 0; }
+  .shifter .sn { font-family: var(--didone); font-weight: 700; font-size: 15px; }
+  .shifter .sl { font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; font-stretch: 78%; }
+  .shifter .st { font-size: 9px; color: var(--ink-3); }
+  .shifter button.on { background: var(--plate); border-color: var(--plate); color: var(--plate-ink); }
+  .shifter button.on .sn { color: #ff8a73; }
+  .shifter button.on .st { color: var(--plate-dim); }
+  .view { padding: 16px 0 60px; }
+  .card { padding: 18px 16px; }
+  .card .bt { font-size: 23px; }
+  .reveal { grid-template-columns: minmax(0, 1fr); }
+  .leaf { padding: 20px 18px 22px; min-height: 380px; }
+  .leaf .glimpse { font-size: 18px; }
+  .leaf .facets { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .srow { grid-template-columns: 40px minmax(0, 1fr); }
+  .srow .numeral { font-size: 22px; }
+  .srow .smeta { grid-column: 2 / 3; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; align-items: center; text-align: left; }
+  .rsec .rh { grid-template-columns: 44px minmax(0, 1fr); }
+  .rsec .rh .numeral { font-size: 32px; }
+  .rsec .summary { font-size: 17px; }
+  .ptext { font-size: 17.5px; }
+  .edge-head .lbl { display: none; }
+  .claude-chip .txt { display: none; }
+  .top { gap: 8px; }
+  .book-btn { padding: 6px 4px; }
+  .book-btn .bk-y { display: none; }
+}
+@media (max-width: 520px) {
+  .book-btn .bk-t { display: none; }
+  .tools .tbtn.about .txt { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+
+<div class="app" id="app">
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 26 26" aria-hidden="true"><rect x="0.5" y="0.5" width="25" height="25" rx="5" fill="var(--plate)"/><path d="M7 6v14M13 6v14M19 6v7M7 13h12" stroke="var(--slot)" stroke-width="3.2" stroke-linecap="round" fill="none"/><circle cx="13" cy="13" r="3.3" fill="var(--verm)"/></svg>
+      <span class="word">Gearbox</span>
+      <span class="tag caps">one book · five speeds</span>
+    </div>
+    <div class="bookpick">
+      <button class="book-btn" id="bookBtn" aria-haspopup="true" aria-expanded="false" aria-controls="shelf">
+        <span class="bk-a" id="bkA">Laplace</span><span class="bk-t" id="bkT">A Philosophical Essay on Probabilities</span><span class="bk-y num" id="bkY">1814</span><span class="chev">▼</span>
+      </button>
+      <div class="shelf" id="shelf" hidden>
+        <h3 class="caps">The shelf · nine public-domain books</h3>
+        <div class="spines" id="spines" role="listbox" aria-label="Choose a book"></div>
+        <p class="note">The apparatus (gists, summaries, bets, notes) is precomputed for Laplace. For the other eight it is generated chapter by chapter by Claude when the page is open in Claude; riffling and full text work for every book.</p>
+      </div>
+    </div>
+    <div class="tools">
+      <span class="claude-chip caps" id="claudeChip" title="Live generation status"><span class="dot"></span><span class="txt">Checking for Claude</span></span>
+      <button class="tbtn ledger-btn" id="ledgerBtn" aria-controls="ledgerDrawer">Map</button>
+      <button class="tbtn about" id="aboutBtn"><span aria-hidden="true">ⓘ</span><span class="txt">About</span></button>
+      <button class="tbtn icon" id="themeBtn" aria-label="Switch color theme" title="Theme"><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.3" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.7a6.3 6.3 0 0 1 0 12.6z" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+
+  <section class="edge" aria-label="Fore-edge: every page of the book">
+    <div class="edge-head">
+      <span class="lbl caps">Fore-edge</span>
+      <span class="info caps num" id="edgeInfo"></span>
+      <div class="chips" id="chips" role="group" aria-label="Heat-map term"></div>
+    </div>
+    <div class="edge-wrap" id="edgeWrap">
+      <canvas id="edge" aria-label="Pages of the book; heat shows the selected term, folded corners mark dog-ears"></canvas>
+      <div class="ribbon" id="ribbon"></div>
+      <div class="edge-tip" id="edgeTip" hidden></div>
+    </div>
+  </section>
+
+  <div class="body">
+    <aside class="gate-rail" aria-label="Gear lever">
+      <div class="gate" id="gate">
+        <svg viewBox="0 0 220 268" aria-hidden="true">
+          <rect class="plate" x="2" y="2" width="216" height="264" rx="16"/>
+          <rect class="plate-edge" x="6" y="6" width="208" height="256" rx="13"/>
+          <circle class="screw" cx="18" cy="18" r="4"/><circle class="screw" cx="202" cy="18" r="4"/><circle class="screw" cx="18" cy="250" r="4"/><circle class="screw" cx="202" cy="250" r="4"/>
+          <path class="slot" d="M50 76V192M110 76V192M170 76V134M50 134H170"/>
+          <path class="slot-hi" d="M50 76V192M110 76V192M170 76V134M50 134H170"/>
+          <text class="engr" x="198" y="176" text-anchor="end">ONE BOOK</text>
+          <text class="engr" x="198" y="188" text-anchor="end">FIVE SPEEDS</text>
+        </svg>
+        <div id="gateLabels"></div>
+        <div class="knob" id="knob" role="slider" tabindex="0" aria-label="Gear" aria-valuemin="0" aria-valuemax="5" aria-valuenow="3"><span id="knobN">3</span></div>
+      </div>
+      <div class="gate-cap caps"><span>← slower, deeper</span><span>faster →</span></div>
+      <table class="costs num" id="costs"></table>
+      <div class="here" id="here"></div>
+    </aside>
+
+    <main class="main" id="main" tabindex="-1" aria-live="polite"></main>
+
+    <aside class="ledger" id="ledger" aria-label="Map of bets and dog-ears"></aside>
+  </div>
+
+  <nav class="shifter" id="shifter" aria-label="Gears"></nav>
+</div>
+<div class="pop" id="pop" hidden role="dialog" aria-modal="false"></div>
+<div class="tip" id="tip" hidden></div>
+<div id="overlay"></div>
+
+<script>
+'use strict';
+/* =====================================================================
+   Gearbox: one book at five reading speeds.
+   Data: data/gearbox/structure.json (chapter segmentation of 9 books),
+         data/gearbox/laplace.json (precomputed apparatus for Laplace),
+         data/texts/<id>.txt (full public-domain texts).
+   ===================================================================== */
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('gearbox:' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('gearbox:' + k, JSON.stringify(v)); } catch { /* storage unavailable */ } },
+};
+const norm = (s) => String(s).replace(/[_*]/g, '').replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, ' ').trim();
+const keyify = (s) => s.replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
+const wc = (s) => (String(s).match(/[A-Za-zÀ-ÿ0-9]+(?:['’][A-Za-z]+)?/g) || []).length;
+function fmtTime(sec) {
+  if (sec == null || !isFinite(sec)) return '—';
+  if (sec < 60) return Math.max(1, Math.round(sec / 5) * 5) + ' s';
+  const m = Math.round(sec / 60);
+  if (m < 60) return m + ' min';
+  return Math.floor(m / 60) + ' h ' + String(m % 60).padStart(2, '0') + ' m';
+}
+const fmtInt = (n) => n.toLocaleString('en-US');
+const ROMANS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'];
+const LETTERS = ['A', 'B', 'C', 'D'];
+
+/* Gears: low gear for steep chapters, top gear to cruise. */
+const GEARS = {
+  N: { name: 'Bet', long: 'Bet before you read', x: 110, y: 134 },
+  1: { name: 'Study', long: 'Full text with glosses and margin notes', x: 50, y: 76 },
+  2: { name: 'Text', long: 'The full text, clean', x: 50, y: 192 },
+  3: { name: 'Read', long: 'Summaries with verbatim quotes', x: 110, y: 76 },
+  4: { name: 'Skim', long: 'One-line gists and claims', x: 110, y: 192 },
+  5: { name: 'Riffle', long: 'Flip the pages: glimpses, italics, figures', x: 170, y: 76 },
+};
+const GEAR_ORDER = ['N', 1, 2, 3, 4, 5];
+const TERMS = [
+  { k: 'testimony', re: /\b(testimon\w*|witness\w*)\b/gi },
+  { k: 'cause', re: /\bcauses?\b/gi },
+  { k: 'urn', re: /\burns?\b/gi },
+  { k: 'error', re: /\berrors?\b/gi },
+  { k: 'births', re: /\b(births?|boys|girls)\b/gi },
+  { k: 'comets', re: /\bcomets?\b/gi },
+  { k: 'hope', re: /\bhopes?\b/gi },
+  { k: 'lottery', re: /\blotter(?:y|ies)\b/gi },
+  { k: 'induction', re: /\binducti\w*\b/gi },
+];
+const STOP = new Set('that this with from have been upon more than they them what when will only also such into very same other each even most much many some then were said make made like would which there their these those itself whose where while being under between through among about after before again against because both does doing down during further here once over shall should until where whom whether whose within without could might must ought therefore however thus hence whole great given number same case cases first second third order part greater less certain manner respect regard'.split(' '));
+
+const S = {
+  bookId: 58881,
+  gear: store.get('gear', 3),
+  pos: { ch: 2, line: null },
+  page: 0,
+  term: store.get('term', 'testimony'),
+  customTerm: null,
+  bets: {},
+  usingExample: false,
+  flash: null,
+  ledgerTab: 'map',
+  betCh: null,
+  betRevealed: false,
+};
+if (!GEARS[S.gear]) S.gear = 3;
+
+let STRUCT = null;   // structure.json
+let LAP = null;      // laplace.json
+let B = null;        // the loaded book
+const TEXT_CACHE = {};
+const GEN = store.get('gen', {});   // generated apparatus, per book/chapter (per-viewer convenience)
+let sampleFn;        // undefined: checking; null: unavailable; function: available
+let genJob = null;
+
+/* ===================== loading & parsing ===================== */
+async function fetchJSON(u) { const r = await fetch(u); if (!r.ok) throw new Error(u + ' ' + r.status); return r.json(); }
+async function fetchText(id) {
+  if (!TEXT_CACHE[id]) {
+    const r = await fetch(`data/texts/${id}.txt`);
+    if (!r.ok) throw new Error('text ' + id + ' ' + r.status);
+    TEXT_CACHE[id] = await r.text();
+  }
+  return TEXT_CACHE[id];
+}
+
+function parseRaw(raw, star) {
+  let plain = '';
+  const it = [];
+  let open = -1;
+  for (let i = 0; i < raw.length; i++) {
+    const c = raw[i];
+    if ((c === '_' && raw[i + 1] !== '{') || (c === '*' && star)) {
+      if (open < 0) open = plain.length;
+      else { if (plain.length > open) it.push([open, plain.length]); open = -1; }
+      continue;
+    }
+    plain += c;
+  }
+  if (open >= 0 && plain.length > open) it.push([open, plain.length]);
+  return { plain, it };
+}
+function splitSentences(plain) {
+  const out = [];
+  let start = 0;
+  const re = /[.!?]["”’)\]]*\s+(?=["“‘(\[]?[A-Z0-9À-Þ])/g;
+  let m;
+  while ((m = re.exec(plain))) {
+    const head = plain.slice(Math.max(0, m.index - 5), m.index + 1);
+    if (/(?:\bM|\bMr|\bMlle|\bMme|\bSt|\bDr|\bviz|\bvol|\bp|\bpp|\bNo|\bch|\bcf|\bed|\bEd|\bi\.e|\be\.g|\b[A-Z])\.$/.test(head)) continue;
+    const end = m.index + m[0].length;
+    out.push({ s: start, e: end });
+    start = end;
+  }
+  if (start < plain.length) out.push({ s: start, e: plain.length });
+  return out;
+}
+
+function parseBook(id, text) {
+  const meta = STRUCT.books.find((b) => b.id === id);
+  const L = text.split('\n');
+  const star = id === 74864;
+  const book = { id, meta, lines: L, chapters: [], pages: [], paraByLine: new Map(), isLap: id === 58881 };
+  meta.chapters.forEach((c, ci) => {
+    const paras = [];
+    let buf = [];
+    let start = -1;
+    const flush = () => {
+      if (!buf.length) return;
+      const raw = buf.map((l) => l.trim()).join(' ').replace(/\s+/g, ' ');
+      const tableish = buf.length >= 2 && buf.filter((l) => /\S\s{3,}\S/.test(l)).length >= buf.length / 2;
+      const { plain, it } = parseRaw(raw, star);
+      const single = buf.length === 1 && plain.length < 72;
+      const allCaps = plain.replace(/[^A-Za-z]/g, '').length > 1 && plain === plain.toUpperCase();
+      const wholeIt = it.length === 1 && it[0][0] === 0 && it[0][1] >= plain.length - 1;
+      let kind = 'p';
+      if (tableish) kind = 'pre';
+      else if (single && (allCaps || wholeIt || /^[IVXL]+\.?$/.test(plain))) kind = 'sub';
+      else if (/^\[\d+\]/.test(plain) || /^\d+\.\s+[A-Z_]/.test(plain) && plain.length < 400 && buf.length < 6 && /^ {2,}/.test(buf[1] || '')) kind = 'fn';
+      paras.push({ line: start, raw: buf.join('\n'), plain, key: keyify(plain), it, kind, words: wc(plain), ch: ci });
+      buf = [];
+      start = -1;
+    };
+    for (let i = c.b; i < c.e; i++) {
+      const l = L[i];
+      if (l === undefined || l.trim() === '') flush();
+      else { if (start < 0) start = i; buf.push(l); }
+    }
+    flush();
+    // Drop trailing part headers (e.g. "PART II." before the next chapter).
+    while (paras.length && paras[paras.length - 1].kind === 'sub') paras.pop();
+    let w = 0;
+    paras.forEach((p, idx) => { p.idx = idx; p.w0 = w; w += p.words; book.paraByLine.set(p.line, p); });
+    book.chapters.push({ ...c, ci, paras, words: w });
+  });
+  buildPages(book);
+  return book;
+}
+
+function buildPages(book) {
+  const pages = [];
+  const lap = book.isLap;
+  book.chapters.forEach((c, ci) => {
+    let p0, np;
+    if (lap) {
+      p0 = LAP.pages.start[ci];
+      const p1 = ci + 1 < LAP.pages.start.length ? LAP.pages.start[ci + 1] : LAP.pages.last + 1;
+      np = Math.max(1, p1 - p0);
+    } else {
+      p0 = pages.length ? pages[pages.length - 1].n + 1 : 1;
+      np = Math.max(1, Math.ceil(c.words / 300));
+    }
+    const first = pages.length;
+    for (let k = 0; k < np; k++) pages.push({ n: p0 + k, ch: ci, idx: pages.length, sents: [], words: 0, its: [], figs: [], firstLine: null, dog: [] });
+    c.page0 = first;
+    c.pageN = np;
+    const W = Math.max(1, c.words);
+    const pageAt = (w) => first + clamp(Math.floor((w / W) * np), 0, np - 1);
+    c.paras.forEach((p) => {
+      p.page = pageAt(p.w0);
+      const pg = pages[p.page];
+      if (pg.firstLine == null) pg.firstLine = p.line;
+      if (p.kind !== 'p') return;
+      let w = p.w0;
+      for (const s of splitSentences(p.plain)) {
+        const txt = p.plain.slice(s.s, s.e).trim();
+        const sw = wc(txt);
+        const target = pages[pageAt(w)];
+        target.sents.push({ t: txt, p, s: s.s, w: sw });
+        target.words += sw;
+        w += sw;
+      }
+      for (const [a, b] of p.it) {
+        const t = p.plain.slice(a, b).replace(/[.,;:]+$/, '').trim();
+        if (t.length > 2 && t.length < 60 && !/^[A-Z]$/.test(t)) pages[pageAt(p.w0 + wc(p.plain.slice(0, a)))].its.push(t);
+      }
+    });
+    for (let k = first; k < pages.length; k++) if (pages[k].firstLine == null) pages[k].firstLine = pages[k - 1]?.firstLine ?? c.paras[0]?.line;
+  });
+  // Figures and glimpse lines (TF-IDF over pages).
+  const df = new Map();
+  const tok = (s) => (s.toLowerCase().match(/[a-zà-ÿ]{4,}/g) || []).filter((w) => !STOP.has(w));
+  pages.forEach((pg) => {
+    const text = pg.sents.map((s) => s.t).join(' ');
+    pg.tf = new Map();
+    for (const w of tok(text)) pg.tf.set(w, (pg.tf.get(w) || 0) + 1);
+    for (const w of pg.tf.keys()) df.set(w, (df.get(w) || 0) + 1);
+    const figs = text.match(/\b\d{1,3}(?:,\d{3})+\b|\b\d{3,}\b|\b\d+\/\d+\b|[½¼¾⅓⅔⅛⅙⅕⅘]/g) || [];
+    pg.figs = [...new Set(figs)].filter((f) => !/^1[0-9]{3}$/.test(f) || figs.length < 3).slice(0, 8);
+    pg.its = [...new Set(pg.its)].slice(0, 8);
+    pg.text = text;
+  });
+  const N = pages.length;
+  pages.forEach((pg) => {
+    let best = null;
+    let bs = -1;
+    for (const s of pg.sents) {
+      const ws = [...new Set(tok(s.t))];
+      if (!ws.length) continue;
+      let sc = 0;
+      for (const w of ws) sc += Math.log(N / (1 + (df.get(w) || 0))) * Math.min(2, pg.tf.get(w) || 0);
+      sc /= Math.sqrt(Math.max(6, s.w));
+      if (s.w < 8 || s.w > 55) sc *= 0.45;
+      if (/\d/.test(s.t)) sc *= 1.12;
+      if (/\b(?:is|are) called\b|\bI (?:shall )?call\b|\bwe (?:will |shall )?call\b|\bis the (?:ratio|measure|product|sum)\b/.test(s.t)) sc *= 1.3;
+      if (/^[a-z"“(]/.test(s.t)) sc *= 0.7;
+      if (sc > bs) { bs = sc; best = s; }
+    }
+    pg.glimpse = best;
+    delete pg.tf;
+  });
+  book.pages = pages;
+}
+
+/* ===================== apparatus ===================== */
+function app(ci, book = B) {
+  if (!book) return null;
+  const g = GEN[book.id]?.[ci];
+  if (book.isLap) {
+    const pre = LAP.chapters[ci];
+    if (g && g.preferLive) return g;
+    return pre ? { ...pre, source: 'pre' } : null;
+  }
+  return g || null;
+}
+function glossaryFor(ci) {
+  if (B.isLap) return LAP.glossary.filter((g) => !g.ch || g.ch.includes(ci + 1));
+  const a = app(ci);
+  return (a?.glosses || []).map((g) => ({ re: g.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), short: g.short || g.gloss, more: g.more || '' }));
+}
+function dogearsIn(ci) { return B.isLap ? LAP.dogears.filter((d) => d.ch === ci + 1) : []; }
+function portalsIn(ci) { return !B.isLap && LAP ? LAP.dogears.filter((d) => d.book === B.id && d.src.ch === ci) : []; }
+function bookMeta(id) { return STRUCT.books.find((b) => b.id === id); }
+function shortAuthor(id) { const a = bookMeta(id).a.split(' '); return a[a.length - 1]; }
+function pageLabel(pg, book = B) { return book.isLap ? 'p. ' + pg.n : 'p. ' + pg.n; }
+function chapterPages(c) { const a = B.pages[c.page0].n; const b = B.pages[c.page0 + c.pageN - 1].n; return a === b ? 'p. ' + a : 'pp. ' + a + '–' + b; }
+
+/* Reading cost per gear for chapter ci, in seconds. */
+function cost(ci, g, book = B) {
+  const c = book.chapters[ci];
+  const r = LAP.rates;
+  const a = app(ci, book);
+  const wpmS = (w, wpm = r.wpm) => (w / wpm) * 60;
+  switch (String(g)) {
+    case '5': return c.pageN * r.riffleSecPerPage;
+    case '4': return a ? wpmS(wc(a.gist) + a.claims.reduce((s, x) => s + wc(x.claim), 0)) + 4 : wpmS(wc(opening(c))) + 4;
+    case '3': return a ? wpmS(wc(a.summary) + a.claims.reduce((s, x) => s + wc(x.claim) + wc(x.quote), 0)) + 8 : null;
+    case '2': return wpmS(c.words);
+    case '1': return wpmS(c.words, r.studyWpm) + (a ? wpmS(a.notes.reduce((s, n) => s + wc(n.note), 0)) : 0);
+    default: return 0;
+  }
+}
+function bookCost(g) {
+  let t = 0;
+  for (let i = 0; i < B.chapters.length; i++) { const c = cost(i, g); if (c == null) return null; t += c; }
+  return t;
+}
+function opening(c) {
+  const p = c.paras.find((p) => p.kind === 'p' && p.words > 12);
+  if (!p) return '';
+  const s = splitSentences(p.plain)[0];
+  return p.plain.slice(s.s, s.e).trim();
+}
+
+/* ===================== bets ===================== */
+function loadBets() {
+  const saved = store.get('bets:' + S.bookId, null);
+  if (saved && Object.keys(saved).length) { S.bets = saved; S.usingExample = false; return; }
+  S.bets = {};
+  S.usingExample = false;
+  if (S.bookId === 58881 && !store.get('exampleCleared', false)) {
+    for (const e of LAP.example) S.bets[e.n - 1] = { w: e.w, example: true };
+    S.usingExample = true;
+  }
+}
+function saveBets() {
+  const mine = Object.fromEntries(Object.entries(S.bets).filter(([, v]) => !v.example));
+  store.set('bets:' + S.bookId, mine);
+}
+function probs(w) { const t = w.reduce((a, b) => a + b, 0); return t > 0 ? w.map((x) => x / t) : w.map(() => 1 / w.length); }
+function bitsFor(ci) {
+  const b = S.bets[ci];
+  const a = app(ci);
+  if (!b || !a?.bet) return null;
+  const p = probs(b.w)[a.bet.answer];
+  return -Math.log2(Math.max(0.01, p));
+}
+function gearForBits(bits) { return bits == null ? 2 : bits < 0.5 ? 4 : bits < 1.5 ? 3 : bits < 3 ? 2 : 1; }
+const GEAR_WHY = {
+  4: 'You already held the conclusion. Skim it: the gist and claims are enough if you only need the conclusion.',
+  3: 'You leaned the right way but not firmly. Read the summary and check the quoted passages.',
+  2: 'You were unsure. Read the chapter through.',
+  1: 'You were confidently wrong, so this chapter will change your mind. Study it: full text, glosses, notes.',
+};
+function surpriseColor(bits) {
+  if (bits == null) return 'transparent';
+  const t = clamp(bits / 5, 0, 1);
+  const cs = getComputedStyle(document.documentElement);
+  return mix(hexOf('#8a93a8'), hexOf(cs.getPropertyValue('--verm').trim()), t);
+}
+function hexOf(h) { h = h.replace('#', ''); return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)); }
+function mix(a, b, t) { return 'rgb(' + a.map((x, i) => Math.round(x + (b[i] - x) * t)).join(',') + ')'; }
+function plan() {
+  let straight = 0, total = 0, saved = 0, spent = 0, nSaved = 0, nSpent = 0;
+  B.chapters.forEach((c, ci) => {
+    const base = cost(ci, 2);
+    const g = gearForBits(bitsFor(ci));
+    const t = cost(ci, g) ?? base;
+    straight += base;
+    total += t;
+    if (t < base) { saved += base - t; nSaved++; } else if (t > base) { spent += t - base; nSpent++; }
+  });
+  return { straight, total, saved, spent, nSaved, nSpent };
+}
+
+/* ===================== navigation ===================== */
+function setGear(g, opts = {}) {
+  g = g === 'N' || g === 0 || g === '0' ? 'N' : Number(g);
+  if (!GEARS[g]) return;
+  const prev = S.gear;
+  S.gear = g;
+  store.set('gear', g);
+  if (g === 'N') { if (S.betCh !== S.pos.ch) S.betDraft = null; S.betCh = S.pos.ch; S.betRevealed = !!S.bets[S.betCh]; }
+  moveKnob(prev, g, opts.instant);
+  renderMain({ keepScroll: false });
+  renderGateCosts();
+  renderShifter();
+}
+function goto(ci, line = null, gear = null, flash = null) {
+  S.pos = { ch: clamp(ci, 0, B.chapters.length - 1), line };
+  const p = line != null ? B.paraByLine.get(line) : null;
+  S.page = p ? p.page : B.chapters[S.pos.ch].page0;
+  S.flash = flash;
+  if (gear != null && gear !== S.gear) setGear(gear);
+  else renderMain({ keepScroll: false });
+  syncPosition();
+}
+function syncPosition() {
+  positionRibbon();
+  renderHere();
+  renderGateCosts();
+  renderShifter();
+  renderLedgerCurrent();
+  saveLastPos();
+}
+function saveLastPos() { store.set('pos:' + B.id, { ch: S.pos.ch, line: S.pos.line }); }
+
+/* ===================== header & shelf ===================== */
+function renderShelf() {
+  const el = $('#spines');
+  el.innerHTML = STRUCT.books.map((b) => {
+    const pre = b.id === 58881;
+    const sur = b.a.split(' ').pop();
+    return `<button class="spine" role="option" aria-selected="${b.id === S.bookId}" data-book="${b.id}" title="${esc(b.t)}, ${esc(b.a)}">
+      <span class="sp-a">${esc(sur)}</span><span class="sp-t">${esc(b.t.replace(/ \(.+\)$/, ''))}</span>
+      <span class="sp-y num">${b.y}</span><span class="sp-tag">${pre ? 'precomputed' : 'live'}</span></button>`;
+  }).join('');
+}
+function renderBookBtn() {
+  const m = bookMeta(S.bookId);
+  $('#bkA').textContent = m.a.split(' ').pop();
+  $('#bkT').textContent = m.t;
+  $('#bkY').textContent = m.y;
+}
+function setClaudeChip() {
+  const chip = $('#claudeChip');
+  chip.classList.toggle('on', typeof sampleFn === 'function');
+  $('.txt', chip).textContent = sampleFn === undefined ? 'Checking for Claude' : sampleFn ? 'Claude live' : 'Precomputed only';
+  chip.title = sampleFn ? 'Live generation available: any chapter of any book on the shelf' : 'Precomputed example. Live generation is available when this page is opened in Claude.';
+}
+
+/* ===================== fore-edge ===================== */
+const edge = { pw: 0, w: 0, heat: [], max: 1, bumps: new Set() };
+function termRe() {
+  if (S.customTerm) return new RegExp('\\b' + S.customTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\w*', 'gi');
+  return (TERMS.find((t) => t.k === S.term) || TERMS[0]).re;
+}
+function computeHeat() {
+  const re = termRe();
+  edge.heat = B.pages.map((pg) => (pg.text.match(re) || []).length);
+  edge.max = Math.max(1, ...edge.heat);
+  const thr = Math.max(2, Math.ceil(edge.max * 0.5));
+  edge.bumps = new Set(edge.heat.map((h, i) => (h >= thr ? i : -1)).filter((i) => i >= 0));
+  const tot = edge.heat.reduce((a, b) => a + b, 0);
+  $('#edgeInfo').textContent = `${B.pages.length} pp. · “${S.customTerm || S.term}” ×${fmtInt(tot)}`;
+}
+function renderChips() {
+  const el = $('#chips');
+  el.innerHTML = TERMS.map((t) => `<button class="chip" aria-pressed="${!S.customTerm && S.term === t.k}" data-term="${t.k}">${t.k}</button>`).join('') +
+    `<input class="chip-input" id="termInput" type="search" placeholder="any word…" aria-label="Heat-map any word" value="${esc(S.customTerm || '')}">`;
+}
+function dogPages() {
+  const m = new Map();
+  if (B.isLap) {
+    for (const d of LAP.dogears) {
+      const p = B.paraByLine.get(d.line);
+      if (!p) continue;
+      if (!m.has(p.page)) m.set(p.page, []);
+      m.get(p.page).push(d);
+    }
+  } else {
+    for (const d of LAP.dogears.filter((d) => d.book === B.id)) {
+      const p = B.paraByLine.get(d.src.line);
+      if (!p) continue;
+      if (!m.has(p.page)) m.set(p.page, []);
+      m.get(p.page).push(d);
+    }
+  }
+  return m;
+}
+function drawEdge() {
+  const cv = $('#edge');
+  const wrap = $('#edgeWrap');
+  const W = wrap.clientWidth;
+  const H = 66;
+  const dpr = window.devicePixelRatio || 1;
+  cv.width = Math.round(W * dpr);
+  cv.height = Math.round(H * dpr);
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  const cs = getComputedStyle(document.documentElement);
+  const v = (n) => cs.getPropertyValue(n).trim();
+  const n = B.pages.length;
+  const pw = W / n;
+  edge.pw = pw;
+  edge.w = W;
+  const top = 9, bh = 38;
+  const gap = pw >= 3.2 ? 1 : 0;
+  const verm = v('--verm');
+  const dogs = dogPages();
+  B.pages.forEach((pg, i) => {
+    const x = i * pw;
+    ctx.fillStyle = pg.ch % 2 ? v('--paper-3') : v('--paper-2');
+    ctx.fillRect(x, top, Math.max(0.6, pw - gap), bh);
+    const h = edge.heat[i];
+    if (h > 0) {
+      ctx.globalAlpha = 0.18 + 0.82 * (h / edge.max);
+      ctx.fillStyle = verm;
+      ctx.fillRect(x, top, Math.max(0.6, pw - gap), bh);
+      ctx.globalAlpha = 1;
+    }
+    if (edge.bumps.has(i)) {
+      ctx.fillStyle = v('--verm-ink');
+      ctx.beginPath();
+      const cx = x + pw / 2;
+      ctx.moveTo(cx - 3, top + bh + 6); ctx.lineTo(cx + 3, top + bh + 6); ctx.lineTo(cx, top + bh + 2); ctx.fill();
+    }
+    const d = dogs.get(i);
+    if (d) {
+      const kin = d.every((x) => x.kind === 'kindred');
+      ctx.fillStyle = kin ? v('--kin') : verm;
+      const s = Math.max(5, Math.min(8, pw + 3));
+      const cx = x + pw / 2;
+      ctx.beginPath(); ctx.moveTo(cx - s / 2, top - 1); ctx.lineTo(cx + s / 2, top - 1); ctx.lineTo(cx + s / 2, top - 1 - s); ctx.closePath(); ctx.fill();
+    }
+  });
+  // chapter boundaries, numerals, surprise band
+  ctx.font = '600 9px Archivo, sans-serif';
+  ctx.textBaseline = 'top';
+  let lastLabelX = -99;
+  B.chapters.forEach((c, ci) => {
+    const x = c.page0 * pw;
+    ctx.fillStyle = v('--ink-3');
+    ctx.fillRect(Math.round(x), top - 2, 1, bh + 4);
+    const bits = bitsFor(ci);
+    if (bits != null) {
+      ctx.fillStyle = surpriseColor(bits);
+      ctx.fillRect(x + 1, top + bh + 8, c.pageN * pw - 2, 4);
+    }
+    const lab = c.label.length <= 6 ? c.label : String(ci + 1);
+    const tw = ctx.measureText(lab).width;
+    if (x + 3 > lastLabelX + 4 && c.pageN * pw > tw * 0.6) {
+      ctx.fillStyle = v('--ink-3');
+      ctx.fillText(lab, x + 3, top + bh + 14 > H - 9 ? H - 10 : top + bh + 14);
+      lastLabelX = x + 3 + tw;
+    }
+  });
+  positionRibbon();
+}
+function positionRibbon() {
+  if (!B) return;
+  const r = $('#ribbon');
+  r.style.left = ((S.page + 0.5) * edge.pw) + 'px';
+}
+function pageFromX(x) { return clamp(Math.floor(x / edge.pw), 0, B.pages.length - 1); }
+function edgeTip(i, x) {
+  const pg = B.pages[i];
+  const c = B.chapters[pg.ch];
+  const tip = $('#edgeTip');
+  const dogs = dogPages().get(i) || [];
+  tip.innerHTML = `<div class="t1 caps"><span>${esc(pageLabel(pg))} · ${esc(c.label)}</span><span>${esc(S.customTerm || S.term)} ×${edge.heat[i]}${edge.bumps.has(i) ? ' · bump' : ''}</span></div>
+    <div class="g">${pg.glimpse ? esc(trunc(pg.glimpse.t, 190)) : '<span style="color:var(--ink-3)">(no running text)</span>'}</div>
+    ${dogs.length ? `<div class="caps" style="margin-top:6px;color:var(--verm-ink)">${dogs.map((d) => esc(B.isLap ? shortAuthor(d.book) : 'cites Laplace')).join(' · ')}</div>` : ''}`;
+  tip.hidden = false;
+  const W = $('#edgeWrap').clientWidth;
+  tip.style.left = clamp(x - 150, 0, Math.max(0, W - 300)) + 'px';
+}
+function trunc(s, n) { return s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : s; }
+
+/* ===================== gate ===================== */
+function renderGateLabels() {
+  $('#gateLabels').innerHTML = GEAR_ORDER.map((g) => {
+    const G = GEARS[g];
+    const cls = g === 'N' ? 'gl-mid' : G.y < 100 ? 'gl-top' : 'gl-bot';
+    return `<button class="g-lab ${cls}" data-gear="${g}" style="left:${G.x}px" aria-label="Gear ${g}: ${G.name}. ${G.long}">
+      ${g === 'N' ? '<span class="gname">N</span>' : `<span class="gn">${g}</span><span class="gname">${G.name.toUpperCase()}</span><span class="gt num" data-gt="${g}"></span>`}</button>`;
+  }).join('');
+  const k = $('#knob');
+  const G = GEARS[S.gear];
+  k.style.left = G.x + 'px';
+  k.style.top = G.y + 'px';
+  $('#knobN').textContent = S.gear;
+}
+let knobAnim = null;
+function moveKnob(from, to, instant) {
+  const k = $('#knob');
+  const A = GEARS[from] || GEARS[to];
+  const Z = GEARS[to];
+  $('#knobN').textContent = to;
+  k.setAttribute('aria-valuenow', to === 'N' ? 0 : to);
+  k.setAttribute('aria-valuetext', `${to}: ${Z.name}`);
+  $$('.g-lab').forEach((b) => b.classList.toggle('on', String(b.dataset.gear) === String(to)));
+  if (knobAnim) cancelAnimationFrame(knobAnim);
+  const cur = { x: parseFloat(k.style.left) || A.x, y: parseFloat(k.style.top) || A.y };
+  const pts = [cur];
+  if (Math.abs(cur.x - Z.x) > 1) { pts.push({ x: cur.x, y: 134 }, { x: Z.x, y: 134 }); }
+  pts.push({ x: Z.x, y: Z.y });
+  if (instant || reduced) { k.style.left = Z.x + 'px'; k.style.top = Z.y + 'px'; return; }
+  const segs = [];
+  let total = 0;
+  for (let i = 1; i < pts.length; i++) { const d = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y); segs.push(d); total += d; }
+  const dur = clamp(total * 1.6, 120, 320);
+  const t0 = performance.now();
+  const step = (t) => {
+    let u = clamp((t - t0) / dur, 0, 1);
+    u = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+    let dist = u * total;
+    let i = 0;
+    while (i < segs.length - 1 && dist > segs[i]) { dist -= segs[i]; i++; }
+    const f = segs[i] ? dist / segs[i] : 1;
+    k.style.left = pts[i].x + (pts[i + 1].x - pts[i].x) * f + 'px';
+    k.style.top = pts[i].y + (pts[i + 1].y - pts[i].y) * f + 'px';
+    if (u < 1) knobAnim = requestAnimationFrame(step);
+  };
+  knobAnim = requestAnimationFrame(step);
+}
+function initKnobDrag() {
+  const k = $('#knob');
+  const gate = $('#gate');
+  let drag = null;
+  const segs = [[50, 76, 50, 192], [110, 76, 110, 192], [170, 76, 170, 134], [50, 134, 170, 134]];
+  const project = (x, y) => {
+    let best = null, bd = 1e9;
+    for (const [x1, y1, x2, y2] of segs) {
+      const px = clamp(x, Math.min(x1, x2), Math.max(x1, x2));
+      const py = clamp(y, Math.min(y1, y2), Math.max(y1, y2));
+      const d = Math.hypot(px - x, py - y);
+      if (d < bd) { bd = d; best = { x: px, y: py }; }
+    }
+    return best;
+  };
+  k.addEventListener('pointerdown', (e) => {
+    const r = gate.getBoundingClientRect();
+    drag = { r, moved: 0, sx: e.clientX, sy: e.clientY };
+    k.setPointerCapture(e.pointerId);
+  });
+  k.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    drag.moved = Math.max(drag.moved, Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy));
+    const p = project(e.clientX - drag.r.left, e.clientY - drag.r.top);
+    k.style.left = p.x + 'px';
+    k.style.top = p.y + 'px';
+  });
+  const end = () => {
+    if (!drag) return;
+    const x = parseFloat(k.style.left), y = parseFloat(k.style.top);
+    drag = null;
+    let best = S.gear, bd = 1e9;
+    for (const g of GEAR_ORDER) { const d = Math.hypot(GEARS[g].x - x, GEARS[g].y - y); if (d < bd) { bd = d; best = g; } }
+    if (String(best) !== String(S.gear)) setGear(best);
+    else moveKnob(S.gear, S.gear);
+  };
+  k.addEventListener('pointerup', end);
+  k.addEventListener('pointercancel', end);
+  k.addEventListener('keydown', (e) => {
+    const i = GEAR_ORDER.indexOf(S.gear);
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { e.preventDefault(); setGear(GEAR_ORDER[Math.min(GEAR_ORDER.length - 1, i + 1)]); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { e.preventDefault(); setGear(GEAR_ORDER[Math.max(0, i - 1)]); }
+  });
+}
+function renderGateCosts() {
+  if (!B) return;
+  const ci = S.pos.ch;
+  for (const g of [1, 2, 3, 4, 5]) {
+    const el = $(`[data-gt="${g}"]`);
+    if (el) el.textContent = fmtTime(cost(ci, g));
+  }
+  const pl = plan();
+  const rows = [5, 4, 3, 2, 1].map((g) => `<tr class="${String(S.gear) === String(g) ? 'on' : ''}"><td><span class="gnum">${g}</span>${GEARS[g].name}</td><td>${fmtTime(cost(ci, g))}</td><td>${bookCost(g) == null ? '<span title="needs Claude">—</span>' : fmtTime(bookCost(g))}</td></tr>`).join('');
+  $('#costs').innerHTML = `<caption class="caps">Time to finish, at 240 wpm</caption><thead><tr><th></th><th>Ch. ${esc(B.chapters[ci].label)}</th><th>Book</th></tr></thead><tbody>${rows}
+    <tr class="${S.gear === 'N' ? 'on' : ''}"><td><span class="gnum">N</span>Your plan</td><td>${fmtTime(cost(ci, gearForBits(bitsFor(ci))))}</td><td>${fmtTime(pl.total)}</td></tr></tbody>`;
+}
+function renderHere() {
+  const c = B.chapters[S.pos.ch];
+  const pg = B.pages[S.page] || B.pages[c.page0];
+  const pct = Math.round(((S.page + 1) / B.pages.length) * 100);
+  $('#here').innerHTML = `<span class="caps">You are here</span><div style="margin-top:6px"><b>Ch. ${esc(c.label)}</b> · ${esc(pageLabel(pg))} of ${B.pages[B.pages.length - 1].n}</div>
+    <div style="font-family:var(--serif);font-style:italic;margin-top:2px">${esc(trunc(c.title, 70))}</div><div class="bar"><i style="width:${pct}%"></i></div>`;
+}
+function renderShifter() {
+  if (!B) return;
+  $('#shifter').innerHTML = GEAR_ORDER.map((g) => `<button class="${String(S.gear) === String(g) ? 'on' : ''}" data-gear="${g}" aria-label="Gear ${g}: ${GEARS[g].name}">
+    <span class="sn">${g}</span><span class="sl">${GEARS[g].name}</span><span class="st num">${g === 'N' ? (bitsFor(S.pos.ch) != null ? bitsFor(S.pos.ch).toFixed(1) + ' b' : '·') : fmtTime(cost(S.pos.ch, g))}</span></button>`).join('');
+}
+
+/* ===================== paragraph rendering ===================== */
+function richHTML(p, { claims = [], targets = [], glosses = null, glossSeen = null } = {}) {
+  if (p.kind === 'pre') return esc(p.raw);
+  const plain = p.plain;
+  const n = plain.length;
+  const ranges = p.it.map(([s, e]) => ({ s, e, tag: 'em' }));
+  for (const c of claims) {
+    const i = p.key.indexOf(keyify(norm(c.quote)));
+    if (i >= 0) ranges.push({ s: i, e: i + norm(c.quote).length, tag: 'mark', cls: 'claim', attr: ` data-tip="${esc('Key claim: ' + c.claim)}"` });
+  }
+  for (const t of targets) {
+    const q = keyify(norm(t));
+    const i = p.key.indexOf(q);
+    if (i >= 0) ranges.push({ s: i, e: i + q.length, tag: 'mark', cls: 'target' });
+  }
+  const inserts = [];
+  if (glosses) {
+    for (const g of glosses) {
+      const re = new RegExp('\\b(' + g.re + ')\\b', 'gi');
+      let m;
+      while ((m = re.exec(plain))) {
+        const s = m.index, e = s + m[0].length;
+        if (ranges.some((r) => r.tag === 'gl' && r.s < e && s < r.e)) continue;
+        ranges.push({ s, e, tag: 'span', cls: 'gl', attr: ` data-tip="${esc(g.short + (g.more ? ' — ' + g.more : ''))}"`, gl: true });
+        if (glossSeen && !glossSeen.has(g.re)) { glossSeen.add(g.re); inserts.push({ at: e, html: `<span class="gl-in">${esc(g.short)}</span>` }); }
+      }
+    }
+  }
+  const pts = new Set([0, n]);
+  for (const r of ranges) { pts.add(clamp(r.s, 0, n)); pts.add(clamp(r.e, 0, n)); }
+  for (const x of inserts) pts.add(x.at);
+  const P = [...pts].sort((a, b) => a - b);
+  let html = '';
+  for (let k = 0; k < P.length; k++) {
+    const a = P[k];
+    if (k === P.length - 1) break;
+    const b = P[k + 1];
+    let s = esc(plain.slice(a, b));
+    const act = ranges.filter((r) => r.s <= a && r.e >= b);
+    act.sort((x, y) => (x.tag === 'em' ? -1 : 1) - (y.tag === 'em' ? -1 : 1));
+    for (const r of act) s = `<${r.tag}${r.cls ? ` class="${r.cls}"` : ''}${r.attr || ''}>${s}</${r.tag}>`;
+    html += s;
+    for (const x of inserts) if (x.at === b) html += x.html;
+  }
+  return html;
+}
+function inlineIt(s, star) {
+  const { plain, it } = parseRaw(norm2(s), star);
+  let out = '', last = 0;
+  for (const [a, b] of it) { out += esc(plain.slice(last, a)) + '<em>' + esc(plain.slice(a, b)) + '</em>'; last = b; }
+  return out + esc(plain.slice(last));
+}
+const norm2 = (s) => String(s).replace(/\s+/g, ' ').trim();
+
+/* ===================== views ===================== */
+function renderMain({ keepScroll } = {}) {
+  const main = $('#main');
+  stopRiffle();
+  const top = main.scrollTop;
+  const g = S.gear;
+  let html = '';
+  if (g === 'N') html = viewBet();
+  else if (g === 5) html = viewRiffle();
+  else if (g === 4) html = viewSkim();
+  else if (g === 3) html = viewRead();
+  else html = viewText(g === 1);
+  main.innerHTML = html;
+  afterRender(keepScroll ? top : null);
+}
+function viewHead(g, extra = '') {
+  const G = GEARS[g];
+  return `<div class="view-head"><span class="vh-gear">${g}</span><span class="caps vh-name">${G.name}</span><span>${esc(G.long)}</span>${extra}</div>`;
+}
+function aiBadge(a) {
+  if (!a) return '';
+  if (a.source === 'live') return `<span class="ai-badge live" title="Generated live by Claude in this browser; quotes verified against the text">Claude live · ${a.stats ? a.stats.ok + '/' + a.stats.total + ' quotes verified' : 'AI'}</span>`;
+  return `<span class="ai-badge" title="${esc(LAP.provenance)}">Precomputed by Claude · AI</span>`;
+}
+const detBadge = '<span class="ai-badge det" title="Computed in your browser from the text; no AI">Computed from the text</span>';
+
+/* ---- Riffle ---- */
+function viewRiffle() {
+  return `<div class="view">${viewHead(5, detBadge)}
+    <div class="riffle">
+      <div class="stage" id="stage"><div class="leaf ghost g2"></div><div class="leaf ghost g1"></div><article class="leaf cur" id="leaf" aria-live="off"></article></div>
+      <div class="riffle-ctrl">
+        <button class="btn" id="rPrev" aria-label="Previous page">←</button>
+        <button class="btn primary play" id="rPlay">Riffle ▸</button>
+        <button class="btn" id="rNext" aria-label="Next page">→</button>
+        <button class="btn" id="rDrop">Drop to gear 2 here</button>
+      </div>
+      <p class="riffle-hint">Hold <kbd>Space</kbd> to riffle at about six pages a second; it slows to one a second on <span style="color:var(--verm-ink)">speed bumps</span>, pages hot for “${esc(S.customTerm || S.term)}”. <kbd>←</kbd> <kbd>→</kbd> turn one page. Drag along the fore-edge to scrub.</p>
+    </div></div>`;
+}
+function renderLeaf(animate) {
+  const leaf = $('#leaf');
+  if (!leaf) return;
+  const pg = B.pages[S.page];
+  const c = B.chapters[pg.ch];
+  const opens = pg.idx === c.page0;
+  const h = edge.heat[pg.idx];
+  const dogs = (dogPages().get(pg.idx) || []);
+  const kin = dogs.length && dogs.every((d) => d.kind === 'kindred');
+  leaf.innerHTML = `
+    ${dogs.length ? `<button class="dogear ${kin ? 'kin' : ''}" data-dog="${B.isLap ? dogs.map((d) => LAP.dogears.indexOf(d)).join(',') : ''}" data-portal="${B.isLap ? '' : LAP.dogears.indexOf(dogs[0])}" aria-label="Dog-ear: ${dogs.length} passage(s)"><span>${esc(B.isLap ? [...new Set(dogs.map((d) => shortAuthor(d.book)))].join(', ') : '→ Laplace')}</span></button>` : ''}
+    <div class="run"><span class="caps">${esc(c.label)} · ${esc(trunc(B.isLap ? LAP.chapters[pg.ch].short : c.title, 34))}</span><span class="pg num">${pg.n}</span></div>
+    ${opens ? `<div class="chap-open"><div class="numeral">${esc(c.label)}</div><div class="ttl">${esc(c.title)}</div></div>` : ''}
+    <p class="glimpse">${pg.glimpse ? esc(trunc(pg.glimpse.t, 280)) : '<span style="color:var(--ink-3);font-style:normal">No running text on this page.</span>'}</p>
+    <div class="facets">
+      <div class="facet"><h5 class="caps" style="color:var(--ink-3)">Set in italics</h5>${pg.its.length ? `<div class="it">${pg.its.map(esc).join(' · ')}</div>` : '<div class="none">none</div>'}</div>
+      <div class="facet"><h5 class="caps" style="color:var(--ink-3)">Figures</h5>${pg.figs.length ? `<div class="fig num">${pg.figs.map(esc).join('  ·  ')}</div>` : '<div class="none">none</div>'}</div>
+    </div>
+    <div class="heat"><span class="caps">${esc(S.customTerm || S.term)}</span><span class="hb"><i style="width:${(h / edge.max) * 100}%"></i></span><span class="num">×${h}</span>${edge.bumps.has(pg.idx) ? '<span class="bump caps">Speed bump</span>' : ''}</div>`;
+  if (animate && !reduced) { leaf.classList.remove('turn'); void leaf.offsetWidth; leaf.classList.add('turn'); }
+}
+let riffle = null;
+function stepPage(d, animate = true) {
+  S.page = clamp(S.page + d, 0, B.pages.length - 1);
+  const pg = B.pages[S.page];
+  S.pos = { ch: pg.ch, line: pg.firstLine };
+  renderLeaf(animate);
+  positionRibbon();
+  renderHere();
+  if (riffle?.lastCh !== pg.ch) { renderGateCosts(); renderShifter(); renderLedgerCurrent(); if (riffle) riffle.lastCh = pg.ch; }
+}
+function startRiffle(mode) {
+  if (riffle) return;
+  riffle = { mode, last: performance.now(), lastCh: S.pos.ch };
+  const btn = $('#rPlay');
+  if (btn) btn.textContent = 'Pause ❚❚';
+  const tick = (t) => {
+    if (!riffle) return;
+    const hold = edge.bumps.has(S.page) ? 1000 : 165;
+    if (t - riffle.last >= hold) {
+      riffle.last = t;
+      if (S.page >= B.pages.length - 1) { stopRiffle(); return; }
+      stepPage(1, true);
+    }
+    riffle.raf = requestAnimationFrame(tick);
+  };
+  riffle.raf = requestAnimationFrame(tick);
+}
+function stopRiffle() {
+  if (!riffle) return;
+  cancelAnimationFrame(riffle.raf);
+  riffle = null;
+  const btn = $('#rPlay');
+  if (btn) btn.textContent = 'Riffle ▸';
+  renderGateCosts(); renderShifter(); renderLedgerCurrent(); saveLastPos();
+}
+
+/* ---- Skim ---- */
+function viewSkim() {
+  let lastPart = null;
+  const rows = B.chapters.map((c, ci) => {
+    const a = app(ci);
+    const bits = bitsFor(ci);
+    const part = c.part && c.part !== lastPart ? `<div class="part-head caps">${esc(c.part)}</div>` : '';
+    lastPart = c.part || lastPart;
+    const des = dogearsIn(ci).length;
+    return `${part}<div class="srow ${ci === S.pos.ch ? 'cur' : ''}" data-ch="${ci}" id="s-${ci}" tabindex="0" role="button" aria-label="Chapter ${esc(c.label)}: ${esc(c.title)}">
+      <div class="numeral">${esc(c.label.length > 5 ? String(ci + 1) : c.label)}</div>
+      <div style="min-width:0"><div class="st">${esc(c.title)}</div>
+        ${a ? `<div class="sg">${esc(a.gist)}</div><ul class="sc">${a.claims.slice(0, 4).map((x) => `<li>${esc(x.claim)}</li>`).join('')}</ul>`
+            : `<div class="sg extr">Opening line: “${esc(trunc(opening(c), 220))}”</div>`}</div>
+      <div class="smeta num"><span>${chapterPages(c)} · ${fmtInt(c.words)} w</span><span>${fmtTime(cost(ci, 2))} to read</span>
+        ${bits != null ? `<button class="gear-chip g${gearForBits(bits)}" data-go="${ci}" data-gear="${gearForBits(bits)}" title="Planned gear from your bet">${bits.toFixed(1)} bits → <b>${gearForBits(bits)}</b> ${GEARS[gearForBits(bits)].name}</button>` : ''}
+        ${des ? `<span style="color:var(--verm-ink)">${des} dog-ear${des > 1 ? 's' : ''}</span>` : ''}</div>
+    </div>`;
+  }).join('');
+  const anyApp = B.chapters.some((_, ci) => app(ci));
+  return `<div class="view">${viewHead(4, anyApp ? aiBadge(app(S.pos.ch) || app(0)) : '<span class="ai-badge det">Extractive: each chapter\'s opening line</span>')}
+    ${!anyApp ? `<p style="color:var(--ink-2);margin:-6px 0 14px">No gists yet for this book. The opening line of each chapter stands in (extractive, so it is the author\'s words, but nineteenth-century writers often put the point mid-paragraph). Open a chapter and generate its apparatus with Claude.</p>` : ''}
+    <div class="skim-list">${rows}</div></div>`;
+}
+
+/* ---- Read ---- */
+function viewRead() {
+  const secs = B.chapters.map((c, ci) => {
+    const a = app(ci);
+    const des = dogearsIn(ci);
+    const bits = bitsFor(ci);
+    const side = des.length ? `<h5 class="caps" style="color:var(--ink-3)">Dog-ears · later books on this chapter</h5>${des.map(deCard).join('')}` : '';
+    const body = a
+      ? `<p class="summary">${esc(a.summary)}</p>
+         <ol class="claims">${a.claims.map((x) => {
+           const p = B.paraByLine.get(x.line);
+           return `<li><div class="ct">${esc(x.claim)}</div><blockquote><q>${esc(x.quote)}</q><button class="linkish cite num" data-jump="${ci}" data-line="${x.line}" data-quote="${esc(x.quote)}" data-gear="2">${p ? esc(pageLabel(B.pages[p.page])) : ''} → text</button></blockquote></li>`;
+         }).join('')}</ol>`
+      : genPanel(ci, 'summary');
+    return `<section class="rsec" id="r-${ci}" data-ch="${ci}">
+      <div class="rh"><div class="numeral">${esc(c.label.length > 5 ? String(ci + 1) : c.label)}</div><div><div class="ttl">${esc(c.title)}</div>
+        <div class="meta caps num"><span>${chapterPages(c)}</span><span>${fmtInt(c.words)} words</span>${a ? aiBadge(a) : ''}
+        ${bits != null ? `<button class="gear-chip g${gearForBits(bits)}" data-go="${ci}" data-gear="${gearForBits(bits)}">${S.bets[ci]?.example ? 'example ' : ''}bet ${bits.toFixed(1)} bits → <b>${gearForBits(bits)}</b> ${GEARS[gearForBits(bits)].name}</button>` : ''}</div></div></div>
+      <div style="min-width:0">${body}</div><aside class="rside">${side}</aside></section>`;
+  }).join('');
+  return `<div class="view">${viewHead(3)}${secs}</div>`;
+}
+function deCard(d) {
+  const i = LAP.dogears.indexOf(d);
+  const m = bookMeta(d.book);
+  const kin = d.kind === 'kindred';
+  return `<div class="de-card ${kin ? 'kin' : ''}" data-dog="${i}" tabindex="0" role="button">
+    <div class="who"><span class="kind ${kin ? 'kin' : ''}">${kin ? 'Kindred' : d.kind === 'quotes' ? 'Quotes' : 'Cites'}</span><b>${esc(m.a.split(' ').pop())}</b><span class="num">${m.y}</span><span style="font-style:italic">${esc(trunc(m.t, 34))}</span></div>
+    <div class="ex">${inlineIt(d.excerpt2 && d.kind !== 'quotes' ? d.excerpt2 : d.excerpt, d.book === 74864)}</div></div>`;
+}
+
+/* ---- Text & Study ---- */
+function viewText(study) {
+  const ci = S.pos.ch;
+  const c = B.chapters[ci];
+  const a = app(ci);
+  const des = dogearsIn(ci);
+  const portals = portalsIn(ci);
+  const glosses = study ? glossaryFor(ci) : null;
+  const seen = new Set();
+  const notesBy = new Map();
+  if (study && a) for (const n of a.notes) { if (!notesBy.has(n.line)) notesBy.set(n.line, []); notesBy.get(n.line).push(n); }
+  const desBy = new Map();
+  for (const d of des) { if (!desBy.has(d.line)) desBy.set(d.line, []); desBy.get(d.line).push(d); }
+  const porBy = new Map();
+  for (const d of portals) { if (!porBy.has(d.src.line)) porBy.set(d.src.line, []); porBy.get(d.src.line).push(d); if (d.src.line2 != null && d.src.line2 !== d.src.line) { if (!porBy.has(d.src.line2)) porBy.set(d.src.line2, []); } }
+  const claims = study && a ? a.claims : [];
+  const flash = S.flash && S.flash.ch === ci ? S.flash : null;
+  let lastPage = -1;
+  const rows = c.paras.map((p) => {
+    const pgMark = p.page !== lastPage ? `<span class="pg">${esc(pageLabel(B.pages[p.page]))}</span>` : '';
+    lastPage = p.page;
+    const targets = flash && flash.quotes ? flash.quotes : [];
+    const cls = p.kind === 'pre' ? 'ptext pre' : p.kind === 'sub' ? 'ptext sub' : p.kind === 'fn' ? 'ptext fn' : 'ptext';
+    const html = richHTML(p, { claims: p.kind === 'p' ? claims.filter((x) => x.line === p.line) : [], targets: flash && flash.line === p.line ? targets : [], glosses: p.kind === 'p' ? glosses : null, glossSeen: seen });
+    let marg = '';
+    for (const n of notesBy.get(p.line) || []) marg += `<div class="mnote"><span class="mq">“${esc(trunc(n.at, 60))}”</span>${esc(n.note)}</div>`;
+    for (const d of desBy.get(p.line) || []) {
+      const m = bookMeta(d.book);
+      marg += `<button class="mde ${d.kind === 'kindred' ? 'kin' : ''}" data-dog="${LAP.dogears.indexOf(d)}"><span class="tri"></span><span><b>${esc(m.a.split(' ').pop())} ${m.y}</b> ${d.kind === 'kindred' ? 'makes the same argument' : d.kind === 'quotes' ? 'quotes this' : 'cites this'}</span></button>`;
+    }
+    for (const d of porBy.get(p.line) || []) {
+      const lp = LAP && B.id !== 58881 ? d : null;
+      if (lp) marg += `<button class="mportal" data-portal="${LAP.dogears.indexOf(d)}">${d.kind === 'kindred' ? 'Same argument as' : 'Cites'} <b>Laplace, Essai, ch. ${ROMANS[d.ch - 1]} →</b></button>`;
+    }
+    return `<div class="prow" data-line="${p.line}"><div class="gut">${pgMark}</div><div class="${cls}">${html}</div><div class="marg">${marg}</div></div>`;
+  }).join('');
+  const bits = bitsFor(ci);
+  const nxt = ci + 1 < B.chapters.length ? B.chapters[ci + 1] : null;
+  const prv = ci > 0 ? B.chapters[ci - 1] : null;
+  const banner = study
+    ? (a ? `<div class="study-banner">${aiBadge(a)}<span>${a.notes.length} margin notes · ${glosses.length} glosses · key claims underlined</span></div>`
+         : `<div class="study-banner" style="display:block">${genPanel(ci, 'notes')}</div>`)
+    : '';
+  return `<div class="view">${viewHead(study ? 1 : 2, study ? '' : detBadge)}
+    <div class="chap-head"><div class="numeral">${esc(c.label.length > 5 ? String(ci + 1) : c.label)}</div><div>
+      ${c.part ? `<div class="part caps">${esc(c.part)}</div>` : ''}<div class="ttl">${esc(c.title)}</div>
+      <div class="meta caps num"><span>${chapterPages(c)}</span><span>${fmtInt(c.words)} words</span><span>${fmtTime(cost(ci, study ? 1 : 2))} at this gear</span>
+      ${bits != null ? `<span class="gear-chip g${gearForBits(bits)}">${S.bets[ci]?.example ? 'example ' : ''}bet: ${bits.toFixed(1)} bits → gear ${gearForBits(bits)}</span>` : (app(ci)?.bet ? `<button class="gear-chip" data-gear="N">Bet on it first</button>` : '')}</div></div></div>
+    ${banner}
+    <div class="readline" aria-hidden="true"></div>
+    <div class="ptexts">${rows}</div>
+    <div class="chap-foot">
+      ${prv ? `<button class="btn" data-goch="${ci - 1}">← ${esc(prv.label)}</button>` : ''}
+      ${nxt ? `<button class="btn primary" data-goch="${ci + 1}">Continue to ${esc(nxt.label)}: ${esc(trunc(nxt.title, 44))} →</button>` : '<span style="color:var(--ink-3)">End of the book.</span>'}
+    </div></div>`;
+}
+
+/* ---- Bet ---- */
+function viewBet() {
+  const ci = S.betCh ?? S.pos.ch;
+  const c = B.chapters[ci];
+  const a = app(ci);
+  const picker = `<div class="picker" role="group" aria-label="Choose a chapter to bet on">${B.chapters.map((cc, i) => {
+    const bits = bitsFor(i);
+    const b = S.bets[i];
+    const has = !!app(i)?.bet;
+    return `<button class="pk ${b ? 'done' : ''} ${b?.example ? 'ex' : ''} ${i === ci ? 'cur' : ''}" data-betch="${i}" style="${b && bits != null ? `background-color:${surpriseColor(bits)}` : ''}${!has ? ';opacity:.45' : ''}" title="${esc(cc.title)}${bits != null ? ' · ' + bits.toFixed(1) + ' bits' : ''}">${esc(cc.label.length > 5 ? String(i + 1) : cc.label)}</button>`;
+  }).join('')}</div>`;
+  if (!a || !a.bet) {
+    return `<div class="view">${viewHead('N')}${picker}<div style="height:16px"></div>${genPanel(ci, 'bet')}</div>`;
+  }
+  const bet = a.bet;
+  const prior = S.bets[ci];
+  const w = S.betDraft && S.betDraft.ch === ci ? S.betDraft.w : prior ? prior.w.slice() : [0, 0, 0, 0];
+  S.betDraft = { ch: ci, w };
+  const revealed = !!prior && S.betRevealed;
+  const prev = ci > 0 ? lastSentences(B.chapters[ci - 1]) : null;
+  const ps = probs(w);
+  const opts = bet.options.map((o, i) => {
+    const right = revealed && i === bet.answer;
+    return `<div class="opt ${right ? 'right' : ''}">
+      <span class="ol">${LETTERS[i]}</span><label for="bw${i}">${esc(o)}</label><span class="pct num" id="bp${i}">${Math.round(ps[i] * 100)}%</span>
+      <input type="range" id="bw${i}" min="0" max="10" step="1" value="${w[i]}" data-bw="${i}" ${revealed ? 'disabled' : ''} aria-label="Confidence in option ${LETTERS[i]}">
+      ${revealed && right ? `<span class="verdict" style="color:var(--ok)">✓ What Laplace argues${B.isLap ? '' : ''}</span>` : ''}</div>`;
+  }).join('');
+  const dist = `<div class="dist" id="dist" aria-hidden="true">${ps.map((p, i) => `<i style="width:${p * 100}%;background:${['var(--plate)', 'var(--accent)', 'var(--kin)', 'var(--ink-3)'][i]};opacity:${0.55 + 0.15 * (3 - i)}"></i>`).join('')}</div>`;
+  let reveal = '';
+  if (revealed) {
+    const bits = bitsFor(ci);
+    const g = gearForBits(bits);
+    const p = B.paraByLine.get(bet.line);
+    reveal = `<div class="reveal">
+      <div class="bits"><span class="caps bu">Surprise</span><div class="bn num">${bits.toFixed(2)}</div><span class="bu">bits${prior.example ? ' (example bet)' : ''}</span>
+        <div class="gauge"><i style="left:${clamp(bits / 6.64, 0, 1) * 100}%"></i></div><div class="gauge-l num"><span>0 knew it</span><span>2 = no idea</span><span>6.6</span></div></div>
+      <div class="rec"><div>You gave the right answer <b class="num">${Math.round(probs(prior.w)[bet.answer] * 100)}%</b>. Recommended: <button class="gear-chip g${g}" data-go="${ci}" data-gear="${g}"><b>${g}</b> ${GEARS[g].name}</button> <span class="num" style="color:var(--ink-3)">${fmtTime(cost(ci, g))} instead of ${fmtTime(cost(ci, 2))}</span></div>
+        <div class="why">${esc(GEAR_WHY[g])} ${esc(bet.why || '')}</div>
+        ${bet.quote ? `<div class="decisive"><span class="cl caps">Decisive passage · ${p ? esc(pageLabel(B.pages[p.page])) : ''}</span>“${esc(bet.quote)}”</div>` : ''}
+        <div class="bet-actions" style="justify-content:flex-start"><button class="btn primary" data-jump="${ci}" data-line="${bet.line ?? ''}" data-quote="${esc(bet.quote || '')}" data-gear="${g}">Shift to gear ${g} at this passage</button>
+        <button class="btn" id="betAgain">Change bet</button>${nextUnbet(ci) != null ? `<button class="btn" data-betch="${nextUnbet(ci)}">Next bet: ${esc(B.chapters[nextUnbet(ci)].label)} →</button>` : ''}</div></div></div>`;
+  }
+  return `<div class="view">${viewHead('N', a.source ? aiBadge(a) : '')}
+    <div class="betview">${picker}
+    <div class="card">
+      <div class="pre-h caps num"><span>Before you read · Chapter ${esc(c.label)}</span><span>${chapterPages(c)} · ${fmtInt(c.words)} words · ${fmtTime(cost(ci, 2))} at gear 2</span></div>
+      <div class="bt">${esc(c.title)}</div>
+      ${prev ? `<div class="ctx"><span class="cl caps">Where chapter ${esc(B.chapters[ci - 1].label)} leaves off</span>“${esc(prev)}”</div>` : `<div class="ctx"><span class="cl caps">The first chapter</span>All you have is the title and the table of contents.</div>`}
+      <p class="q">${esc(bet.q)}</p>
+      <div style="color:var(--ink-3);font-size:12px">Spread your confidence over the four claims (drag each bar). Scored by surprise, −log₂ of the probability you gave the right one.</div>
+      ${dist}${opts}
+      ${revealed ? '' : `<div class="bet-actions"><button class="btn" id="betEven">Spread evenly</button><button class="btn verm" id="betPlace">Place bet and reveal</button></div>`}
+      ${reveal}
+    </div></div></div>`;
+}
+function lastSentences(c) {
+  const ps = c.paras.filter((p) => p.kind === 'p');
+  const p = ps[ps.length - 1];
+  if (!p) return null;
+  const ss = splitSentences(p.plain);
+  return trunc(p.plain.slice(ss[ss.length - 1].s).trim(), 320);
+}
+function nextUnbet(from) {
+  for (let k = 1; k <= B.chapters.length; k++) {
+    const i = (from + k) % B.chapters.length;
+    if ((!S.bets[i] || S.bets[i].example) && app(i)?.bet) return i;
+  }
+  return null;
+}
+
+/* ---- generation panel ---- */
+function genPanel(ci, what) {
+  const c = B.chapters[ci];
+  const job = genJob && genJob.book === B.id && genJob.ci === ci ? genJob : null;
+  const label = { summary: 'summary and claims', notes: 'margin notes and glosses', bet: 'bet' }[what];
+  let action;
+  if (job) {
+    action = `<div class="gen-job"><span class="spin"></span><span>${job.status === 'thinking' ? 'Thinking…' : `Writing… <span class="num">${fmtInt(job.chars)}</span> characters`}</span><button class="btn" id="genStop">Stop</button></div>`;
+  } else if (sampleFn) {
+    action = `<div class="gen-job"><button class="btn verm" data-gen="${ci}">Generate this chapter's apparatus with Claude</button><span style="color:var(--ink-3)">One call: gist, summary, claims with verbatim quotes, a bet, margin notes and glosses. Quotes are checked against the text; any that do not match are dropped.</span></div>`;
+  } else if (sampleFn === undefined) {
+    action = `<div class="gen-job"><span class="spin"></span><span>Checking whether Claude is available…</span></div>`;
+  } else {
+    action = `<p style="color:var(--ink-3)">Precomputed example only: the apparatus is precomputed for Laplace. Live generation for this chapter is available when this page is opened in Claude.</p>`;
+  }
+  const msg = S.genMsg && S.genMsg.book === B.id && S.genMsg.ci === ci ? `<p class="${S.genMsg.ok ? 'gen-ok' : 'gen-msg'}">${esc(S.genMsg.text)}</p>` : '';
+  return `<div class="empty"><h4>No ${label} for ${esc(c.label)} yet</h4>
+    <p>${B.isLap ? '' : `${esc(shortAuthor(B.id))}\'s chapters have no precomputed apparatus. `}Gears 2 (Text) and 5 (Riffle) work now; they are computed from the text.</p>${msg}${action}</div>`;
+}
+
+/* ===================== ledger ===================== */
+function renderLedger(target = $('#ledger')) {
+  if (!target) return;
+  const tabs = `<div class="tabs" role="tablist"><button class="tab" role="tab" aria-selected="${S.ledgerTab === 'map'}" data-tab="map">Information map</button><button class="tab" role="tab" aria-selected="${S.ledgerTab === 'dog'}" data-tab="dog">Dog-ears</button></div>`;
+  target.innerHTML = tabs + (S.ledgerTab === 'map' ? ledgerMap() : ledgerDogs());
+}
+function renderLedgerCurrent() {
+  $$('.sm-row').forEach((r) => r.classList.toggle('cur', Number(r.dataset.ch) === S.pos.ch));
+  if (S.ledgerTab === 'dog') { renderLedger(); const d = $('.ledger-drawer'); if (d) renderLedger(d); }
+}
+function ledgerMap() {
+  const pl = plan();
+  const anyBet = Object.keys(S.bets).length > 0;
+  const betable = B.chapters.some((_, i) => app(i)?.bet);
+  const maxW = Math.max(...B.chapters.map((c) => c.words));
+  const rows = B.chapters.map((c, ci) => {
+    const bits = bitsFor(ci);
+    const g = gearForBits(bits);
+    return `<li class="sm-row ${ci === S.pos.ch ? 'cur' : ''}" data-ch="${ci}" data-plan="${g}" tabindex="0" role="button" aria-label="Chapter ${esc(c.label)}, planned gear ${g}">
+      <span class="numeral">${esc(c.label.length > 5 ? String(ci + 1) : c.label)}</span>
+      <span style="min-width:0"><span class="nm" style="display:block">${esc(B.isLap ? LAP.chapters[ci].short : c.title)}</span><span class="len" style="width:${Math.max(4, (c.words / maxW) * 100)}%"></span></span>
+      ${bits != null ? `<span class="sw num" style="background:${surpriseColor(bits)}" title="${bits.toFixed(2)} bits${S.bets[ci].example ? ' (example)' : ''}">${bits.toFixed(1)}</span>` : `<span class="sw none" title="No bet yet">${app(ci)?.bet ? 'bet' : '—'}</span>`}
+      <span class="tm num"><span class="gpip g${g}" title="Planned gear ${g}: ${GEARS[g].name}">${g}</span>${fmtTime(cost(ci, g))}</span></li>`;
+  }).join('');
+  const moved = anyBet
+    ? `Moved <b>${fmtTime(pl.saved)}</b> out of ${pl.nSaved} chapter${pl.nSaved === 1 ? '' : 's'} you already knew${pl.nSpent ? ` and put <b>${fmtTime(pl.spent)}</b> into ${pl.nSpent} that surprised you` : ''}. Chapters without a bet are planned at gear 2, the full text.`
+    : betable ? 'Bet on a chapter (gear N) to see where your reading time should go.' : 'No bets for this book yet; generate a chapter\'s apparatus with Claude to get one.';
+  return `${S.usingExample ? `<div class="example-note"><b>Example bets.</b> Six bets by a hypothetical reader, to show the map. Place your own and they clear. <button class="linkish" id="clearExample">Clear now</button></div>` : ''}
+    <div class="plan-head"><span class="caps" style="color:var(--ink-3)">Your reading plan</span>
+      <div class="big"><div><b class="num">${fmtTime(pl.total)}</b><span>planned</span></div><div><b class="num" style="color:var(--ink-3)">${fmtTime(pl.straight)}</b><span>straight through, gear 2</span></div></div>
+      <div class="moved">${moved}</div></div>
+    <ol class="spine-map">${rows}</ol>
+    <div class="legend"><span>knew it</span><span class="ramp"></span><span>surprised · bits</span></div>
+    <p style="color:var(--ink-3);font-size:11.5px;line-height:1.45;margin-top:10px">Under 0.5 bits → 4 Skim · under 1.5 → 3 Read · under 3 → 2 Text · 3 or more → 1 Study.</p>`;
+}
+function ledgerDogs() {
+  if (!B.isLap) {
+    const ps = LAP.dogears.filter((d) => d.book === B.id);
+    const cnt = LAP.mentionCounts[B.id] || 0;
+    return `<p style="color:var(--ink-2);font-size:13px;line-height:1.5">Passages in ${esc(shortAuthor(B.id))} that point back to Laplace's Essay: <b>${ps.length}</b> linked to a page${cnt ? `, out of ${cnt} paragraphs that name Laplace` : ''}.</p>
+      ${ps.map((d) => `<button class="mportal" data-portal="${LAP.dogears.indexOf(d)}" style="width:100%">${esc(B.chapters[d.src.ch].label)} · ${d.kind === 'kindred' ? 'same argument as' : d.kind} <b>Essai ch. ${ROMANS[d.ch - 1]} →</b><div style="font-family:var(--serif);margin-top:4px">${inlineIt(trunc(d.excerpt, 140), B.id === 74864)}</div></button>`).join('') || '<p style="color:var(--ink-3)">None found on this book.</p>'}`;
+  }
+  const here = dogearsIn(S.pos.ch);
+  const byBook = {};
+  for (const d of LAP.dogears) byBook[d.book] = (byBook[d.book] || 0) + 1;
+  const unlinked = LAP.mentions.filter((m) => !m.linked);
+  const none = STRUCT.books.filter((b) => b.id !== 58881 && !LAP.mentionCounts[b.id] && !byBook[b.id]).map((b) => b.a.split(' ').pop());
+  return `<h4 class="caps" style="margin-top:0;color:var(--ink-3)">On chapter ${esc(B.chapters[S.pos.ch].label)}</h4>
+    ${here.length ? here.map(deCard).join('') : '<p style="color:var(--ink-3);font-size:12.5px">No dog-ears on this chapter.</p>'}
+    <h4 class="caps" style="color:var(--ink-3)">Across the shelf</h4>
+    <ul class="mention-list">${Object.entries(byBook).sort((a, b) => b[1] - a[1]).map(([id, n]) => `<li><b>${esc(shortAuthor(Number(id)))}</b> · ${n} passage${n > 1 ? 's' : ''} linked to a page${LAP.mentionCounts[id] ? ` (of ${LAP.mentionCounts[id]} naming Laplace)` : ' (kindred only)'}</li>`).join('')}
+      <li style="color:var(--ink-3)">${esc(none.join(', '))}: nothing found.</li></ul>
+    <details style="margin-top:12px"><summary>${unlinked.length} mentions not linked to a page</summary>
+      <p style="color:var(--ink-3);font-size:12px;line-height:1.45">Found by searching the texts for “Laplace” and “Essai philosophique”. These discuss his other works (Mécanique céleste, System of the World, Laplace's equation), are footnotes to linked passages, or praise him in general.</p>
+      <ul class="mention-list">${unlinked.map((m) => `<li><b>${esc(shortAuthor(m.book))}</b> ${esc(bookMeta(m.book).chapters[m.ch].label)}: ${inlineIt(trunc(m.snip, 150), m.book === 74864)}</li>`).join('')}</ul></details>
+    <p style="color:var(--ink-3);font-size:11.5px;line-height:1.45;margin-top:12px">Dog-ears: found by text search; linked to a page by Claude (AI). Excerpts and anchors are verbatim and machine-checked.</p>`;
+}
+
+/* ===================== popover & tooltip ===================== */
+function openDogPop(i, anchorEl) {
+  const d = LAP.dogears[i];
+  const m = bookMeta(d.book);
+  const kin = d.kind === 'kindred';
+  const pop = $('#pop');
+  const srcCh = m.chapters[d.src.ch];
+  const lp = LAP.chapters[d.ch - 1];
+  pop.innerHTML = `<button class="x" aria-label="Close">×</button>
+    <span class="kind ${kin ? 'kin' : ''}">${kin ? 'Kindred passage · same argument, no citation' : d.kind === 'quotes' ? 'Dog-ear · quotes Laplace' : 'Dog-ear · cites Laplace'}</span>
+    <h4>${esc(m.a)}, <i>${esc(m.t)}</i></h4><div class="src num">${m.y} · ${esc(srcCh.label)}: ${esc(trunc(srcCh.title, 60))}</div>
+    <p class="ex">“${inlineIt(d.excerpt, d.book === 74864)}”</p>${d.excerpt2 ? `<p class="ex">“${inlineIt(d.excerpt2, d.book === 74864)}”</p>` : ''}
+    <div class="note"><span class="ai-badge" style="margin-right:6px">AI note</span>${esc(d.note)}</div>
+    <div class="acts">
+      <button class="btn primary" data-open-src="${i}">Open ${esc(m.a.split(' ').pop())} at this passage</button>
+      ${B.isLap ? `<button class="btn" data-jump="${d.ch - 1}" data-line="${d.line}" data-quote="${esc(d.anchor)}" data-gear="2">Laplace, ch. ${ROMANS[d.ch - 1]} →</button>` : `<button class="btn" data-open-lap="${i}">Laplace, ch. ${ROMANS[d.ch - 1]}: ${esc(lp.short)} →</button>`}
+    </div>`;
+  pop.hidden = false;
+  placePop(pop, anchorEl);
+  $('.x', pop).focus();
+}
+function placePop(pop, el) {
+  const r = el ? el.getBoundingClientRect() : { left: innerWidth / 2, right: innerWidth / 2, top: innerHeight / 3, bottom: innerHeight / 3 };
+  const pw = pop.offsetWidth, ph = pop.offsetHeight;
+  let x = r.right + 10, y = r.top - 10;
+  if (x + pw > innerWidth - 12) x = r.left - pw - 10;
+  if (x < 12) { x = clamp(r.left, 12, innerWidth - pw - 12); y = r.bottom + 8; }
+  y = clamp(y, 12, innerHeight - ph - 12);
+  pop.style.left = x + 'px';
+  pop.style.top = y + 'px';
+}
+function closePop() { $('#pop').hidden = true; }
+
+/* ===================== about ===================== */
+function openAbout() {
+  const v = LAP.verification;
+  $('#overlay').innerHTML = `<div class="drawer-bg" id="aboutBg"></div><aside class="drawer" role="dialog" aria-modal="true" aria-label="About this prototype">
+    <button class="tbtn close" id="aboutClose">Close</button>
+    <span class="caps" style="color:var(--ink-3)">About this prototype</span><h2>Gearbox</h2>
+    <p>One book at five reading speeds, with a bet before each chapter to decide which speed it deserves. The demonstration book is Laplace's <i>A Philosophical Essay on Probabilities</i> (1814), the founding popular text of the subject this wiki's readers care about.</p>
+    <h3 class="caps">What it demonstrates</h3>
+    <ul><li><b>Five gears on one lever</b>, numbered like a car's: low gear for steep chapters, top gear to cruise. 1 Study (full text, glosses, margin notes) · 2 Text · 3 Read (summaries, verbatim quotes) · 4 Skim (gists and claims) · 5 Riffle (flip every page: glimpse line, italics, figures, term heat). Shifting keeps your place.</li>
+      <li><b>The bet loop.</b> Before reading a chapter you spread confidence over four candidate claims. Your surprise in bits (−log₂ of the probability you gave the right one) picks the gear, and the map reallocates your reading time. Guessing first also helps retention (the pretesting effect).</li>
+      <li><b>Dog-ears.</b> Passages in the other eight books on the shelf that cite, quote or echo the Essay, with portals both ways.</li>
+      <li><b>Live generation.</b> Opened in Claude, the page can build the same apparatus for any chapter of any of the nine books, checking every quote against the text.</li></ul>
+    <h3 class="caps">What is real</h3>
+    <ul><li>Full texts from Project Gutenberg (public domain in the US), fetched 15 October 2026: Laplace (#58881, Truscott and Emory's 1902 translation of the sixth French edition), Venn, Peirce, Jevons, Poincaré, Russell, Hume, Mill and Darwin.</li>
+      <li>Page numbers for Laplace follow the 1902 edition's table of contents for chapter openings; pages inside a chapter are interpolated by word count, and the last page (196) is estimated. Other books use synthetic 300-word pages.</li>
+      <li>Computed in your browser from the text, no AI: the fore-edge, term heat and speed bumps, glimpse lines (the page's most distinctive sentence by TF-IDF), italics, figures, chapter segmentation, reading times, opening lines.</li></ul>
+    <h3 class="caps">What is AI-generated</h3>
+    <ul><li>${esc(LAP.provenance)}: Laplace's gists, summaries, claims, bets and distractors, margin notes, glosses, and the links from other books' passages to the Essay's pages (the passages themselves were found by searching the texts).</li>
+      <li>Every quotation is verbatim. A build script checked ${v.checked} quotes and anchors (exact match after whitespace normalization) and dropped ${v.dropped}. Live generations are checked the same way in the page.</li></ul>
+    <h3 class="caps">What is assumed or mocked</h3>
+    <ul><li>Reading rates are fixed assumptions, not measured: 240 words a minute for reading, 120 for study, 2.5 seconds a page to riffle. A real version would learn your rates.</li>
+      <li>The six example bets are a hypothetical reader's. Your bets, place, theme and generated chapters stay in this browser only.</li>
+      <li>Speed reading as sold does not work (Rayner et al., 2016); the gears are different tasks with different costs, and the times say so.</li></ul>
+    <h3 class="caps">Links</h3>
+    <ul><li><a href="https://open-stacks.quantifieduncertainty.org/building/prototype-gallery/" target="_blank" rel="noopener">Prototype gallery</a></li>
+      <li><a href="https://open-stacks.quantifieduncertainty.org/interfaces/reading-interfaces/" target="_blank" rel="noopener">Reading interfaces</a> · <a href="https://open-stacks.quantifieduncertainty.org/interfaces/generative-interfaces/" target="_blank" rel="noopener">Generative interfaces</a></li>
+      <li><a href="https://www.gutenberg.org/ebooks/58881" target="_blank" rel="noopener">The Essay at Project Gutenberg</a></li></ul>
+    <h3 class="caps">Keys</h3>
+    <p><kbd>1</kbd>–<kbd>5</kbd> shift gears, <kbd>N</kbd> bet. In Riffle, hold <kbd>Space</kbd>; <kbd>←</kbd> <kbd>→</kbd> turn pages. <kbd>Esc</kbd> closes panels.</p>
+  </aside>`;
+  $('#aboutClose').focus();
+}
+function closeOverlay() { $('#overlay').innerHTML = ''; }
+function openLedgerDrawer() {
+  $('#overlay').innerHTML = `<div class="drawer-bg" id="aboutBg"></div><aside class="ledger-drawer" id="ledgerDrawer" role="dialog" aria-modal="true" aria-label="Information map"><button class="tbtn" id="aboutClose" style="float:right">Close</button><div id="ledgerInner"></div></aside>`;
+  renderLedger($('#ledgerInner'));
+}
+
+/* ===================== after render: scroll, wiring ===================== */
+function afterRender(keepTop) {
+  const main = $('#main');
+  const g = S.gear;
+  if (g === 5) {
+    renderLeaf(false);
+  } else if (g === 1 || g === 2) {
+    const line = S.pos.line;
+    const row = line != null ? $(`.prow[data-line="${line}"]`) : null;
+    if (keepTop != null) main.scrollTop = keepTop;
+    else if (row) main.scrollTop = Math.max(0, row.offsetTop - main.clientHeight * 0.3 + 6);
+    else main.scrollTop = 0;
+    if (row) { const gut = $('.gut', row); if (gut && !$('.here-mark', gut)) gut.insertAdjacentHTML('beforeend', '<span class="here-mark" aria-hidden="true">▸</span>'); }
+    $$('mark.target', main).forEach((m) => setTimeout(() => m.classList.add('fade'), 50));
+    cacheRows();
+  } else if (g === 3) {
+    const sec = $(`#r-${S.pos.ch}`);
+    if (keepTop != null) main.scrollTop = keepTop;
+    else main.scrollTop = sec ? Math.max(0, sec.offsetTop - 4) : 0;
+  } else if (g === 4) {
+    const row = $(`#s-${S.pos.ch}`);
+    if (keepTop != null) main.scrollTop = keepTop;
+    else main.scrollTop = row ? Math.max(0, row.offsetTop - main.clientHeight * 0.3) : 0;
+  } else {
+    if (keepTop != null) main.scrollTop = keepTop; else main.scrollTop = 0;
+  }
+  S.flash = null;
+}
+let rowCache = [];
+function cacheRows() { rowCache = $$('.prow', $('#main')).map((r) => ({ el: r, line: Number(r.dataset.line) })); }
+let scrollRaf = 0;
+function onMainScroll() {
+  if (scrollRaf) return;
+  scrollRaf = requestAnimationFrame(() => {
+    scrollRaf = 0;
+    const main = $('#main');
+    const g = S.gear;
+    if (g === 1 || g === 2) {
+      const y = main.scrollTop + main.clientHeight * 0.3;
+      let cur = rowCache[0];
+      for (const r of rowCache) { if (r.el.offsetTop <= y) cur = r; else break; }
+      if (cur && cur.line !== S.pos.line) {
+        S.pos.line = cur.line;
+        const p = B.paraByLine.get(cur.line);
+        if (p) S.page = p.page;
+        positionRibbon(); renderHere(); saveLastPos();
+      }
+    } else if (g === 3) {
+      const y = main.scrollTop + 60;
+      let ci = S.pos.ch;
+      for (const sec of $$('.rsec', main)) { if (sec.offsetTop <= y) ci = Number(sec.dataset.ch); else break; }
+      if (ci !== S.pos.ch) { S.pos = { ch: ci, line: null }; S.page = B.chapters[ci].page0; syncPosition(); }
+    }
+  });
+}
+
+/* ===================== Claude: live generation ===================== */
+function chapterText(c, max = 90000) {
+  let t = c.paras.filter((p) => p.kind !== 'fn').map((p) => p.plain).join('\n\n');
+  let cut = false;
+  if (t.length > max) { t = t.slice(0, max); cut = true; }
+  return { t, cut };
+}
+function genPrompt(c) {
+  const m = B.meta;
+  const { t, cut } = chapterText(c);
+  return `You are building a multi-speed reading apparatus for one chapter of a public-domain book, for a reader who will choose how closely to read it.
+
+Book: ${m.t}, by ${m.a} (${m.y}). Chapter ${c.label}: "${c.title}".${cut ? ' (The chapter text below is truncated at 90,000 characters.)' : ''}
+
+Reply with ONLY a JSON object of this shape:
+{
+  "gist": "one sentence, at most 30 words: what the chapter argues",
+  "summary": "3 to 5 sentences",
+  "claims": [ { "claim": "at most 20 words", "quote": "a verbatim passage of 8 to 40 words from the chapter that supports the claim" } ],
+  "bet": { "q": "a question a reader could try to answer from the title alone, before reading", "options": ["the chapter's actual main claim", "distractor", "distractor", "distractor"], "why": "1-2 sentences on why the first option is right", "quote": "the verbatim decisive passage, 8 to 40 words" },
+  "notes": [ { "at": "a verbatim 5 to 15 word snippet from the paragraph being annotated", "note": "at most 40 words of commentary for a modern reader: context, a modern term, a check of the arithmetic, a later development" } ],
+  "glosses": [ { "term": "an archaic or technical word or phrase exactly as it appears in the text", "short": "at most 4 words", "more": "at most 25 words" } ]
+}
+Give 3 to 5 claims, 3 to 6 notes and up to 10 glosses.
+Rules:
+- Every "quote" and "at" must be copied exactly from the chapter text below: same words, same spelling and punctuation, inside one paragraph. The page checks each one and drops any that do not match.
+- Put the correct option first in "options"; the page shuffles them. The three distractors must be positions a well-read person might plausibly expect, matched to the correct option in length and style, and not supported by this chapter.
+- Do not invent facts about the book; keep notes modest and say when something is uncertain.
+
+CHAPTER TEXT:
+<<<
+${t}
+>>>`;
+}
+function verifyApparatus(data, c) {
+  const paras = c.paras;
+  const find = (q) => {
+    if (typeof q !== 'string' || q.trim().length < 6) return null;
+    const k = keyify(norm(q));
+    const p = paras.find((p) => p.key.includes(k));
+    return p ? p.line : null;
+  };
+  let total = 0, ok = 0;
+  const claims = [];
+  for (const x of Array.isArray(data?.claims) ? data.claims : []) {
+    if (typeof x?.claim !== 'string') continue;
+    total++;
+    const line = find(x.quote);
+    if (line != null) { ok++; claims.push({ claim: x.claim, quote: x.quote, line }); }
+  }
+  const notes = [];
+  for (const x of Array.isArray(data?.notes) ? data.notes : []) {
+    if (typeof x?.note !== 'string') continue;
+    total++;
+    const line = find(x.at);
+    if (line != null) { ok++; notes.push({ at: x.at, note: x.note, line }); }
+  }
+  let bet = null;
+  const b = data?.bet;
+  if (b && typeof b.q === 'string' && Array.isArray(b.options) && b.options.length === 4 && b.options.every((o) => typeof o === 'string')) {
+    const order = [0, 1, 2, 3];
+    for (let i = 3; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+    let line = null;
+    if (b.quote) { total++; line = find(b.quote); if (line != null) ok++; }
+    bet = { q: b.q, options: order.map((i) => b.options[i]), answer: order.indexOf(0), why: typeof b.why === 'string' ? b.why : '', quote: line != null ? b.quote : null, line };
+  }
+  const text = c.paras.map((p) => p.plain).join(' ').toLowerCase();
+  const glosses = (Array.isArray(data?.glosses) ? data.glosses : []).filter((g) => typeof g?.term === 'string' && g.term.length > 2 && text.includes(g.term.toLowerCase()) && typeof (g.short || g.gloss) === 'string').slice(0, 12);
+  if (typeof data?.gist !== 'string' || typeof data?.summary !== 'string') return { error: `Claude's reply had no usable gist or summary (${ok} of ${total} quotes verified).` };
+  return { gist: data.gist, summary: data.summary, claims, notes, bet, glosses, source: 'live', preferLive: true, stats: { ok, total }, at: Date.now() };
+}
+async function generate(ci) {
+  if (!sampleFn || genJob) return;
+  const book = B;
+  const c = book.chapters[ci];
+  const ctl = new AbortController();
+  genJob = { book: book.id, ci, ctl, status: 'thinking', chars: 0 };
+  S.genMsg = null;
+  renderMain({ keepScroll: true });
+  const upd = () => { const el = $('.gen-job span:nth-child(2)'); if (el) el.innerHTML = genJob.status === 'thinking' ? 'Thinking…' : `Writing… <span class="num">${fmtInt(genJob.chars)}</span> characters`; };
+  try {
+    const data = await sampleFn.json(genPrompt(c), { signal: ctl.signal, onText: ({ text }) => { if (!genJob) return; genJob.status = 'writing'; genJob.chars = text.length; upd(); } });
+    const a = verifyApparatus(data, c);
+    if (a.error) S.genMsg = { book: book.id, ci, ok: false, text: a.error };
+    else {
+      GEN[book.id] = GEN[book.id] || {};
+      GEN[book.id][ci] = a;
+      store.set('gen', GEN);
+      S.genMsg = { book: book.id, ci, ok: true, text: `Generated. ${a.stats.ok} of ${a.stats.total} quotes and anchors verified against the text; ${a.stats.total - a.stats.ok} dropped.` };
+    }
+  } catch (e) {
+    const code = e?.code || 'upstream_error';
+    const map = {
+      cancelled: 'Stopped.',
+      not_granted: 'Claude was not allowed for this page, so live generation is off for this view.',
+      sampling_disabled: 'Claude is not available for this account, so live generation is off.',
+      rate_limited: 'Too many requests just now. Try again in a little while.',
+      invalid_json: 'Claude\'s reply was not valid JSON. Try again.',
+      prompt_too_large: 'This chapter is too long to send in one piece.',
+      refused: 'Claude declined this request.',
+    };
+    if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code)) { sampleFn = null; setClaudeChip(); }
+    S.genMsg = { book: book.id, ci, ok: false, text: map[code] || 'Something went wrong reaching Claude. Try again.' };
+  } finally {
+    genJob = null;
+    if (B.id === book.id) { renderMain({ keepScroll: true }); renderGateCosts(); renderShifter(); renderLedger(); }
+  }
+}
+
+/* ===================== book switching ===================== */
+async function openBook(id, { ch = null, line = null, gear = null, flash = null } = {}) {
+  closePop();
+  $('#shelf').hidden = true;
+  $('#bookBtn').setAttribute('aria-expanded', 'false');
+  if (!B || B.id !== id) {
+    $('#main').innerHTML = `<div class="view" style="color:var(--ink-3)">Opening ${esc(bookMeta(id).t)}…</div>`;
+    try {
+      const text = await fetchText(id);
+      B = parseBook(id, text);
+    } catch (e) {
+      $('#main').innerHTML = `<div class="view"><div class="empty"><h4>Could not load this book</h4><p>${esc(String(e.message || e))}</p></div></div>`;
+      return;
+    }
+    S.bookId = id;
+    store.set('book', id);
+    loadBets();
+    renderBookBtn();
+    renderShelf();
+  }
+  const last = store.get('pos:' + id, null);
+  const ci = ch ?? (last ? last.ch : (id === 58881 ? 2 : 0));
+  const ln = ch != null ? line : (last ? last.line : null);
+  S.pos = { ch: clamp(ci, 0, B.chapters.length - 1), line: ln };
+  const p = ln != null ? B.paraByLine.get(ln) : null;
+  S.page = p ? p.page : B.chapters[S.pos.ch].page0;
+  S.flash = flash;
+  S.betCh = S.pos.ch;
+  S.betDraft = null;
+  S.betRevealed = !!S.bets[S.pos.ch];
+  computeHeat();
+  drawEdge();
+  if (gear != null) S.gear = gear;
+  renderGateLabels();
+  moveKnob(S.gear, S.gear, true);
+  renderMain();
+  renderGateCosts();
+  renderHere();
+  renderShifter();
+  renderLedger();
+}
+
+/* ===================== events ===================== */
+function wire() {
+  $('#main').addEventListener('scroll', onMainScroll, { passive: true });
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('button, [data-ch], [data-dog], [data-betch], .sm-row, .srow');
+    if (!t) { if (!e.target.closest('#pop')) closePop(); if (!e.target.closest('.bookpick')) { $('#shelf').hidden = true; } return; }
+    if (t.id === 'bookBtn') { const sh = $('#shelf'); sh.hidden = !sh.hidden; t.setAttribute('aria-expanded', String(!sh.hidden)); return; }
+    if (t.dataset.book) { openBook(Number(t.dataset.book)); return; }
+    if (t.id === 'aboutBtn') { openAbout(); return; }
+    if (t.id === 'ledgerBtn') { openLedgerDrawer(); return; }
+    if (t.id === 'aboutClose' || t.id === 'aboutBg') { closeOverlay(); return; }
+    if (t.id === 'themeBtn') { cycleTheme(); return; }
+    if (t.classList.contains('x')) { closePop(); return; }
+    if (t.dataset.term) { S.term = t.dataset.term; S.customTerm = null; store.set('term', S.term); renderChips(); computeHeat(); drawEdge(); if (S.gear === 5) renderMain(); return; }
+    if (t.dataset.tab) { S.ledgerTab = t.dataset.tab; renderLedger(); const d = $('#ledgerInner'); if (d) renderLedger(d); return; }
+    if (t.id === 'clearExample') { clearExample(); return; }
+    if (t.dataset.openSrc != null) { const d = LAP.dogears[Number(t.dataset.openSrc)]; openBook(d.book, { ch: d.src.ch, line: d.src.line, gear: 2, flash: { ch: d.src.ch, line: d.src.line, quotes: [d.excerpt] } }); return; }
+    if (t.dataset.openLap != null) { const d = LAP.dogears[Number(t.dataset.openLap)]; openBook(58881, { ch: d.ch - 1, line: d.line, gear: 2, flash: { ch: d.ch - 1, line: d.line, quotes: [d.anchor] } }); return; }
+    if (t.dataset.portal != null && t.dataset.portal !== '') { const d = LAP.dogears[Number(t.dataset.portal)]; openBook(58881, { ch: d.ch - 1, line: d.line, gear: 2, flash: { ch: d.ch - 1, line: d.line, quotes: [d.anchor] } }); return; }
+    if (t.dataset.dog != null && t.dataset.dog !== '') { openDogPop(Number(t.dataset.dog.split(',')[0]), t); return; }
+    if (t.dataset.jump != null) {
+      closePop(); closeOverlay();
+      const ci = Number(t.dataset.jump);
+      const line = t.dataset.line === '' ? null : Number(t.dataset.line);
+      goto(ci, line, Number(t.dataset.gear) || 2, { ch: ci, line, quotes: t.dataset.quote ? [t.dataset.quote] : [] });
+      return;
+    }
+    if (t.dataset.go != null) { e.stopPropagation(); closeOverlay(); goto(Number(t.dataset.go), null, Number(t.dataset.gear)); return; }
+    if (t.dataset.goch != null) { goto(Number(t.dataset.goch), null); $('#main').scrollTop = 0; return; }
+    if (t.dataset.gen != null) { generate(Number(t.dataset.gen)); return; }
+    if (t.id === 'genStop') { genJob?.ctl.abort(); return; }
+    if (t.dataset.betch != null) { S.betCh = Number(t.dataset.betch); S.betDraft = null; S.betRevealed = !!S.bets[S.betCh]; S.pos = { ch: S.betCh, line: null }; S.page = B.chapters[S.betCh].page0; renderMain(); syncPosition(); return; }
+    if (t.id === 'betEven') { S.betDraft.w = [5, 5, 5, 5]; renderMain({ keepScroll: true }); return; }
+    if (t.id === 'betPlace') { placeBet(); return; }
+    if (t.id === 'betAgain') { S.betRevealed = false; S.betDraft = { ch: S.betCh, w: S.bets[S.betCh].w.slice() }; if (S.bets[S.betCh].example) clearExample(true); delete S.bets[S.betCh]; saveBets(); renderMain({ keepScroll: true }); refreshPlanViews(); return; }
+    if (t.dataset.gear != null && !t.closest('.srow')) { setGear(t.dataset.gear === 'N' ? 'N' : Number(t.dataset.gear)); return; }
+    if (t.id === 'rPlay') { riffle ? stopRiffle() : startRiffle('btn'); return; }
+    if (t.id === 'rPrev') { stepPage(-1); saveLastPos(); return; }
+    if (t.id === 'rNext') { stepPage(1); saveLastPos(); return; }
+    if (t.id === 'rDrop') { const pg = B.pages[S.page]; goto(pg.ch, pg.firstLine, 2); return; }
+    const row = t.closest('.sm-row');
+    if (row) { closeOverlay(); goto(Number(row.dataset.ch), null, Number(row.dataset.plan)); return; }
+    const srow = t.closest('.srow');
+    if (srow) {
+      const ci = Number(srow.dataset.ch);
+      if (e.target.closest('.gear-chip')) { goto(ci, null, Number(e.target.closest('.gear-chip').dataset.gear)); return; }
+      S.pos = { ch: ci, line: null }; S.page = B.chapters[ci].page0;
+      $$('.srow').forEach((r) => r.classList.toggle('cur', r === srow));
+      syncPosition();
+      return;
+    }
+  });
+  document.addEventListener('dblclick', (e) => { const srow = e.target.closest('.srow'); if (srow) goto(Number(srow.dataset.ch), null, 3); });
+  document.addEventListener('input', (e) => {
+    const t = e.target;
+    if (t.dataset.bw != null) {
+      S.betDraft.w[Number(t.dataset.bw)] = Number(t.value);
+      const ps = probs(S.betDraft.w);
+      ps.forEach((p, i) => { const el = $('#bp' + i); if (el) el.textContent = Math.round(p * 100) + '%'; });
+      $$('#dist i').forEach((el, i) => (el.style.width = ps[i] * 100 + '%'));
+    }
+    if (t.id === 'termInput') {
+      const v = t.value.trim().replace(/[^A-Za-zÀ-ÿ'-]/g, '');
+      S.customTerm = v.length >= 3 ? v : null;
+      $$('.chip').forEach((c) => c.setAttribute('aria-pressed', String(!S.customTerm && c.dataset.term === S.term)));
+      computeHeat(); drawEdge();
+      if (S.gear === 5) renderLeaf(false);
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    const tag = (e.target.tagName || '').toLowerCase();
+    const typing = tag === 'input' || tag === 'textarea' || e.target.isContentEditable;
+    if (e.key === 'Escape') { closePop(); closeOverlay(); $('#shelf').hidden = true; return; }
+    if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (/^[1-5]$/.test(e.key)) { setGear(Number(e.key)); return; }
+    if (e.key === 'n' || e.key === 'N' || e.key === '0') { setGear('N'); return; }
+    if (S.gear === 5) {
+      if (e.key === ' ') { e.preventDefault(); if (!e.repeat) startRiffle('space'); return; }
+      if (e.key === 'ArrowRight') { e.preventDefault(); stepPage(1); return; }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); stepPage(-1); return; }
+    }
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.srow, .sm-row, .de-card')) { e.preventDefault(); e.target.click(); }
+  });
+  document.addEventListener('keyup', (e) => { if (e.key === ' ' && riffle?.mode === 'space') stopRiffle(); });
+  // fore-edge: hover, click, scrub
+  const wrap = $('#edgeWrap');
+  let scrub = false;
+  const at = (e) => { const r = wrap.getBoundingClientRect(); return { x: e.clientX - r.left, i: pageFromX(e.clientX - r.left) }; };
+  wrap.addEventListener('pointermove', (e) => {
+    const { x, i } = at(e);
+    if (e.pointerType === 'mouse') edgeTip(i, x);
+    if (scrub) scrubTo(i);
+  });
+  wrap.addEventListener('pointerleave', () => { $('#edgeTip').hidden = true; });
+  wrap.addEventListener('pointerdown', (e) => { scrub = true; wrap.setPointerCapture(e.pointerId); scrubTo(at(e).i); });
+  const up = () => { if (!scrub) return; scrub = false; finishScrub(); };
+  wrap.addEventListener('pointerup', up);
+  wrap.addEventListener('pointercancel', up);
+  // tooltips for glosses and claims
+  document.addEventListener('pointerover', (e) => {
+    const el = e.target.closest('[data-tip]');
+    const tip = $('#tip');
+    if (!el) { tip.hidden = true; return; }
+    tip.textContent = el.dataset.tip;
+    tip.hidden = false;
+    const r = el.getBoundingClientRect();
+    tip.style.left = clamp(r.left, 8, innerWidth - 290) + 'px';
+    tip.style.top = (r.bottom + 6 + 60 > innerHeight ? r.top - 6 - tip.offsetHeight : r.bottom + 6) + 'px';
+  });
+  window.addEventListener('resize', () => { if (B) drawEdge(); });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => { if (B) { drawEdge(); renderLedger(); } });
+}
+function scrubTo(i) {
+  if (i === S.page) return;
+  S.page = i;
+  const pg = B.pages[i];
+  positionRibbon();
+  if (S.gear === 5) { S.pos = { ch: pg.ch, line: pg.firstLine }; renderLeaf(true); renderHere(); }
+}
+function finishScrub() {
+  const pg = B.pages[S.page];
+  if (S.gear === 5) { S.pos = { ch: pg.ch, line: pg.firstLine }; syncPosition(); return; }
+  if (S.gear === 'N') { S.betCh = pg.ch; S.betDraft = null; S.betRevealed = !!S.bets[pg.ch]; }
+  goto(pg.ch, pg.firstLine);
+}
+function placeBet() {
+  const ci = S.betCh;
+  if (S.usingExample) clearExample(true);
+  S.bets[ci] = { w: S.betDraft.w.slice(), t: Date.now() };
+  saveBets();
+  S.betRevealed = true;
+  renderMain({ keepScroll: true });
+  refreshPlanViews();
+}
+function clearExample(silent) {
+  for (const k of Object.keys(S.bets)) if (S.bets[k].example) delete S.bets[k];
+  S.usingExample = false;
+  store.set('exampleCleared', true);
+  if (!silent) { renderMain({ keepScroll: true }); refreshPlanViews(); }
+}
+function refreshPlanViews() { renderLedger(); const d = $('#ledgerInner'); if (d) renderLedger(d); drawEdge(); renderGateCosts(); renderShifter(); }
+function cycleTheme() {
+  const cur = document.documentElement.dataset.theme || 'auto';
+  const next = cur === 'auto' ? 'light' : cur === 'light' ? 'dark' : 'auto';
+  if (next === 'auto') delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = next;
+  store.set('theme', next);
+  $('#themeBtn').title = 'Theme: ' + next;
+  if (B) { drawEdge(); renderLedger(); if (S.gear === 'N') renderMain({ keepScroll: true }); }
+}
+
+/* ===================== boot ===================== */
+(async function boot() {
+  const th = store.get('theme', 'auto');
+  if (th !== 'auto') document.documentElement.dataset.theme = th;
+  wire();
+  initKnobDrag();
+  renderGateLabels();
+  renderChips();
+  $('#main').innerHTML = '<div class="view" style="color:var(--ink-3)">Opening the Essay…</div>';
+  try {
+    [STRUCT, LAP] = await Promise.all([fetchJSON('data/gearbox/structure.json'), fetchJSON('data/gearbox/laplace.json')]);
+  } catch (e) {
+    $('#main').innerHTML = `<div class="view"><div class="empty"><h4>Could not load the data</h4><p>${esc(String(e.message || e))}</p></div></div>`;
+    return;
+  }
+  renderShelf();
+  const startBook = store.get('book', 58881);
+  await openBook(STRUCT.books.some((b) => b.id === startBook) ? startBook : 58881);
+  setClaudeChip();
+  // Live generation: resolve the sample capability without blocking first paint.
+  try {
+    const f = await window.claude?.use?.('sample');
+    sampleFn = typeof f === 'function' ? f : null;
+  } catch { sampleFn = null; }
+  setClaudeChip();
+  if (!B.isLap || S.gear === 1 || S.gear === 3 || S.gear === 'N') renderMain({ keepScroll: true });
+})();
+</script>

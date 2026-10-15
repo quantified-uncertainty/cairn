@@ -1,0 +1,103 @@
+{
+ "id": "example-rejected",
+ "constructed": true,
+ "constructedNote": "Constructed by hand to show what the validator does with a bad spec. It imitates common failure modes of generated specs (a paraphrase passed off as a quotation, a component outside the kit, code in a formula, a missing pointer). It is not a model output.",
+ "book": 5827,
+ "chapter": {
+  "start": 1380
+ },
+ "why": "Russell's chapter turns on one example, the sunrise, and one counterexample, the chicken.",
+ "lenses": [
+  {
+   "type": "ClaimCard",
+   "title": "Russell's question",
+   "cards": [
+    {
+     "claim": "We all expect the sun to rise tomorrow; the question is whether that belief is reasonable.",
+     "src": [
+      "We are all convinced that the sun will rise to-morrow. Why?"
+     ],
+     "examples": [
+      {
+       "label": "The chicken",
+       "src": [
+        "the farmer who has fed the chicken every day finally wrings its neck"
+       ]
+      }
+     ]
+    },
+    {
+     "claim": "Past regularities are only a cause of expectation, not yet a reason for it.",
+     "src": [
+      "Experience has shown us that, hitherto, the frequent repetition of some uniform succession or coexistence has been a _cause_ of our expecting the same succession"
+     ],
+     "examples": []
+    }
+   ]
+  },
+  {
+   "type": "PieChart",
+   "title": "Share of the chapter about the sun",
+   "slices": [
+    {
+     "label": "sun",
+     "value": 0.4
+    },
+    {
+     "label": "other",
+     "value": 0.6
+    }
+   ]
+  },
+  {
+   "type": "LiveCalculation",
+   "title": "How many sunrises?",
+   "params": [
+    {
+     "id": "n",
+     "label": "Days observed",
+     "value": "1000000",
+     "min": 1,
+     "max": 10000000
+    }
+   ],
+   "steps": [
+    {
+     "id": "p",
+     "label": "Laplace's rule of succession",
+     "expr": "Math.pow((n+1)/(n+2), 1)",
+     "stated": "1000001/1000002",
+     "src": [
+      "the sun has risen a million times, so it will rise again"
+     ]
+    }
+   ]
+  },
+  {
+   "type": "ArgumentTree",
+   "title": "The principle of induction",
+   "nodes": [
+    {
+     "kind": "thesis",
+     "text": "The principle of induction cannot be proved by experience.",
+     "children": []
+    }
+   ]
+  },
+  {
+   "type": "CastList",
+   "title": "People",
+   "people": [
+    {
+     "name": "David Hume",
+     "as": "Hume",
+     "role": "source",
+     "gloss": "Posed the problem of induction.",
+     "src": [
+      "as Hume showed, the problem of induction cannot be solved"
+     ]
+    }
+   ]
+  }
+ ]
+}

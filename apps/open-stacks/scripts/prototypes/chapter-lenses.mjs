@@ -312,6 +312,7 @@ function validateSpec(spec) {
     const w = `${blk.type}#${bi}`;
     if (!KIT[blk.type]) throw new Error(`${spec.id}: unknown component ${blk.type}`);
     if (blk.src) blk.src = fixSrc(blk.src, `${w}.src`) || undefined;
+    for (const extra of ['rings', 'scales']) if (blk[extra]) blk[extra] = leaves(blk[extra], `${w}.${extra}`);
     if (blk.type === 'LiveCalculation' || blk.type === 'WorkedExample') {
       const env = {};
       for (const p of blk.params || []) { env[p.id] = ev(p.value, env); if (p.src) p.src = fixSrc(p.src, `${w}.param ${p.id}`) || undefined; }
@@ -352,7 +353,9 @@ function validateSpec(spec) {
         if (x.quoteCheck) {
           const qc = x.quoteCheck;
           const r = fixSrc([qc.quoted], `${w}.${key}[${i}].quoteCheck`);
-          if (!r) delete x.quoteCheck; else qc.quoted = r[0];
+          const o = qc.original && locate(makeScope(qc.original.book, 1, LINES[qc.original.book].length), qc.original.q);
+          if (!r || !o || !o.ok) { stats.dropped.push(`${w}.${key}[${i}].quoteCheck: original not found`); delete x.quoteCheck; }
+          else { qc.quoted = r[0]; qc.original.L = o.L; }
         }
         return true;
       });
@@ -367,16 +370,43 @@ function validateSpec(spec) {
   return spec;
 }
 
+// Cross-references carry an anchor ("q") inside another lens's chapter; check those too.
+function checkXrefs(specs) {
+  const byId = Object.fromEntries(specs.map((s) => [s.id, s]));
+  const visit = (o, where) => {
+    if (!o || typeof o !== 'object') return;
+    if (o.xref && o.xref.q) {
+      const t = byId[o.xref.lens];
+      const r = t && locate(makeScope(t.book, t.chapter.start, t.chapter.end), o.xref.q);
+      if (!r || !r.ok) { console.log(`  DROPPED xref in ${where}: "${o.xref.q.slice(0, 60)}"`); delete o.xref; }
+      else o.xref.L = r.L;
+    }
+    for (const v of Object.values(o)) visit(v, where);
+  };
+  for (const s of specs) visit(s.lenses, s.id);
+}
+
 const lensList = [];
+const built = [];
 const files = readdirSync(SRC).filter((f) => f.endsWith('.json')).sort();
 for (const f of files) {
-  const spec = validateSpec(JSON.parse(readFileSync(join(SRC, f), 'utf-8')));
+  const raw = JSON.parse(readFileSync(join(SRC, f), 'utf-8'));
+  if (raw.constructed) {
+    // Hand-made bad spec for the validator demo: published unvalidated, so the page's
+    // own runtime validator is what rejects it.
+    writeFileSync(join(OUT, 'lenses', `${raw.id}.json`), JSON.stringify(raw, null, 1));
+    console.log(`${raw.id}: constructed example, copied without validation`);
+    continue;
+  }
+  const spec = validateSpec(raw);
+  built.push(spec);
   const v = spec.verification;
   console.log(`${spec.id}: ${v.verified}/${v.anchors} anchors verified; checks ${JSON.stringify(v.checks)}`);
   for (const d of v.dropped) console.log(`  DROPPED ${d}`);
-  writeFileSync(join(OUT, 'lenses', `${spec.id}.json`), JSON.stringify(spec, null, 1));
-  if (spec.id !== 'example-rejected') lensList.push({ id: spec.id, book: spec.book, chapter: spec.chapter, tab: spec.tab, verification: { anchors: v.anchors, verified: v.verified, checks: v.checks } });
+  lensList.push({ id: spec.id, book: spec.book, chapter: spec.chapter, tab: spec.tab, verification: { anchors: v.anchors, verified: v.verified, checks: v.checks } });
 }
+checkXrefs(built);
+for (const spec of built) writeFileSync(join(OUT, 'lenses', `${spec.id}.json`), JSON.stringify(spec, null, 1));
 lensList.sort((a, b) => (a.tab?.order ?? 9) - (b.tab?.order ?? 9));
 writeFileSync(join(OUT, 'lenses', 'index.json'), JSON.stringify({ provenance: PROVENANCE, lenses: lensList }, null, 1));
 

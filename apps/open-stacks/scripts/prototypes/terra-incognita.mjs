@@ -536,7 +536,7 @@ const SEARCHES = [
 const world = {
   provenance: 'Layout computed by scripts/prototypes/terra-incognita.mjs from catalog.json (Open Library, CC0, fetched 2026-10-15), gutenberg.json (Project Gutenberg catalog, fetched 2026-10-15) and lcc-outline.json (Library of Congress Classification Outline).',
   generated: '2026-10-15',
-  S, R: round1(R * 100) / 100, N,
+  S, R: Math.round(R * 1000) / 1000, N, rot: Math.round(ROT * 1e6) / 1e6,
   hex: hexXY.map(([x, y]) => [round1(x), round1(y)]),
   hexLat: lat,
   hexSub: Array.from(hexSub),

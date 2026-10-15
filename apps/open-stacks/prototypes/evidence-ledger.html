@@ -1,0 +1,1613 @@
+<title>Evidence Ledger</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=Red+Hat+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap');
+
+:root {
+  --paper: #eef1e5; --paper-2: #e4e9d9; --card: #f7f9f1; --card-2: #f0f3e8;
+  --rule: #d3dcc8; --rule-2: #a9b89b;
+  --ink: #18221b; --ink-2: #435046; --muted: #5f6d61;
+  --for: #2a68b8; --for-soft: #d7e3f4; --against: #c2382f; --against-soft: #f6dedb; --neutral: #8f9b91; --neutral-soft: #e2e6dd;
+  --pen: #6a46b8; --pen-soft: #ebe4f8;
+  --margin: #d6877f; --hl: #f1e3a0; --hl-ink: #2d2600; --ul: #b8901a;
+  --zone: #dde8d9; --zone-line: #b6cab2; --focus: #6a46b8; --tip: #fffffb;
+  --shadow: 0 1px 0 rgba(24,34,27,.05), 0 14px 30px -22px rgba(24,34,27,.45);
+  --grain: .05;
+  --f-sans: 'Archivo', 'Arial Narrow', 'Helvetica Neue', system-ui, sans-serif;
+  --f-mono: 'Red Hat Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --f-serif: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #111712; --paper-2: #161e18; --card: #19211b; --card-2: #1d261f;
+    --rule: #2a362d; --rule-2: #3f4e43;
+    --ink: #e3eadf; --ink-2: #b9c6ba; --muted: #97a699;
+    --for: #4b8be3; --for-soft: #1c2b42; --against: #d9534b; --against-soft: #3a201c; --neutral: #a3ada5; --neutral-soft: #262e28;
+    --pen: #a993f0; --pen-soft: #2a2342;
+    --margin: #7c3d37; --hl: #4d4413; --hl-ink: #fff2bf; --ul: #d6b03a;
+    --zone: #1a2a1e; --zone-line: #2f4634; --focus: #a993f0; --tip: #1f2821;
+    --shadow: 0 1px 0 rgba(0,0,0,.3), 0 16px 34px -20px rgba(0,0,0,.8);
+    --grain: .07;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #111712; --paper-2: #161e18; --card: #19211b; --card-2: #1d261f;
+  --rule: #2a362d; --rule-2: #3f4e43;
+  --ink: #e3eadf; --ink-2: #b9c6ba; --muted: #97a699;
+  --for: #4b8be3; --for-soft: #1c2b42; --against: #d9534b; --against-soft: #3a201c; --neutral: #a3ada5; --neutral-soft: #262e28;
+  --pen: #a993f0; --pen-soft: #2a2342;
+  --margin: #7c3d37; --hl: #4d4413; --hl-ink: #fff2bf; --ul: #d6b03a;
+  --zone: #1a2a1e; --zone-line: #2f4634; --focus: #a993f0; --tip: #1f2821;
+  --shadow: 0 1px 0 rgba(0,0,0,.3), 0 16px 34px -20px rgba(0,0,0,.8);
+  --grain: .07;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { background: var(--paper); }
+body {
+  margin: 0; color: var(--ink); font-family: var(--f-sans); font-size: 15px; line-height: 1.45;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  background-color: var(--paper);
+}
+body::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: var(--grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .35 0 0 0 0 .3 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+a { color: inherit; text-decoration-color: var(--rule-2); text-underline-offset: 3px; }
+a:hover { text-decoration-color: currentColor; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.num, .mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.kicker { font-weight: 700; font-size: 10.5px; line-height: 1.2; font-stretch: 72%; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.kicker span { font-weight: 500; letter-spacing: .06em; text-transform: none; font-stretch: 85%; font-size: 11.5px; }
+
+.app {
+  position: relative; z-index: 1; max-width: 1440px; margin: 0 auto;
+  padding: 0 max(16px, env(safe-area-inset-right, 0px)) 56px max(16px, env(safe-area-inset-left, 0px));
+}
+@media (min-width: 900px) { .app { padding-left: max(32px, env(safe-area-inset-left, 0px)); padding-right: max(32px, env(safe-area-inset-right, 0px)); } }
+
+/* ---------- masthead ---------- */
+.mast { display: flex; align-items: center; gap: 10px 22px; flex-wrap: wrap; padding: 14px 0 11px; border-bottom: 3px double var(--rule-2); }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-stretch: 66%; font-size: 17px; letter-spacing: .16em; text-transform: uppercase; }
+.brand svg { width: 22px; height: 22px; flex: none; }
+.mast-meta { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 12px; color: var(--muted); min-width: 0; }
+.mast-meta span { white-space: nowrap; }
+.mast-meta b { font-weight: 600; color: var(--ink-2); }
+.mast .spacer { flex: 1; }
+.btn-ghost { background: none; border: 1px solid var(--rule-2); padding: 6px 11px; font-size: 12.5px; font-weight: 600; cursor: pointer; border-radius: 2px; color: var(--ink-2); }
+.btn-ghost:hover { border-color: var(--ink-2); color: var(--ink); }
+
+/* ---------- account header ---------- */
+.account { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 28px 40px; padding: 26px 0 22px; }
+.prop { font-family: var(--f-serif); font-weight: 400; font-size: clamp(25px, 2.75vw, 38px); line-height: 1.12; letter-spacing: -.01em; margin: 10px 0 12px; text-wrap: balance; }
+.prop em { font-style: italic; }
+.resolution { margin: 0 0 14px; font-size: 13.5px; color: var(--ink-2); max-width: 70ch; }
+.resolution b { font-weight: 600; color: var(--ink); }
+.howto { margin: 0; font-size: 13.5px; color: var(--ink-2); max-width: 70ch; padding-left: 12px; border-left: 3px double var(--margin); }
+.howto .frm { font-family: var(--f-serif); font-style: italic; font-size: 15px; color: var(--ink); }
+@media (min-width: 520px) { .howto .frm { white-space: nowrap; } }
+.state-note { display: inline-flex; align-items: center; gap: 8px; margin: 14px 0 0; font-size: 12px; color: var(--ink-2); flex-wrap: wrap; }
+.stamp { display: inline-block; font-weight: 700; font-stretch: 70%; letter-spacing: .14em; text-transform: uppercase; font-size: 10.5px; padding: 3px 7px 2px; border: 1.5px solid var(--ink-2); color: var(--ink-2); transform: rotate(-1.2deg); }
+.stamp.yours { border-color: var(--pen); color: var(--pen); }
+.linkbtn { background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-decoration-color: var(--rule-2); text-underline-offset: 3px; font-size: 12px; color: var(--ink-2); }
+.linkbtn:hover { color: var(--ink); text-decoration-color: currentColor; }
+
+.balance { background: var(--card); border: 1px solid var(--rule-2); box-shadow: var(--shadow); padding: 16px 20px 14px; align-self: start; position: relative; }
+.balance::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: repeating-linear-gradient(90deg, var(--rule-2) 0 2px, transparent 2px 6px); opacity: .6; }
+.bal-prior { display: grid; grid-template-columns: auto minmax(0, 1fr) 3.4em; gap: 12px; align-items: center; padding: 4px 0 12px; border-bottom: 1px solid var(--rule); }
+.bal-prior label { line-height: 1.15; }
+.bal-prior output { font-family: var(--f-mono); font-size: 15px; text-align: right; font-weight: 500; }
+.bal-close { padding-top: 12px; }
+.post { display: flex; align-items: flex-end; gap: 18px; margin-top: 6px; flex-wrap: wrap; }
+.post-num { font-weight: 800; font-stretch: 62%; font-size: clamp(76px, 7.4vw, 112px); line-height: .82; letter-spacing: -.02em; font-variant-numeric: tabular-nums; padding-bottom: 6px; border-bottom: 7px double var(--ink); min-width: 2.2ch; transition: color .3s; }
+.post-num.flash { color: var(--pen); }
+.post-side { display: grid; gap: 3px; font-size: 13px; color: var(--ink-2); padding-bottom: 10px; min-width: 0; }
+.post-side b { color: var(--ink); font-weight: 600; }
+.post-side .mono { font-size: 12.5px; }
+.bal-foot { margin-top: 12px; padding-top: 9px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.bal-foot b { color: var(--ink-2); font-weight: 600; }
+
+/* ranges */
+input[type=range] { -webkit-appearance: none; appearance: none; background: transparent; width: 100%; height: 22px; margin: 0; cursor: pointer; }
+input[type=range]::-webkit-slider-runnable-track { height: 2px; background: var(--rule-2); }
+input[type=range]::-moz-range-track { height: 2px; background: var(--rule-2); }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 18px; margin-top: -8px; background: var(--card); border: 2px solid var(--ink); border-radius: 1px; }
+input[type=range]::-moz-range-thumb { width: 9px; height: 15px; background: var(--card); border: 2px solid var(--ink); border-radius: 1px; }
+input[type=range]:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+input[type=range].touched::-webkit-slider-thumb { background: var(--pen); border-color: var(--pen); }
+input[type=range].touched::-moz-range-thumb { background: var(--pen); border-color: var(--pen); }
+
+/* ---------- chart ---------- */
+.card { background: var(--card); border: 1px solid var(--rule); box-shadow: var(--shadow); }
+.chartcard { position: relative; }
+.chart-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px 24px; padding: 14px 18px 6px; flex-wrap: wrap; border-bottom: 1px solid var(--rule); }
+.chart-head h2, .rc-head h2 { margin: 0; font-size: 13px; font-weight: 800; font-stretch: 70%; letter-spacing: .13em; text-transform: uppercase; }
+.sub { margin: 4px 0 0; font-size: 12.5px; color: var(--muted); max-width: 78ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 11.5px; color: var(--ink-2); padding-bottom: 2px; }
+.legend span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.legend svg { width: 14px; height: 14px; overflow: visible; }
+.legend .sep { width: 1px; height: 14px; background: var(--rule); }
+.chart-host { position: relative; padding: 6px 4px 4px; min-height: 300px; }
+.chart-host svg { display: block; width: 100%; height: auto; overflow: visible; }
+.ch-rule { stroke: var(--rule); stroke-width: 1; }
+.ch-rule2 { stroke: var(--rule-2); stroke-width: 1; }
+.ch-dbl { stroke: var(--rule-2); stroke-width: 1; }
+.ch-elite { stroke: var(--ink-2); stroke-width: 1.4; stroke-dasharray: 7 4; }
+.ch-crowd { stroke: var(--ink-2); stroke-width: 1.2; stroke-dasharray: 3 3; }
+.ch-ind { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: .5 4; stroke-linecap: round; }
+.ch-zone { fill: url(#el-hatch); }
+.hatch-line { stroke: var(--zone-line); stroke-width: 1.1; }
+.ch-zonebg { fill: var(--zone); opacity: .55; }
+.ch-glab { fill: var(--ink); font-family: var(--f-sans); font-weight: 750; font-size: 10.5px; font-stretch: 72%; letter-spacing: .1em; }
+.ch-gsub { fill: var(--muted); font-family: var(--f-sans); font-size: 11px; }
+.ch-zlab { fill: var(--ink-2); font-family: var(--f-serif); font-style: italic; font-size: 12.5px; }
+.ch-axis { fill: var(--muted); font-family: var(--f-mono); font-size: 10.5px; }
+.ch-axis.yr { fill: var(--ink-2); font-weight: 600; font-size: 11px; }
+.ch-today { stroke: var(--pen); stroke-width: 1.2; stroke-dasharray: 2 3; }
+.ch-todaylab { fill: var(--pen); font-family: var(--f-mono); font-size: 10.5px; }
+.ch-mlbl { fill: var(--ink); font-family: var(--f-sans); font-weight: 600; font-size: 11px; paint-order: stroke; stroke: var(--card); stroke-width: 3.5px; stroke-linejoin: round; pointer-events: none; }
+.ch-mlbl.dim { fill: var(--muted); font-weight: 500; }
+.ch-vlbl { fill: var(--ink-2); font-family: var(--f-mono); font-size: 10.5px; paint-order: stroke; stroke: var(--card); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
+.ch-link { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 2 2.5; }
+.ch-open { stroke: var(--muted); stroke-width: 1.2; fill: none; }
+.ch-bgrid { stroke: var(--rule); stroke-width: 1; }
+.ch-prior { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 4 3; }
+.ch-path { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.ch-area { fill: var(--ink); opacity: .05; }
+.ch-final { fill: var(--ink); font-family: var(--f-mono); font-weight: 600; font-size: 13px; }
+.ch-step { font-family: var(--f-mono); font-weight: 500; fill: var(--ink-2); }
+.mk { cursor: pointer; }
+.mk .halo { fill: var(--card); stroke: none; }
+.mk .hit { fill: transparent; stroke: none; }
+.mk .ring { fill: none; stroke: transparent; stroke-width: 1.6; }
+.mk.hot .ring, .mk:focus-visible .ring { stroke: var(--ink); }
+.mk:focus { outline: none; }
+.mk .g { stroke-width: 1.6; }
+.mk.d-for .g { fill: var(--for); stroke: var(--for); }
+.mk.d-against .g { fill: var(--against); stroke: var(--against); }
+.mk.d-neutral .g { fill: var(--neutral); stroke: var(--neutral); }
+.mk.unread .g { fill: var(--card); stroke: var(--muted); stroke-dasharray: 2.4 1.7; }
+.mk.d-for.donut .g, .mk.d-against.donut .g, .mk.d-neutral.donut .g { fill: var(--card); stroke-width: 3; }
+.mk.fresh .g { animation: ink-in .9s ease-out; transform-box: fill-box; transform-origin: center; }
+@keyframes ink-in { 0% { transform: scale(2.2); } 60% { transform: scale(.9); } 100% { transform: scale(1); } }
+.bdot { stroke: var(--card); stroke-width: 1.5; }
+.bdot.d-for { fill: var(--for); } .bdot.d-against { fill: var(--against); } .bdot.d-neutral { fill: var(--neutral); }
+
+.tip { position: absolute; z-index: 20; width: min(340px, calc(100% - 16px)); background: var(--tip); border: 1px solid var(--rule-2); box-shadow: 0 18px 40px -18px rgba(0,0,0,.45); padding: 11px 13px 10px; font-size: 12.5px; pointer-events: none; }
+.tip.touch { pointer-events: auto; }
+.tip-h { display: flex; justify-content: space-between; gap: 8px; align-items: center; margin-bottom: 6px; }
+.tip-d { font-family: var(--f-mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
+.tip-t { font-weight: 700; font-size: 13.5px; line-height: 1.25; }
+.tip-m { margin-top: 4px; color: var(--ink); }
+.tip-b { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.tip .q { font-size: 14px; margin-top: 7px; }
+.tip-f { margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--rule); color: var(--ink-2); font-size: 11.5px; display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.tip-f button { background: var(--ink); color: var(--card); border: 0; padding: 4px 9px; font-size: 11.5px; font-weight: 600; cursor: pointer; }
+
+/* standing chips */
+.st { display: inline-block; font-weight: 700; font-size: 10px; line-height: 1; font-stretch: 74%; letter-spacing: .07em; text-transform: uppercase; padding: 3px 5px 2px; border: 1px solid var(--rule-2); color: var(--ink-2); white-space: nowrap; vertical-align: 1px; border-radius: 1px; }
+.st-at_elite, .st-above_elite { border-color: var(--ink); color: var(--ink); background: var(--zone); }
+.st-none { border-style: dashed; color: var(--muted); }
+
+/* ---------- toolbar ---------- */
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; padding: 14px 0 0; }
+.tb { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; }
+.tb-btn { background: var(--card); border: 1px solid var(--rule-2); padding: 6px 11px; font-size: 12.5px; font-weight: 600; cursor: pointer; border-radius: 2px; }
+.tb-btn:hover { border-color: var(--ink-2); }
+.tb label { font-size: 12.5px; color: var(--ink-2); }
+.tb .dep-range { width: 120px; }
+.tb output { font-size: 12px; font-family: var(--f-mono); color: var(--ink); min-width: 9.5em; }
+.switch { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 12.5px; color: var(--ink-2); }
+.switch input { -webkit-appearance: none; appearance: none; width: 30px; height: 17px; border: 1.5px solid var(--rule-2); border-radius: 10px; position: relative; cursor: pointer; background: var(--card); margin: 0; flex: none; }
+.switch input::after { content: ""; position: absolute; left: 2px; top: 2px; width: 10px; height: 10px; border-radius: 50%; background: var(--muted); transition: transform .18s; }
+.switch input:checked { border-color: var(--pen); background: var(--pen-soft); }
+.switch input:checked::after { transform: translateX(13px); background: var(--pen); }
+.tb .hint { font-size: 11.5px; color: var(--muted); }
+
+/* ---------- main grid ---------- */
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 384px; grid-template-areas: "ledger sens" "ledger rail"; grid-template-rows: auto 1fr; gap: 20px 28px; margin-top: 16px; align-items: start; }
+.ledger { grid-area: ledger; min-width: 0; }
+.sens { grid-area: sens; min-width: 0; }
+.rail { grid-area: rail; display: grid; gap: 20px; min-width: 0; align-content: start; }
+@media (max-width: 1120px) {
+  .main { grid-template-columns: minmax(0, 1fr); grid-template-areas: "sens" "ledger" "rail"; grid-template-rows: auto; }
+}
+.rail-card { padding: 14px 16px 16px; }
+.rc-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.count { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+
+/* ---------- ledger ---------- */
+.lgrid { display: grid; grid-template-columns: 30px 74px minmax(0, 1fr) 168px 70px 58px; column-gap: 14px; }
+.lhead { position: sticky; top: 0; z-index: 5; background: var(--paper-2); border-bottom: 2px solid var(--rule-2); padding: 9px 14px 8px; font-weight: 700; font-size: 10px; line-height: 1.2; font-stretch: 72%; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); align-items: end; }
+.lhead .r { text-align: right; }
+.lhead b { display: block; font-family: var(--f-mono); font-size: 13px; letter-spacing: 0; color: var(--ink); font-stretch: normal; }
+.ledger-title { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 13px 14px 11px; border-bottom: 1px solid var(--rule); flex-wrap: wrap; }
+.ledger-title h2 { margin: 0; font-size: 13px; font-weight: 800; font-stretch: 70%; letter-spacing: .13em; text-transform: uppercase; }
+.entry { position: relative; padding: 15px 14px 16px; border-bottom: 1px solid var(--rule); transition: background-color .25s; scroll-margin-top: 60px; }
+.entry:nth-child(even) { background: var(--card-2); }
+.entry.hot { background: var(--pen-soft); }
+.entry.flash { animation: flash 1.4s ease-out; }
+@keyframes flash { 0%, 30% { background: var(--hl); } 100% { background: transparent; } }
+.entry:focus { outline: none; }
+.c-tick input { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; margin: 1px 0 0; border: 1.5px solid var(--rule-2); background: var(--card); border-radius: 2px; cursor: pointer; display: grid; place-items: center; }
+.c-tick input:hover { border-color: var(--ink-2); }
+.c-tick input:checked { border-color: var(--ink); }
+.c-tick input:checked::after { content: ""; width: 11px; height: 6px; border-left: 2.5px solid var(--ink); border-bottom: 2.5px solid var(--ink); transform: translateY(-2px) rotate(-45deg); }
+.c-date { font-family: var(--f-mono); font-size: 12px; line-height: 1.35; color: var(--ink-2); padding-top: 2px; }
+.c-date .no { display: block; color: var(--muted); font-size: 10.5px; margin-top: 4px; }
+.c-date .yr { display: block; color: var(--ink); font-weight: 600; }
+.c-entry { min-width: 0; }
+.c-entry h3 { margin: 0; font-size: 15.5px; line-height: 1.28; font-weight: 650; letter-spacing: -.003em; }
+.c-entry h3 a { text-decoration: none; }
+.c-entry h3 a:hover { text-decoration: underline; }
+.by { margin: 3px 0 0; font-size: 12px; color: var(--muted); }
+.tags { display: flex; flex-wrap: wrap; gap: 4px 6px; margin: 7px 0 0; padding: 0; list-style: none; }
+.tag { font-size: 10.5px; font-weight: 600; font-stretch: 85%; padding: 2px 6px; border: 1px solid var(--rule); color: var(--ink-2); background: var(--card); border-radius: 1px; white-space: nowrap; }
+.tag.self { border-color: var(--ul); color: var(--ink); }
+.tag.grp { border-style: dashed; }
+.tag.unread-tag { border-color: var(--ink-2); color: var(--ink); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; font-size: 9.5px; }
+.tag.origin { border-color: var(--pen); color: var(--pen); }
+.claims { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 10px; }
+.claim .ch { font-size: 13px; line-height: 1.4; }
+.claim .ch b { font-weight: 650; }
+.claim .cb { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.q { font-family: var(--f-serif); font-size: 15px; line-height: 1.42; margin: 5px 0 0; padding: 0 0 0 11px; border-left: 2px solid var(--rule-2); color: var(--ink); }
+.q.sm { font-size: 13.5px; }
+.q .gap { color: var(--muted); padding: 0 .2em; }
+mark.n { background: var(--hl); color: var(--hl-ink); padding: 0 2px; border-radius: 1px; }
+mark.c { background: none; color: inherit; text-decoration: underline; text-decoration-color: var(--ul); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.why { margin: 10px 0 0; font-size: 13px; line-height: 1.45; color: var(--ink-2); }
+.who-ai { display: inline-block; font-weight: 700; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; font-stretch: 75%; padding: 2px 5px 1px; margin-right: 6px; border: 1px solid var(--ink-2); color: var(--ink-2); vertical-align: 1px; }
+.why.blinded { font-style: italic; color: var(--muted); }
+.abs-d { margin-top: 8px; font-size: 12.5px; }
+.abs-d summary { cursor: pointer; color: var(--ink-2); width: fit-content; }
+.abs-d summary:hover { color: var(--ink); }
+.abs-d p { font-family: var(--f-serif); font-size: 14.5px; line-height: 1.5; margin: 8px 0 0; color: var(--ink-2); }
+.abs-d p .span { background: var(--hl); color: var(--hl-ink); }
+.entry .rm { margin-top: 8px; }
+
+.c-lr { min-width: 0; padding-left: 14px; border-left: 1px solid var(--rule); align-self: stretch; }
+.lr-top { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
+.lr-val { font-family: var(--f-mono); font-size: 19px; font-weight: 600; letter-spacing: -.02em; }
+.lr-who { font-size: 10.5px; color: var(--muted); text-align: right; line-height: 1.2; }
+.lr-who .yours { color: var(--pen); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; font-size: 9.5px; }
+.lr-who .ai { font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 9.5px; color: var(--ink-2); border: 1px solid var(--rule-2); padding: 1px 4px; }
+.lr-who button { background: none; border: 0; padding: 0; margin-left: 4px; font-size: 10.5px; color: var(--ink-2); text-decoration: underline; cursor: pointer; }
+.lr-track { position: relative; margin-top: 4px; }
+.lr-band { position: absolute; top: 8px; height: 6px; background: var(--neutral-soft); border: 1px solid var(--rule-2); pointer-events: none; }
+.lr-claude { position: absolute; top: 3px; width: 2px; height: 16px; background: var(--ink-2); pointer-events: none; }
+.lr-claude::after { content: "C"; position: absolute; top: -11px; left: -3px; font: 700 8.5px/1 var(--f-mono); color: var(--ink-2); }
+.lr-track input { position: relative; }
+.lr-scale { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 9.5px; color: var(--muted); margin-top: 0; padding: 0 2px; }
+.lr-note { font-size: 10.5px; color: var(--muted); margin-top: 5px; line-height: 1.3; }
+.c-bits { text-align: right; font-family: var(--f-mono); font-size: 12.5px; padding-top: 4px; }
+.c-bits small { display: block; font-family: var(--f-sans); font-size: 10.5px; color: var(--muted); margin-top: 4px; line-height: 1.2; }
+.wbar { position: relative; height: 6px; margin-top: 6px; background: linear-gradient(var(--rule-2), var(--rule-2)) center / 1px 100% no-repeat; }
+.wbar i { position: absolute; top: 0; height: 6px; }
+.wbar i.f { background: var(--for); left: 50%; }
+.wbar i.a { background: var(--against); right: 50%; }
+.c-bal { text-align: right; font-family: var(--f-mono); font-size: 14px; font-weight: 600; padding-top: 3px; padding-left: 8px; border-left: 3px double var(--margin); align-self: stretch; }
+.c-bal small { display: block; font-weight: 400; font-size: 10.5px; color: var(--muted); margin-top: 3px; }
+.entry.unread .c-entry h3, .entry.unread .claim .ch { color: var(--ink-2); }
+.entry.unread .c-bits, .entry.unread .c-bal { color: var(--muted); font-weight: 400; }
+.lfoot { padding: 14px 14px 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 16px; align-items: end; background: var(--paper-2); }
+.lfoot .lf-txt { font-size: 12.5px; color: var(--ink-2); }
+.lfoot .lf-bal { font-family: var(--f-mono); font-size: 22px; font-weight: 600; border-bottom: 4px double var(--ink); padding: 0 2px 2px; }
+
+@media (max-width: 760px) {
+  .lhead { display: none; }
+  .lgrid { grid-template-columns: 28px minmax(0, 1fr) 62px 52px; grid-template-areas: "tick date date date" "tick entry entry entry" "lr lr bits bal"; column-gap: 10px; row-gap: 6px; }
+  .c-tick { grid-area: tick; } .c-date { grid-area: date; } .c-entry { grid-area: entry; }
+  .c-lr { grid-area: lr; padding-left: 0; border-left: 0; padding-top: 8px; border-top: 1px dashed var(--rule); }
+  .c-bits { grid-area: bits; padding-top: 12px; border-top: 1px dashed var(--rule); }
+  .c-bal { grid-area: bal; padding-top: 11px; border-top: 1px dashed var(--rule); }
+  .c-date .yr, .c-date .no { display: inline; margin: 0 8px 0 0; }
+  .c-date { padding-top: 3px; }
+  .entry { padding: 13px 12px 14px; }
+}
+
+/* ---------- sensitivity ---------- */
+.sens .rail-card { padding-bottom: 12px; }
+.tor { margin-top: 12px; }
+.tr { display: grid; grid-template-columns: minmax(0, 148px) minmax(0, 1fr) 44px; gap: 8px; align-items: center; width: 100%; background: none; border: 0; padding: 3px 0; cursor: pointer; text-align: left; }
+.tr:hover .tn, .tr.hot .tn { text-decoration: underline; }
+.tn { font-size: 12px; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tn small { display: block; font-family: var(--f-mono); font-size: 10px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 1120px) { .tr, .taxis { grid-template-columns: minmax(0, 40%) minmax(0, 1fr) 44px; } }
+.tt { position: relative; height: 18px; }
+.tt .base { position: absolute; top: -3px; bottom: -3px; width: 1px; background: var(--ink); }
+.tt .ba, .tt .bf { position: absolute; top: 4px; height: 10px; }
+.tt .ba { background: var(--against-soft); border: 1px solid var(--against); border-right: 0; }
+.tt .bf { background: var(--for-soft); border: 1px solid var(--for); border-left: 0; }
+.tt .cur { position: absolute; top: 1px; width: 2px; height: 16px; background: var(--ink); }
+.tv { font-family: var(--f-mono); font-size: 11px; color: var(--ink-2); text-align: right; white-space: nowrap; }
+.tr.assume .tn { color: var(--pen); font-weight: 600; }
+.tr.assume .ba, .tr.assume .bf { background: var(--pen-soft); border-color: var(--pen); }
+.taxis { display: grid; grid-template-columns: minmax(0, 148px) minmax(0, 1fr) 44px; gap: 8px; margin-top: 4px; }
+.taxis .ax { position: relative; height: 14px; border-top: 1px solid var(--rule-2); }
+.taxis .ax span { position: absolute; top: 2px; transform: translateX(-50%); font-family: var(--f-mono); font-size: 9.5px; color: var(--muted); }
+.sens-sum { margin: 10px 0 0; font-size: 12.5px; color: var(--ink-2); line-height: 1.45; }
+.sens-sum b { color: var(--ink); font-weight: 650; }
+.tor-more { margin-top: 8px; }
+.tor-sep { height: 1px; background: var(--rule); margin: 6px 0; }
+
+/* ---------- live ---------- */
+.mode { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; font-stretch: 75%; padding: 3px 6px 2px; border: 1px solid var(--rule-2); color: var(--muted); white-space: nowrap; }
+.mode.on { border-color: var(--pen); color: var(--pen); }
+.fl { display: block; font-size: 11.5px; font-weight: 600; color: var(--ink-2); margin: 12px 0 4px; }
+.search { width: 100%; font: inherit; font-size: 14px; padding: 8px 10px; border: 1px solid var(--rule-2); background: var(--paper); color: var(--ink); border-radius: 2px; }
+.search::placeholder { color: var(--muted); }
+.results { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); max-height: 268px; overflow: auto; }
+.results li { background: var(--card); }
+.results button { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 7px 9px; cursor: pointer; font-size: 12.5px; line-height: 1.3; }
+.results button:hover, .results button[aria-current="true"] { background: var(--pen-soft); }
+.results .rt { display: block; font-weight: 600; }
+.results .rm2 { display: block; font-size: 11px; color: var(--muted); font-family: var(--f-mono); margin-top: 2px; }
+.results .flag { font-family: var(--f-sans); font-weight: 700; font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; margin-left: 6px; color: var(--ink-2); }
+.results .empty { padding: 9px; font-size: 12.5px; color: var(--muted); }
+.pick { margin-top: 12px; border-top: 1px solid var(--rule); padding-top: 12px; }
+.pk-t { font-weight: 650; font-size: 14px; line-height: 1.3; }
+.pk-t a { text-decoration: none; } .pk-t a:hover { text-decoration: underline; }
+.pk-ab { margin-top: 6px; font-size: 12px; }
+.pk-ab summary { cursor: pointer; color: var(--ink-2); }
+.pk-ab p { font-family: var(--f-serif); font-size: 13.5px; line-height: 1.5; color: var(--ink-2); margin: 6px 0 0; max-height: 220px; overflow: auto; }
+.pk-act { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.btn { background: var(--ink); color: var(--card); border: 1px solid var(--ink); padding: 7px 12px; font-size: 12.5px; font-weight: 650; cursor: pointer; border-radius: 2px; }
+.btn:hover { background: var(--ink-2); }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }
+.btn.alt { background: var(--card); color: var(--ink); border-color: var(--rule-2); }
+.btn.alt:hover { border-color: var(--ink-2); background: var(--card); }
+.pk-status { font-size: 12px; color: var(--ink-2); }
+.pk-status.busy::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 7px; border-radius: 50%; background: var(--pen); animation: pulse 1s ease-in-out infinite; vertical-align: 0; }
+@keyframes pulse { 50% { opacity: .25; } }
+.badge { display: inline-block; font-weight: 700; font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; font-stretch: 78%; padding: 2px 5px 1px; border: 1px solid var(--ink-2); color: var(--ink-2); }
+.badge.live { border-color: var(--pen); color: var(--pen); }
+.res { margin-top: 12px; display: grid; gap: 10px; }
+.res-h { font-size: 12.5px; color: var(--ink-2); line-height: 1.45; }
+.res-h b { color: var(--ink); }
+.vclaim { border: 1px solid var(--rule); padding: 8px 9px; background: var(--card-2); font-size: 12.5px; }
+.vclaim.drop { opacity: .75; }
+.vclaim.drop .vc-m { text-decoration: line-through; text-decoration-color: var(--against); }
+.vchecks { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 11px; color: var(--ink-2); margin-bottom: 5px; }
+.ok::before { content: "✓ "; font-weight: 700; color: var(--for); }
+.bad::before { content: "✗ "; font-weight: 700; color: var(--against); }
+.vc-m b { font-weight: 650; }
+.res-lr { border-left: 3px double var(--margin); padding-left: 10px; font-size: 12.5px; }
+.res-lr .lrbig { font-family: var(--f-mono); font-size: 17px; font-weight: 600; margin-right: 6px; }
+.res-note { font-size: 11.5px; color: var(--muted); }
+
+/* ---------- set aside ---------- */
+.sa-groups { margin-top: 10px; display: grid; gap: 6px; }
+.sa-groups details { border-top: 1px solid var(--rule); padding-top: 6px; }
+.sa-groups summary { cursor: pointer; font-size: 12.5px; font-weight: 650; color: var(--ink-2); padding: 2px 0; }
+.sa-groups summary span { font-family: var(--f-mono); font-weight: 400; color: var(--muted); font-size: 11.5px; }
+.sa { padding: 8px 0 9px; border-bottom: 1px dotted var(--rule); }
+.sa:last-child { border-bottom: 0; }
+.sa-t { font-size: 13px; font-weight: 600; line-height: 1.3; }
+.sa-t a { text-decoration: none; } .sa-t a:hover { text-decoration: underline; }
+.sa-t .d { font-family: var(--f-mono); font-size: 10.5px; color: var(--muted); font-weight: 400; margin-left: 4px; white-space: nowrap; }
+.sa p { margin: 3px 0 0; font-size: 12px; color: var(--ink-2); line-height: 1.4; }
+.sa-act { display: flex; gap: 12px; margin-top: 5px; }
+.sa-act button { background: none; border: 0; padding: 0; font-size: 11.5px; font-weight: 600; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--rule-2); text-underline-offset: 3px; cursor: pointer; }
+.sa-act button:hover { color: var(--ink); text-decoration-color: currentColor; }
+.sa-act .in { font-size: 11px; color: var(--muted); }
+
+/* squiggle */
+.sq summary { cursor: pointer; font-size: 13px; font-weight: 800; font-stretch: 70%; letter-spacing: .13em; text-transform: uppercase; }
+.sq pre { margin: 10px 0 8px; max-height: 300px; overflow: auto; background: var(--paper); border: 1px solid var(--rule); padding: 10px; font-family: var(--f-mono); font-size: 11px; line-height: 1.5; white-space: pre; color: var(--ink-2); }
+.sq .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* footer */
+.foot { margin-top: 30px; padding-top: 12px; border-top: 3px double var(--rule-2); font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 20px; justify-content: space-between; }
+.foot p { margin: 0; max-width: 92ch; }
+
+/* about drawer */
+.scrim { position: fixed; inset: 0; background: rgba(10,14,11,.38); z-index: 40; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 41; width: min(560px, 100%); background: var(--card); border-left: 1px solid var(--rule-2); box-shadow: -20px 0 50px -30px rgba(0,0,0,.6); overflow: auto; padding: 22px max(22px, env(safe-area-inset-right, 0px)) 40px 26px; }
+.drawer h2 { margin: 0; font-family: var(--f-serif); font-weight: 400; font-size: 28px; line-height: 1.1; }
+.drawer h3 { font-size: 11px; font-weight: 800; font-stretch: 72%; letter-spacing: .13em; text-transform: uppercase; margin: 22px 0 6px; color: var(--ink-2); }
+.drawer p, .drawer li { font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+.drawer p { margin: 0 0 8px; }
+.drawer ul { margin: 0; padding-left: 18px; }
+.drawer li { margin-bottom: 5px; }
+.drawer b { color: var(--ink); font-weight: 650; }
+.drawer code { font-family: var(--f-mono); font-size: 12px; }
+.drawer .eq { font-family: var(--f-mono); font-size: 12.5px; background: var(--paper); border: 1px solid var(--rule); padding: 8px 10px; color: var(--ink); overflow-x: auto; }
+.d-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; border-bottom: 3px double var(--rule-2); padding-bottom: 12px; }
+
+/* mobile balance bar */
+.mbar { display: none; }
+@media (max-width: 760px) {
+  .account { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-top: 20px; }
+  .mbar:not([hidden]) { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: var(--ink); color: var(--card); padding: 9px max(16px, env(safe-area-inset-right, 0px)) calc(9px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); justify-content: space-between; align-items: center; gap: 10px; font-size: 12.5px; }
+  .mbar b { font-family: var(--f-mono); font-size: 18px; }
+  .app { padding-bottom: 80px; }
+  .chart-head { padding: 12px 12px 6px; }
+  .tb .dep-range { width: 100px; }
+}
+@media (max-width: 420px) {
+  .mast-meta span:nth-child(3) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+
+<div class="app" id="app">
+  <header class="mast">
+    <div class="brand">
+      <svg viewBox="0 0 22 22" aria-hidden="true"><rect x="1.5" y="2.5" width="19" height="17" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M1.5 7.5h19M1.5 12h19M1.5 16h19" stroke="currentColor" stroke-width=".8" opacity=".6"/><path d="M14 2.5v17M15.6 2.5v17" stroke="var(--margin)" stroke-width="1"/></svg>
+      Evidence Ledger
+    </div>
+    <div class="mast-meta">
+      <span><b>Account 01</b> · LLM forecasters vs. superforecasters</span>
+      <span>Source: arXiv abstracts in <b>papers.json</b></span>
+      <span>Ledger built <b>15 Oct 2026</b></span>
+    </div>
+    <span class="spacer"></span>
+    <button class="btn-ghost" id="aboutBtn" aria-haspopup="dialog" aria-controls="about">About this prototype</button>
+  </header>
+
+  <section class="account" aria-label="Proposition and balance">
+    <div>
+      <div class="kicker">Proposition under audit</div>
+      <h1 class="prop" id="propText">LLM-based forecasting systems match human superforecaster accuracy on real-world questions.</h1>
+      <p class="resolution" id="propRes"></p>
+      <p class="howto">Each paper is an entry. Its <b>likelihood ratio</b>, <span class="frm">P(evidence | true) ÷ P(evidence | false)</span>, multiplies your odds, so the closing balance is the prior odds times every LR you have read. Tick an entry once you have read it; drag its LR if you disagree with Claude's proposal.</p>
+      <p class="state-note" id="stateNote"></p>
+    </div>
+    <div class="balance" id="balanceBox">
+      <div class="bal-prior">
+        <label for="prior"><span class="kicker">Opening balance</span><br><span style="font-size:12px;color:var(--muted)">your prior</span></label>
+        <input type="range" id="prior" min="1" max="99" step="1" value="40" aria-describedby="priorOut">
+        <output id="priorOut" for="prior">40%</output>
+      </div>
+      <div class="bal-close">
+        <div class="kicker">Closing balance <span>· probability the proposition holds</span></div>
+        <div class="post">
+          <span class="post-num" id="postNum" aria-live="polite">–</span>
+          <div class="post-side">
+            <div id="postOdds"></div>
+            <div id="postKent"></div>
+            <div id="postBits"></div>
+          </div>
+        </div>
+      </div>
+      <div class="bal-foot" id="balFoot"></div>
+    </div>
+  </section>
+
+  <section class="card chartcard" aria-labelledby="chartTitle">
+    <div class="chart-head">
+      <div>
+        <h2 id="chartTitle">Where each claim puts LLM forecasters</h2>
+        <p class="sub">One mark per extracted claim, placed by publication date and by where the claim puts LLM systems against human benchmarks. No trend is fitted across benchmarks. Below: claims with no human baseline, then your running balance.</p>
+      </div>
+      <div class="legend" id="legend" aria-label="Legend"></div>
+    </div>
+    <div class="chart-host" id="chartHost">
+      <div id="chartSvg" role="group" aria-label="Claims chart"></div>
+      <div class="tip" id="tip" hidden role="tooltip"></div>
+    </div>
+  </section>
+
+  <div class="toolbar" role="group" aria-label="Ledger controls">
+    <div class="tb">
+      <button class="tb-btn" id="readAll" type="button">Mark all read</button>
+      <button class="tb-btn" id="readNone" type="button">Mark all unread</button>
+      <button class="tb-btn" id="resetAll" type="button">Reset to example</button>
+    </div>
+    <div class="tb">
+      <label for="dep">Entries sharing a benchmark or team</label>
+      <input class="dep-range" type="range" id="dep" min="0" max="4" step="1" value="2">
+      <output id="depOut" for="dep"></output>
+    </div>
+    <div class="tb">
+      <label class="switch" for="blind"><input type="checkbox" id="blind"> Blind mode</label>
+      <span class="hint">hide Claude's LRs until you set yours</span>
+    </div>
+  </div>
+
+  <div class="main">
+    <section class="card rail-card sens" id="sens" aria-labelledby="sensTitle">
+      <div class="rc-head"><h2 id="sensTitle">What moves the balance</h2><span class="count" id="sensCount"></span></div>
+      <p class="sub">Closing balance if one entry's LR sweeps its plausible band while everything else stays put. Longest bars first; the black tick is the current LR.</p>
+      <div class="tor" id="tor"></div>
+      <p class="sens-sum" id="sensSum"></p>
+    </section>
+
+    <section class="card ledger" id="ledger" aria-labelledby="ledgerTitle">
+      <div class="ledger-title">
+        <h2 id="ledgerTitle">Ledger · one entry per paper, in date order</h2>
+        <span class="count" id="ledgerCount"></span>
+      </div>
+      <div class="lgrid lhead" aria-hidden="true">
+        <span>Read</span><span>Date</span><span>Entry · claims · verbatim spans · rationale</span><span>Likelihood ratio</span><span class="r">Weight<br>bits</span><span class="r">Balance<b id="lheadBal"></b></span>
+      </div>
+      <div id="rows"></div>
+      <div class="lfoot" id="lfoot"></div>
+    </section>
+
+    <div class="rail">
+      <section class="card rail-card live" id="live" aria-labelledby="liveTitle">
+        <div class="rc-head"><h2 id="liveTitle">Read another abstract with Claude</h2><span class="mode" id="liveMode">checking…</span></div>
+        <p class="sub">Pick any paper in papers.json. Claude extracts its claims and proposes an LR, quoting the span each rests on. The page checks every quote against the abstract (exact match) and every figure against its quote before anything reaches the ledger.</p>
+        <label class="fl" for="q">Search 1,457 arXiv abstracts</label>
+        <input class="search" id="q" type="search" placeholder="superforecaster, Metaculus, calibration…" autocomplete="off" spellcheck="false">
+        <ul class="results" id="results" aria-label="Search results"></ul>
+        <div class="pick" id="pick"></div>
+      </section>
+
+      <section class="card rail-card" id="setaside" aria-labelledby="saTitle">
+        <div class="rc-head"><h2 id="saTitle">Read and set aside</h2><span class="count" id="saCount"></span></div>
+        <p class="sub" id="saSub"></p>
+        <div class="sa-groups" id="saList"></div>
+      </section>
+
+      <section class="card rail-card sq" aria-label="Squiggle export">
+        <details id="sqDet">
+          <summary>Export as a Squiggle model</summary>
+          <p class="sub">Each LR becomes a lognormal over its plausible band (Squiggle's <code>a to b</code> is a 90% interval); your own LRs stay point values. Paste into the Squiggle playground to propagate the uncertainty.</p>
+          <pre id="sq" tabindex="0"></pre>
+          <div class="row"><button class="btn alt" id="sqCopy" type="button">Copy</button><span class="res-note" id="sqMsg"></span></div>
+        </details>
+      </section>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <p id="provLine"></p>
+    <p><a href="https://open-stacks.quantifieduncertainty.org/building/prototype-gallery/" target="_blank" rel="noopener">Prototype gallery</a> · <a href="https://open-stacks.quantifieduncertainty.org/interfaces/generative-interfaces/" target="_blank" rel="noopener">Generative interfaces</a></p>
+  </footer>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="about" hidden role="dialog" aria-modal="true" aria-labelledby="aboutTitle" tabindex="-1">
+  <div class="d-head">
+    <div><div class="kicker">About this prototype</div><h2 id="aboutTitle">Evidence Ledger</h2></div>
+    <button class="btn-ghost" id="aboutClose" type="button">Close</button>
+  </div>
+  <h3>What it demonstrates</h3>
+  <p>Reading a literature as <b>evidence on one proposition</b> rather than as a pile of documents. Every quantitative claim in the relevant abstracts is extracted with its verbatim span, plotted against human benchmarks over time, and each paper becomes a likelihood ratio you can inspect and override. The posterior updates like a running bank balance as you tick papers read, and a sensitivity view shows which entries, and which modelling assumptions, carry the result.</p>
+  <h3>What is real</h3>
+  <ul>
+    <li><b>Papers:</b> titles, authors, dates and abstracts from <code>papers.json</code>, 1,457 arXiv records (metadata CC0) fetched from the arXiv API on 15 October 2026. Every entry links to its arXiv page.</li>
+    <li><b>Quotes:</b> every span shown in quotation marks is verbatim from the abstract. The build script (<code>scripts/prototypes/evidence-ledger.mjs</code>) checks each one by exact substring match after whitespace normalisation and drops any that fail; the live panel runs the same check in the browser. TeX escapes in arXiv abstracts (<code>\%</code>, <code>$…$</code>) are rendered as symbols.</li>
+    <li><b>Arithmetic:</b> the Bayes update, dependence discount, running balance, sensitivity sweep and Squiggle export are computed in the page.</li>
+  </ul>
+  <h3>What is AI-generated (precomputed)</h3>
+  <p>Claude read the 200 abstracts in the forecasting theme plus 35 keyword hits elsewhere, in October 2026, and wrote the extractions: metric, value, baseline, dataset, the claim's standing against human benchmarks, the proposed LR and its plausible band, the one-line rationales, the dependence groups and the set-aside reasons. <b>Precomputed by Claude, October 2026 (AI-generated; spot-check before relying on it).</b> Every such value is marked "AI-proposed" until you change it.</p>
+  <h3>Live generation</h3>
+  <p>Opened in Claude, the "Read another abstract" panel sends one abstract to Claude through the artifact's <code>sample</code> capability and gets back claims, a proposed LR and quoted spans. Nothing is plotted unless its span matches the abstract and its figure appears in the span. Elsewhere (for example on the static wiki) the panel shows three precomputed examples instead.</p>
+  <h3>Method and its limits</h3>
+  <div class="eq">posterior odds = prior odds × Π LRᵢ^wᵢ<br>wᵢ = 1 for the strongest entry in a group, 1 − d for the others</div>
+  <ul style="margin-top:10px">
+    <li><b>Abstracts only.</b> Abstracts overclaim and omit figures; the AIA parity claim, for instance, gives no number. LRs read off abstracts are crude, so the slider moves in coarse steps (×0.2 to ×5) and each LR carries a band.</li>
+    <li><b>Standing is a judgement.</b> Placing a claim "below crowd" or "≈ superforecasters" compresses different metrics and benchmarks onto one ordinal scale. Hover any mark for the underlying figure.</li>
+    <li><b>Dependence is a heuristic.</b> Papers sharing a benchmark, comparison design or team are grouped; the knob discounts all but the strongest entry in each group. It swings the answer a lot, which is the point.</li>
+    <li><b>Recency matters.</b> The proposition is about October 2026. A 2023 shortfall is nearly as likely in a world where today's systems reach parity, so older entries get LRs near 1.</li>
+    <li><b>Corpus.</b> arXiv only, as fetched; no journals, blogs or leaderboards (ForecastBench's live leaderboard is not in the data).</li>
+    <li><b>Nothing is mocked</b> except the stand-in shown when live generation is unavailable, which is a labelled precomputed example.</li>
+  </ul>
+  <h3>Prior art</h3>
+  <p>Meta-analysis forest plots; Heuer's Analysis of Competing Hypotheses; Elicit's extraction tables and scite's supporting/contrasting citations; ForecastBench and Metaculus; Arbital's guide to Bayes' rule; Guesstimate and Squiggle.</p>
+  <h3>Links</h3>
+  <ul>
+    <li><a href="https://open-stacks.quantifieduncertainty.org/building/prototype-gallery/" target="_blank" rel="noopener">Open Stacks prototype gallery</a></li>
+    <li><a href="https://open-stacks.quantifieduncertainty.org/interfaces/generative-interfaces/" target="_blank" rel="noopener">Chapter: Generative interfaces</a></li>
+    <li><a href="https://open-stacks.quantifieduncertainty.org/interfaces/exploratory-search/" target="_blank" rel="noopener">Chapter: Exploratory search</a></li>
+  </ul>
+</aside>
+
+<div class="mbar" id="mbar" hidden aria-hidden="true"><span>Closing balance</span><b id="mbarNum">–</b><span id="mbarSide"></span></div>
+
+<script>
+(() => {
+'use strict';
+
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const norm = (s) => String(s ?? '').replace(/\s+/g, ' ').trim();
+const tex = (s) => String(s ?? '')
+  .replace(/\\%/g, '%').replace(/\\&/g, '&').replace(/\\\$/g, '$')
+  .replace(/\$([^$]{1,120})\$/g, (m, x) => x
+    .replace(/\\approx/g, '≈').replace(/\\Delta/g, 'Δ').replace(/\\rho/g, 'ρ').replace(/\\,/g, ' ')
+    .replace(/\\[a-zA-Z]+\{([^{}]*)\}/g, '$1').replace(/[{}]/g, '').replace(/_/g, ''))
+  .replace(/\\[a-zA-Z]+\{([^{}]*)\}/g, '$1')
+  .replace(/``/g, '“').replace(/''/g, '”');
+const sid = (id) => String(id).replace(/[^a-zA-Z0-9]/g, '-');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const LADDER = [0.2, 0.25, 0.33, 0.4, 0.5, 0.67, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 2, 2.5, 3, 4, 5];
+const idxOf = (v) => { let b = 0, bd = Infinity; LADDER.forEach((x, i) => { const d = Math.abs(Math.log(x) - Math.log(v)); if (d < bd) { bd = d; b = i; } }); return b; };
+const snap = (v) => LADDER[idxOf(v)];
+const stepLR = (v, k) => LADDER[clamp(idxOf(v) + k, 0, LADDER.length - 1)];
+const fmtLR = (v) => '×' + (+v.toFixed(2)).toString();
+const DEP = [0, 0.25, 0.5, 0.75, 1];
+const DEP_LAB = ['independent', '¼ discount', '½ discount', '¾ discount', 'count once'];
+const DEP_FRAC = ['each counts fully', 'later ones count ¾', 'later ones count ½', 'later ones count ¼', 'only the strongest counts'];
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const ymd = (y) => String(y).split('-').map(Number);
+const fmtD = (y) => { const [Y, M, D] = ymd(y); return `${D} ${MON[M - 1]} ${Y}`; };
+const tOf = (y) => { const [Y, M, D] = ymd(y); return Date.UTC(Y, M - 1, D || 1); };
+const TODAY = '2026-10-15';
+const pct = (p) => p < 0.005 ? '<1%' : p > 0.995 ? '>99%' : Math.round(p * 100) + '%';
+const pts = (d) => (d >= 0 ? '+' : '−') + Math.abs(d * 100).toFixed(Math.abs(d) < 0.095 ? 1 : 0);
+const lastName = (n) => { const p = String(n).trim().split(/\s+/); return p[p.length - 1]; };
+const authShort = (a) => !a || !a.length ? '' : a.length === 1 ? lastName(a[0]) : a.length === 2 ? `${lastName(a[0])} & ${lastName(a[1])}` : `${lastName(a[0])} et al.`;
+const authLine = (a) => !a || !a.length ? '' : a.length <= 3 ? a.join(', ') : `${a.slice(0, 3).join(', ')} et al.`;
+const kent = (p) => p >= 0.87 ? 'almost certain' : p >= 0.6 ? 'probable' : p >= 0.4 ? 'chances about even' : p >= 0.15 ? 'probably not' : p >= 0.02 ? 'almost certainly not' : 'near-impossible';
+const oddsTxt = (p) => { const o = p / (1 - p); const f = (x) => x >= 10 ? Math.round(x).toString() : (+x.toFixed(1)).toString(); return o >= 1 ? `${f(o)} : 1 for` : `1 : ${f(1 / o)} against`; };
+const dirOf = (lr) => lr > 1.001 ? 'for' : lr < 0.999 ? 'against' : 'neutral';
+
+const STAND = {
+  above_elite: { chip: 'Above superforecasters', y: 0.07 },
+  at_elite: { chip: '≈ Superforecasters', y: 0.2 },
+  below_elite: { chip: 'Below expert humans', y: 0.31, open: 'down' },
+  between: { chip: 'Between crowd & experts', y: 0.43 },
+  above_crowd: { chip: 'Above crowd / market', y: 0.54, open: 'up' },
+  at_crowd: { chip: '≈ Crowd / market / panel', y: 0.65 },
+  below_crowd: { chip: 'Below crowd / market', y: 0.8 },
+  at_individual: { chip: '≈ Individual humans', y: 0.935 },
+  none: { chip: 'No human baseline' },
+};
+const SYSTEMS = { single: 'Single model', ensemble: 'Ensemble of LLMs', agentic: 'Agentic or retrieval system', trained: 'Fine-tuned or RL-trained', 'human+AI': 'Humans with an LLM assistant' };
+const SA_KIND = { 'no-figure': 'No figure in the abstract', adjacent: 'Adjacent: not an accuracy test', 'other-question': 'A different question', 'human-only': 'Human baselines only, no LLMs' };
+
+// ---------------------------------------------------------------- state
+const KEY = 'evidence-ledger:v1';
+let D = null, S = null, ENTRIES = [], PAPERS = null, papersPromise = null;
+let sample = null, liveMode = 'checking', liveCtl = null, pickId = null, pickResult = null;
+let hotId = null, hotK = null, touchMode = false, renderQueued = false;
+const ROWS = new Map();
+
+const loadStore = () => { try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.v === 1 && s.read && s.lr) return s; } catch (e) { /* storage unavailable */ } return null; };
+let saveT = 0;
+const save = () => { clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignore */ } }, 250); };
+const clearStore = () => { try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ } };
+function exampleState() {
+  const read = {};
+  for (const p of D.papers) read[p.id] = p.y <= '2026-07-31';
+  return { v: 1, custom: false, prior: D.proposition.priorDefault, d: 2, blind: false, read, lr: {}, added: [] };
+}
+function touch() { S.custom = true; save(); }
+
+function rebuildEntries() {
+  ENTRIES = D.papers.map((p) => ({ ...p, origin: 'precomputed' })).concat(S.added || [])
+    .sort((a, b) => a.y.localeCompare(b.y) || a.id.localeCompare(b.id));
+}
+const isRead = (e) => !!S.read[e.id];
+const touched = (e) => S.lr[e.id] != null;
+const lrOf = (e) => S.lr[e.id] != null ? S.lr[e.id] : S.blind ? 1 : (e.lr ?? 1);
+const readList = () => ENTRIES.filter(isRead);
+
+// Bayes in log-odds with a dependence discount: within a group, the entry with the
+// largest |log LR| counts fully and every other one counts (1 - d).
+function evaluate(list, ov = {}) {
+  const d = ov.d ?? DEP[S.d];
+  const prior = ov.prior ?? S.prior;
+  const items = list.map((e) => ({ e, l: Math.log(ov.id === e.id ? ov.lr : lrOf(e)), w: 1 }));
+  const groups = {};
+  for (const x of items) if (x.e.group) (groups[x.e.group] ||= []).push(x);
+  for (const g of Object.values(groups)) {
+    g.sort((a, b) => Math.abs(b.l) - Math.abs(a.l) || a.e.y.localeCompare(b.e.y));
+    g.forEach((x, i) => { x.w = i === 0 ? 1 : 1 - d; });
+  }
+  let s = 0;
+  for (const x of items) s += x.w * x.l;
+  const o = (prior / (1 - prior)) * Math.exp(s);
+  return { p: o / (1 + o), s, items };
+}
+function running() {
+  const list = readList();
+  return list.map((e, i) => ({ e, p: evaluate(list.slice(0, i + 1)).p }));
+}
+
+// ---------------------------------------------------------------- text helpers
+// Figures: standalone numbers and ranges (not digits inside tokens like "Qwen3-32B", not years).
+const HL_RE = /((?<![A-Za-z0-9.\-–])(?!(?:19|20)\d\d(?![\d%,]))\d[\d,]*(?:\.\d+)?(?:[–-]\d+(?:\.\d+)?)?(?![A-Za-z\d]|\.\d)(?:\s?(?:%|percent(?:age points)?|pp))?|\b(?:none of the|every model|equal to|not statistically different|significantly underperform|significantly outperform|underperforms?|outperforms?|surpass(?:es|ing)?|trails?|fails to match|less accurate|approaching)\b)/gi;
+function hl(text) {
+  let out = '', last = 0;
+  text.replace(HL_RE, (m, _g, i) => { out += esc(text.slice(last, i)) + `<mark class="${/\d/.test(m) ? 'n' : 'c'}">${esc(m)}</mark>`; last = i + m.length; return m; });
+  return out + esc(text.slice(last));
+}
+const quoteHTML = (qs, cls = '') => `<blockquote class="q ${cls}">“${qs.map((q) => hl(tex(norm(q)))).join('<span class="gap">…</span>')}”</blockquote>`;
+function abstractWithSpans(ab, quotes) {
+  const a = norm(ab);
+  const ranges = [];
+  for (const q of quotes) { const n = norm(q); const i = a.indexOf(n); if (i >= 0) ranges.push([i, i + n.length]); }
+  ranges.sort((x, y) => x[0] - y[0]);
+  const merged = [];
+  for (const r of ranges) { const l = merged[merged.length - 1]; if (l && r[0] <= l[1]) l[1] = Math.max(l[1], r[1]); else merged.push([...r]); }
+  let out = '', last = 0;
+  for (const [s, e] of merged) { out += esc(tex(a.slice(last, s))) + `<span class="span">${esc(tex(a.slice(s, e)))}</span>`; last = e; }
+  return out + esc(tex(a.slice(last)));
+}
+
+// ---------------------------------------------------------------- ledger rows
+function rowHTML(e, i) {
+  const s = sid(e.id);
+  const tags = [];
+  tags.push(`<li class="tag">${esc(e.type || 'Abstract')}</li>`);
+  if (e.self) tags.push('<li class="tag self" title="Results reported by the system’s own builders">Self-reported</li>');
+  if (e.group) tags.push(`<li class="tag grp" title="Dependence group">${esc(D.groups[e.group] || e.group)}</li>`);
+  if (e.origin === 'live') tags.push('<li class="tag origin">Added live · Claude</li>');
+  if (e.origin === 'example') tags.push('<li class="tag origin">Added · precomputed example</li>');
+  if (e.origin === 'admitted') tags.push('<li class="tag origin">Admitted by you · no figure</li>');
+  tags.push('<li class="tag">Abstract only</li>');
+  tags.push('<li class="tag unread-tag" data-unread>Unread · not posted</li>');
+  const claims = (e.claims || []).map((c) => `<li class="claim"><div class="ch"><span class="st st-${esc(c.standing)}">${esc((STAND[c.standing] || STAND.none).chip)}</span> <b>${esc(c.metric)}:</b> ${esc(c.value)}</div><div class="cb">vs ${esc(c.baseline)} · ${esc(c.dataset)}</div>${quoteHTML(c.quotes || [])}</li>`).join('');
+  const ctx = !e.claims?.length && e.context ? `<ul class="claims"><li class="claim"><div class="cb">Context span (no figure):</div>${quoteHTML([e.context], 'sm')}</li></ul>` : '';
+  const allQ = (e.claims || []).flatMap((c) => c.quotes || []);
+  return `
+  <div class="c-tick"><input type="checkbox" id="read-${s}" aria-label="Read: ${esc(e.short)}"></div>
+  <div class="c-date"><span class="dm">${esc(fmtD(e.y).replace(/ \d{4}$/, ''))}</span> <span class="yr">${esc(e.y.slice(0, 4))}</span><span class="no">#${String(i + 1).padStart(2, '0')}</span></div>
+  <div class="c-entry">
+    <h3><a href="https://arxiv.org/abs/${esc(e.id)}" target="_blank" rel="noopener">${esc(tex(e.t))}</a></h3>
+    <p class="by">${esc(authLine(e.a))} · ${esc(e.c || '')} · arXiv ${esc(e.id)}</p>
+    <ul class="tags">${tags.join('')}</ul>
+    ${claims ? `<ul class="claims">${claims}</ul>` : ctx}
+    <p class="why" data-why></p>
+    <details class="abs-d"><summary>Full abstract${allQ.length ? ', extracted spans highlighted' : ''}</summary><p>${abstractWithSpans(e.ab || '', allQ)}</p></details>
+    ${e.origin !== 'precomputed' ? '<button class="linkbtn rm" type="button" data-remove>Remove from ledger</button>' : ''}
+  </div>
+  <div class="c-lr">
+    <div class="lr-top"><output class="lr-val" id="lrv-${s}" for="lr-${s}"></output><span class="lr-who" data-who></span></div>
+    <div class="lr-track"><span class="lr-band" data-band></span><span class="lr-claude" data-claude hidden></span>
+      <input type="range" min="0" max="${LADDER.length - 1}" step="1" id="lr-${s}" aria-label="Likelihood ratio for ${esc(e.short)}"></div>
+    <div class="lr-scale" aria-hidden="true"><span>⅕</span><span>½</span><span>1</span><span>2</span><span>5</span></div>
+    <div class="lr-note" data-note></div>
+  </div>
+  <div class="c-bits"><span data-bits></span><div class="wbar" aria-hidden="true"><i data-wbar></i></div><small data-wnote></small></div>
+  <div class="c-bal" data-bal></div>`;
+}
+function buildRows() {
+  const host = $('#rows');
+  host.innerHTML = '';
+  ROWS.clear();
+  ENTRIES.forEach((e, i) => {
+    const el = document.createElement('article');
+    el.className = 'entry lgrid';
+    el.id = 'entry-' + sid(e.id);
+    el.dataset.id = e.id;
+    el.tabIndex = -1;
+    el.setAttribute('aria-label', e.short);
+    el.innerHTML = rowHTML(e, i);
+    host.appendChild(el);
+    ROWS.set(e.id, {
+      el, e,
+      cb: el.querySelector('input[type=checkbox]'), range: el.querySelector('input[type=range]'),
+      val: el.querySelector('.lr-val'), who: el.querySelector('[data-who]'), band: el.querySelector('[data-band]'),
+      claude: el.querySelector('[data-claude]'), note: el.querySelector('[data-note]'), bits: el.querySelector('[data-bits]'),
+      wbar: el.querySelector('[data-wbar]'), wnote: el.querySelector('[data-wnote]'), bal: el.querySelector('[data-bal]'), why: el.querySelector('[data-why]'),
+      unreadTag: el.querySelector('[data-unread]'),
+    });
+  });
+}
+function updateRows(ev, run) {
+  const runMap = new Map(run.map((r) => [r.e.id, r.p]));
+  const wMap = new Map(ev.items.map((x) => [x.e.id, x]));
+  const pct16 = (i) => (i / (LADDER.length - 1)) * 100;
+  for (const [id, r] of ROWS) {
+    const e = r.e, read = isRead(e), t = touched(e), lr = lrOf(e), hideAI = S.blind && !t;
+    r.el.classList.toggle('unread', !read);
+    r.unreadTag.hidden = read;
+    r.cb.checked = read;
+    const idx = idxOf(lr);
+    if (document.activeElement !== r.range) r.range.value = idx;
+    r.range.classList.toggle('touched', t);
+    r.range.setAttribute('aria-valuetext', `${fmtLR(lr)}${t ? ', your value' : hideAI ? ', neutral (Claude hidden)' : ', proposed by Claude'}`);
+    r.val.textContent = hideAI ? '×1 ?' : fmtLR(lr);
+    if (t) r.who.innerHTML = `<span class="yours">yours</span><button type="button" data-reset>${e.origin === 'admitted' ? 'clear' : 'reset'}</button>`;
+    else if (hideAI) r.who.innerHTML = 'Claude’s LR<br>hidden';
+    else r.who.innerHTML = '<span class="ai">AI-proposed</span>';
+    const showBand = !hideAI && e.lo != null && e.hi != null && e.origin !== 'admitted';
+    r.band.hidden = !showBand;
+    if (showBand) { const a = pct16(idxOf(e.lo)), b = pct16(idxOf(e.hi)); r.band.style.left = `calc(${a}% + ${6 - a * 0.12}px)`; r.band.style.width = `calc(${b - a}% - ${(b - a) * 0.12}px)`; }
+    const showC = t && e.lr != null && e.origin !== 'admitted';
+    r.claude.hidden = !showC;
+    if (showC) { const a = pct16(idxOf(e.lr)); r.claude.style.left = `calc(${a}% + ${6 - a * 0.12}px - 1px)`; r.claude.title = `Claude proposed ${fmtLR(e.lr)}`; }
+    r.note.textContent = showC ? `Claude proposed ${fmtLR(e.lr)}` + (e.lo != null ? ` (band ${fmtLR(e.lo)}–${fmtLR(e.hi)})` : '') : showBand ? `plausible band ${fmtLR(e.lo)}–${fmtLR(e.hi)}` : e.origin === 'admitted' ? 'no figure: set your own LR' : '';
+    // rationale
+    if (hideAI) { r.why.className = 'why blinded'; r.why.textContent = 'Claude’s rationale is hidden in blind mode until you set this LR.'; }
+    else { r.why.className = 'why'; r.why.innerHTML = `<span class="who-ai">${e.origin === 'admitted' ? 'Set-aside note' : 'Claude'}</span>${esc(e.rationale || '')}`; }
+    // weight
+    const it = wMap.get(id);
+    if (read && it) {
+      const bits = (it.w * it.l) / Math.LN2;
+      r.bits.textContent = Math.abs(bits) < 0.005 ? '0.00' : bits > 0 ? '+' + bits.toFixed(2) : '(' + Math.abs(bits).toFixed(2) + ')';
+      r.bits.title = it.w < 1 ? `Discounted to ${Math.round(it.w * 100)}% (shares a group with a stronger entry)` : '';
+      const w = Math.min(50, (Math.abs(bits) / 1.5) * 50);
+      r.wbar.className = bits > 0 ? 'f' : 'a';
+      r.wbar.style.width = w + '%';
+      r.bal.textContent = pct(runMap.get(id));
+      r.wnote.textContent = it.w < 1 ? `counts ${it.w === 0 ? 'zero' : Math.round(it.w * 100) + '%'}` : '';
+    } else {
+      r.bits.textContent = '—'; r.bits.title = ''; r.wbar.style.width = '0'; r.wnote.textContent = ''; r.bal.innerHTML = '·<small>not posted</small>';
+    }
+  }
+}
+
+// ---------------------------------------------------------------- header
+let lastP = null;
+function updateHeader(ev) {
+  const read = readList();
+  $('#prior').value = Math.round(S.prior * 100);
+  $('#priorOut').textContent = pct(S.prior);
+  const pn = $('#postNum');
+  pn.textContent = pct(ev.p);
+  if (lastP != null && Math.round(lastP * 100) !== Math.round(ev.p * 100) && !reduced) { pn.classList.add('flash'); setTimeout(() => pn.classList.remove('flash'), 350); }
+  lastP = ev.p;
+  $('#postOdds').innerHTML = `odds <b class="mono">${esc(oddsTxt(ev.p))}</b>`;
+  $('#postKent').innerHTML = `in words: <b>“${kent(ev.p)}”</b> <span style="color:var(--muted)">(Kent, 1964)</span>`;
+  const bits = ev.s / Math.LN2;
+  $('#postBits').innerHTML = `net evidence <b class="mono">${bits >= 0 ? '+' : '−'}${Math.abs(bits).toFixed(2)} bits</b> <span style="color:var(--muted)">(×${(+Math.exp(ev.s).toFixed(2))} on the odds)</span>`;
+  $('#balFoot').innerHTML = `<span><b>${read.length}</b> of ${ENTRIES.length} entries read</span><span>dependence: <b>${DEP_LAB[S.d]}</b></span>${S.blind ? '<span><b>blind mode</b></span>' : ''}`;
+  $('#depOut').textContent = `${DEP_LAB[S.d]} · ${DEP_FRAC[S.d]}`;
+  $('#dep').value = S.d;
+  $('#dep').setAttribute('aria-valuetext', `${DEP_LAB[S.d]}: ${DEP_FRAC[S.d]}`);
+  $('#blind').checked = !!S.blind;
+  const nT = Object.keys(S.lr).length;
+  $('#stateNote').innerHTML = S.custom
+    ? `<span class="stamp yours">Your ledger</span> Saved in this browser${nT ? ` · ${nT} LR${nT > 1 ? 's' : ''} set by you` : ''}. <button class="linkbtn" type="button" data-reset-all>Reset to the example</button>`
+    : `<span class="stamp">Example state</span> Entries up to July 2026 are ticked as read; the three September papers are waiting. Prior 40%, Claude's proposed LRs.`;
+  $('#lheadBal').textContent = pct(ev.p);
+  $('#ledgerCount').textContent = `${read.length}/${ENTRIES.length} read`;
+  const lf = $('#lfoot');
+  lf.innerHTML = `<div class="lf-txt">Opening balance <b class="mono">${pct(S.prior)}</b> · ${read.length} entries posted · net <span class="mono">${bits >= 0 ? '+' : '−'}${Math.abs(bits).toFixed(2)}</span> bits · odds ${esc(oddsTxt(ev.p))}<br><span style="color:var(--muted)">Closing balance</span></div><div class="lf-bal">${pct(ev.p)}</div>`;
+  $('#mbarNum').textContent = pct(ev.p);
+  $('#mbarSide').textContent = `${read.length}/${ENTRIES.length} read · from ${pct(S.prior)}`;
+}
+
+// ---------------------------------------------------------------- chart
+let measureCtx = null;
+function textW(s, font) {
+  if (!measureCtx) measureCtx = document.createElement('canvas').getContext('2d');
+  measureCtx.font = font;
+  return measureCtx.measureText(s).width;
+}
+function glyph(sys, x, y, r) {
+  switch (sys) {
+    case 'ensemble': return `<rect class="g" x="${x - r * 0.88}" y="${y - r * 0.88}" width="${r * 1.76}" height="${r * 1.76}" rx="1.2"/>`;
+    case 'agentic': return `<path class="g" d="M${x} ${y - r * 1.22}L${x + r * 1.22} ${y}L${x} ${y + r * 1.22}L${x - r * 1.22} ${y}Z"/>`;
+    case 'trained': return `<path class="g" d="M${x} ${y - r * 1.2}L${x + r * 1.15} ${y + r * 0.85}L${x - r * 1.15} ${y + r * 0.85}Z"/>`;
+    case 'human+AI': return `<circle class="g" cx="${x}" cy="${y}" r="${r * 0.82}"/>`;
+    default: return `<circle class="g" cx="${x}" cy="${y}" r="${r}"/>`;
+  }
+}
+function legendHTML() {
+  const sh = (sys) => `<svg viewBox="-8 -8 16 16" aria-hidden="true"><g class="mk d-neutral${sys === 'human+AI' ? ' donut' : ''}">${glyph(sys, 0, 0, 5)}</g></svg>`;
+  const dot = (cls, extra = '') => `<svg viewBox="-8 -8 16 16" aria-hidden="true"><g class="mk ${cls}">${glyph('single', 0, 0, 5)}</g>${extra}</svg>`;
+  return Object.entries(SYSTEMS).map(([k, v]) => `<span>${sh(k)}${esc(v.replace(' or ', '/'))}</span>`).join('') +
+    `<span class="sep"></span><span>${dot('d-for')}LR above 1 (for)</span><span>${dot('d-against')}below 1 (against)</span><span>${dot('d-neutral')}≈ 1</span><span>${dot('unread')}unread</span>`;
+}
+const freshIds = new Set();
+function renderChart(ev, run) {
+  const host = $('#chartSvg');
+  const W = Math.max(300, Math.round(host.clientWidth || 600));
+  const narrow = W < 700;
+  const gut = narrow ? 0 : 176;
+  const x0 = gut + (narrow ? 10 : 22), x1 = W - (narrow ? 34 : 64);
+  const tA = Date.UTC(2023, 9, narrow ? 1 : 15), tB = Date.UTC(2026, 10, 10);
+  const X = (t) => x0 + ((t - tA) / (tB - tA)) * (x1 - x0);
+  const top = narrow ? 26 : 22;
+  const ladH = narrow ? 230 : 262;
+  const laneTop = top + ladH + 22, laneH = narrow ? 58 : 70;
+  const balTop = laneTop + laneH + 30, balH = narrow ? 100 : 118;
+  const axisY = balTop + balH + 10;
+  const H = axisY + 30;
+  const LY = (f) => top + f * ladH;
+  const xToday = X(tOf(TODAY));
+  const out = [];
+  const lblFont = '600 11px Archivo, "Arial Narrow", sans-serif';
+  out.push(`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg" aria-hidden="false">`);
+  out.push(`<defs><pattern id="el-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line class="hatch-line" x1="0" y1="0" x2="0" y2="7"/></pattern></defs>`);
+  // year columns (ledger rules)
+  for (let y = 2024; y <= 2026; y++) {
+    const x = X(Date.UTC(y, 0, 1));
+    out.push(`<line class="ch-rule" x1="${x}" y1="${top - 8}" x2="${x}" y2="${axisY}"/>`);
+  }
+  // parity zone
+  out.push(`<rect class="ch-zonebg" x="${x0}" y="${top - 8}" width="${x1 - x0}" height="${LY(0.2) - top + 8}"/>`);
+  out.push(`<rect class="ch-zone" x="${x0}" y="${top - 8}" width="${x1 - x0}" height="${LY(0.2) - top + 8}"/>`);
+  const zl = narrow ? 'proposition holds here' : 'parity zone: where the proposition holds';
+  out.push(`<text class="ch-zlab" x="${narrow ? x0 + 4 : xToday - 8}" y="${LY(0.085) + 4}" text-anchor="${narrow ? 'start' : 'end'}">${zl}</text>`);
+  // reference lines
+  out.push(`<line class="ch-elite" x1="${x0}" y1="${LY(0.2)}" x2="${x1}" y2="${LY(0.2)}"/>`);
+  out.push(`<line class="ch-crowd" x1="${x0}" y1="${LY(0.65)}" x2="${x1}" y2="${LY(0.65)}"/>`);
+  out.push(`<line class="ch-ind" x1="${x0}" y1="${LY(0.935)}" x2="${x1}" y2="${LY(0.935)}"/>`);
+  const refs = [
+    [0.2, 'SUPERFORECASTERS', 'and pro / expert forecasters'],
+    [0.65, 'CROWD · MARKET', 'price, crowd, survey panel'],
+    [0.935, 'INDIVIDUALS', 'typical human forecaster'],
+  ];
+  if (!narrow) for (const [f, a, b] of refs) out.push(`<text class="ch-glab" x="${gut - 6}" y="${LY(f) - 1}" text-anchor="end">${a}</text><text class="ch-gsub" x="${gut - 6}" y="${LY(f) + 12}" text-anchor="end">${b}</text>`);
+  if (!narrow) {
+    out.push(`<text class="ch-gsub" x="${gut - 6}" y="${LY(0.43) + 4}" text-anchor="end">between</text>`);
+    out.push(`<line class="ch-dbl" x1="${gut + 4}" y1="${top - 8}" x2="${gut + 4}" y2="${axisY}"/><line class="ch-dbl" x1="${gut + 7}" y1="${top - 8}" x2="${gut + 7}" y2="${axisY}"/>`);
+  }
+  // lane + balance panel separators (double rules)
+  for (const yy of [laneTop - 12, balTop - 16]) out.push(`<line class="ch-rule2" x1="${narrow ? 0 : gut + 4}" y1="${yy}" x2="${W}" y2="${yy}"/><line class="ch-rule2" x1="${narrow ? 0 : gut + 4}" y1="${yy + 3}" x2="${W}" y2="${yy + 3}"/>`);
+  if (narrow) {
+    out.push(`<text class="ch-glab" x="${x0 + 2}" y="${laneTop + 1}">NO HUMAN BASELINE</text>`);
+    out.push(`<text class="ch-glab" x="${x0 + 2}" y="${balTop - 2}">RUNNING BALANCE</text>`);
+  } else {
+    out.push(`<text class="ch-glab" x="${gut - 6}" y="${laneTop + laneH / 2 - 2}" text-anchor="end">NO HUMAN BASELINE</text><text class="ch-gsub" x="${gut - 6}" y="${laneTop + laneH / 2 + 11}" text-anchor="end">methods, leakage, robustness</text>`);
+    out.push(`<text class="ch-glab" x="${gut - 6}" y="${balTop + 10}" text-anchor="end">RUNNING BALANCE</text><text class="ch-gsub" x="${gut - 6}" y="${balTop + 23}" text-anchor="end">posterior after each</text><text class="ch-gsub" x="${gut - 6}" y="${balTop + 36}" text-anchor="end">entry you have read</text>`);
+  }
+  // today line
+  out.push(`<line class="ch-today" x1="${xToday}" y1="${top - 14}" x2="${xToday}" y2="${axisY}"/>`);
+  out.push(`<text class="ch-todaylab" x="${xToday}" y="${top - 17}" text-anchor="middle">today</text>`);
+
+  // ---- marks
+  const ladder = [], lane = [];
+  ENTRIES.forEach((e) => (e.claims || []).forEach((c, ci) => {
+    const m = { e, c, ci, k: `${e.id}|${ci}`, x: X(tOf(e.y)) };
+    if (c.standing && c.standing !== 'none' && STAND[c.standing]) { m.y = LY(STAND[c.standing].y); ladder.push(m); }
+    else { m.y = laneTop + laneH / 2 + (narrow ? 6 : 0); lane.push(m); }
+  }));
+  // nudge collisions
+  const nudge = (arr, dx) => { arr.sort((a, b) => a.x - b.x); for (let i = 0; i < arr.length; i++) for (let j = 0; j < i; j++) if (Math.abs(arr[i].x - arr[j].x) < dx && Math.abs(arr[i].y - arr[j].y) < 10) arr[i].x = arr[j].x + dx; };
+  nudge(ladder, 13); nudge(lane, narrow ? 9 : 11);
+  // paper links (same paper, several standings)
+  const byPaper = {};
+  for (const m of ladder) (byPaper[m.e.id] ||= []).push(m);
+  for (const ms of Object.values(byPaper)) if (ms.length > 1) { const ys = ms.map((m) => m.y); out.push(`<line class="ch-link" x1="${ms[0].x}" y1="${Math.min(...ys)}" x2="${ms[0].x}" y2="${Math.max(...ys)}"/>`); }
+  const boxes = [];
+  const overlaps = (b) => boxes.some((o) => b.x < o.x + o.w && b.x + b.w > o.x && b.y < o.y + o.h && b.y + b.h > o.y);
+  for (const m of ladder.concat(lane)) {
+    const open = (STAND[m.c.standing] || {}).open;
+    boxes.push({ x: m.x - 8, y: m.y - (open === 'up' ? 26 : 8), w: 16, h: 16 + (open ? 18 : 0) });
+  }
+  boxes.push({ x: xToday - 20, y: top - 30, w: 40, h: 16 });
+  if (narrow) {
+    // Reference-line labels sit on their line, in the first stretch that no mark occupies.
+    for (const [f, a] of refs) {
+      const w = textW(a, '750 10.5px Archivo, "Arial Narrow", sans-serif') * 1.12 + 4;
+      for (let lx = x0 + 2; lx + w < xToday - 4; lx += 6) {
+        const b = { x: lx, y: LY(f) - 16, w, h: 13 };
+        if (overlaps(b)) continue;
+        boxes.push(b);
+        out.push(`<text class="ch-glab" x="${lx}" y="${LY(f) - 5}" style="paint-order:stroke;stroke:var(--card);stroke-width:3px">${a}</text>`);
+        break;
+      }
+    }
+  }
+  const markSVG = (m, r) => {
+    const e = m.e, lr = lrOf(e), read = isRead(e);
+    const cls = ['mk', read ? 'd-' + dirOf(lr) : 'unread', (m.c.system || e.system) === 'human+AI' ? 'donut' : '', freshIds.has(e.id) ? 'fresh' : '', hotId === e.id ? 'hot' : ''].join(' ');
+    const st = STAND[m.c.standing] || STAND.none;
+    let arrow = '';
+    if (st.open === 'down') arrow = `<path class="ch-open" d="M${m.x} ${m.y + r + 3}v14m-3.5 -4l3.5 4l3.5 -4"/>`;
+    if (st.open === 'up') arrow = `<path class="ch-open" d="M${m.x} ${m.y - r - 3}v-14m-3.5 4l3.5 -4l3.5 4"/>`;
+    const label = `${e.short}: ${st.chip}. ${m.c.metric}, ${m.c.value}. ${read ? 'Read' : 'Unread'}, LR ${fmtLR(lr)}`;
+    return `<g class="${cls}" data-k="${esc(m.k)}" data-id="${esc(e.id)}" tabindex="0" role="button" aria-label="${esc(label)}">${arrow}<circle class="hit" cx="${m.x}" cy="${m.y}" r="${r + 7}"/><circle class="halo" cx="${m.x}" cy="${m.y}" r="${r + 2.5}"/>${glyph(m.c.system || e.system, m.x, m.y, r)}<circle class="ring" cx="${m.x}" cy="${m.y}" r="${r + 4.5}"/></g>`;
+  };
+  // ladder labels
+  const labels = [];
+  if (!narrow) {
+    const order = ladder.slice().sort((a, b) => a.x - b.x);
+    for (const m of order) {
+      const txt = m.e.short.replace(/\s*\(.*\)$/, '');
+      const w = textW(txt, lblFont) + 2, h = 13;
+      const cands = [[m.x + 11, m.y - 7], [m.x - 11 - w, m.y - 7], [m.x + 9, m.y - 21], [m.x + 9, m.y + 7], [m.x - w - 9, m.y - 21], [m.x - w - 9, m.y + 7], [m.x - w / 2, m.y - 25], [m.x - w / 2, m.y + 12]];
+      for (const [lx, ly] of cands) {
+        const b = { x: lx, y: ly, w, h };
+        if (lx < x0 - 4 || lx + w > W - 2 || ly < top - 6) continue;
+        if (overlaps(b)) continue;
+        boxes.push(b);
+        labels.push(`<text class="ch-mlbl${isRead(m.e) ? '' : ' dim'}" x="${lx + 1}" y="${ly + 10}">${esc(txt)}</text>`);
+        break;
+      }
+    }
+    // lane value labels
+    const lorder = lane.slice().sort((a, b) => a.x - b.x);
+    for (const m of lorder) {
+      const raw = m.c.fig || m.c.value || '';
+      const txt = raw.length > 16 ? raw.slice(0, 15) + '…' : raw;
+      const w = textW(txt, '400 10.5px "Red Hat Mono", monospace') + 2, h = 12;
+      const cands = [[m.x - w / 2, m.y - 22], [m.x - w / 2, m.y + 10], [m.x + 9, m.y - 6], [m.x - w - 9, m.y - 6]];
+      for (const [lx, ly] of cands) {
+        const b = { x: lx, y: ly, w, h };
+        if (lx < x0 - 4 || lx + w > W - 2) continue;
+        if (overlaps(b)) continue;
+        boxes.push(b);
+        labels.push(`<text class="ch-vlbl" x="${lx + 1}" y="${ly + 9.5}">${esc(txt)}</text>`);
+        break;
+      }
+    }
+  }
+  out.push(labels.join(''));
+  out.push(ladder.map((m) => markSVG(m, narrow ? 6 : 6.5)).join(''));
+  out.push(lane.map((m) => markSVG(m, narrow ? 4 : 4.6)).join(''));
+
+  // ---- balance strip
+  const yB = (p) => balTop + (1 - p) * balH;
+  const bBoxes = [];
+  const bOver = (b) => bBoxes.some((o) => b.x < o.x + o.w && b.x + b.w > o.x && b.y < o.y + o.h && b.y + b.h > o.y);
+  out.push(`<line class="ch-bgrid" x1="${x0}" y1="${yB(0)}" x2="${x1}" y2="${yB(0)}"/><line class="ch-bgrid" x1="${x0}" y1="${yB(1)}" x2="${x1}" y2="${yB(1)}"/>`);
+  for (const g of [0.25, 0.5, 0.75]) {
+    out.push(`<line class="ch-bgrid" x1="${x0}" y1="${yB(g)}" x2="${x1}" y2="${yB(g)}"/>`);
+    if (Math.abs(g - S.prior) < 0.07) continue; // the prior label takes this spot
+    out.push(`<text class="ch-axis" x="${x0 + 3}" y="${yB(g) - 3}">${g * 100}%</text>`);
+    bBoxes.push({ x: x0, y: yB(g) - 13, w: 30, h: 12 });
+  }
+  out.push(`<line class="ch-prior" x1="${x0}" y1="${yB(S.prior)}" x2="${xToday}" y2="${yB(S.prior)}"/>`);
+  out.push(`<text class="ch-axis" x="${x0 + 3}" y="${yB(S.prior) - 4}">prior ${pct(S.prior)}</text>`);
+  bBoxes.push({ x: x0, y: yB(S.prior) - 14, w: 62, h: 12 });
+  let d = `M${x0} ${yB(S.prior)}`, prev = S.prior;
+  const dots = [], steps = [];
+  for (const r of run) {
+    const x = X(tOf(r.e.y));
+    d += `H${x}V${yB(r.p)}`;
+    const delta = r.p - prev;
+    const lr = lrOf(r.e);
+    dots.push(`<g class="mk bmk" data-k="b|${esc(r.e.id)}" data-id="${esc(r.e.id)}" tabindex="0" role="button" aria-label="${esc(`After ${r.e.short}: ${pct(r.p)} (${pts(delta)} points)`)}"><circle class="hit" cx="${x}" cy="${yB(r.p)}" r="9"/><circle class="bdot d-${dirOf(lr)}" cx="${x}" cy="${yB(r.p)}" r="3.6"/><circle class="ring" cx="${x}" cy="${yB(r.p)}" r="7"/></g>`);
+    bBoxes.push({ x: x - 4, y: Math.min(yB(prev), yB(r.p)) - 4, w: 8, h: Math.abs(yB(prev) - yB(r.p)) + 8 });
+    steps.push({ r, x, delta });
+    prev = r.p;
+  }
+  d += `H${xToday}`;
+  // final value, right of today
+  bBoxes.push({ x: xToday + 2, y: yB(ev.p) - 9, w: 40, h: 16 });
+  const stepLabels = [];
+  if (!narrow) {
+    for (const st of steps.filter((s) => Math.abs(s.delta) >= 0.05).sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))) {
+      const t = `${st.r.e.short.replace(/\s*\(.*\)$/, '')} ${pts(st.delta)}`;
+      const w = textW(t, '600 11px Archivo, "Arial Narrow", sans-serif') + 2, h = 13;
+      const yNew = yB(st.r.p), yOld = yB(st.r.p - st.delta);
+      const up = st.delta > 0;
+      const cands = up
+        ? [[st.x + 6, yNew - 16], [st.x - w - 6, yNew - 16], [st.x + 6, yNew - 30], [st.x - w - 6, yOld + 4]]
+        : [[st.x + 6, yNew + 3], [st.x - w - 6, yNew + 3], [st.x + 6, yNew + 17], [st.x - w - 6, yOld - 16]];
+      for (const [lx, ly] of cands) {
+        const b = { x: lx, y: ly, w, h };
+        if (lx < x0 || lx + w > xToday - 2 || ly < balTop - 6 || ly + h > yB(0) + 2 || bOver(b)) continue;
+        bBoxes.push(b);
+        stepLabels.push(`<text class="ch-mlbl" x="${lx + 1}" y="${ly + 10}">${esc(st.r.e.short.replace(/\s*\(.*\)$/, ''))} <tspan class="ch-step">${pts(st.delta)}</tspan></text>`);
+        break;
+      }
+    }
+  }
+  out.push(`<path class="ch-area" d="${d}V${yB(0)}H${x0}Z"/>`);
+  out.push(`<path class="ch-path" d="${d}"/>`);
+  out.push(stepLabels.join(''));
+  out.push(dots.join(''));
+  out.push(`<text class="ch-final" x="${xToday + 6}" y="${yB(ev.p) + 4.5}">${pct(ev.p)}</text>`);
+
+  // ---- axis
+  for (let y = 2023; y <= 2026; y++) for (let q = 0; q < 4; q++) {
+    const t = Date.UTC(y, q * 3, 1);
+    if (t < tA || t > tB) continue;
+    const x = X(t);
+    out.push(`<line class="ch-rule2" x1="${x}" y1="${axisY}" x2="${x}" y2="${axisY + (q === 0 ? 7 : 4)}"/>`);
+    if (q === 0) out.push(`<text class="ch-axis yr" x="${x + 4}" y="${axisY + 18}">${y}</text>`);
+    else if (!narrow) out.push(`<text class="ch-axis" x="${x + 3}" y="${axisY + 17}">Q${q + 1}</text>`);
+  }
+  out.push(`<line class="ch-rule2" x1="${x0}" y1="${axisY}" x2="${x1}" y2="${axisY}"/>`);
+  out.push('</svg>');
+  host.innerHTML = out.join('');
+  host.setAttribute('aria-label', `Claims chart: ${ladder.length} claims with a human baseline, ${lane.length} without; running balance ${pct(ev.p)}.`);
+  freshIds.clear();
+  if (hotK) showTip(hotK, true);
+}
+
+// tooltip
+function findMark(k) {
+  if (k.startsWith('b|')) { const id = k.slice(2); return { e: ENTRIES.find((x) => x.id === id), balance: true }; }
+  const [id, ci] = k.split('|');
+  const e = ENTRIES.find((x) => x.id === id);
+  return e ? { e, c: e.claims[+ci] } : null;
+}
+function showTip(k, keep) {
+  const tip = $('#tip');
+  const g = $(`#chartSvg [data-k="${CSS.escape(k)}"]`);
+  const m = findMark(k);
+  if (!g || !m || !m.e) { tip.hidden = true; return; }
+  const e = m.e, lr = lrOf(e), read = isRead(e);
+  let html;
+  if (m.balance) {
+    const run = running(); const i = run.findIndex((r) => r.e.id === e.id);
+    const before = i > 0 ? run[i - 1].p : S.prior, after = run[i].p;
+    html = `<div class="tip-h"><span class="st">Running balance</span><span class="tip-d">${esc(fmtD(e.y))}</span></div><div class="tip-t">${esc(e.short)}</div><div class="tip-m">${pct(before)} → <b>${pct(after)}</b> <span class="mono">(${pts(after - before)} pts)</span></div><div class="tip-b">Entry LR ${fmtLR(lr)}${S.blind && !touched(e) ? ' (blind)' : ''}. Later entries in the same group can change how much it counts.</div>`;
+  } else {
+    const c = m.c, st = STAND[c.standing] || STAND.none;
+    html = `<div class="tip-h"><span class="st st-${esc(c.standing)}">${esc(st.chip)}</span><span class="tip-d">${esc(fmtD(e.y))}</span></div><div class="tip-t">${esc(e.short)}</div><div class="tip-m"><b>${esc(c.metric)}:</b> ${esc(c.value)}</div><div class="tip-b">vs ${esc(c.baseline)} · ${esc(c.dataset)} · ${esc(SYSTEMS[c.system || e.system] || '')}</div>${quoteHTML(c.quotes || [])}`;
+    html += `<div class="tip-f"><span>${read ? 'Read' : 'Unread'} · entry LR <b class="mono">${S.blind && !touched(e) ? '×1 ?' : fmtLR(lr)}</b></span>${touchMode ? `<button type="button" data-go="${esc(e.id)}">Go to entry</button>` : '<span>click to open entry</span>'}</div>`;
+  }
+  tip.innerHTML = html;
+  tip.hidden = false;
+  tip.classList.toggle('touch', touchMode);
+  const hb = $('#chartHost').getBoundingClientRect(), gb = g.getBoundingClientRect();
+  const tw = tip.offsetWidth, th = tip.offsetHeight;
+  const cx = gb.left + gb.width / 2 - hb.left, cy = gb.top + gb.height / 2 - hb.top;
+  let left = cx + 16, topY = cy - 18;
+  if (left + tw > hb.width - 6) left = cx - 16 - tw;
+  if (left < 6) { left = clamp(cx - tw / 2, 6, hb.width - tw - 6); topY = cy + 18; if (topY + th > hb.height + 120) topY = cy - th - 18; }
+  topY = clamp(topY, 4, Math.max(4, hb.height - th + 60));
+  tip.style.left = left + 'px';
+  tip.style.top = topY + 'px';
+  if (!keep) hotK = k;
+}
+function hideTip() { $('#tip').hidden = true; hotK = null; }
+function setHot(id) {
+  if (hotId === id) return;
+  if (hotId && ROWS.get(hotId)) ROWS.get(hotId).el.classList.remove('hot');
+  document.querySelectorAll('#chartSvg .mk.hot, #tor .tr.hot').forEach((n) => n.classList.remove('hot'));
+  hotId = id;
+  if (!id) return;
+  ROWS.get(id)?.el.classList.add('hot');
+  document.querySelectorAll(`#chartSvg .mk[data-id="${CSS.escape(id)}"], #tor .tr[data-id="${CSS.escape(id)}"]`).forEach((n) => n.classList.add('hot'));
+}
+function openEntry(id) {
+  const r = ROWS.get(id);
+  if (!r) return;
+  hideTip();
+  r.el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+  r.el.classList.remove('flash'); void r.el.offsetWidth; r.el.classList.add('flash');
+  r.el.focus({ preventScroll: true });
+}
+
+// ---------------------------------------------------------------- sensitivity
+let torAll = false;
+function renderSens(ev) {
+  const read = readList();
+  const host = $('#tor');
+  $('#sensCount').textContent = read.length ? `${read.length} entries` : '';
+  if (!read.length) { host.innerHTML = '<p class="sub">Tick some entries as read to see which ones move the balance.</p>'; $('#sensSum').textContent = ''; return; }
+  const base = ev.p;
+  const rows = read.map((e) => {
+    const cur = lrOf(e), hideAI = S.blind && !touched(e);
+    const lo = hideAI || e.lo == null ? stepLR(cur, -3) : Math.min(e.lo, cur);
+    const hi = hideAI || e.hi == null ? stepLR(cur, 3) : Math.max(e.hi, cur);
+    const pLo = evaluate(read, { id: e.id, lr: lo }).p, pHi = evaluate(read, { id: e.id, lr: hi }).p;
+    const pOut = evaluate(read.filter((x) => x !== e)).p;
+    return { e, lo, hi, cur, pLo, pHi, pOut, span: Math.abs(pHi - pLo) };
+  }).sort((a, b) => b.span - a.span);
+  const dep = { pLo: evaluate(read, { d: 0 }).p, pHi: evaluate(read, { d: 1 }).p };
+  const vals = rows.flatMap((r) => [r.pLo, r.pHi]).concat([dep.pLo, dep.pHi, base]);
+  let lo = Math.floor((Math.min(...vals) - 0.02) * 20) / 20, hi = Math.ceil((Math.max(...vals) + 0.02) * 20) / 20;
+  lo = clamp(lo, 0, 0.95); hi = clamp(hi, lo + 0.05, 1);
+  const P = (p) => ((p - lo) / (hi - lo)) * 100;
+  const bar = (a, b, cur, extraCls, name, sub, id, label, val) => {
+    const mn = Math.min(a, b), mx = Math.max(a, b);
+    const left = Math.min(mn, base), right = Math.max(mx, base);
+    const ba = base > mn ? `<span class="ba" style="left:${P(mn)}%;width:${P(base) - P(mn)}%"></span>` : '';
+    const bf = mx > base ? `<span class="bf" style="left:${P(base)}%;width:${P(mx) - P(base)}%"></span>` : '';
+    void left; void right;
+    return `<button type="button" class="tr ${extraCls}" ${id ? `data-id="${esc(id)}"` : ''} aria-label="${esc(label)}"><span class="tn">${esc(name)}<small>${esc(sub)}</small></span><span class="tt">${ba}${bf}<span class="base" style="left:${P(base)}%"></span>${cur != null ? `<span class="cur" style="left:calc(${P(cur)}% - 1px)"></span>` : ''}</span><span class="tv">${esc(val)}</span></button>`;
+  };
+  const shown = torAll ? rows : rows.slice(0, 8);
+  let html = shown.map((r) => bar(r.pLo, r.pHi, base, '', r.e.short.replace(/\s*\(.*\)$/, ''), `${fmtLR(r.lo)}–${(+r.hi.toFixed(2))} · now ${S.blind && !touched(r.e) ? '×1' : fmtLR(r.cur)}`, r.e.id,
+    `${r.e.short}: closing balance ${pct(Math.min(r.pLo, r.pHi))} to ${pct(Math.max(r.pLo, r.pHi))} as its LR sweeps ${fmtLR(r.lo)} to ${fmtLR(r.hi)}`, `${Math.round(r.span * 100)} pts`)).join('');
+  html += '<div class="tor-sep"></div>';
+  html += bar(dep.pLo, dep.pHi, null, 'assume', 'Dependence knob', 'indep. ↔ count once', null,
+    `Dependence assumption: closing balance ${pct(dep.pLo)} if independent, ${pct(dep.pHi)} if each group counts once`, `${Math.round(Math.abs(dep.pHi - dep.pLo) * 100)} pts`);
+  const step = hi - lo > 0.5 ? 0.2 : hi - lo > 0.25 ? 0.1 : 0.05;
+  let ticks = '';
+  for (let t = Math.ceil(lo / step - 1e-9) * step; t <= hi + 1e-9; t += step) ticks += `<span style="left:${P(t)}%">${Math.round(t * 100)}%</span>`;
+  html += `<div class="taxis" aria-hidden="true"><span></span><span class="ax">${ticks}</span><span></span></div>`;
+  if (rows.length > 8) html += `<button class="linkbtn tor-more" type="button" id="torMore">${torAll ? 'Show the top 8' : `Show all ${rows.length}`}</button>`;
+  host.innerHTML = html;
+  if (hotId) host.querySelectorAll(`.tr[data-id="${CSS.escape(hotId)}"]`).forEach((n) => n.classList.add('hot'));
+  const big = rows.slice().sort((a, b) => Math.abs(b.pOut - base) - Math.abs(a.pOut - base))[0];
+  $('#sensSum').innerHTML = `Biggest single entry: <b>${esc(big.e.short)}</b>. Un-read it and the balance moves ${pct(base)} → <b>${pct(big.pOut)}</b>. ` +
+    `The dependence assumption alone spans <b>${pct(Math.min(dep.pLo, dep.pHi))}–${pct(Math.max(dep.pLo, dep.pHi))}</b>, ${Math.abs(dep.pHi - dep.pLo) > rows[0].span ? 'more than any single paper' : 'comparable to a single paper'}.`;
+}
+
+// ---------------------------------------------------------------- squiggle
+function renderSquiggle(ev) {
+  const names = new Set();
+  const nm = (e) => {
+    let b = e.short.replace(/\(.*?\)/g, '').replace(/[’']/g, '').replace(/[^A-Za-z0-9 ]/g, ' ').trim().split(/\s+/).map((w, i) => i ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w.toLowerCase()).join('');
+    if (!/^[a-z]/.test(b)) b = 'e' + b;
+    let n = b, k = 2; while (names.has(n)) n = b + k++;
+    names.add(n); return n;
+  };
+  const d = DEP[S.d];
+  const L = [`// Evidence Ledger: "${D.proposition.text}"`, `// Built ${fmtD(D.built)} from arXiv abstracts; LRs are AI-proposed unless marked "yours".`, `// Ledger point estimate: ${pct(ev.p)} from a ${pct(S.prior)} prior.`, '', `prior = ${S.prior.toFixed(2)}`, `d = ${d} // dependence discount within groups`, ''];
+  const terms = [];
+  for (const it of ev.items) {
+    const e = it.e, n = nm(e), lr = lrOf(e);
+    let def;
+    if (touched(e) || e.lo == null || e.hi == null || !(e.lo < e.hi) || (S.blind && !touched(e))) def = `${+lr.toFixed(2)}`;
+    else def = `${e.lo} to ${e.hi}`;
+    L.push(`${n} = ${def} // ${e.id} · ${touched(e) ? 'yours' : S.blind ? 'blind: neutral' : 'proposed ' + fmtLR(e.lr ?? 1)}${e.group ? ' · group: ' + e.group : ''}`);
+    terms.push(it.w === 1 ? n : `${n} ^ (1 - d)`);
+  }
+  L.push('');
+  const lines = [];
+  for (let i = 0; i < terms.length; i += 4) lines.push(terms.slice(i, i + 4).join(' * '));
+  L.push(`evidence = ${lines.length ? lines.join(' *\n  ') : '1'}`);
+  L.push('posteriorOdds = prior / (1 - prior) * evidence', 'posterior = posteriorOdds / (1 + posteriorOdds)', 'posterior');
+  $('#sq').textContent = L.join('\n');
+}
+
+// ---------------------------------------------------------------- set aside
+function renderSetAside() {
+  const inLedger = new Set(ENTRIES.map((e) => e.id));
+  const groups = {};
+  for (const s of D.setAside) (groups[s.kind] ||= []).push(s);
+  $('#saCount').textContent = D.setAside.length;
+  const sc = D.screened;
+  $('#saSub').textContent = `Claude screened ${sc.total} abstracts (all ${sc.forecastingTheme} in the forecasting theme plus ${sc.total - sc.forecastingTheme} keyword hits elsewhere). ${sc.admitted} became entries; these ${sc.setAsideListed} were set aside with a stated reason. The rest are off the question, mostly numeric time-series forecasting.`;
+  const order = ['no-figure', 'adjacent', 'other-question', 'human-only'];
+  $('#saList').innerHTML = order.filter((k) => groups[k]).map((k, gi) => `<details ${gi === 0 ? 'open' : ''}><summary>${esc(SA_KIND[k])} <span>(${groups[k].length})</span></summary>${groups[k].map((s) => `
+    <div class="sa" data-id="${esc(s.id)}">
+      <div class="sa-t"><a href="https://arxiv.org/abs/${esc(s.id)}" target="_blank" rel="noopener">${esc(tex(s.t))}</a><span class="d">${esc(s.y.slice(0, 7))}</span></div>
+      <p>${esc(s.reason)}</p>
+      ${s.quote ? quoteHTML([s.quote], 'sm') : ''}
+      <div class="sa-act"><button type="button" data-act="claude">Read with Claude</button>${inLedger.has(s.id) ? '<span class="in">in the ledger</span>' : '<button type="button" data-act="admit">Admit at ×1</button>'}</div>
+    </div>`).join('')}</details>`).join('');
+}
+
+// ---------------------------------------------------------------- live extraction
+function setLiveMode(m) {
+  liveMode = m;
+  const el = $('#liveMode');
+  el.textContent = m === 'live' ? 'Live · Claude' : m === 'checking' ? 'checking…' : 'Precomputed examples';
+  el.classList.toggle('on', m === 'live');
+  el.title = m === 'live' ? 'Claude reads the abstract you pick' : 'Precomputed examples: live generation is available when opened in Claude';
+  if (pickId) renderPick();
+}
+async function checkSample() {
+  try {
+    const s = await (window.claude && window.claude.use ? window.claude.use('sample') : null);
+    if (typeof s === 'function') { sample = s; setLiveMode('live'); } else setLiveMode('off');
+  } catch (e) { setLiveMode('off'); }
+}
+function loadPapers() {
+  if (!papersPromise) papersPromise = fetch('data/papers.json').then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then((d) => { PAPERS = d.papers; return PAPERS; }).catch(() => { papersPromise = null; return null; });
+  return papersPromise;
+}
+const exampleFor = (id) => D.liveExamples.find((x) => x.id === id);
+function paperById(id) {
+  return D.liveExamples.find((x) => x.id === id) || D.papers.find((x) => x.id === id) || (PAPERS && PAPERS.find((x) => x.id === id)) || null;
+}
+function suggested() {
+  const ids = D.liveExamples.map((x) => x.id).concat(['2506.00723', '2510.17638', '2607.14051', '2412.18544']);
+  return ids.map((id) => paperById(id) || D.setAside.find((x) => x.id === id)).filter(Boolean);
+}
+function searchPapers(q) {
+  const toks = q.toLowerCase().split(/[^a-z0-9.+-]+/).filter((t) => t.length > 1);
+  if (!toks.length || !PAPERS) return [];
+  const scored = [];
+  for (const p of PAPERS) {
+    const t = p.t.toLowerCase(), a = p.ab.toLowerCase();
+    let s = 0, all = true;
+    for (const tok of toks) {
+      const inT = t.includes(tok), inA = a.includes(tok);
+      if (!inT && !inA && p.id !== tok) { all = false; continue; }
+      s += (inT ? 4 : 0) + (inA ? 1 + Math.min(3, a.split(tok).length - 2) * 0.3 : 0) + (p.id === tok ? 20 : 0);
+    }
+    if (s > 0) scored.push([s + (all ? 5 : 0) + (p.th.includes('forecasting') ? 0.5 : 0), p]);
+  }
+  return scored.sort((x, y) => y[0] - x[0]).slice(0, 8).map((x) => x[1]);
+}
+function renderResults(list, emptyMsg) {
+  const inLedger = new Set(ENTRIES.map((e) => e.id)), aside = new Set(D.setAside.map((s) => s.id));
+  $('#results').innerHTML = list.length ? list.map((p) => {
+    const flag = inLedger.has(p.id) ? 'in ledger' : exampleFor(p.id) ? 'example' : aside.has(p.id) ? 'set aside' : '';
+    return `<li><button type="button" data-pick="${esc(p.id)}" ${p.id === pickId ? 'aria-current="true"' : ''}><span class="rt">${esc(tex(p.t))}</span><span class="rm2">${esc(p.id)} · ${esc(p.y.slice(0, 7))}${flag ? `<span class="flag">${flag}</span>` : ''}</span></button></li>`;
+  }).join('') : `<li class="empty">${esc(emptyMsg || 'No matches.')}</li>`;
+}
+let qT = 0;
+function onSearch() {
+  clearTimeout(qT);
+  qT = setTimeout(async () => {
+    const q = $('#q').value.trim();
+    if (!q) { renderResults(suggested()); return; }
+    if (!PAPERS) { $('#results').innerHTML = '<li class="empty">Loading papers.json…</li>'; await loadPapers(); }
+    if (!PAPERS) { renderResults([], 'Could not load papers.json.'); return; }
+    renderResults(searchPapers(q), 'No matches in the 1,457 abstracts.');
+  }, 140);
+}
+async function pick(id) {
+  pickId = id; pickResult = null;
+  let p = paperById(id);
+  if (!p || !p.ab) { await loadPapers(); p = paperById(id); }
+  const ex = exampleFor(id);
+  if (ex) pickResult = { paper: ex, res: validate(ex, ex.result), source: 'example' };
+  renderPick();
+  $$('#results button').forEach((b) => b.setAttribute('aria-current', b.dataset.pick === id ? 'true' : 'false'));
+}
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+function renderPick(statusHTML) {
+  const host = $('#pick');
+  const p = paperById(pickId);
+  if (!p) { host.innerHTML = '<p class="res-note">Paper not found.</p>'; return; }
+  const inLedger = ENTRIES.some((e) => e.id === p.id);
+  const ex = exampleFor(p.id);
+  const canLive = liveMode === 'live' && !!sample;
+  let act = '';
+  if (canLive) act += `<button class="btn" type="button" id="runLive" ${liveCtl ? 'disabled' : ''}>${ex ? 'Run live instead' : 'Extract claims & propose LR'}</button>`;
+  if (liveCtl) act += '<button class="btn alt" type="button" id="stopLive">Stop</button>';
+  let status = statusHTML || '';
+  if (!status && !canLive && !ex) status = liveMode === 'checking' ? 'Checking whether Claude is available…' : 'Live extraction runs when this page is opened in Claude. Precomputed examples are marked “example” in the list.';
+  host.innerHTML = `
+    <div class="pk-t"><a href="https://arxiv.org/abs/${esc(p.id)}" target="_blank" rel="noopener">${esc(tex(p.t))}</a></div>
+    <p class="by">${esc(authLine(p.a))} · ${esc(fmtD(p.y))} · arXiv ${esc(p.id)}${inLedger ? ' · <b>already in the ledger</b>' : ''}</p>
+    <details class="pk-ab"><summary>Abstract</summary><p>${esc(tex(norm(p.ab || '')))}</p></details>
+    <div class="pk-act">${act}<span class="pk-status ${liveCtl ? 'busy' : ''}" id="pkStatus" aria-live="polite">${status}</span></div>
+    <div class="res" id="pkRes">${pickResult ? resultHTML(pickResult) : ''}</div>`;
+}
+function validate(p, r) {
+  const ab = norm(p.ab), abT = norm(tex(p.ab));
+  const straight = (s) => s.replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
+  const found = (q) => { const n = norm(q); return !!n && n.length >= 12 && (ab.includes(n) || abT.includes(n) || straight(ab).includes(straight(n)) || straight(abT).includes(straight(n))); };
+  const str = (x) => (x == null ? '' : String(x)).slice(0, 400);
+  const out = { relevant: !!(r && r.relevant), reason: str(r && r.reason), type: str(r && r.evidence_type), self: !!(r && r.self_reported), rationale: str(r && r.rationale), kept: [], dropped: [], lr: null, lrQuote: null, lrNote: '' };
+  for (const c of (Array.isArray(r && r.claims) ? r.claims : []).slice(0, 12)) {
+    const q = str(c && c.quote);
+    const cc = { metric: str(c.metric) || 'Claim', value: str(c.value), baseline: str(c.baseline) || 'none', dataset: str(c.dataset), year: Number(c.year) || +p.y.slice(0, 4), standing: STAND[c.standing] ? c.standing : 'none', system: SYSTEMS[c.system] ? c.system : 'single', quotes: [q] };
+    if (!found(q)) { out.dropped.push({ c: cc, why: 'quoted span not found in the abstract' }); continue; }
+    const nums = (cc.value.match(/\d+(?:[.,]\d+)*/g) || []).map((n) => n.replace(/,/g, ''));
+    const qn = norm(q).replace(/,/g, '');
+    if (nums.length && !nums.some((n) => qn.includes(n))) { out.dropped.push({ c: cc, why: 'the figure in “value” is not in the quoted span' }); continue; }
+    cc._fig = nums.length > 0;
+    out.kept.push(cc);
+  }
+  const lr = Number(r && r.lr);
+  if (!r || r.lr == null || !isFinite(lr) || lr <= 0) out.lrNote = out.relevant ? 'No LR proposed.' : 'Not this question, so no LR.';
+  else if (!found(str(r.lr_quote))) out.lrNote = 'LR withheld: its supporting span did not match the abstract.';
+  else { out.lr = snap(clamp(lr, 0.2, 5)); out.lrQuote = str(r.lr_quote); if (Math.abs(out.lr - lr) > 1e-6) out.lrNote = `Snapped from ${lr} to the ledger's scale.`; }
+  return out;
+}
+function resultHTML({ paper, res, source, truncated }) {
+  const badge = source === 'live' ? '<span class="badge live">Live · Claude</span>' : '<span class="badge">Precomputed example · Claude, Oct 2026</span>';
+  const inLedger = ENTRIES.some((e) => e.id === paper.id);
+  const canAdd = !inLedger && (res.kept.length > 0 || res.lr != null);
+  let h = `<div class="res-h">${badge} ${source !== 'live' && liveMode !== 'live' ? '<span class="res-note">live generation available when opened in Claude</span>' : ''}<br><b>${res.relevant ? 'Relevant' : 'Not this question'}.</b> ${esc(res.reason)}${truncated ? ' <i>(reply was cut short)</i>' : ''}</div>`;
+  for (const c of res.kept) h += `<div class="vclaim"><div class="vchecks"><span class="ok">span found in abstract</span>${c._fig ? '<span class="ok">figure in span</span>' : '<span class="ok">comparison only, no figure</span>'}</div><div class="vc-m"><span class="st st-${esc(c.standing)}">${esc(STAND[c.standing].chip)}</span> <b>${esc(c.metric)}:</b> ${esc(c.value)}</div><div class="cb" style="font-size:11.5px;color:var(--muted)">vs ${esc(c.baseline)} · ${esc(c.dataset)}</div>${quoteHTML(c.quotes, 'sm')}</div>`;
+  for (const { c, why } of res.dropped) h += `<div class="vclaim drop"><div class="vchecks"><span class="bad">dropped: ${esc(why)}</span></div><div class="vc-m"><b>${esc(c.metric)}:</b> ${esc(c.value)}</div></div>`;
+  if (!res.kept.length && !res.dropped.length) h += '<p class="res-note">No quantitative claims extracted.</p>';
+  h += `<div class="res-lr">${res.lr != null ? `<span class="lrbig">${fmtLR(res.lr)}</span> proposed LR <span class="ok" style="font-size:11px">span verified</span><br>${esc(res.rationale)}${quoteHTML([res.lrQuote], 'sm')}` : `<b>No LR.</b> ${esc(res.lrNote)} ${esc(res.rationale)}`}${res.lr != null && res.lrNote ? `<div class="res-note">${esc(res.lrNote)}</div>` : ''}</div>`;
+  h += `<div class="pk-act"><button class="btn" type="button" id="addLive" ${canAdd ? '' : 'disabled'}>${inLedger ? 'Already in the ledger' : 'Add to ledger'}</button>${canAdd ? '<span class="res-note">adds it as read, with this LR</span>' : ''}</div>`;
+  return h;
+}
+function buildPrompt(p) {
+  const anchors = [
+    ['AIA Forecaster (Nov 2025)', '“achieves performance equal to human superforecasters” on ForecastBench; self-reported by its builders', 2.5],
+    ['Lu (Jul 2025)', 'frontier models “significantly underperform a group of experts” on 464 Metaculus questions', 0.67],
+    ['Forecast-Dojo (Sep 2026)', '“Every model still trails historical market forecasts” on 1,568 Polymarket events', 0.67],
+    ['Wisdom of the Silicon Crowd (Feb 2024)', 'a 12-LLM ensemble “is not statistically different from the human crowd” on 31 questions', 1.1],
+    ['OracleProto (May 2026)', 'residual leakage 1.37%; no human comparison', 1.0],
+  ];
+  return `You are helping a forecaster keep an evidence ledger on one proposition.
+
+PROPOSITION: ${D.proposition.text}
+RESOLUTION: ${D.proposition.resolution}
+
+Read ONLY the arXiv abstract below; use no outside knowledge about the paper. Then:
+
+1. Extract every quantitative claim in the abstract that bears on the proposition: a reported figure, or an explicit measured comparison against a named baseline. For each claim give:
+- metric; value (as stated, keeping the figure); baseline (who or what it is compared with, or "none"); dataset; year (of the paper);
+- standing: where the claim places LLM systems relative to human benchmarks, exactly one of "above_elite", "at_elite", "below_elite" (elite = superforecasters, pro or expert forecasters), "between" (better than the crowd, worse than elite), "above_crowd", "at_crowd", "below_crowd" (crowd = human crowd, market price, survey panel), "at_individual" (about equal to individual humans), "none" (no human baseline in this claim);
+- system: one of "single", "ensemble", "agentic", "trained", "human+AI";
+- quote: an EXACT span copied character for character from the abstract (at most one sentence) that contains the figure or comparison. Never paraphrase, correct, or join separate sentences.
+
+2. Propose a likelihood ratio LR = P(this abstract's evidence | proposition true) / P(this abstract's evidence | proposition false), between 0.2 and 5. Most papers deserve 0.67 to 1.5; use 1 when the evidence is not diagnostic. Results about older or weaker models are nearly as likely under both hypotheses. Results self-reported by a system's builders deserve a discount. Give lr_quote, the EXACT span the LR mainly rests on, and a one-sentence rationale.
+
+For calibration, the ledger already holds:
+${anchors.map(([n, w, l]) => `- ${n}: ${w} -> LR ${l}`).join('\n')}
+
+If the abstract is not about this question (for example numeric time-series forecasting, or resolving rather than forecasting questions), set relevant to false, give the reason, and set lr and lr_quote to null; you may still list claims.
+
+Reply with only this JSON object, nothing else:
+{"relevant": true, "reason": "one sentence", "evidence_type": "e.g. Benchmark result", "self_reported": false, "claims": [{"metric": "", "value": "", "baseline": "", "dataset": "", "year": 2026, "standing": "none", "system": "single", "quote": ""}], "lr": 1.0, "lr_quote": "", "rationale": "one sentence"}
+
+ARXIV ID: ${p.id}
+TITLE: ${p.t}
+DATE: ${p.y}
+ABSTRACT:
+${norm(p.ab)}`;
+}
+const ERR_COPY = {
+  rate_limited: 'Too many requests just now. Try again in a minute.',
+  invalid_json: 'Claude’s reply wasn’t valid JSON. Try again.',
+  refused: 'Claude declined this abstract.',
+  empty_completion: 'Claude returned nothing. Try again.',
+  prompt_too_large: 'This abstract is too long to send.',
+  session_expired: 'Your Claude session expired. Sign in again.',
+};
+async function runLive() {
+  const p = paperById(pickId);
+  if (!p || !sample || liveCtl) return;
+  liveCtl = new AbortController();
+  const ctl = liveCtl;
+  pickResult = null;
+  renderPick('Thinking… (Claude is reading the abstract)');
+  try {
+    const res = await sample.json(buildPrompt(p), { signal: ctl.signal, onText: ({ text }) => { const s = $('#pkStatus'); if (s) s.textContent = `Receiving… ${text.length.toLocaleString()} characters`; } });
+    pickResult = { paper: p, res: validate(p, res), source: 'live' };
+    liveCtl = null;
+    renderPick(`Checked ${pickResult.res.kept.length + pickResult.res.dropped.length} claim${pickResult.res.kept.length + pickResult.res.dropped.length === 1 ? '' : 's'} against the abstract.`);
+  } catch (e) {
+    liveCtl = null;
+    const code = e && e.code;
+    if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code)) { sample = null; setLiveMode('off'); renderPick('Claude isn’t available in this view, so only the precomputed examples work.'); return; }
+    if (code === 'cancelled') { renderPick('Stopped.'); return; }
+    renderPick(esc(ERR_COPY[code] || 'Interrupted before Claude finished. Try again.'));
+  }
+}
+function addPicked() {
+  if (!pickResult) return;
+  const { paper: p, res, source } = pickResult;
+  if (ENTRIES.some((e) => e.id === p.id)) return;
+  const lr = res.lr ?? 1;
+  const entry = {
+    id: p.id, t: p.t, a: p.a, y: p.y, c: p.c, th: p.th, ab: p.ab,
+    short: authShort(p.a) + ' ' + p.y.slice(0, 4), type: res.type || 'Abstract', system: res.kept[0]?.system || 'single', group: null, self: res.self,
+    lr, lo: stepLR(lr, -2), hi: stepLR(lr, 2), rationale: res.rationale,
+    claims: res.kept.map(({ _fig, ...c }) => c), origin: source === 'live' ? 'live' : 'example',
+  };
+  S.added.push(entry);
+  S.read[p.id] = true;
+  freshIds.add(p.id);
+  touch();
+  rebuildEntries(); buildRows(); renderSetAside(); render();
+  renderPick('Added to the ledger as read.');
+  setTimeout(() => openEntry(p.id), 60);
+}
+function admit(id) {
+  const s = D.setAside.find((x) => x.id === id);
+  if (!s || ENTRIES.some((e) => e.id === id)) return;
+  const finish = (p) => {
+    S.added.push({ id: s.id, t: s.t, a: s.a, y: s.y, c: s.c, th: s.th, ab: p ? p.ab : '', short: authShort(s.a) + ' ' + s.y.slice(0, 4), type: 'Set aside, admitted', system: 'single', group: null, self: false, lr: 1, lo: null, hi: null, rationale: s.reason, claims: [], context: s.quote, origin: 'admitted' });
+    S.read[s.id] = true; S.lr[s.id] = 1;
+    touch(); rebuildEntries(); buildRows(); renderSetAside(); render();
+    setTimeout(() => openEntry(s.id), 60);
+  };
+  loadPapers().then(() => finish(PAPERS && PAPERS.find((x) => x.id === id)));
+}
+
+// ---------------------------------------------------------------- render loop
+function render() {
+  const ev = evaluate(readList());
+  const run = running();
+  updateHeader(ev);
+  updateRows(ev, run);
+  renderChart(ev, run);
+  renderSens(ev);
+  renderSquiggle(ev);
+}
+function queue() { if (renderQueued) return; renderQueued = true; requestAnimationFrame(() => { renderQueued = false; render(); }); }
+
+// ---------------------------------------------------------------- events
+function wire() {
+  $('#prior').addEventListener('input', (e) => { S.prior = clamp(+e.target.value / 100, 0.01, 0.99); touch(); queue(); });
+  $('#dep').addEventListener('input', (e) => { S.d = clamp(+e.target.value, 0, 4); touch(); queue(); });
+  $('#blind').addEventListener('change', (e) => { S.blind = e.target.checked; touch(); queue(); });
+  $('#readAll').addEventListener('click', () => { ENTRIES.forEach((e) => { S.read[e.id] = true; }); touch(); queue(); });
+  $('#readNone').addEventListener('click', () => { ENTRIES.forEach((e) => { S.read[e.id] = false; }); touch(); queue(); });
+  const resetAll = () => { clearStore(); S = exampleState(); rebuildEntries(); buildRows(); renderSetAside(); render(); };
+  $('#resetAll').addEventListener('click', resetAll);
+  $('#stateNote').addEventListener('click', (e) => { if (e.target.closest('[data-reset-all]')) resetAll(); });
+  const rows = $('#rows');
+  rows.addEventListener('change', (e) => {
+    const art = e.target.closest('.entry'); if (!art) return;
+    if (e.target.type === 'checkbox') { S.read[art.dataset.id] = e.target.checked; touch(); queue(); }
+  });
+  rows.addEventListener('input', (e) => {
+    const art = e.target.closest('.entry'); if (!art || e.target.type !== 'range') return;
+    S.lr[art.dataset.id] = LADDER[+e.target.value]; touch(); queue();
+  });
+  rows.addEventListener('click', (e) => {
+    const art = e.target.closest('.entry'); if (!art) return;
+    const id = art.dataset.id;
+    if (e.target.closest('[data-reset]')) {
+      const ent = ENTRIES.find((x) => x.id === id);
+      if (ent && ent.origin === 'admitted') S.lr[id] = 1; else delete S.lr[id];
+      touch(); queue();
+    }
+    if (e.target.closest('[data-remove]')) {
+      S.added = S.added.filter((x) => x.id !== id); delete S.lr[id]; delete S.read[id];
+      touch(); rebuildEntries(); buildRows(); renderSetAside(); render();
+      if (pickId) renderPick();
+    }
+  });
+  rows.addEventListener('pointerover', (e) => { const art = e.target.closest('.entry'); setHot(art ? art.dataset.id : null); });
+  rows.addEventListener('pointerleave', () => setHot(null));
+
+  const ch = $('#chartSvg');
+  ch.addEventListener('pointerdown', (e) => { touchMode = e.pointerType === 'touch' || e.pointerType === 'pen'; });
+  ch.addEventListener('pointerover', (e) => { const g = e.target.closest('.mk'); if (!g || touchMode) return; setHot(g.dataset.id); showTip(g.dataset.k); });
+  ch.addEventListener('pointerout', (e) => { const g = e.target.closest('.mk'); if (!g || touchMode) return; if (e.relatedTarget && g.contains(e.relatedTarget)) return; setHot(null); hideTip(); });
+  ch.addEventListener('focusin', (e) => { const g = e.target.closest('.mk'); if (!g) return; setHot(g.dataset.id); showTip(g.dataset.k); });
+  ch.addEventListener('focusout', () => { if (!touchMode) { setHot(null); hideTip(); } });
+  ch.addEventListener('click', (e) => {
+    const g = e.target.closest('.mk');
+    if (!g) { if (touchMode) { hideTip(); setHot(null); } return; }
+    if (touchMode) { setHot(g.dataset.id); showTip(g.dataset.k); return; }
+    openEntry(g.dataset.id);
+  });
+  ch.addEventListener('keydown', (e) => { const g = e.target.closest('.mk'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openEntry(g.dataset.id); } if (e.key === 'Escape') hideTip(); });
+  $('#tip').addEventListener('click', (e) => { const b = e.target.closest('[data-go]'); if (b) openEntry(b.dataset.go); });
+
+  const tor = $('#tor');
+  tor.addEventListener('click', (e) => {
+    if (e.target.closest('#torMore')) { torAll = !torAll; queue(); return; }
+    const b = e.target.closest('.tr[data-id]'); if (b) openEntry(b.dataset.id);
+  });
+  tor.addEventListener('pointerover', (e) => { const b = e.target.closest('.tr[data-id]'); setHot(b ? b.dataset.id : null); });
+  tor.addEventListener('pointerleave', () => setHot(null));
+
+  $('#q').addEventListener('input', onSearch);
+  $('#q').addEventListener('focus', () => { loadPapers(); }, { once: true });
+  $('#results').addEventListener('click', (e) => { const b = e.target.closest('[data-pick]'); if (b) pick(b.dataset.pick); });
+  $('#pick').addEventListener('click', (e) => {
+    if (e.target.closest('#runLive')) runLive();
+    if (e.target.closest('#stopLive') && liveCtl) liveCtl.abort();
+    if (e.target.closest('#addLive')) addPicked();
+  });
+  $('#saList').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const id = b.closest('.sa').dataset.id;
+    if (b.dataset.act === 'admit') admit(id);
+    if (b.dataset.act === 'claude') { pick(id).then(() => { $('#live').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }); }); renderResults([paperById(id) || D.setAside.find((x) => x.id === id)].filter(Boolean)); }
+  });
+  $('#sqCopy').addEventListener('click', async () => {
+    const txt = $('#sq').textContent;
+    try { await navigator.clipboard.writeText(txt); $('#sqMsg').textContent = 'Copied.'; }
+    catch (err) { const r = document.createRange(); r.selectNodeContents($('#sq')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); $('#sqMsg').textContent = 'Selected: press Ctrl/Cmd+C to copy.'; }
+  });
+
+  // about drawer
+  let lastFocus = null;
+  const openAbout = () => { lastFocus = document.activeElement; $('#about').hidden = false; $('#scrim').hidden = false; $('#about').focus(); };
+  const closeAbout = () => { $('#about').hidden = true; $('#scrim').hidden = true; if (lastFocus) lastFocus.focus(); };
+  $('#aboutBtn').addEventListener('click', openAbout);
+  $('#aboutClose').addEventListener('click', closeAbout);
+  $('#scrim').addEventListener('click', closeAbout);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#about').hidden) closeAbout(); });
+
+  // resize
+  let lastW = 0;
+  const ro = new ResizeObserver(() => { const w = $('#chartSvg').clientWidth; if (Math.abs(w - lastW) > 2) { lastW = w; hideTip(); queue(); } });
+  ro.observe($('#chartSvg'));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => queue());
+
+  // mobile balance bar
+  const mbar = $('#mbar');
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([en]) => { mbar.hidden = en.isIntersecting; }, { threshold: 0 }).observe($('#balanceBox'));
+  }
+}
+
+// ---------------------------------------------------------------- init
+async function init() {
+  try {
+    const r = await fetch('data/evidence-ledger/ledger.json');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    D = await r.json();
+  } catch (e) {
+    $('#rows').innerHTML = `<p style="padding:16px">Could not load <code>data/evidence-ledger/ledger.json</code> (${esc(e.message)}).</p>`;
+    return;
+  }
+  $('#propText').textContent = D.proposition.text;
+  $('#propRes').innerHTML = `<b>Resolves yes</b> if ${esc(D.proposition.resolution.replace(/^Resolves YES if,?\s*/i, ''))}`;
+  $('#provLine').innerHTML = `${D.papers.length} entries and ${D.papers.reduce((n, p) => n + p.claims.length, 0)} claims extracted from arXiv abstracts (papers.json, fetched ${esc(fmtD(D.source.fetched))}). Every quoted span verified by exact match. Extractions, LRs and rationales: <b>${esc(D.provenance)}</b>.`;
+  $('#legend').innerHTML = legendHTML();
+  const stored = loadStore();
+  S = stored || exampleState();
+  if (stored) { S.added = Array.isArray(S.added) ? S.added : []; S.d = clamp(+S.d || 0, 0, 4); S.prior = clamp(+S.prior || 0.4, 0.01, 0.99); }
+  rebuildEntries();
+  buildRows();
+  renderSetAside();
+  wire();
+  render();
+  renderResults(suggested());
+  pick(D.liveExamples[0].id);
+  checkSample();
+  setTimeout(() => loadPapers(), 2500);
+}
+init();
+})();
+</script>

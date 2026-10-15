@@ -6,9 +6,17 @@
  *   node scripts/prototypes/page-flags.mjs --only dutch-book,miracle
  *   node scripts/prototypes/page-flags.mjs --cache /some/dir   # HTTP cache (default: $TMPDIR/page-flags-cache)
  *   node scripts/prototypes/page-flags.mjs --probe          # Search Inside only; print top titles per concept
+ *   node scripts/prototypes/page-flags.mjs --wall           # first-paint example for the full-text wall (no network)
  *
  * Writes public/prototypes/data/page-flags/concepts.json (the concept index) and
  * public/prototypes/data/page-flags/si/<concept-id>.json (one lazily loaded file per concept).
+ *
+ * --wall runs the page's own wall engine (the <script id="wall-core"> block of
+ * prototypes/page-flags.html, so the numbers match what the page computes live) over the nine
+ * texts in public/prototypes/data/texts/ and writes example-wall.json: chapter structure, the
+ * example's per-page hit counts, wall hit totals for every concept, and the text of the example's
+ * pinned pages. It also checks every quotation in glosses.json verbatim (whitespace-normalised)
+ * against its page and drops any that fail.
  *
  * Sources (all queried politely: one request at a time, >= 1.1 s apart, with a User-Agent):
  *
@@ -53,8 +61,9 @@ const OUT = join(APP, 'public/prototypes/data/page-flags');
 const UA = 'OpenStacksPrototypes/0.1 (https://github.com/quantified-uncertainty/cairn)';
 const SNAPSHOT = new Date().toISOString().slice(0, 10);
 const LIMIT = 60; // books per concept from Search Inside
-const OPEN_CAP = 14; // open scans per concept that get per-page flags
-const MAX_FLAGS = 60; // positioned flags kept per book
+const OPEN_CAP = 12; // open scans per concept that get per-page flags
+const MAX_FLAGS = 120; // positioned flags kept per book
+const MAX_SNIPS = 30; // flags per book that keep their snippet (spread evenly)
 
 const args = process.argv.slice(2);
 const argVal = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : null; };
@@ -69,7 +78,7 @@ mkdirSync(join(OUT, 'si'), { recursive: true });
 const FIELDS = {
   prob: {
     lcc: ['B', 'H', 'Q', 'T5', 'R', 'U', 'J'],
-    subj: /probab|statist|chance|logic|philosoph|knowledge|epistem|inference|induct|decision|bayes|econom|game theor|risk|uncertain|forecast|reason|mathemat|psycholog|judg|belief|evidence|cognit|gambl|insur|actuar|science|predict|finance|invest|rational|operations research|machine learning|artificial intelligence/i,
+    subj: /probab|statist|chance|logic|philosoph|knowledge|epistem|inference|induct|decision|bayes|econom|game theor|risk|uncertain|forecast|reason|mathemat|psycholog|judg|belief|evidence|cognit|gambl|insur|actuar|science|predict|financ|invest|rational|operations research|machine learning|artificial intelligence|data|comput|meteor|weather|climat|medic|clinic|health|epidem|biostat|engineer|account|manag|business|betting|lotter|polic|law|government|ethic/i,
   },
   evo: {
     lcc: ['QH', 'QL', 'QE', 'QK', 'QR', 'QP', 'GN', 'B', 'BL', 'H', 'Q1', 'Q12', 'Q17'],
@@ -207,7 +216,8 @@ async function fetchCached(url, kind = 'json') {
         writeFileSync(file, body);
         return body;
       }
-      if (res.status === 403 || res.status === 404) { writeFileSync(file, '__ERR__'); return null; }
+      // client errors other than rate limiting will not change on retry
+      if (res.status >= 400 && res.status < 500 && res.status !== 429) { writeFileSync(file, '__ERR__'); return null; }
       console.warn(`  HTTP ${res.status} ${url}`);
     } catch (e) {
       console.warn(`  ${e.name}: ${e.message} ${url}`);
@@ -304,20 +314,21 @@ async function perItemMatches(ia, info, phrase) {
   const url = `https://${info.server}/fulltext/inside.php?item_id=${encodeURIComponent(ia)}&doc=${encodeURIComponent(info.subPrefix)}&path=${encodeURIComponent(info.dir)}&q=${encodeURIComponent('"' + phrase + '"')}`;
   const j = await fetchCached(url);
   if (!j || !Array.isArray(j.matches)) return null;
-  const flags = [];
-  const seen = new Set();
+  // One flag per BookReader page: [page index, printed page or null, snippet or null, matches on the page]
+  const byPage = new Map();
   for (const m of j.matches) {
     const leaf = m.par?.[0]?.page;
     if (leaf == null) continue;
     const map = info.leafToIndex.get(leaf);
     if (!map) continue;
-    const k = map.i + '|' + flags.length;
-    if (seen.has(k)) continue;
-    seen.add(k);
-    flags.push([map.i, map.pn != null ? String(map.pn) : null, snip(m.text, '<IA_FTS_MATCH>', '</IA_FTS_MATCH>')]);
+    const f = byPage.get(map.i);
+    if (f) { f[3]++; continue; }
+    byPage.set(map.i, [map.i, map.pn != null ? String(map.pn) : null, snip(m.text, '<IA_FTS_MATCH>', '</IA_FTS_MATCH>'), 1]);
   }
-  flags.sort((a, b) => a[0] - b[0]);
-  return flags.slice(0, MAX_FLAGS);
+  const flags = [...byPage.values()].sort((a, b) => a[0] - b[0]);
+  const kept = flags.slice(0, MAX_FLAGS);
+  const every = Math.ceil(kept.length / MAX_SNIPS);
+  return kept.map((f, i) => [f[0], f[1], i % every === 0 ? f[2] : null, f[3]]);
 }
 
 async function runConcept(c) {
@@ -405,6 +416,89 @@ async function runConcept(c) {
   console.log(`${c.id.padEnd(28)} total=${String(total).padStart(7)} books=${books.length} located=${located} fit=${books.filter((b) => b.fit === 1).length} ff=${books.filter((b) => b.fit === 0).length}  (net ${nNet})`);
   return { total, books: books.length, located, flags: books.reduce((s, b) => s + (b.flags?.length || 0), 0) };
 }
+
+// ---------------------------------------------------------------------------------------------
+// --wall: precompute the first paint of the full-text wall with the page's own engine.
+const EXAMPLE = { a: 'miracle', b: 'testimony', pins: [9662, 57359, 58881] };
+async function wallMode() {
+  const html = readFileSync(join(APP, 'prototypes/page-flags.html'), 'utf-8');
+  const m = /<script id="wall-core">([\s\S]*?)<\/script>/.exec(html);
+  if (!m) throw new Error('wall-core block not found in prototypes/page-flags.html');
+  const core = new Function(m[1] + '; return { detectStructure, buildRegex, scanBook, pageLines, publicStructure, markAt, PAGE_CHARS };')();
+  const tdir = join(APP, 'public/prototypes/data/texts');
+  const index = JSON.parse(readFileSync(join(tdir, 'index.json'), 'utf-8'));
+  const specOf = (id) => { const c = CONCEPTS.find((x) => x.id === id); return c.wall ? { res: [c.wall], terms: [] } : { res: [], terms: [c.label] }; };
+  const ra = core.buildRegex(specOf(EXAMPLE.a)), rb = core.buildRegex(specOf(EXAMPLE.b));
+  const sparse = (r) => { const p = []; r.pages.forEach((c, i) => { if (c) p.push([i, c]); }); return { total: r.total, body: r.body, front: r.front, back: r.back, p }; };
+  const books = [], texts = {};
+  for (const b of index.books) {
+    const text = readFileSync(join(tdir, `${b.id}.txt`), 'utf-8').replace(/\r\n?/g, '\n');
+    const st = core.detectStructure(text);
+    texts[b.id] = { text, st };
+    books.push({ id: b.id, st: core.publicStructure(st), a: sparse(core.scanBook(text, st, ra)), b: sparse(core.scanBook(text, st, rb)) });
+  }
+  const counts = {};
+  for (const c of CONCEPTS) {
+    const re = core.buildRegex(specOf(c.id));
+    let n = 0;
+    for (const { text } of Object.values(texts)) { re.lastIndex = 0; let mm; while ((mm = re.exec(text))) { if (!mm[0].length) { re.lastIndex++; continue; } n++; } }
+    counts[c.id] = n;
+  }
+  const pins = [];
+  for (const id of EXAMPLE.pins) {
+    const bk = books.find((x) => x.id === id), { text, st } = texts[id];
+    const A = new Map(bk.a.p), B = new Map(bk.b.p);
+    let best = -1, bv = -1;
+    for (let p = 0; p < st.nPages; p++) {
+      const c = (p + 0.5) * core.PAGE_CHARS;
+      if (c < st.bodyStart || (st.backStart != null && c >= st.backStart) || (st.contents && c >= st.contents[0] && c < st.contents[1])) continue;
+      const a = A.get(p) || 0, b2 = B.get(p) || 0;
+      const v = a && b2 ? 1000 + a + b2 : a + b2;
+      if (v > bv) { bv = v; best = p; }
+    }
+    const mk = core.markAt(st, best * core.PAGE_CHARS + 1).mark;
+    pins.push({ id, page: best, mark: mk ? `${mk.label} ${mk.title}` : null, lines: core.pageLines(text, st, best, [ra, rb]) });
+    console.log(`pin ${id} page ${best + 1} (${mk ? mk.label + ' ' + mk.title : '-'}): A=${A.get(best) || 0} B=${B.get(best) || 0}`);
+  }
+  writeFileSync(join(OUT, 'example-wall.json'), JSON.stringify({
+    about: 'First paint of the Page Flags full-text wall, computed by the page\'s own engine (scripts/prototypes/page-flags.mjs --wall). The page recomputes everything live in a Web Worker.',
+    pageChars: core.PAGE_CHARS,
+    pens: { a: EXAMPLE.a, b: EXAMPLE.b },
+    counts,
+    books,
+    pins,
+    riffle: { id: pins[0].id, page: pins[0].page },
+  }));
+  // Verify glosses: every quotation must be a verbatim substring of its page.
+  const gfile = join(OUT, 'glosses.json');
+  if (existsSync(gfile)) {
+    const g = JSON.parse(readFileSync(gfile, 'utf-8'));
+    const squash = (x) => String(x).replace(/[\s ]+/g, ' ').trim();
+    let ok = 0, bad = 0;
+    for (const [key, entry] of Object.entries(g.glosses || {})) {
+      const [id, page] = key.split(':').map(Number);
+      const t = texts[id];
+      if (!t) { console.warn(`gloss ${key}: unknown text`); continue; }
+      const lines = core.pageLines(t.text, t.st, page, []);
+      const pageText = squash(lines.map((l) => l.s).join(' '));
+      entry.quotes = (entry.quotes || []).filter((q) => {
+        const inPage = pageText.includes(squash(q.text));
+        const ln = lines.find((l) => l.n === q.line);
+        const onLine = ln && squash(q.text).split(' ').slice(0, 3).some((w) => squash(ln.s).includes(w));
+        if (inPage && onLine) { ok++; return true; }
+        bad++;
+        console.warn(`  DROPPED quote in ${key} (line ${q.line}): ${q.text}`);
+        return false;
+      });
+      entry.verified = new Date().toISOString().slice(0, 10);
+    }
+    writeFileSync(gfile, JSON.stringify(g, null, 1));
+    console.log(`glosses: ${ok} quotations verified, ${bad} dropped`);
+  }
+  console.log('wrote example-wall.json');
+}
+if (args.includes('--wall')) { await wallMode(); process.exit(0); }
+
 
 const index = [];
 for (const c of CONCEPTS) {

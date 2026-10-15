@@ -1,0 +1,2454 @@
+<title>Terra Incognita</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans+SC:wght@500;700&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Fragment+Mono&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&display=swap');
+
+:root {
+  --paper: #ecefea;
+  --paper-grain: rgba(40, 60, 70, .045);
+  --sheet: #f5f6f2;
+  --sheet-2: #ebeee8;
+  --land: #e7dcc0;
+  --land-2: #d9caa3;
+  --ink: #17283a;
+  --ink-2: #3f5066;
+  --ink-3: #6b798a;
+  --rule: #b7c0c6;
+  --rule-strong: #7d8b97;
+  --sepia: #6b5332;
+  --water-ink: #2c5878;
+  --coast: #3b3a33;
+  --accent: #a8195f;
+  --accent-ink: #8e1450;
+  --accent-wash: rgba(168, 25, 95, .10);
+  --accent-glow: #c2185b;
+  --fog: #f1f2ee;
+  --fog-cloud: #d9ded9;
+  --halo: rgba(240, 242, 237, .92);
+  --halo-land: rgba(233, 224, 199, .92);
+  --free: #2e6b40;
+  --borrow: #a8700d;
+  --pd: #5d6589;
+  --none: #8c8173;
+  --card-shadow: 0 1px 0 rgba(23, 40, 58, .08), 0 10px 30px -12px rgba(23, 40, 58, .35);
+  --glow-blend: multiply;
+  --wash-1: #c86f73; --wash-2: #c99541; --wash-3: #6e9b63; --wash-4: #5f86b3; --wash-5: #9775b6; --wash-6: #4f9f97;
+  --dark: 0;
+  --f-display: "IM Fell English SC", "IM Fell English", Georgia, serif;
+  --f-serif: "IM Fell English", Georgia, "Times New Roman", serif;
+  --f-ui: "Alegreya Sans", "Gill Sans", "Gill Sans MT", "Trebuchet MS", sans-serif;
+  --f-sc: "Alegreya Sans SC", "Alegreya Sans", "Gill Sans", sans-serif;
+  --f-mono: "Fragment Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0c151c;
+    --paper-grain: rgba(170, 200, 210, .035);
+    --sheet: #101b23;
+    --sheet-2: #15222b;
+    --land: #25322f;
+    --land-2: #314039;
+    --ink: #e2e9e7;
+    --ink-2: #aebdbf;
+    --ink-3: #7f8f95;
+    --rule: #2c3c47;
+    --rule-strong: #4c5f6b;
+    --sepia: #cbb48d;
+    --water-ink: #7aa3c2;
+    --coast: #c9c2ad;
+    --accent: #ff5aa5;
+    --accent-ink: #ff8cc0;
+    --accent-wash: rgba(255, 90, 165, .13);
+    --accent-glow: #ff4f9f;
+    --fog: #091016;
+    --fog-cloud: #17232c;
+    --halo: rgba(12, 21, 28, .9);
+    --halo-land: rgba(37, 50, 47, .9);
+    --free: #74d18f;
+    --borrow: #f0b54a;
+    --pd: #a7b1dc;
+    --none: #8f877b;
+    --card-shadow: 0 1px 0 rgba(0, 0, 0, .3), 0 14px 34px -12px rgba(0, 0, 0, .7);
+    --glow-blend: screen;
+    --wash-1: #d9777c; --wash-2: #d6a250; --wash-3: #7fb574; --wash-4: #6f98c9; --wash-5: #a986cb; --wash-6: #5cb5ab;
+    --dark: 1;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0c151c;
+  --paper-grain: rgba(170, 200, 210, .035);
+  --sheet: #101b23;
+  --sheet-2: #15222b;
+  --land: #25322f;
+  --land-2: #314039;
+  --ink: #e2e9e7;
+  --ink-2: #aebdbf;
+  --ink-3: #7f8f95;
+  --rule: #2c3c47;
+  --rule-strong: #4c5f6b;
+  --sepia: #cbb48d;
+  --water-ink: #7aa3c2;
+  --coast: #c9c2ad;
+  --accent: #ff5aa5;
+  --accent-ink: #ff8cc0;
+  --accent-wash: rgba(255, 90, 165, .13);
+  --accent-glow: #ff4f9f;
+  --fog: #091016;
+  --fog-cloud: #17232c;
+  --halo: rgba(12, 21, 28, .9);
+  --halo-land: rgba(37, 50, 47, .9);
+  --free: #74d18f;
+  --borrow: #f0b54a;
+  --pd: #a7b1dc;
+  --none: #8f877b;
+  --card-shadow: 0 1px 0 rgba(0, 0, 0, .3), 0 14px 34px -12px rgba(0, 0, 0, .7);
+  --glow-blend: screen;
+  --wash-1: #d9777c; --wash-2: #d6a250; --wash-3: #7fb574; --wash-4: #6f98c9; --wash-5: #a986cb; --wash-6: #5cb5ab;
+  --dark: 1;
+  color-scheme: dark;
+}
+
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 15px/1.45 var(--f-ui);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+*, *::before, *::after { box-sizing: border-box; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: var(--accent-ink); text-underline-offset: 2px; text-decoration-thickness: 1px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+.num, .tnum { font-variant-numeric: lining-nums tabular-nums; }
+.mono { font-family: var(--f-mono); font-size: .86em; letter-spacing: -.01em; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+#app {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 432px;
+  grid-template-rows: minmax(0, 1fr);
+}
+
+/* ---------------- map ---------------- */
+#mapwrap { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: var(--paper); }
+#mapwrap canvas { position: absolute; inset: 0; display: block; }
+#cv-glow { pointer-events: none; filter: blur(5px); mix-blend-mode: var(--glow-blend); animation: breathe 3.6s ease-in-out infinite; }
+#cv-top { cursor: grab; touch-action: none; }
+#cv-top:active { cursor: grabbing; }
+@keyframes breathe { 0%, 100% { opacity: .62; } 50% { opacity: 1; } }
+
+.cartouche {
+  position: absolute; top: 16px; left: max(16px, env(safe-area-inset-left, 0px));
+  max-width: 330px; padding: 12px 16px 11px;
+  background: var(--sheet);
+  border: 1px solid var(--rule-strong);
+  box-shadow: inset 0 0 0 3px var(--sheet), inset 0 0 0 4px var(--rule), var(--card-shadow);
+  pointer-events: auto;
+}
+.cartouche::before, .cartouche::after {
+  content: ""; position: absolute; width: 9px; height: 9px; border: 1px solid var(--rule-strong); background: var(--sheet); transform: rotate(45deg);
+}
+.cartouche::before { top: -5px; left: calc(50% - 5px); }
+.cartouche::after { bottom: -5px; left: calc(50% - 5px); }
+.cartouche h1 {
+  margin: 0; font: 400 27px/1 var(--f-display); letter-spacing: .16em; text-align: center; color: var(--ink);
+}
+.cartouche .sub { margin: 5px 0 0; font: italic 14px/1.25 var(--f-serif); text-align: center; color: var(--ink-2); }
+.cartouche .meta { margin: 8px 0 0; padding-top: 7px; border-top: 1px solid var(--rule); font: 12.5px/1.35 var(--f-ui); color: var(--ink-3); text-align: center; }
+.cartouche .meta b { color: var(--ink-2); font-weight: 500; }
+.cartouche .who { color: var(--accent-ink); }
+
+.ladder {
+  position: absolute; left: max(16px, env(safe-area-inset-left, 0px)); top: 200px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0;
+}
+.ladder .zbtn {
+  width: 32px; height: 32px; display: grid; place-items: center; cursor: pointer;
+  background: var(--sheet); border: 1px solid var(--rule-strong); color: var(--ink); font: 400 20px/1 var(--f-serif);
+}
+.ladder .zbtn + .zbtn { border-top: 0; }
+.ladder .stops { margin: 10px 0 0 15px; border-left: 1px solid var(--rule-strong); padding: 2px 0; }
+.ladder .stop {
+  display: flex; align-items: center; gap: 7px; padding: 5px 0 5px 0; background: none; border: 0; cursor: pointer;
+  font: 500 12px/1 var(--f-sc); letter-spacing: .06em; color: var(--ink-3); position: relative; text-align: left;
+}
+.ladder .stop::before { content: ""; width: 9px; height: 1px; background: var(--rule-strong); margin-left: -1px; }
+.ladder .stop[aria-current="true"] { color: var(--accent-ink); }
+.ladder .stop[aria-current="true"]::before { height: 3px; background: var(--accent); width: 12px; }
+.ladder .stop span { background: color-mix(in srgb, var(--paper) 78%, transparent); padding: 1px 3px; }
+
+.legend {
+  position: absolute; left: max(16px, env(safe-area-inset-left, 0px)); bottom: 16px; width: min(452px, calc(100% - 32px));
+  background: var(--sheet); border: 1px solid var(--rule-strong); box-shadow: var(--card-shadow);
+  font-size: 12.5px; color: var(--ink-2);
+}
+.legend summary { list-style: none; cursor: pointer; padding: 7px 11px; font: 500 12.5px/1.2 var(--f-sc); letter-spacing: .08em; color: var(--ink); display: flex; justify-content: space-between; }
+.legend summary::-webkit-details-marker { display: none; }
+.legend summary::after { content: "−"; font-family: var(--f-serif); }
+.legend:not([open]) summary::after { content: "+"; }
+.legend .lg { padding: 2px 11px 10px; display: grid; grid-template-columns: 22px minmax(0, 1fr) 22px minmax(0, 1fr); gap: 4px 7px; align-items: center; line-height: 1.25; }
+.legend .lg svg { display: block; overflow: visible; }
+.legend .fogctl { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin-top: 4px; padding-top: 8px; border-top: 1px solid var(--rule); }
+.seg { display: inline-flex; border: 1px solid var(--rule-strong); }
+.seg button { border: 0; background: none; padding: 3px 9px; cursor: pointer; font: 500 12px/1.3 var(--f-sc); letter-spacing: .04em; color: var(--ink-2); }
+.seg button + button { border-left: 1px solid var(--rule); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--sheet); }
+
+#tip {
+  position: absolute; z-index: 5; pointer-events: none; max-width: 280px; padding: 7px 10px;
+  background: var(--sheet); border: 1px solid var(--rule-strong); box-shadow: var(--card-shadow);
+  font-size: 13px; line-height: 1.35; color: var(--ink);
+}
+#tip .t { font: italic 15px/1.2 var(--f-serif); }
+#tip .s { color: var(--ink-3); font-size: 12px; margin-top: 2px; }
+
+#loading {
+  position: absolute; inset: 0; display: grid; place-items: center; background: var(--paper);
+  font: italic 18px/1.4 var(--f-serif); color: var(--ink-3); z-index: 8;
+}
+#loading[hidden] { display: none; }
+
+/* work card */
+#card {
+  position: absolute; top: 16px; right: 16px; width: 344px; max-height: calc(100% - 32px); overflow: auto; z-index: 4;
+  background: var(--sheet); border: 1px solid var(--rule-strong); box-shadow: var(--card-shadow);
+  padding: 0 0 12px;
+}
+#card .spines { display: flex; align-items: flex-end; gap: 3px; height: 92px; padding: 10px 14px 0; background: var(--sheet-2); border-bottom: 1px solid var(--rule-strong); overflow: hidden; }
+#card .spine {
+  flex: 1 1 0; min-width: 0; border: 1px solid color-mix(in srgb, var(--ink) 35%, transparent); border-bottom: 0; cursor: pointer;
+  writing-mode: vertical-rl; transform: rotate(180deg); padding: 6px 2px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  font: 500 10.5px/1 var(--f-sc); letter-spacing: .03em; color: var(--ink); text-align: left;
+  background: var(--land);
+}
+#card .spine.free { background: color-mix(in srgb, var(--free) 22%, var(--land)); }
+#card .spine.borrow { background: color-mix(in srgb, var(--borrow) 22%, var(--land)); }
+#card .spine.pd { background: color-mix(in srgb, var(--pd) 20%, var(--land)); }
+#card .spine.none { background: color-mix(in srgb, var(--none) 14%, var(--sheet-2)); color: var(--ink-3); }
+#card .spine.me { outline: 2px solid var(--accent); outline-offset: -2px; flex-grow: 1.6; color: var(--ink); }
+#card .body { padding: 10px 14px 0; }
+#card .call { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--ink-3); }
+#card h3 { margin: 6px 0 0; font: 400 22px/1.12 var(--f-serif); }
+#card .stt { font: italic 14.5px/1.25 var(--f-serif); color: var(--ink-2); margin-top: 2px; }
+#card .by { margin-top: 6px; font-size: 13.5px; color: var(--ink-2); }
+#card .fs { margin: 10px 0 0; padding-left: 10px; border-left: 2px solid var(--rule); font: italic 14px/1.4 var(--f-serif); color: var(--ink-2); }
+#card .fs cite { display: block; font: normal 11.5px/1.3 var(--f-ui); color: var(--ink-3); margin-top: 3px; }
+#card .acc { margin-top: 10px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; font-size: 13.5px; }
+#card .status { margin-top: 8px; font-size: 13px; color: var(--ink-2); }
+#card .row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 11px; }
+#card .x { position: absolute; top: 4px; right: 4px; width: 28px; height: 28px; border: 0; background: var(--sheet); border: 1px solid var(--rule); cursor: pointer; font: 18px/1 var(--f-serif); color: var(--ink-2); z-index: 1; }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 5px; padding: 1px 7px 1px 6px; border: 1px solid currentColor;
+  font: 500 11.5px/1.5 var(--f-sc); letter-spacing: .04em; white-space: nowrap;
+}
+.badge.free { color: var(--free); } .badge.borrow { color: var(--borrow); } .badge.pd { color: var(--pd); } .badge.none { color: var(--none); }
+.badge.ai { color: var(--accent-ink); border-style: dashed; }
+.badge.pre { color: var(--ink-3); border-style: dotted; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; cursor: pointer;
+  background: var(--sheet); border: 1px solid var(--rule-strong); color: var(--ink);
+  font: 500 13px/1.25 var(--f-sc); letter-spacing: .04em;
+}
+.btn:hover { border-color: var(--ink-2); }
+.btn.primary { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+.btn.accent { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn[disabled] { opacity: .5; cursor: default; }
+.linkish { background: none; border: 0; padding: 0; cursor: pointer; color: var(--accent-ink); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+
+/* ---------------- panel ---------------- */
+#panel {
+  min-width: 0; min-height: 0; height: 100%; display: flex; flex-direction: column;
+  background: var(--sheet); border-left: 1px solid var(--rule-strong);
+  box-shadow: inset 3px 0 0 var(--sheet), inset 4px 0 0 var(--rule);
+}
+.ph { padding: 12px max(16px, env(safe-area-inset-right, 0px)) 0 20px; border-bottom: 1px solid var(--rule-strong); }
+.explorer { display: flex; gap: 10px; align-items: center; justify-content: space-between; font-size: 13px; color: var(--ink-2); }
+.explorer .who { min-width: 0; }
+.explorer .who b { display: block; font: 500 13.5px/1.25 var(--f-sc); letter-spacing: .05em; color: var(--ink); }
+.explorer .who .ex { color: var(--accent-ink); font-style: italic; }
+.explorer .tools { display: flex; gap: 6px; flex: none; }
+.tabs { display: flex; gap: 0; margin: 12px -4px 0; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 1 0 auto; border: 0; background: none; cursor: pointer; padding: 6px 7px 9px; position: relative;
+  font: 500 13px/1.1 var(--f-sc); letter-spacing: .05em; color: var(--ink-3); text-align: center;
+}
+.tab i { display: block; font: italic 12px/1 var(--f-serif); color: var(--ink-3); margin-bottom: 3px; letter-spacing: 0; }
+.tab[aria-selected="true"] { color: var(--ink); }
+.tab[aria-selected="true"]::after { content: ""; position: absolute; left: 6px; right: 6px; bottom: -1px; height: 3px; background: var(--accent); }
+.pb { flex: 1 1 auto; overflow-y: auto; padding: 16px max(16px, env(safe-area-inset-right, 0px)) 28px 20px; overscroll-behavior: contain; }
+.pb[hidden] { display: none; }
+.pb h2 { margin: 0; font: 400 25px/1.1 var(--f-display); letter-spacing: .06em; }
+.pb h3 { margin: 22px 0 8px; font: 500 13px/1.2 var(--f-sc); letter-spacing: .1em; color: var(--ink-2); display: flex; align-items: center; gap: 8px; }
+.pb h3::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+.pb p { margin: 8px 0; }
+.lede { font: italic 16px/1.4 var(--f-serif); color: var(--ink-2); margin: 6px 0 0; }
+.small { font-size: 12.5px; color: var(--ink-3); }
+.kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: 14px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.kpi { padding: 9px 8px 8px 0; min-width: 0; }
+.kpi + .kpi { padding-left: 10px; border-left: 1px solid var(--rule); }
+.kpi .v { font: 400 25px/1.05 var(--f-serif); font-variant-numeric: lining-nums tabular-nums; color: var(--ink); }
+.kpi .v small { font-size: 14px; color: var(--ink-3); }
+.kpi .l { font-size: 12px; color: var(--ink-3); line-height: 1.25; margin-top: 3px; }
+.kpi.accent .v { color: var(--accent-ink); }
+
+.conts { display: grid; gap: 1px; margin: 0; padding: 0; list-style: none; }
+.cont { display: grid; grid-template-columns: 26px minmax(0, 1fr) 46px; gap: 8px; align-items: center; padding: 3px 0; cursor: pointer; background: none; border: 0; text-align: left; width: 100%; }
+.cont:hover .nm { color: var(--accent-ink); }
+.cont .lt { font: 400 19px/1 var(--f-display); text-align: center; color: var(--ink-2); }
+.cont .nm { font-size: 13.5px; line-height: 1.2; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cont .bar { display: block; height: 5px; margin-top: 3px; background: var(--sheet-2); border: 1px solid var(--rule); position: relative; }
+.cont .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); }
+.cont .pc { font-size: 12.5px; color: var(--ink-3); text-align: right; }
+
+.list { list-style: none; margin: 0; padding: 0; }
+.li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 9px; align-items: start; padding: 7px 0; border-bottom: 1px dotted var(--rule); }
+.li:last-child { border-bottom: 0; }
+.li .n { font: 400 15px/1.2 var(--f-display); color: var(--accent-ink); min-width: 18px; text-align: center; }
+.li .tt { font: 15.5px/1.22 var(--f-serif); color: var(--ink); cursor: pointer; background: none; border: 0; padding: 0; text-align: left; }
+.li .tt:hover { color: var(--accent-ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.li .mt { font-size: 12.5px; color: var(--ink-3); margin-top: 2px; }
+.li .rt { text-align: right; }
+.glyph { display: inline-block; width: 11px; height: 11px; vertical-align: -1px; }
+.flag { color: var(--accent); font-weight: 700; }
+
+.prov-head { display: flex; gap: 14px; align-items: flex-start; }
+.prov-head .code { font: 400 44px/0.9 var(--f-display); color: var(--accent-ink); letter-spacing: .02em; }
+.prov-head .nm { font: 400 21px/1.15 var(--f-serif); margin: 0; }
+.prov-head .cl { font-size: 12.5px; color: var(--ink-3); margin-top: 3px; }
+.accbar { display: flex; height: 12px; margin: 10px 0 4px; border: 1px solid var(--rule-strong); }
+.accbar i { display: block; height: 100%; }
+.accbar .free { background: var(--free); } .accbar .borrow { background: var(--borrow); } .accbar .pd { background: var(--pd); } .accbar .none { background: color-mix(in srgb, var(--none) 55%, var(--sheet)); }
+.acclg { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; color: var(--ink-3); }
+.acclg span::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 4px; vertical-align: 0; }
+.acclg .free::before { background: var(--free); } .acclg .borrow::before { background: var(--borrow); } .acclg .pd::before { background: var(--pd); } .acclg .none::before { background: color-mix(in srgb, var(--none) 55%, var(--sheet)); }
+.towns { list-style: none; margin: 0; padding: 0; font-size: 13.5px; }
+.towns li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; padding: 3px 0; border-bottom: 1px dotted var(--rule); }
+.towns button { background: none; border: 0; padding: 0; cursor: pointer; text-align: left; color: var(--ink); }
+.towns button:hover { color: var(--accent-ink); }
+.towns .rg { font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-3); margin-right: 6px; }
+.towns .lv2 { padding-left: 14px; } .towns .lv3 { padding-left: 28px; } .towns .lv4 { padding-left: 40px; }
+.towns .c { font-size: 12px; color: var(--ink-3); }
+.filters { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 4px 0 6px; }
+.chip { border: 1px solid var(--rule-strong); background: none; padding: 2px 9px; cursor: pointer; font: 500 12px/1.4 var(--f-sc); letter-spacing: .04em; color: var(--ink-2); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+.sel { border: 1px solid var(--rule-strong); background: var(--sheet); padding: 4px 6px; font-size: 13.5px; max-width: 100%; }
+.field { display: grid; gap: 4px; margin-top: 10px; }
+.field label { font: 500 12px/1.2 var(--f-sc); letter-spacing: .07em; color: var(--ink-3); }
+
+/* expedition */
+.route { list-style: none; margin: 10px 0 0; padding: 0; position: relative; }
+.route::before { content: ""; position: absolute; left: 14px; top: 16px; bottom: 16px; border-left: 2px dashed var(--accent); opacity: .55; }
+.leg { position: relative; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; padding: 8px 0; }
+.leg .medal {
+  width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; z-index: 1;
+  background: var(--sheet); border: 2px solid var(--accent); color: var(--accent-ink); font: 400 15px/1 var(--f-display);
+}
+.leg.base .medal { border-style: dotted; border-color: var(--ink-3); color: var(--ink-3); font-size: 13px; }
+.leg .stage { font: 500 11.5px/1.2 var(--f-sc); letter-spacing: .08em; color: var(--ink-3); }
+.leg .tt { font: 16px/1.2 var(--f-serif); color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; text-align: left; margin-top: 1px; }
+.leg .tt:hover { color: var(--accent-ink); }
+.leg .mt { font-size: 12.5px; color: var(--ink-3); margin-top: 2px; }
+.leg .why { font-size: 13px; color: var(--ink-2); margin-top: 4px; }
+.leg .acc { margin-top: 5px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 12.5px; }
+
+/* unseen */
+.chart { width: 100%; height: auto; display: block; margin-top: 8px; overflow: visible; }
+.chart text { font-family: var(--f-ui); font-size: 11px; fill: var(--ink-3); font-variant-numeric: lining-nums tabular-nums; }
+.chart .ax line, .chart .ax path { stroke: var(--rule-strong); }
+.estimate { margin-top: 12px; padding: 12px 14px; border: 1px solid var(--rule-strong); background: var(--sheet-2); }
+.estimate .big { font: 400 32px/1 var(--f-serif); font-variant-numeric: lining-nums tabular-nums; color: var(--accent-ink); }
+.estimate .big small { font-size: 16px; color: var(--ink-2); }
+.estimate p { margin: 6px 0 0; font-size: 14px; }
+.rule-box { margin-top: 12px; padding: 10px 12px 10px 14px; border-left: 3px solid var(--accent); background: var(--accent-wash); font-size: 14px; }
+.rule-box b { font: 500 12.5px/1.2 var(--f-sc); letter-spacing: .08em; display: block; color: var(--accent-ink); margin-bottom: 3px; }
+.mini { width: 100%; border-collapse: collapse; font-size: 13px; }
+.mini th { text-align: left; font: 500 11.5px/1.2 var(--f-sc); letter-spacing: .06em; color: var(--ink-3); border-bottom: 1px solid var(--rule-strong); padding: 4px 6px 4px 0; }
+.mini td { padding: 4px 6px 4px 0; border-bottom: 1px dotted var(--rule); vertical-align: top; }
+.mini td.r, .mini th.r { text-align: right; font-variant-numeric: lining-nums tabular-nums; }
+.mini .shr { display: inline-block; height: 7px; background: var(--accent); opacity: .75; vertical-align: 0; }
+.method { margin-top: 14px; font-size: 13px; color: var(--ink-2); }
+.method summary { cursor: pointer; font: 500 12.5px/1.2 var(--f-sc); letter-spacing: .07em; color: var(--ink-2); }
+.method code { font-family: var(--f-mono); font-size: 12px; }
+
+/* field guide */
+.guide { margin-top: 12px; font: 16px/1.5 var(--f-serif); color: var(--ink); }
+.guide h4 { margin: 16px 0 4px; font: 500 13px/1.2 var(--f-sc); letter-spacing: .09em; color: var(--accent-ink); }
+.guide p { margin: 6px 0; }
+.guide ul { margin: 6px 0; padding-left: 18px; }
+.guide .cite { font: 500 11.5px/1 var(--f-sc); letter-spacing: .03em; color: var(--accent-ink); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); padding: 1px 5px; margin-left: 2px; cursor: pointer; background: none; vertical-align: 1px; white-space: nowrap; }
+.guide .cite:hover { background: var(--accent-wash); }
+.guide-meta { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 12.5px; color: var(--ink-3); }
+.thinking { font: italic 15px/1.4 var(--f-serif); color: var(--ink-3); }
+.thinking::after { content: "…"; display: inline-block; animation: dots 1.4s steps(4, end) infinite; width: 1.2em; overflow: hidden; vertical-align: bottom; }
+@keyframes dots { from { width: 0; } to { width: 1.2em; } }
+.toolog { margin-top: 8px; font-size: 12px; color: var(--ink-3); font-family: var(--f-mono); }
+.note { margin-top: 10px; font-size: 12.5px; color: var(--ink-3); border-top: 1px solid var(--rule); padding-top: 8px; }
+
+/* dialogs */
+dialog {
+  border: 1px solid var(--rule-strong); background: var(--sheet); color: var(--ink); padding: 0;
+  width: min(620px, calc(100% - 32px)); max-height: calc(100% - 32px); box-shadow: var(--card-shadow);
+}
+dialog::backdrop { background: rgba(10, 18, 26, .45); }
+dialog .dh { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px 10px; border-bottom: 1px solid var(--rule-strong); position: sticky; top: 0; background: var(--sheet); }
+dialog .dh h2 { margin: 0; font: 400 24px/1.1 var(--f-display); letter-spacing: .06em; }
+dialog .db { padding: 12px 18px 18px; font-size: 14.5px; }
+dialog .db h3 { margin: 16px 0 4px; font: 500 13px/1.2 var(--f-sc); letter-spacing: .09em; color: var(--ink-2); }
+dialog .db p, dialog .db li { margin: 5px 0; }
+dialog .db ul { padding-left: 18px; margin: 4px 0; }
+textarea { width: 100%; min-height: 150px; border: 1px solid var(--rule-strong); background: var(--sheet-2); padding: 8px; font: 13.5px/1.4 var(--f-mono); resize: vertical; }
+.opts { display: grid; gap: 8px; margin-top: 8px; }
+.opt { display: grid; grid-template-columns: 20px 1fr; gap: 8px; align-items: start; padding: 9px 10px; border: 1px solid var(--rule); cursor: pointer; }
+.opt:has(input:checked) { border-color: var(--accent); background: var(--accent-wash); }
+.opt b { font: 500 13.5px/1.2 var(--f-sc); letter-spacing: .05em; }
+.opt span { display: block; font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+.matchres { margin-top: 8px; font-size: 13px; color: var(--ink-2); max-height: 160px; overflow: auto; }
+
+.mobile-only { display: none; }
+
+@media (max-width: 899px) {
+  #app { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 54fr) minmax(0, 46fr); }
+  #panel { border-left: 0; border-top: 1px solid var(--rule-strong); box-shadow: inset 0 3px 0 var(--sheet), inset 0 4px 0 var(--rule); }
+  .ph { padding: 8px max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); }
+  .pb { padding: 12px max(16px, env(safe-area-inset-right, 0px)) 24px max(16px, env(safe-area-inset-left, 0px)); }
+  .tabs { margin-top: 6px; }
+  .tab { padding: 4px 8px 7px; flex: 0 0 auto; }
+  .cartouche { top: 10px; left: max(12px, env(safe-area-inset-left, 0px)); max-width: 220px; padding: 7px 10px 6px; }
+  .cartouche h1 { font-size: 18px; }
+  .cartouche .sub { font-size: 12px; margin-top: 2px; }
+  .cartouche .meta { display: none; }
+  .ladder { top: 10px; transform: none; left: auto; right: max(12px, env(safe-area-inset-right, 0px)); }
+  .ladder .stops { display: none; }
+  .legend { width: auto; max-width: calc(100% - 24px); left: max(12px, env(safe-area-inset-left, 0px)); bottom: 10px; }
+  .legend .lg { max-height: 150px; overflow: auto; grid-template-columns: 22px minmax(0, 1fr); }
+  #card { top: auto; bottom: 8px; left: 8px; right: 8px; width: auto; max-height: calc(100% - 16px); }
+  #card .spines { height: 70px; }
+  .explorer .tools .btn { padding: 4px 8px; }
+  .mobile-only { display: initial; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #cv-glow { animation: none; opacity: .9; }
+  .thinking::after { animation: none; }
+}
+</style>
+
+<div id="app">
+  <section id="mapwrap" aria-label="Map of the Library of Congress Classification under fog of war">
+    <canvas id="cv-base" aria-hidden="true"></canvas>
+    <canvas id="cv-glow" aria-hidden="true"></canvas>
+    <canvas id="cv-top" tabindex="0" role="img" aria-label="Interactive map. Drag to pan, scroll or pinch to zoom, click a province or a settlement to inspect it. The panel lists the same places."></canvas>
+
+    <div class="cartouche" id="cartouche">
+      <h1>Terra Incognita</h1>
+      <p class="sub">A chart of the Library of Congress Classification, as explored by one reader</p>
+      <p class="meta" id="cart-meta">Surveying…</p>
+    </div>
+
+    <nav class="ladder" aria-label="Zoom">
+      <button class="zbtn" id="z-in" type="button" aria-label="Zoom in">+</button>
+      <button class="zbtn" id="z-out" type="button" aria-label="Zoom out">−</button>
+      <button class="zbtn" id="z-fit" type="button" aria-label="Show the whole world" title="Whole world">◎</button>
+      <div class="stops" id="stops">
+        <button class="stop" type="button" data-z="1"><span>Continents</span></button>
+        <button class="stop" type="button" data-z="2.6"><span>Provinces</span></button>
+        <button class="stop" type="button" data-z="6"><span>Towns</span></button>
+        <button class="stop" type="button" data-z="14"><span>Works</span></button>
+      </div>
+    </nav>
+
+    <details class="legend" id="legend" open>
+      <summary>Key to the chart</summary>
+      <div class="lg" id="lg"></div>
+    </details>
+
+    <div id="tip" hidden></div>
+    <article id="card" hidden aria-live="polite"></article>
+    <div id="loading">Surveying the stacks…</div>
+  </section>
+
+  <aside id="panel" aria-label="Chart room">
+    <header class="ph">
+      <div class="explorer">
+        <div class="who" id="who"><b>Explorer</b><span class="ex">loading…</span></div>
+        <div class="tools">
+          <button class="btn" type="button" id="btn-settle" title="Change whose reading clears the fog">Explorer…</button>
+          <button class="btn" type="button" id="btn-about" aria-label="About this prototype">About</button>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist" aria-label="Plates">
+        <button class="tab" role="tab" id="tab-atlas" aria-controls="pb-atlas" aria-selected="true" data-tab="atlas"><i>I</i>Atlas</button>
+        <button class="tab" role="tab" id="tab-prov" aria-controls="pb-prov" aria-selected="false" data-tab="prov"><i>II</i>Province</button>
+        <button class="tab" role="tab" id="tab-exp" aria-controls="pb-exp" aria-selected="false" data-tab="exp"><i>III</i>Expedition</button>
+        <button class="tab" role="tab" id="tab-unseen" aria-controls="pb-unseen" aria-selected="false" data-tab="unseen"><i>IV</i>Unseen species</button>
+        <button class="tab" role="tab" id="tab-guide" aria-controls="pb-guide" aria-selected="false" data-tab="guide"><i>V</i>Field guide</button>
+      </nav>
+    </header>
+    <div class="pb" id="pb-atlas" role="tabpanel" aria-labelledby="tab-atlas"></div>
+    <div class="pb" id="pb-prov" role="tabpanel" aria-labelledby="tab-prov" hidden></div>
+    <div class="pb" id="pb-exp" role="tabpanel" aria-labelledby="tab-exp" hidden></div>
+    <div class="pb" id="pb-unseen" role="tabpanel" aria-labelledby="tab-unseen" hidden></div>
+    <div class="pb" id="pb-guide" role="tabpanel" aria-labelledby="tab-guide" hidden></div>
+  </aside>
+</div>
+
+<dialog id="dlg-about" aria-labelledby="about-h">
+  <div class="dh"><h2 id="about-h">About this chart</h2><button class="btn" type="button" data-close>Close</button></div>
+  <div class="db">
+    <p class="lede">A deep mockup for <a href="https://open-stacks.quantifieduncertainty.org/building/prototype-gallery/" target="_blank" rel="noopener">Open Stacks</a>: the Library of Congress shelf order unrolled into a world, so that the shape of what you have <em>not</em> read becomes visible, plannable and estimable.</p>
+    <h3>What it demonstrates</h3>
+    <ul>
+      <li><b>Shelf order as geography.</b> LC classes are continents, subclasses are provinces, outline ranges are towns, works are settlements. Area is proportional to catalog works plus Gutenberg titles; the provinces run along a Gosper space-filling curve, so call-number neighbours are map neighbours.</li>
+      <li><b>Fog of war.</b> Each work the reader has read clears its hex and the ring around it; the next ring is half-fogged and glows. Brighter frontier hexes hold more popular, more accessible unread works.</li>
+      <li><b>Expedition planner.</b> Picks 5–8 unread works in a region and orders them from introductory to specialised, with access status for each.</li>
+      <li><b>Unseen species.</b> Treats the reader's encounters with a region's works as a biological survey: species-accumulation curve, bias-corrected Chao1 with a log-normal interval, a Good–Turing stopping rule, and a check against what the catalog actually holds.</li>
+      <li><b>Field guides.</b> Claude writes a guide to a province on request, calling a search tool over that province's records so every cited work resolves.</li>
+    </ul>
+    <h3>Real data</h3>
+    <ul>
+      <li>7,127 Open Library works (CC0; Search API, fetched 2026-10-15): titles, call numbers, editions, reading-log counts, first sentences, access status. 6,518 have a call number; the 609 without one sit on the Uncharted Isles.</li>
+      <li>29,007 Project Gutenberg nonfiction titles (catalog feed, fetched 2026-10-15), counted by LoC class and drawn as forest ("hinterland").</li>
+      <li>Library of Congress Classification Outline: class, subclass and range names.</li>
+      <li>The catalog was assembled from 50 subject searches, so it is a 7k sample with artificial coastlines, heavy in science, social science and philosophy. Some Open Library years are wrong (first-publication dates are crowd-edited).</li>
+    </ul>
+    <h3>Precomputed and AI-generated</h3>
+    <ul>
+      <li>The layout, fog, frontier scores, routes and estimates are computed in your browser from the data (layout script: <span class="mono">scripts/prototypes/terra-incognita.mjs</span>).</li>
+      <li>Six field guides (QA, Q, HB, BF, BD, BC) were written by Claude in October 2026 from these records; they are AI-generated, every cited id was checked against the catalog, and they should be spot-checked before you rely on them.</li>
+    </ul>
+    <h3>Mocked</h3>
+    <ul>
+      <li><b>The example reader is synthetic</b>: 22 hand-picked books plus a seeded sample of 128 more from probability, decision theory, machine learning, economics and philosophy of science, with invented dates and an invented search history. Paste your own list under <em>Explorer…</em> (it stays in this browser).</li>
+      <li>The encounter log behind <em>Unseen species</em> is derived, not observed: it is what this app would have shown that reader (shelf neighbours of each book read, subject cross-references, and the top results of each search).</li>
+    </ul>
+    <h3>Read more</h3>
+    <ul>
+      <li><a href="https://open-stacks.quantifieduncertainty.org/interfaces/maps-of-knowledge/" target="_blank" rel="noopener">Maps of knowledge</a> · <a href="https://open-stacks.quantifieduncertainty.org/finding/browsing-the-stacks/" target="_blank" rel="noopener">Browsing the stacks</a> · <a href="https://open-stacks.quantifieduncertainty.org/access/access-ladder/" target="_blank" rel="noopener">The access ladder</a></li>
+      <li><a href="https://open-stacks.quantifieduncertainty.org/building/prototype-gallery/" target="_blank" rel="noopener">Prototype gallery</a></li>
+    </ul>
+  </div>
+</dialog>
+
+<dialog id="dlg-settle" aria-labelledby="settle-h">
+  <div class="dh"><h2 id="settle-h">Who is exploring?</h2><button class="btn" type="button" data-close>Close</button></div>
+  <div class="db">
+    <p>Every work the explorer has read plants a flag and burns off the fog around it.</p>
+    <div class="opts" role="radiogroup" aria-label="Explorer">
+      <label class="opt"><input type="radio" name="who" value="example" id="who-example" checked><div><b>Example reader</b><span>Synthetic forecasting researcher: 150 works from probability, decision theory, ML, economics, philosophy of science.</span></div></label>
+      <label class="opt"><input type="radio" name="who" value="blank" id="who-blank"><div><b>Blank chart</b><span>Nobody has read anything: the whole world under fog, continent outlines and LC class names only.</span></div></label>
+      <label class="opt"><input type="radio" name="who" value="custom" id="who-custom"><div><b>My reading list</b><span>Paste titles, one per line ("Title" or "Title by Author"). Matched against the 7,127 works; nothing leaves your browser.</span></div></label>
+    </div>
+    <div class="field"><label for="paste">Titles</label><textarea id="paste" placeholder="Superforecasting by Philip Tetlock&#10;The Structure of Scientific Revolutions&#10;Probability Theory: The Logic of Science&#10;…"></textarea></div>
+    <div class="matchres" id="matchres" aria-live="polite"></div>
+    <div class="row" style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn primary" type="button" id="settle-go">Settle the map</button>
+      <button class="btn" type="button" id="settle-check">Check matches</button>
+    </div>
+  </div>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+(() => {
+'use strict';
+
+/* =============================== utilities =============================== */
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const NF = new Intl.NumberFormat('en-US');
+const fmt = (n) => NF.format(Math.round(n));
+const fmt1 = (n) => (Math.round(n * 10) / 10).toFixed(1);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const store = {
+  get(k) { try { const v = localStorage.getItem('terra-incognita:' + k); return v == null ? null : JSON.parse(v); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem('terra-incognita:' + k, JSON.stringify(v)); } catch { /* storage unavailable */ } },
+};
+const PROVENANCE = 'Precomputed by Claude, October 2026 (AI-generated; spot-check before relying on it)';
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const ym = (s) => { if (!s) return ''; const [y, m] = s.split('-'); return (MONTHS[+m - 1] || '') + ' ' + y; };
+const shortTitle = (t, n = 46) => { let s = String(t || '').split(/\s[:;]\s|:\s/)[0]; if (s.length > n) s = s.slice(0, n - 1).trimEnd() + '…'; return s; };
+const firstAuthor = (w) => (w.a && w.a[0]) || 'Unknown author';
+const parseKey = (lcc) => { const m = /^([A-Z]+)-*(\d+(?:\.\d+)?)/.exec(lcc || ''); return m ? { code: m[1], num: parseFloat(m[2]) } : null; };
+const rangeStr = (lo, hi) => {
+  const f = (x) => (Number.isInteger(x) ? String(x) : String(+x.toFixed(3)));
+  return lo === hi ? f(lo) : f(lo) + '–' + f(hi);
+};
+
+const ACC = {
+  public: { cls: 'free', label: 'Free now', long: 'Public-domain scan: read free now' },
+  borrowable: { cls: 'borrow', label: 'Borrowable', long: 'Borrow from the Internet Archive (1-hour or 14-day loan)' },
+  printdisabled: { cls: 'pd', label: 'Print-disabled', long: 'Scanned, but lent only to readers with a print disability' },
+  no_ebook: { cls: 'none', label: 'No ebook', long: 'No ebook: a library or bookshop copy' },
+  unclassified: { cls: 'none', label: 'Access unknown', long: 'Open Library records no access status' },
+};
+const accOf = (w) => ACC[w.acc] || ACC.unclassified;
+const accBonus = (w) => ({ public: 1.35, borrowable: 1.15, printdisabled: 0.9, no_ebook: 0.8 }[w.acc] || 0.8);
+const pop = (w) => Math.log1p(w.rl || 0) + 0.6 * Math.log1p(w.ed || 0);
+function accessLinks(w) {
+  const out = [];
+  if ((w.acc === 'public' || w.acc === 'borrowable') && w.ia) out.push(`<a href="https://archive.org/details/${encodeURIComponent(w.ia)}" target="_blank" rel="noopener">${w.acc === 'public' ? 'Read at Internet Archive' : 'Borrow at Internet Archive'} ↗</a>`);
+  if (w.pg) out.push(`<a href="https://www.gutenberg.org/ebooks/${encodeURIComponent(w.pg)}" target="_blank" rel="noopener">Project Gutenberg ↗</a>`);
+  out.push(`<a href="https://openlibrary.org/works/${encodeURIComponent(w.id)}" target="_blank" rel="noopener">Open Library ↗</a>`);
+  return out.join(' · ');
+}
+function glyphSVG(acc, read) {
+  const c = { free: 'var(--free)', borrow: 'var(--borrow)', pd: 'var(--pd)', none: 'var(--none)' }[acc];
+  let g;
+  if (acc === 'free') g = `<circle cx="5.5" cy="5.5" r="3.6" fill="${c}"/>`;
+  else if (acc === 'borrow') g = `<circle cx="5.5" cy="5.5" r="3.6" fill="none" stroke="${c}" stroke-width="1.4"/><circle cx="5.5" cy="5.5" r="1.3" fill="${c}"/>`;
+  else if (acc === 'pd') g = `<circle cx="5.5" cy="5.5" r="3.6" fill="none" stroke="${c}" stroke-width="1.4"/>`;
+  else g = `<path d="M2.6 2.6 8.4 8.4 M8.4 2.6 2.6 8.4" stroke="${c}" stroke-width="1.4"/>`;
+  if (read) g += `<path d="M5.5 5.5V-2.5" stroke="var(--accent)" stroke-width="1.3"/><path d="M5.5 -2.5 10.5 -0.5 5.5 1.5Z" fill="var(--accent)"/>`;
+  return `<svg class="glyph" viewBox="0 0 11 11" aria-hidden="true">${g}</svg>`;
+}
+
+/* =============================== DOM =============================== */
+const mapwrap = $('#mapwrap');
+const cvBase = $('#cv-base'), cvGlow = $('#cv-glow'), cvTop = $('#cv-top');
+const ctxB = cvBase.getContext('2d'), ctxG = cvGlow.getContext('2d'), ctxT = cvTop.getContext('2d');
+const off = (w = 2, h = 2) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+const cvWL = off(), cvFog = off(), cvMask = off();
+const ctxWL = cvWL.getContext('2d'), ctxF = cvFog.getContext('2d'), ctxM = cvMask.getContext('2d');
+const tip = $('#tip'), card = $('#card');
+
+/* =============================== theme =============================== */
+let C = {};
+let WASH = [];
+function readTheme() {
+  const cs = getComputedStyle(document.documentElement);
+  const g = (n) => cs.getPropertyValue(n).trim();
+  C = {
+    paper: g('--paper'), grain: g('--paper-grain'), land: g('--land'), land2: g('--land-2'), ink: g('--ink'), ink2: g('--ink-2'), ink3: g('--ink-3'),
+    sepia: g('--sepia'), water: g('--water-ink'), coast: g('--coast'), accent: g('--accent'), glow: g('--accent-glow'),
+    fog: g('--fog'), cloud: g('--fog-cloud'), halo: g('--halo'), haloLand: g('--halo-land'),
+    free: g('--free'), borrow: g('--borrow'), pd: g('--pd'), none: g('--none'), dark: g('--dark') === '1', sheet: g('--sheet'),
+  };
+  WASH = [1, 2, 3, 4, 5, 6].map((i) => g('--wash-' + i));
+  makePatterns();
+}
+
+/* =============================== state =============================== */
+let M = null;          // model
+let T = d3.zoomIdentity; // current transform
+let K0 = 1;            // fit scale
+let W = 0, H = 0, DPR = 1;
+const st = {
+  tab: 'atlas',
+  fog: store.get('fog') || 'full',
+  prov: null, town: null, work: null,
+  hover: null,
+  reader: null,
+  derived: null,
+  route: null,
+  expRegion: null, expLegs: 7, expFree: true,
+  unRegion: null, unZ: 0.8, unThr: 0.05, unShow: true,
+  guide: { sc: null, status: 'idle', text: '', source: null, log: [], dropped: 0 },
+  provFilter: 'all', provSort: 'shelf', provMore: 60,
+  settleT: 1,
+};
+let sampleFn = undefined; // undefined = unknown yet, null = unavailable
+const samplePromise = (async () => {
+  try {
+    const s = await (window.claude && window.claude.use ? window.claude.use('sample') : null);
+    sampleFn = s || null;
+  } catch { sampleFn = null; }
+  if (st.tab === 'guide') renderGuide();
+  return sampleFn;
+})();
+
+/* =============================== model =============================== */
+function buildModel(world, cat, guides) {
+  const N = world.N, S = world.S, R = world.R, ROT = world.rot;
+  const isleCells = [];
+  world.isles.forEach((isle, k) => isle.cells.forEach(([x, y]) => isleCells.push({ x, y, isle: k })));
+  const HN = N + isleCells.length;
+  const hx = new Float64Array(HN), hy = new Float64Array(HN), hsub = new Int16Array(HN), hcls = new Int16Array(HN);
+  for (let i = 0; i < N; i++) { hx[i] = world.hex[i][0]; hy[i] = world.hex[i][1]; hsub[i] = world.hexSub[i]; }
+  isleCells.forEach((c, j) => { hx[N + j] = c.x; hy[N + j] = c.y; hsub[N + j] = -1 - c.isle; });
+  const subs = world.subclasses.map((s, si) => ({ ...s, si, nh: s.h1 - s.h0, works: [], towns: [], path: null, color: 0 }));
+  for (let i = 0; i < N; i++) hcls[i] = subs[hsub[i]].k; for (let j = N; j < HN; j++) hcls[j] = -1;
+  const classes = world.classes.map((c, ki) => ({ ...c, ki, subs: [], path: null }));
+  subs.forEach((s) => classes[s.k].subs.push(s.si));
+  const subByCode = new Map(subs.map((s) => [s.c, s]));
+
+  // neighbours
+  const latKey = new Map(world.hexLat.map(([a, b], i) => [a + ',' + b, i]));
+  const ND = [[1, 0], [0, 1], [-1, 1], [-1, 0], [0, -1], [1, -1]];
+  const nb = Array.from({ length: HN }, () => []);
+  for (let i = 0; i < N; i++) {
+    const [a, b] = world.hexLat[i];
+    for (const [da, db] of ND) { const j = latKey.get((a + da) + ',' + (b + db)); if (j !== undefined) nb[i].push(j); }
+  }
+  for (let i = N; i < HN; i++) for (let j = N; j < HN; j++) if (i !== j && Math.hypot(hx[i] - hx[j], hy[i] - hy[j]) < S * 1.2) nb[i].push(j);
+
+  // province colouring (greedy, neighbours differ)
+  const adj = subs.map(() => new Set());
+  for (let i = 0; i < N; i++) for (const j of nb[i]) if (j < N && hsub[i] !== hsub[j]) { adj[hsub[i]].add(hsub[j]); }
+  subs.forEach((s) => {
+    const usedC = new Set([...adj[s.si]].filter((o) => o < s.si).map((o) => subs[o].color));
+    let c = (s.si * 5) % 6; for (let t = 0; t < 6 && usedC.has(c); t++) c = (c + 1) % 6;
+    s.color = c;
+  });
+  subs.forEach((s) => (s.adj = [...adj[s.si]]));
+
+  // works
+  const works = cat.works.map((w, i) => {
+    const p = world.works[i];
+    const k = parseKey(w.lcc);
+    return { ...w, i, px: p ? p[0] : 0, py: p ? p[1] : 0, hex: p ? p[2] : -1, town: p ? p[3] : -1, code: k ? k.code : null, num: k ? k.num : null, sub: -1 };
+  });
+  const hexWorks = Array.from({ length: HN }, () => []);
+  works.forEach((w) => {
+    if (w.hex >= 0) { w.sub = hsub[w.hex]; hexWorks[w.hex].push(w.i); subs[w.sub].works.push(w.i); }
+    else {
+      // isle: nearest isle cell
+      let best = -1, bd = Infinity;
+      for (let j = N; j < HN; j++) { const d = (hx[j] - w.px) ** 2 + (hy[j] - w.py) ** 2; if (d < bd) { bd = d; best = j; } }
+      w.hex = best; w.isle = -1 - hsub[best]; hexWorks[best].push(w.i);
+    }
+  });
+  // shelf order (call-numbered works only)
+  const shelf = works.filter((w) => w.lcc && w.sub >= 0).sort((a, b) => (a.lcc < b.lcc ? -1 : a.lcc > b.lcc ? 1 : a.i - b.i)).map((w) => w.i);
+  const shelfPos = new Int32Array(works.length).fill(-1);
+  shelf.forEach((wi, p) => (shelfPos[wi] = p));
+  subs.forEach((s) => s.works.sort((a, b) => shelfPos[a] - shelfPos[b]));
+
+  // hex attributes
+  const hexGut = new Float32Array(HN), hexPeak = new Int32Array(HN).fill(-1);
+  for (let i = 0; i < N; i++) hexGut[i] = subs[hsub[i]].gut / subs[hsub[i]].nh;
+  for (let i = 0; i < HN; i++) {
+    let best = -1, be = 0;
+    for (const wi of hexWorks[i]) { const e = works[wi].ed || 0; if (e > be) { be = e; best = wi; } }
+    hexPeak[i] = best;
+  }
+
+  // towns
+  const towns = world.towns.map((t, ti) => ({ ...t, ti, sub: subByCode.get(t.c)?.si ?? -1 }));
+  towns.forEach((t) => { if (t.sub >= 0) subs[t.sub].towns.push(t.ti); });
+  // isles
+  const isles = world.isles.map((isle, k) => ({ ...isle, k, works: works.filter((w) => w.isle === k).map((w) => w.i) }));
+
+  // subject index for cross references
+  const subjIndex = new Map();
+  works.forEach((w) => (w.s || []).slice(0, 12).forEach((s) => {
+    const key = s.toLowerCase(); let a = subjIndex.get(key); if (!a) subjIndex.set(key, (a = [])); a.push(w.i);
+  }));
+  subjIndex.forEach((a) => a.sort((x, y) => (works[y].rl || 0) - (works[x].rl || 0)));
+  const queryIndex = new Map();
+  works.forEach((w) => (w.q || []).forEach((q) => { let a = queryIndex.get(q); if (!a) queryIndex.set(q, (a = [])); a.push(w.i); }));
+  queryIndex.forEach((a) => a.sort((x, y) => (works[y].rl || 0) - (works[x].rl || 0)));
+  const byId = new Map(works.map((w) => [w.id, w.i]));
+
+  // paths (world coordinates)
+  const loopsPath = (loops) => { const p = new Path2D(); for (const l of loops) { p.moveTo(l[0], l[1]); for (let i = 2; i < l.length; i += 2) p.lineTo(l[i], l[i + 1]); p.closePath(); } return p; };
+  classes.forEach((c) => (c.path = loopsPath(c.loops)));
+  subs.forEach((s) => (s.path = loopsPath(s.loops)));
+  isles.forEach((isle) => (isle.path = loopsPath(isle.loops)));
+  const land = loopsPath(world.land);
+  const landAll = new Path2D(); landAll.addPath(land); isles.forEach((i) => landAll.addPath(i.path));
+  const classesAll = new Path2D(); classes.forEach((c) => classesAll.addPath(c.path)); isles.forEach((i) => classesAll.addPath(i.path));
+
+  // forest density bands (paths of hex polygons)
+  const HA = Array.from({ length: 6 }, (_, k) => ROT + Math.PI / 6 + (k * Math.PI) / 3);
+  const HC = HA.map(Math.cos), HS = HA.map(Math.sin);
+  const forest = [new Path2D(), new Path2D(), new Path2D(), new Path2D()];
+  for (let i = 0; i < N; i++) {
+    const g = hexGut[i]; if (g < 1) continue;
+    const band = g < 4 ? 0 : g < 8 ? 1 : g < 12 ? 2 : 3;
+    const p = forest[band]; const r = R * 1.02;
+    p.moveTo(hx[i] + r * HC[0], hy[i] + r * HS[0]); for (let k = 1; k < 6; k++) p.lineTo(hx[i] + r * HC[k], hy[i] + r * HS[k]); p.closePath();
+  }
+  // bounds
+  let X0 = Infinity, Y0 = Infinity, X1 = -Infinity, Y1 = -Infinity;
+  const allLoops = [...world.land, ...world.isles.flatMap((i) => i.loops)];
+  for (const l of allLoops) for (let i = 0; i < l.length; i += 2) { X0 = Math.min(X0, l[i]); X1 = Math.max(X1, l[i]); Y0 = Math.min(Y0, l[i + 1]); Y1 = Math.max(Y1, l[i + 1]); }
+  const mainBB = [Infinity, Infinity, -Infinity, -Infinity];
+  for (const l of world.land) for (let i = 0; i < l.length; i += 2) { mainBB[0] = Math.min(mainBB[0], l[i]); mainBB[2] = Math.max(mainBB[2], l[i]); mainBB[1] = Math.min(mainBB[1], l[i + 1]); mainBB[3] = Math.max(mainBB[3], l[i + 1]); }
+  // spatial hash for hexes and works
+  const cell = S;
+  const hexGrid = new Map(), workGrid = new Map();
+  const gk = (x, y, c) => Math.floor(x / c) + ',' + Math.floor(y / c);
+  for (let i = 0; i < HN; i++) { const k = gk(hx[i], hy[i], cell); (hexGrid.get(k) || hexGrid.set(k, []).get(k)).push(i); }
+  works.forEach((w) => { if (w.hex < 0) return; const k = gk(w.px, w.py, cell / 2); (workGrid.get(k) || workGrid.set(k, []).get(k)).push(w.i); });
+
+  // wind roses in open water (portolan hubs)
+  const roses = [
+    { x: mainBB[2] - (mainBB[2] - mainBB[0]) * 0.05, y: mainBB[3] - (mainBB[3] - mainBB[1]) * 0.06, r: 36, main: true },
+    { x: mainBB[0] + (mainBB[2] - mainBB[0]) * 0.05, y: mainBB[1] + (mainBB[3] - mainBB[1]) * 0.07, r: 20, main: false },
+  ];
+
+  return {
+    world, N, HN, S, R, ROT, HC, HS, hx, hy, hsub, hcls, nb, subs, classes, subByCode, works, hexWorks, shelf, shelfPos,
+    hexGut, hexPeak, towns, isles, subjIndex, queryIndex, byId, land, landAll, classesAll, forest,
+    bounds: [X0, Y0, X1, Y1], mainBB, hexGrid, workGrid, gk, roses, guides: guides || { guides: [] },
+  };
+}
+
+function hexPoly(ctx, i, scale = 1) {
+  const r = M.R * scale, x = M.hx[i], y = M.hy[i];
+  ctx.moveTo(x + r * M.HC[0], y + r * M.HS[0]);
+  for (let k = 1; k < 6; k++) ctx.lineTo(x + r * M.HC[k], y + r * M.HS[k]);
+  ctx.closePath();
+}
+function hexAt(x, y) {
+  const cx = Math.floor(x / M.S), cy = Math.floor(y / M.S);
+  let best = -1, bd = (M.R * 1.05) ** 2;
+  for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) {
+    const a = M.hexGrid.get((cx + dx) + ',' + (cy + dy)); if (!a) continue;
+    for (const i of a) { const d = (M.hx[i] - x) ** 2 + (M.hy[i] - y) ** 2; if (d < bd) { bd = d; best = i; } }
+  }
+  return best;
+}
+function workAt(x, y, radW) {
+  const c = M.S / 2, cx = Math.floor(x / c), cy = Math.floor(y / c), span = Math.ceil(radW / c) + 1;
+  let best = -1, bd = radW * radW;
+  for (let dx = -span; dx <= span; dx++) for (let dy = -span; dy <= span; dy++) {
+    const a = M.workGrid.get((cx + dx) + ',' + (cy + dy)); if (!a) continue;
+    for (const i of a) { const w = M.works[i]; const d = (w.px - x) ** 2 + (w.py - y) ** 2; if (d < bd) { bd = d; best = i; } }
+  }
+  return best;
+}
+
+/* =============================== reader =============================== */
+function exampleReader() {
+  const r = M.world.reader;
+  const read = [];
+  for (const [id, date, group] of r.read) { const i = M.byId.get(id); if (i !== undefined) read.push({ i, date, group }); }
+  read.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+  return { kind: 'example', label: 'Example reader', note: 'synthetic profile', read, searches: r.searches.slice() };
+}
+function blankReader() { return { kind: 'blank', label: 'Blank chart', note: 'nobody has read anything', read: [], searches: [] }; }
+function customReader(ids) {
+  const read = ids.map((i, k) => ({ i, date: '2026-' + String(1 + Math.floor((k * 9) / Math.max(1, ids.length))).padStart(2, '0'), group: 'mine' }));
+  // vocabulary: the commonest subject searches among the matched works
+  const qc = new Map();
+  ids.forEach((i) => (M.works[i].q || []).forEach((q) => qc.set(q, (qc.get(q) || 0) + 1)));
+  const top = [...qc.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([q], k) => ['2026-' + String(3 + k).padStart(2, '0'), q]);
+  return { kind: 'custom', label: 'My reading list', note: ids.length + ' matched works', read, searches: top };
+}
+
+function deriveReader(reader, upto = 1) {
+  const { N, HN, nb, works } = M;
+  const nRead = Math.round(reader.read.length * upto);
+  const readNow = reader.read.slice(0, nRead);
+  const readSet = new Set(readNow.map((r) => r.i));
+  const readDate = new Map(readNow.map((r) => [r.i, r.date]));
+  const state = new Uint8Array(HN).fill(2);
+  const seeds = [];
+  for (const r of readNow) { const h = works[r.i].hex; if (h >= 0 && state[h] !== 0) { state[h] = 0; seeds.push(h); } }
+  // radius 1 clear, radius 2 half
+  const ring1 = [];
+  for (const h of seeds) for (const j of nb[h]) if (state[j] === 2) { state[j] = 0; ring1.push(j); }
+  for (const h of ring1) for (const j of nb[h]) if (state[j] === 2) state[j] = 1;
+  // frontier value
+  const frontier = [];
+  let vmax = 0;
+  const value = new Float32Array(HN);
+  for (let h = 0; h < HN; h++) {
+    if (state[h] !== 1) continue;
+    let v = 0;
+    for (const wi of M.hexWorks[h]) if (!readSet.has(wi)) v += pop(works[wi]) * accBonus(works[wi]);
+    v += 0.15 * M.hexGut[h];
+    value[h] = v; vmax = Math.max(vmax, v); frontier.push(h);
+  }
+  if (vmax > 0) for (const h of frontier) value[h] /= vmax;
+  // stats
+  let clear = 0; for (let h = 0; h < N; h++) if (state[h] === 0) clear++;
+  const clsClear = M.classes.map(() => 0);
+  for (let h = 0; h < N; h++) if (state[h] === 0) clsClear[M.hcls[h]]++;
+  const subRead = M.subs.map(() => 0);
+  readNow.forEach((r) => { const w = works[r.i]; if (w.sub >= 0) subRead[w.sub]++; });
+  const subClear = M.subs.map(() => 0);
+  for (let h = 0; h < N; h++) if (state[h] === 0) subClear[M.hsub[h]]++;
+  return { reader, readSet, readDate, readNow, state, frontier, value, clear, clsClear, subRead, subClear };
+}
+
+// Encounters: what the app would have shown this reader. Shelf walks, subject cross-references, searches.
+function encounterLog(reader) {
+  const { works, shelf, shelfPos, subjIndex, queryIndex } = M;
+  const ev = [];
+  for (const r of reader.read) {
+    ev.push({ t: r.date, w: r.i, src: 'read' });
+    const p = shelfPos[r.i];
+    if (p >= 0) for (let d = -4; d <= 4; d++) { if (!d) continue; const q = p + d; if (q >= 0 && q < shelf.length) ev.push({ t: r.date, w: shelf[q], src: 'shelf' }); }
+    for (const s of (works[r.i].s || []).slice(0, 8)) {
+      const list = subjIndex.get(s.toLowerCase());
+      if (!list || list.length < 3 || list.length > 150) continue;
+      let n = 0;
+      for (const wi of list) { if (wi === r.i) continue; ev.push({ t: r.date, w: wi, src: 'xref' }); if (++n >= 3) break; }
+    }
+  }
+  for (const [t, q] of reader.searches) {
+    const list = queryIndex.get(q) || [];
+    for (const wi of list.slice(0, 30)) ev.push({ t, w: wi, src: 'search' });
+  }
+  ev.forEach((e, k) => (e.k = k));
+  ev.sort((a, b) => (a.t < b.t ? -1 : a.t > b.t ? 1 : a.k - b.k));
+  const met = new Map();
+  for (const e of ev) met.set(e.w, (met.get(e.w) || 0) + 1);
+  return { ev, met };
+}
+
+/* =============================== regions =============================== */
+// region: {type:'sub', si} | {type:'town', ti} | {type:'isle', k}
+function regionWorks(rg) {
+  if (!rg) return [];
+  if (rg.type === 'sub') return M.subs[rg.si].works;
+  if (rg.type === 'isle') return M.isles[rg.k].works;
+  const t = M.towns[rg.ti];
+  return M.subs[t.sub]?.works.filter((wi) => { const w = M.works[wi]; return w.code === t.c && w.num >= t.lo && w.num <= t.hi; }) || [];
+}
+function regionName(rg, long = true) {
+  if (!rg) return '';
+  if (rg.type === 'sub') { const s = M.subs[rg.si]; return long ? `${s.c} · ${s.n}` : s.c; }
+  if (rg.type === 'isle') return M.isles[rg.k].n;
+  const t = M.towns[rg.ti];
+  return long ? `${t.c} ${rangeStr(t.lo, t.hi)} · ${t.n}` : `${t.c} ${rangeStr(t.lo, t.hi)}`;
+}
+function regionBBox(rg) {
+  const ws = regionWorks(rg).map((i) => M.works[i]);
+  if (rg.type === 'sub') return M.subs[rg.si].bb;
+  if (!ws.length) return null;
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  ws.forEach((w) => { x0 = Math.min(x0, w.px); y0 = Math.min(y0, w.py); x1 = Math.max(x1, w.px); y1 = Math.max(y1, w.py); });
+  const p = M.S * 0.8;
+  return [x0 - p, y0 - p, x1 + p, y1 + p];
+}
+const sameRegion = (a, b) => a && b && a.type === b.type && a.si === b.si && a.ti === b.ti && a.k === b.k;
+
+/* =============================== statistics =============================== */
+// Bias-corrected Chao1 with Chao's log-normal interval (Chao 1987; Chao et al. 2014).
+function chao1(counts, z) {
+  let n = 0, S = 0, f1 = 0, f2 = 0;
+  for (const c of counts) { if (c <= 0) continue; n += c; S++; if (c === 1) f1++; else if (c === 2) f2++; }
+  if (n === 0) return { n, S, f1, f2, f0: 0, est: 0, lo: 0, hi: 0, cover: 0, pNew: 1 };
+  const A = n > 1 ? (n - 1) / n : 1;
+  const f0 = A * f1 * (f1 - 1) / (2 * (f2 + 1));
+  const est = S + f0;
+  const v = A * f1 * (f1 - 1) / (2 * (f2 + 1)) + A * A * f1 * (2 * f1 - 1) ** 2 / (4 * (f2 + 1) ** 2) + A * A * f1 * f1 * f2 * (f1 - 1) ** 2 / (4 * (f2 + 1) ** 4);
+  let lo = S, hi = S;
+  if (f0 > 0 && v > 0) {
+    const Cc = Math.exp(z * Math.sqrt(Math.log(1 + v / (f0 * f0))));
+    lo = S + f0 / Cc; hi = S + f0 * Cc;
+  }
+  // sample coverage (Chao & Jost 2012) and P(next encounter is new)
+  const q = f1 > 0 ? ((n - 1) * f1) / ((n - 1) * f1 + 2 * f2) : 0;
+  const pNew = n > 0 ? (f1 / n) * q : 1;
+  return { n, S, f1, f2, f0, est, lo, hi, cover: 1 - pNew, pNew, q, v };
+}
+// expected distinct works after m more encounters (Chao et al. 2014, abundance extrapolation)
+function extrap(c, f0, m) {
+  if (f0 <= 0 || c.n === 0) return c.S;
+  const a = c.f1 / (c.n * f0 + c.f1);
+  return c.S + f0 * (1 - Math.pow(1 - a, m));
+}
+function stopAfter(c, thr) {
+  if (c.pNew <= thr) return 0;
+  if (!(c.q > 0 && c.q < 1)) return Infinity;
+  // pNew(n+m) ≈ (f1/n) q^(m+1)
+  const m = Math.log(thr / (c.f1 / c.n)) / Math.log(c.q) - 1;
+  return Math.max(0, Math.ceil(m));
+}
+
+/* =============================== patterns =============================== */
+let grainPat = null, stipple = null, cloudPat = null, cloudCanvas = null;
+function makePatterns() {
+  // paper grain
+  const g = off(160, 160), gc = g.getContext('2d');
+  const rnd = mulberry(7);
+  gc.fillStyle = C.grain;
+  for (let i = 0; i < 2200; i++) { const x = rnd() * 160, y = rnd() * 160, r = rnd() * 0.9 + 0.2; gc.fillRect(x, y, r, r); }
+  grainPat = ctxB.createPattern(g, 'repeat');
+  // stipple for Gutenberg "forest"
+  const s = off(14, 14), sc = s.getContext('2d');
+  sc.fillStyle = C.sepia;
+  [[2, 3], [9, 2], [5, 8], [12, 10], [1, 12], [8, 13]].forEach(([x, y]) => { sc.beginPath(); sc.arc(x + 0.5, y + 0.5, 0.75, 0, 7); sc.fill(); });
+  stipple = ctxB.createPattern(s, 'repeat');
+  // fog clouds: tileable value noise
+  const n = 192;
+  cloudCanvas = off(n, n);
+  const cc = cloudCanvas.getContext('2d'), img = cc.createImageData(n, n);
+  const rr = mulberry(11);
+  const grid = (g) => { const a = []; for (let i = 0; i < g * g; i++) a.push(rr()); return a; };
+  const octs = [[6, 0.5], [12, 0.3], [24, 0.2]].map(([g, w]) => ({ g, w, v: grid(g) }));
+  const smooth = (t) => t * t * (3 - 2 * t);
+  const parse = (hex) => { const d = document.createElement('div'); d.style.color = hex; document.body.appendChild(d); const m = getComputedStyle(d).color.match(/[\d.]+/g).map(Number); d.remove(); return m; };
+  const c0 = parse(C.fog), c1 = parse(C.cloud);
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+    let v = 0;
+    for (const o of octs) {
+      const fx = (x / n) * o.g, fy = (y / n) * o.g, ix = Math.floor(fx), iy = Math.floor(fy), tx = smooth(fx - ix), ty = smooth(fy - iy);
+      const at = (a, b) => o.v[((b % o.g) + o.g) % o.g * o.g + (((a % o.g) + o.g) % o.g)];
+      const top = at(ix, iy) * (1 - tx) + at(ix + 1, iy) * tx, bot = at(ix, iy + 1) * (1 - tx) + at(ix + 1, iy + 1) * tx;
+      v += o.w * (top * (1 - ty) + bot * ty);
+    }
+    const t = clamp((v - 0.35) * 1.8, 0, 1);
+    const k = (y * n + x) * 4;
+    img.data[k] = c0[0] + (c1[0] - c0[0]) * t; img.data[k + 1] = c0[1] + (c1[1] - c0[1]) * t; img.data[k + 2] = c0[2] + (c1[2] - c0[2]) * t; img.data[k + 3] = 255;
+  }
+  cc.putImageData(img, 0, 0);
+  cloudPat = ctxF.createPattern(cloudCanvas, 'repeat');
+}
+function mulberry(a) { return function () { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function hash01(i, j = 0) { let h = Math.imul(i | 0, 374761393) ^ Math.imul((j | 0) + 1013, 668265263); h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; }
+
+/* =============================== rendering =============================== */
+const z = () => T.k / K0;
+function worldTf(c) { c.setTransform(DPR * T.k, 0, 0, DPR * T.k, DPR * T.x, DPR * T.y); }
+function screenTf(c) { c.setTransform(DPR, 0, 0, DPR, 0, 0); }
+const toScreen = (x, y) => [T.x + x * T.k, T.y + y * T.k];
+function view() { return [(-T.x) / T.k, (-T.y) / T.k, (W - T.x) / T.k, (H - T.y) / T.k]; }
+function bbVisible(bb, v, pad = 0) { return !(bb[2] < v[0] - pad || bb[0] > v[2] + pad || bb[3] < v[1] - pad || bb[1] > v[3] + pad); }
+const ptVisible = (x, y, v, pad = 0) => x >= v[0] - pad && x <= v[2] + pad && y >= v[1] - pad && y <= v[3] + pad;
+
+let raf = 0;
+function requestRender() { if (!raf) raf = requestAnimationFrame(() => { raf = 0; render(); }); }
+function render() {
+  if (!M || !W) return;
+  drawBase();
+  drawGlow();
+  drawTop();
+  updateLadder();
+}
+
+function straitHalf() { return clamp(2.1 / T.k, 0.32, 1.25); }
+
+function drawBase() {
+  const c = ctxB, p = 1 / T.k, v = view(), Z = z();
+  const D = st.derived;
+  screenTf(c);
+  c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
+  c.fillStyle = C.paper; c.fillRect(0, 0, W, H);
+  c.fillStyle = grainPat; c.fillRect(0, 0, W, H);
+
+  // rhumb lines from the wind roses
+  worldTf(c);
+  c.lineWidth = 0.7 * p; c.strokeStyle = C.water; c.globalAlpha = C.dark ? 0.16 : 0.13;
+  c.beginPath();
+  for (const r of M.roses) for (let k = 0; k < 16; k++) {
+    const a = (k * Math.PI) / 8; c.moveTo(r.x, r.y); c.lineTo(r.x + Math.cos(a) * 2000, r.y + Math.sin(a) * 2000);
+  }
+  c.stroke();
+  c.globalAlpha = 1;
+
+  // water lining (concentric coastal lines), drawn offscreen then composited
+  const g = straitHalf();
+  const wc = ctxWL;
+  wc.setTransform(1, 0, 0, 1, 0, 0); wc.clearRect(0, 0, cvWL.width, cvWL.height);
+  worldTf(wc);
+  wc.lineJoin = 'round'; wc.strokeStyle = C.water;
+  const gap = 3.6 * p, rings = Z < 1.4 ? 5 : 6;
+  for (let i = rings; i >= 1; i--) {
+    wc.globalCompositeOperation = 'source-over';
+    wc.globalAlpha = (C.dark ? 0.55 : 0.5) * Math.pow(1 - (i - 1) / rings, 1.3);
+    wc.lineWidth = 2 * (g + i * gap) + 0.9 * p; wc.stroke(M.landAll);
+    wc.globalCompositeOperation = 'destination-out'; wc.globalAlpha = 1;
+    wc.lineWidth = 2 * (g + i * gap) - 0.9 * p; wc.stroke(M.landAll);
+  }
+  wc.globalCompositeOperation = 'source-over'; wc.globalAlpha = 1;
+  c.setTransform(1, 0, 0, 1, 0, 0); c.drawImage(cvWL, 0, 0);
+
+  // land
+  worldTf(c);
+  c.fillStyle = C.land; c.fill(M.landAll);
+  // province washes: a tinted band inside each border, like hand-coloured atlases
+  c.lineJoin = 'round';
+  for (const s of M.subs) {
+    if (!bbVisible(s.bb, v, 20)) continue;
+    c.save(); c.clip(s.path);
+    c.strokeStyle = WASH[s.color]; c.globalAlpha = C.dark ? 0.42 : 0.5;
+    c.lineWidth = 2 * (g + Math.min(9, 4 + 2.2 * Z) * p); c.stroke(s.path);
+    c.restore();
+  }
+  c.globalAlpha = 1;
+  // Gutenberg hinterland: stipple, density by band
+  if (stipple && stipple.setTransform) stipple.setTransform(new DOMMatrix().scaleSelf(1 / T.k, 1 / T.k));
+  c.fillStyle = stipple;
+  [0.22, 0.38, 0.55, 0.72].forEach((a, b) => { c.globalAlpha = a * (C.dark ? 0.9 : 1); c.fill(M.forest[b]); });
+  c.globalAlpha = 1;
+  // trees when close
+  if (Z >= 4.2) drawTrees(c, v, p);
+
+  // province borders (dashed)
+  c.setLineDash([4 * p, 2.6 * p]); c.lineWidth = 0.9 * p; c.strokeStyle = C.sepia; c.globalAlpha = 0.55;
+  for (const s of M.subs) if (bbVisible(s.bb, v, 10)) c.stroke(s.path);
+  c.setLineDash([]); c.globalAlpha = 1;
+
+  // straits and coasts
+  c.strokeStyle = C.coast; c.lineWidth = 2 * g + 1.15 * p; c.stroke(M.classesAll);
+  c.strokeStyle = C.paper; c.lineWidth = 2 * g; c.stroke(M.classesAll);
+
+  // hex survey grid
+  if (Z >= 5) {
+    c.beginPath();
+    for (let i = 0; i < M.HN; i++) if (ptVisible(M.hx[i], M.hy[i], v, M.S)) hexPoly(c, i, 1);
+    c.lineWidth = 0.5 * p; c.strokeStyle = C.ink3; c.globalAlpha = clamp((Z - 5) / 6, 0, 0.28); c.stroke(); c.globalAlpha = 1;
+  }
+
+  // mountains: the most-edited work in a hex raises a hill
+  drawMountains(c, v);
+
+  // settlements
+  if (Z >= 1.9) drawSettlements(c, v, Z);
+  // read flags always
+  drawFlags(c, v, Z);
+
+  // wind roses
+  for (const r of M.roses) drawRose(c, r);
+
+  // fog
+  if (D && st.fog !== 'off') drawFog(c, v, Z);
+}
+
+function drawTrees(c, v, p) {
+  const sz = clamp(M.R * T.k * 0.11, 2.2, 6.5) * p;
+  c.strokeStyle = C.sepia; c.lineWidth = 0.8 * p; c.globalAlpha = 0.55;
+  c.beginPath();
+  for (let i = 0; i < M.N; i++) {
+    const gd = M.hexGut[i]; if (gd < 2) continue;
+    if (!ptVisible(M.hx[i], M.hy[i], v, M.S)) continue;
+    const n = Math.min(9, Math.round(gd / 1.6));
+    for (let t = 0; t < n; t++) {
+      const a = hash01(i, t) * Math.PI * 2, rr = Math.sqrt(hash01(t, i)) * M.R * 0.78;
+      const x = M.hx[i] + Math.cos(a) * rr, y = M.hy[i] + Math.sin(a) * rr;
+      c.moveTo(x + sz, y); c.arc(x, y, sz, 0, Math.PI, true); c.moveTo(x, y); c.lineTo(x, y + sz * 0.9);
+    }
+  }
+  c.stroke(); c.globalAlpha = 1;
+}
+
+function drawMountains(c, v) {
+  const Z = z();
+  const thr = Z < 1.6 ? 70 : Z < 3 ? 35 : Z < 6 ? 16 : 8;
+  screenTf(c);
+  c.lineJoin = 'round';
+  for (let i = 0; i < M.HN; i++) {
+    const wi = M.hexPeak[i]; if (wi < 0) continue;
+    const w = M.works[wi], e = w.ed || 0; if (e < thr) continue;
+    if (!ptVisible(M.hx[i], M.hy[i], v, M.S)) continue;
+    const [sx, sy] = toScreen(M.hx[i] + M.R * 0.15, M.hy[i] + M.R * 0.2);
+    const s = clamp((2.2 + Math.log2(e) * 1.05) * clamp(Math.sqrt(T.k / 1.4), 0.5, 2.1), 3, 22);
+    c.beginPath();
+    c.moveTo(sx - s, sy);
+    c.bezierCurveTo(sx - s * 0.55, sy - s * 0.35, sx - s * 0.25, sy - s * 1.25, sx + s * 0.05, sy - s * 1.25);
+    c.bezierCurveTo(sx + s * 0.35, sy - s * 1.2, sx + s * 0.6, sy - s * 0.3, sx + s, sy);
+    c.fillStyle = C.land2; c.globalAlpha = 0.9; c.fill(); c.globalAlpha = 1;
+    c.strokeStyle = C.sepia; c.lineWidth = 1; c.stroke();
+    // hachures on the shaded (east) flank
+    c.beginPath();
+    const hn = Math.max(2, Math.round(s / 3.2));
+    for (let h = 0; h < hn; h++) {
+      const t = (h + 0.6) / (hn + 0.4);
+      const x0 = sx + s * (0.05 + t * 0.55), y0 = sy - s * (1.2 - t * 1.0);
+      c.moveTo(x0, y0); c.lineTo(x0 + s * 0.12, Math.min(sy - 0.5, y0 + s * 0.42));
+    }
+    c.lineWidth = 0.75; c.globalAlpha = 0.75; c.stroke(); c.globalAlpha = 1;
+  }
+  worldTf(c);
+}
+
+function drawSettlements(c, v, Z) {
+  const D = st.derived;
+  screenTf(c);
+  const scale = Z < 3 ? 0.72 : Z < 6 ? 0.95 : clamp(0.95 + (Z - 6) * 0.04, 0.95, 1.5);
+  const groups = { free: [], borrow: [], pd: [], none: [] };
+  for (const w of M.works) {
+    if (w.hex < 0) continue;
+    if (!ptVisible(w.px, w.py, v, 2)) continue;
+    if (D && D.readSet.has(w.i)) continue; // flags drawn separately
+    const [sx, sy] = toScreen(w.px, w.py);
+    const r = clamp(1.25 + 0.55 * Math.log10((w.rl || 0) + 1), 1.2, 3.4) * scale;
+    groups[accOf(w).cls].push(sx, sy, r);
+  }
+  const each = (arr, fn) => { for (let k = 0; k < arr.length; k += 3) fn(arr[k], arr[k + 1], arr[k + 2]); };
+  c.lineWidth = Z < 3 ? 0.9 : 1.15;
+  // free: filled
+  c.fillStyle = C.free; c.beginPath(); each(groups.free, (x, y, r) => { c.moveTo(x + r, y); c.arc(x, y, r, 0, 7); }); c.fill();
+  // borrowable: ring with a centre dot
+  c.strokeStyle = C.borrow; c.fillStyle = C.borrow; c.beginPath(); each(groups.borrow, (x, y, r) => { c.moveTo(x + r, y); c.arc(x, y, r, 0, 7); }); c.stroke();
+  if (Z >= 3) { c.beginPath(); each(groups.borrow, (x, y, r) => { c.moveTo(x + r * 0.35, y); c.arc(x, y, r * 0.35, 0, 7); }); c.fill(); }
+  // print-disabled: ring
+  c.strokeStyle = C.pd; c.beginPath(); each(groups.pd, (x, y, r) => { c.moveTo(x + r, y); c.arc(x, y, r, 0, 7); }); c.stroke();
+  // no ebook: a small ruin (x)
+  c.strokeStyle = C.none; c.beginPath(); each(groups.none, (x, y, r) => { const q = r * 0.8; c.moveTo(x - q, y - q); c.lineTo(x + q, y + q); c.moveTo(x + q, y - q); c.lineTo(x - q, y + q); }); c.stroke();
+  worldTf(c);
+}
+
+function drawFlags(c, v, Z) {
+  const D = st.derived; if (!D) return;
+  screenTf(c);
+  const s = Z < 1.6 ? 0.62 : Z < 3 ? 0.8 : Z < 7 ? 1 : 1.25;
+  c.fillStyle = C.accent; c.strokeStyle = C.ink; c.lineWidth = 1;
+  for (const r of D.readNow) {
+    const w = M.works[r.i];
+    if (!ptVisible(w.px, w.py, v, 4)) continue;
+    const [x, y] = toScreen(w.px, w.py);
+    c.beginPath(); c.moveTo(x, y + 0.5); c.lineTo(x, y - 10 * s); c.stroke();
+    c.beginPath(); c.moveTo(x, y - 10 * s); c.lineTo(x + 6.5 * s, y - 7.6 * s); c.lineTo(x, y - 5.2 * s); c.closePath(); c.fill();
+    if (Z >= 3) { c.beginPath(); c.arc(x, y, 1.5 * s, 0, 7); c.fillStyle = C.ink; c.fill(); c.fillStyle = C.accent; }
+  }
+  worldTf(c);
+}
+
+function drawRose(c, r) {
+  screenTf(c);
+  const [x, y] = toScreen(r.x, r.y);
+  const R0 = clamp(r.r * Math.sqrt(T.k / K0) * 0.9, r.main ? 26 : 14, r.main ? 70 : 34);
+  if (x < -R0 || y < -R0 || x > W + R0 || y > H + R0) { worldTf(c); return; }
+  c.save(); c.translate(x, y);
+  c.strokeStyle = C.water; c.fillStyle = C.water; c.lineWidth = 0.9; c.globalAlpha = 0.8;
+  c.beginPath(); c.arc(0, 0, R0 * 0.62, 0, 7); c.stroke();
+  if (r.main) { c.beginPath(); c.arc(0, 0, R0 * 0.68, 0, 7); c.stroke(); for (let k = 0; k < 64; k++) { const a = (k * Math.PI) / 32, l = k % 4 ? 0.04 : 0.08; c.beginPath(); c.moveTo(Math.cos(a) * R0 * 0.68, Math.sin(a) * R0 * 0.68); c.lineTo(Math.cos(a) * R0 * (0.68 + l), Math.sin(a) * R0 * (0.68 + l)); c.stroke(); } }
+  const pt = (a, len, wdt, shadeLeft) => {
+    const ca = Math.cos(a), sa = Math.sin(a), cp = Math.cos(a + Math.PI / 2), sp = Math.sin(a + Math.PI / 2);
+    c.beginPath(); c.moveTo(0, 0); c.lineTo(ca * len, sa * len); c.lineTo(cp * wdt, sp * wdt); c.closePath();
+    c.fillStyle = shadeLeft ? C.water : C.paper; c.fill(); c.stroke();
+    c.beginPath(); c.moveTo(0, 0); c.lineTo(ca * len, sa * len); c.lineTo(-cp * wdt, -sp * wdt); c.closePath();
+    c.fillStyle = shadeLeft ? C.paper : C.water; c.fill(); c.stroke();
+  };
+  for (let k = 0; k < 8; k++) { const a = -Math.PI / 2 + Math.PI / 8 + (k * Math.PI) / 4; pt(a, R0 * 0.55, R0 * 0.06, k % 2); }
+  for (let k = 0; k < 4; k++) { const a = -Math.PI / 2 + Math.PI / 4 + (k * Math.PI) / 2; pt(a, R0 * 0.72, R0 * 0.09, k % 2); }
+  for (let k = 0; k < 4; k++) { const a = -Math.PI / 2 + (k * Math.PI) / 2; pt(a, R0, R0 * 0.13, k % 2); }
+  if (r.main) {
+    c.globalAlpha = 1; c.fillStyle = C.water; c.font = `italic ${Math.round(R0 * 0.3)}px "IM Fell English", Georgia, serif`; c.textAlign = 'center'; c.textBaseline = 'alphabetic';
+    c.fillText('N', 0, -R0 - 5);
+  }
+  c.restore();
+  worldTf(c);
+}
+
+function drawFog(c, v, Z) {
+  const D = st.derived;
+  const mw = cvMask.width, mh = cvMask.height, MS = mw / (W * DPR);
+  // 1. mask at low resolution: 1 = fog, holes where explored
+  const m = ctxM;
+  m.setTransform(1, 0, 0, 1, 0, 0); m.globalCompositeOperation = 'source-over'; m.globalAlpha = 1;
+  m.clearRect(0, 0, mw, mh); m.fillStyle = '#000'; m.fillRect(0, 0, mw, mh);
+  m.setTransform(DPR * T.k * MS, 0, 0, DPR * T.k * MS, DPR * T.x * MS, DPR * T.y * MS);
+  m.globalCompositeOperation = 'destination-out';
+  for (let pass = 0; pass < 2; pass++) {
+    m.beginPath();
+    for (let i = 0; i < M.HN; i++) {
+      const s = D.state[i]; if (s === 2 || (pass === 0) !== (s === 1)) continue;
+      if (!ptVisible(M.hx[i], M.hy[i], v, M.S * 2)) continue;
+      hexPoly(m, i, 1.16);
+    }
+    m.globalAlpha = pass === 0 ? 0.5 : 1; m.fill();
+  }
+  m.globalCompositeOperation = 'source-over'; m.globalAlpha = 1;
+  // 2. fog sheet at full resolution: clouds, conjectural coasts, rumoured settlements
+  const f = ctxF;
+  f.setTransform(1, 0, 0, 1, 0, 0); f.globalCompositeOperation = 'source-over'; f.globalAlpha = 1;
+  f.clearRect(0, 0, cvFog.width, cvFog.height);
+  if (cloudPat && cloudPat.setTransform) cloudPat.setTransform(new DOMMatrix().translateSelf(T.x * DPR, T.y * DPR).scaleSelf(DPR * 1.7 * Math.pow(T.k / K0, 0.4)));
+  f.fillStyle = cloudPat || C.fog; f.fillRect(0, 0, cvFog.width, cvFog.height);
+  worldTf(f);
+  const p = 1 / T.k;
+  f.lineCap = 'round';
+  f.setLineDash([0.2 * p, 3.4 * p]); f.lineWidth = 1.6 * p; f.strokeStyle = C.ink2; f.globalAlpha = C.dark ? 0.7 : 0.6;
+  f.stroke(M.classesAll);
+  f.setLineDash([]); f.globalAlpha = 1;
+  // rumoured: met but unread, seen through the fog
+  if (Z >= 3 && st.met) {
+    screenTf(f);
+    f.strokeStyle = C.ink2; f.lineWidth = 1; f.setLineDash([1.5, 1.8]); f.globalAlpha = 0.65;
+    f.beginPath();
+    for (const [wi] of st.met) {
+      const w = M.works[wi]; if (D.readSet.has(wi) || w.hex < 0 || D.state[w.hex] === 0) continue;
+      if (!ptVisible(w.px, w.py, v, 2)) continue;
+      const [x, y] = toScreen(w.px, w.py); f.moveTo(x + 2.6, y); f.arc(x, y, 2.6, 0, 7);
+    }
+    f.stroke(); f.setLineDash([]); f.globalAlpha = 1;
+  }
+  // 3. punch the mask through
+  f.setTransform(1, 0, 0, 1, 0, 0);
+  f.globalCompositeOperation = 'destination-in';
+  f.imageSmoothingEnabled = true; f.imageSmoothingQuality = 'high';
+  f.drawImage(cvMask, 0, 0, cvFog.width, cvFog.height);
+  f.globalCompositeOperation = 'source-over';
+  // 4. lay it on the map
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  c.globalAlpha = st.fog === 'thin' ? 0.55 : 0.94;
+  c.drawImage(cvFog, 0, 0);
+  c.globalAlpha = 1;
+  worldTf(c);
+}
+
+function drawGlow() {
+  const c = ctxG, D = st.derived;
+  c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, cvGlow.width, cvGlow.height);
+  if (!D) return;
+  const v = view();
+  worldTf(c);
+  c.fillStyle = C.glow;
+  const Z = z();
+  const base = Z > 6 ? 0.35 : 0.55;
+  // bucket by intensity to limit fill calls
+  const buckets = [[], [], [], [], []];
+  for (const h of D.frontier) { if (!ptVisible(M.hx[h], M.hy[h], v, M.S * 2)) continue; buckets[Math.min(4, Math.floor(D.value[h] * 5))].push(h); }
+  buckets.forEach((b, k) => {
+    if (!b.length) return;
+    c.globalAlpha = base * (0.28 + 0.18 * k);
+    c.beginPath(); for (const h of b) hexPoly(c, h, 0.92); c.fill();
+  });
+  // unseen-species overlay: where unmet works probably are
+  if (st.tab === 'unseen' && st.unShow && st.unseen) {
+    c.globalAlpha = 0.5;
+    for (const row of st.unseen.where) {
+      if (!row.share) continue;
+      for (const wi of row.singletons) { const w = M.works[wi]; c.beginPath(); c.arc(w.px, w.py, M.R * (0.5 + row.share * 1.6), 0, 7); c.fill(); }
+    }
+  }
+  c.globalAlpha = 1;
+}
+
+/* ---------- labels and overlays ---------- */
+const CLASS_LINES = {
+  A: ['General Works'], B: ['Philosophy', 'Psychology · Religion'], C: ['Auxiliary Sciences', 'of History'], D: ['World History'],
+  E: ['History of the', 'Americas'], F: ['Local History of', 'the Americas'], G: ['Geography', 'Anthropology · Recreation'], H: ['Social Sciences'],
+  J: ['Political', 'Science'], K: ['Law'], L: ['Education'], M: ['Music'], N: ['Fine Arts'], P: ['Language &', 'Literature'], Q: ['Science'],
+  R: ['Medicine'], S: ['Agriculture'], T: ['Technology'], U: ['Military', 'Science'], V: ['Naval', 'Science'], Z: ['Bibliography'],
+};
+let placed = [];
+function collide(x0, y0, x1, y1) {
+  for (const r of placed) if (!(x1 < r[0] || x0 > r[2] || y1 < r[1] || y0 > r[3])) return true;
+  return false;
+}
+function spaced(c, text, x, y, spacing, halo) {
+  const chars = [...text]; const ws = chars.map((ch) => c.measureText(ch).width);
+  const total = ws.reduce((a, b) => a + b, 0) + spacing * (chars.length - 1);
+  let cx = x - total / 2;
+  const pos = chars.map((ch, i) => { const p = cx; cx += ws[i] + spacing; return p; });
+  c.textAlign = 'left';
+  if (halo) chars.forEach((ch, i) => c.strokeText(ch, pos[i], y));
+  chars.forEach((ch, i) => c.fillText(ch, pos[i], y));
+  return total;
+}
+function label(c, text, x, y, opt = {}) {
+  const { font, color = C.ink, halo = C.halo, align = 'center', base = 'middle', pad = 2, priority = false, alpha = 1, spacing = 0, haloW = 3.2, force = false } = opt;
+  c.font = font; c.textBaseline = base;
+  const wdt = spacing ? [...text].reduce((a, ch) => a + c.measureText(ch).width, 0) + spacing * ([...text].length - 1) : c.measureText(text).width;
+  const hgt = parseFloat(font.match(/(\d+(?:\.\d+)?)px/)[1]);
+  let x0 = align === 'center' ? x - wdt / 2 : align === 'left' ? x : x - wdt;
+  const y0 = base === 'middle' ? y - hgt / 2 : base === 'bottom' ? y - hgt : y - hgt * 0.8;
+  if (!force && (x0 < 4 || x0 + wdt > W - 4 || y0 < 2 || y0 + hgt > H - 2)) return false;
+  if (!force && collide(x0 - pad, y0 - pad, x0 + wdt + pad, y0 + hgt + pad)) return false;
+  placed.push([x0 - pad, y0 - pad, x0 + wdt + pad, y0 + hgt + pad]);
+  c.globalAlpha = alpha; c.lineJoin = 'round'; c.strokeStyle = halo; c.lineWidth = haloW; c.fillStyle = color;
+  if (spacing) spaced(c, text, x0 + wdt / 2, y, spacing, !!halo);
+  else { c.textAlign = 'left'; if (halo) c.strokeText(text, x0, y); c.fillText(text, x0, y); }
+  c.globalAlpha = 1;
+  return true;
+}
+
+function drawTop() {
+  const c = ctxT, D = st.derived, v = view(), Z = z(), p = 1 / T.k;
+  c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, cvTop.width, cvTop.height);
+  placed = [];
+  // reserve overlay rectangles so labels avoid them
+  for (const el of [$('#cartouche'), $('.ladder'), $('#legend'), card.hidden ? null : card]) {
+    if (!el || el.offsetParent === null) continue;
+    const r = el.getBoundingClientRect(), mr = mapwrap.getBoundingClientRect();
+    placed.push([r.left - mr.left - 4, r.top - mr.top - 4, r.right - mr.left + 4, r.bottom - mr.top + 4]);
+  }
+  worldTf(c);
+  // selected province outline
+  const selSub = st.prov != null ? M.subs[st.prov] : null;
+  if (selSub && (st.tab === 'prov' || st.tab === 'guide')) {
+    c.lineJoin = 'round';
+    c.strokeStyle = C.halo; c.lineWidth = 5 * p; c.stroke(selSub.path);
+    c.strokeStyle = C.accent; c.lineWidth = 2 * p; c.stroke(selSub.path);
+  }
+  // region outline for expedition / unseen
+  const rg = st.tab === 'exp' ? st.expRegion : st.tab === 'unseen' ? st.unRegion : null;
+  if (rg) {
+    if (rg.type === 'sub') { c.setLineDash([5 * p, 3 * p]); c.strokeStyle = C.accent; c.lineWidth = 1.8 * p; c.stroke(M.subs[rg.si].path); c.setLineDash([]); }
+    else {
+      const ws = regionWorks(rg);
+      const hexes = new Set(ws.map((wi) => M.works[wi].hex));
+      c.beginPath(); for (const h of hexes) hexPoly(c, h, 1.0);
+      c.fillStyle = C.accent; c.globalAlpha = 0.08; c.fill(); c.globalAlpha = 1;
+      c.setLineDash([3 * p, 3 * p]); c.strokeStyle = C.accent; c.lineWidth = 1 * p; c.stroke(); c.setLineDash([]);
+    }
+  }
+  // hover hex
+  if (st.hover && st.hover.hex >= 0 && st.hover.work < 0) {
+    c.beginPath(); hexPoly(c, st.hover.hex, 1); c.strokeStyle = C.ink; c.lineWidth = 1.2 * p; c.globalAlpha = 0.7; c.stroke(); c.globalAlpha = 1;
+  }
+
+  screenTf(c);
+  // route
+  if (st.tab === 'exp' && st.route) drawRoute(c);
+  // landfalls (atlas)
+  if (st.tab === 'atlas' && st.landfalls) {
+    st.landfalls.forEach((lf, k) => {
+      const w = M.works[lf.i]; const [x, y] = toScreen(w.px, w.py);
+      if (x < -20 || y < -20 || x > W + 20 || y > H + 20) return;
+      diamond(c, x, y - 1, 8.5, String(k + 1));
+      placed.push([x - 10, y - 11, x + 10, y + 9]);
+    });
+  }
+  // field-guide pins
+  if (st.tab === 'guide' && st.guide.cited && st.guide.cited.length) {
+    st.guide.cited.forEach((wi, k) => { const w = M.works[wi]; const [x, y] = toScreen(w.px, w.py); pin(c, x, y, k + 1); placed.push([x - 9, y - 22, x + 9, y]); });
+  }
+  // selected work
+  if (st.work != null) {
+    const w = M.works[st.work]; const [x, y] = toScreen(w.px, w.py);
+    c.strokeStyle = C.accent; c.lineWidth = 2; c.beginPath(); c.arc(x, y, 9, 0, 7); c.stroke();
+    c.lineWidth = 1; c.beginPath(); c.arc(x, y, 14, 0, 7); c.globalAlpha = 0.6; c.stroke(); c.globalAlpha = 1;
+    label(c, shortTitle(w.t, 40), x + 17, y, { font: 'italic 15px "IM Fell English", Georgia, serif', align: 'left', priority: true, force: true });
+  }
+
+  drawLabels(c, v, Z);
+}
+
+function diamond(c, x, y, r, txt) {
+  c.beginPath(); c.moveTo(x, y - r); c.lineTo(x + r, y); c.lineTo(x, y + r); c.lineTo(x - r, y); c.closePath();
+  c.fillStyle = C.accent; c.fill(); c.strokeStyle = C.halo; c.lineWidth = 1.5; c.stroke();
+  c.fillStyle = '#fff'; c.font = '600 10.5px "Alegreya Sans", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(txt, x, y + 0.5);
+}
+function pin(c, x, y, n) {
+  c.beginPath(); c.moveTo(x, y); c.lineTo(x - 5, y - 10); c.arc(x, y - 13, 7, Math.PI * 0.8, Math.PI * 2.2); c.closePath();
+  c.fillStyle = C.accent; c.fill(); c.strokeStyle = C.halo; c.lineWidth = 1.4; c.stroke();
+  c.fillStyle = '#fff'; c.font = '600 9.5px "Alegreya Sans", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(String(n), x, y - 13);
+}
+
+function drawRoute(c) {
+  const r = st.route; if (!r || !r.legs.length) return;
+  const pts = [];
+  if (r.base != null) { const b = M.works[r.base]; pts.push(toScreen(b.px, b.py)); }
+  r.legs.forEach((lg) => { const w = M.works[lg.i]; pts.push(toScreen(w.px, w.py)); });
+  c.lineCap = 'round'; c.lineJoin = 'round';
+  const path = () => {
+    c.beginPath(); c.moveTo(pts[0][0], pts[0][1]);
+    for (let k = 1; k < pts.length; k++) {
+      const [x0, y0] = pts[k - 1], [x1, y1] = pts[k];
+      const mx = (x0 + x1) / 2, my = (y0 + y1) / 2, dx = x1 - x0, dy = y1 - y0, L = Math.hypot(dx, dy) || 1;
+      const bend = Math.min(40, L * 0.18) * (k % 2 ? 1 : -1);
+      c.quadraticCurveTo(mx - (dy / L) * bend, my + (dx / L) * bend, x1, y1);
+    }
+  };
+  path(); c.strokeStyle = C.halo; c.lineWidth = 5.5; c.stroke();
+  path(); c.setLineDash([7, 5]); c.strokeStyle = C.accent; c.lineWidth = 2.4; c.stroke(); c.setLineDash([]);
+  // base camp
+  let k0 = 0;
+  if (r.base != null) {
+    const [x, y] = pts[0];
+    c.beginPath(); c.moveTo(x, y - 9); c.lineTo(x + 8, y + 5); c.lineTo(x - 8, y + 5); c.closePath();
+    c.fillStyle = C.halo; c.fill(); c.strokeStyle = C.ink; c.lineWidth = 1.4; c.stroke();
+    placed.push([x - 10, y - 11, x + 10, y + 7]);
+    label(c, 'Base camp', x, y + 15, { font: '500 12px "Alegreya Sans SC", "Alegreya Sans", sans-serif', color: C.ink2, force: true });
+    k0 = 1;
+  }
+  r.legs.forEach((lg, k) => {
+    const [x, y] = pts[k + k0];
+    c.beginPath(); c.arc(x, y, 10.5, 0, 7); c.fillStyle = C.sheet; c.fill(); c.strokeStyle = C.accent; c.lineWidth = 2; c.stroke();
+    c.fillStyle = C.accent; c.font = '400 13px "IM Fell English SC", Georgia, serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(String(k + 1), x, y + 0.5);
+    placed.push([x - 12, y - 12, x + 12, y + 12]);
+  });
+  r.legs.forEach((lg, k) => {
+    const [x, y] = pts[k + k0]; const w = M.works[lg.i];
+    label(c, shortTitle(w.t, 30), x + 15, y, { font: 'italic 13.5px "IM Fell English", Georgia, serif', align: 'left' }) ||
+      label(c, shortTitle(w.t, 30), x - 15, y, { font: 'italic 13.5px "IM Fell English", Georgia, serif', align: 'right' });
+  });
+}
+
+function drawLabels(c, v, Z) {
+  const D = st.derived;
+  const fogOn = D && st.fog === 'full';
+  // continents
+  const contAlpha = Z < 2.6 ? 1 : Z < 5 ? 1 - (Z - 2.6) / 3.2 : 0.22;
+  for (const cl of M.classes) {
+    const sizeW = clamp(3.6 + Math.sqrt(cl.nh) * 0.9, 5.5, 21);
+    const px = clamp(sizeW * T.k * 0.9, 10, 38);
+    const [x, y] = toScreen(cl.lx, cl.ly);
+    if (x < -200 || x > W + 200 || y < -60 || y > H + 60) continue;
+    const lines = CLASS_LINES[cl.c] || [cl.n];
+    const small = px < 15;
+    const font = `${Math.round(px)}px "IM Fell English SC", "IM Fell English", Georgia, serif`;
+    const lineH = px * 1.02;
+    const y0 = y - ((lines.length - 1) * lineH) / 2;
+    let ok = true;
+    lines.forEach((ln, k) => { ok = label(c, ln.toUpperCase(), x, y0 + k * lineH, { font, spacing: px * (small ? 0.08 : 0.22), color: C.ink, alpha: contAlpha, haloW: 4, force: k > 0 && ok }) && ok; });
+    if (Z < 3.5) label(c, '— ' + cl.c + ' —', x, y0 + lines.length * lineH + 2, { font: `italic ${Math.round(clamp(px * 0.45, 10, 15))}px "IM Fell English", Georgia, serif`, color: C.ink2, alpha: contAlpha });
+  }
+  // archipelago
+  if (M.isles.length) {
+    const ys = M.isles.map((i) => i.ly), xs = M.isles.map((i) => i.lx);
+    const [ax, ay] = toScreen(xs.reduce((a, b) => a + b, 0) / xs.length, Math.min(...ys) - M.S * 2.6);
+    label(c, 'UNCHARTED ISLES', ax, ay, { font: `${Math.round(clamp(9 * T.k, 12, 24))}px "IM Fell English SC", Georgia, serif`, spacing: 3, color: C.water });
+    label(c, 'works without a call number', ax, ay + clamp(9 * T.k, 12, 24) * 0.95, { font: `italic ${Math.round(clamp(5 * T.k, 10.5, 15))}px "IM Fell English", Georgia, serif`, color: C.water });
+    for (const isle of M.isles) { const [x, y] = toScreen(isle.lx, isle.ly + M.S * 1.6); label(c, isle.n, x, y, { font: `italic ${Math.round(clamp(4.2 * T.k, 10.5, 16))}px "IM Fell English", Georgia, serif`, color: C.water }); }
+  }
+  // provinces
+  if (Z >= 1.25) {
+    const order = M.subs.slice().sort((a, b) => b.nh - a.nh);
+    for (const s of order) {
+      const diam = Math.sqrt(s.nh) * M.S * T.k;
+      if (diam < (Z < 2 ? 85 : 46)) continue;
+      const [x, y] = toScreen(s.lx, s.ly);
+      if (x < -150 || x > W + 150 || y < -30 || y > H + 30) continue;
+      const explored = D && D.subClear[s.si] > 0;
+      const px = clamp(Math.sqrt(s.nh) * 0.42 * T.k, 11, 19);
+      const name = diam > 150 ? `${s.c} · ${shortTitle(s.n, 30)}` : s.c;
+      const alpha = !fogOn || explored ? 0.95 : 0.55;
+      label(c, name, x, y + (Z < 2.6 ? px * 1.6 : 0), { font: `italic ${Math.round(px)}px "IM Fell English", Georgia, serif`, color: C.sepia, alpha, halo: C.haloLand });
+    }
+  }
+  // towns
+  if (Z >= 2.6) {
+    const showTown = (t) => (t.lv === 1 ? t.k >= (Z < 4 ? 14 : 5) : t.lv === 2 ? Z >= 4.5 && t.k >= (Z < 8 ? 5 : 2) : Z >= 8 && t.k >= 2);
+    const list = M.towns.filter((t) => t.sub >= 0 && showTown(t)).sort((a, b) => a.lv - b.lv || b.k - a.k);
+    for (const t of list) {
+      if (!ptVisible(t.x, t.y, v, 0)) continue;
+      if (fogOn && D.state[hexAtCached(t)] === 2) continue;
+      const [x, y] = toScreen(t.x, t.y);
+      const nm = `${rangeStr(t.lo, t.hi)} ${shortTitle(t.n, Z < 6 ? 26 : 38)}`;
+      const px = t.lv === 1 ? 13 : 12;
+      if (label(c, nm, x + 7, y, { font: `500 ${px}px "Alegreya Sans SC", "Alegreya Sans", sans-serif`, align: 'left', color: C.ink, halo: C.haloLand })) {
+        c.beginPath(); c.arc(x, y, 3.2, 0, 7); c.fillStyle = C.halo; c.fill(); c.strokeStyle = C.ink; c.lineWidth = 1.2; c.stroke();
+        c.beginPath(); c.arc(x, y, 1.1, 0, 7); c.fillStyle = C.ink; c.fill();
+      }
+    }
+  }
+  // works
+  if (Z >= 8.5) {
+    const list = [];
+    for (const w of M.works) {
+      if (w.hex < 0 || !ptVisible(w.px, w.py, v, 0)) continue;
+      if (fogOn && D.state[w.hex] === 2 && !D.readSet.has(w.i)) continue;
+      list.push(w);
+    }
+    list.sort((a, b) => (D && D.readSet.has(b.i) ? 1 : 0) - (D && D.readSet.has(a.i) ? 1 : 0) || (b.rl || 0) - (a.rl || 0));
+    for (const w of list.slice(0, 260)) {
+      const [x, y] = toScreen(w.px, w.py);
+      const isRead = D && D.readSet.has(w.i);
+      label(c, shortTitle(w.t, 30), x + 6, y + (isRead ? -6 : 0), { font: `italic ${isRead ? 13.5 : 12.5}px "IM Fell English", Georgia, serif`, align: 'left', color: isRead ? C.accent : C.ink2, halo: C.haloLand });
+    }
+  }
+}
+const townHex = new Map();
+function hexAtCached(t) { let h = townHex.get(t); if (h === undefined) { h = hexAt(t.x, t.y); townHex.set(t, h); } return Math.max(0, h); }
+
+/* =============================== sizing & zoom =============================== */
+let zoomB = null;
+let fitted = false;
+function fitTransform() {
+  const [x0, y0, x1, y1] = M.bounds;
+  const narrow = W < 600;
+  const padL = narrow ? 12 : 64, padR = narrow ? 12 : 24, padT = narrow ? 64 : 24, padB = narrow ? 12 : 24;
+  const k = Math.min((W - padL - padR) / (x1 - x0), (H - padT - padB) / (y1 - y0));
+  return d3.zoomIdentity.translate(padL + (W - padL - padR - k * (x1 - x0)) / 2 - k * x0, padT + (H - padT - padB - k * (y1 - y0)) / 2 - k * y0).scale(k);
+}
+function resize() {
+  const r = mapwrap.getBoundingClientRect();
+  const prevW = W, prevH = H;
+  W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  for (const cv of [cvBase, cvGlow, cvTop, cvWL, cvFog]) { cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); }
+  for (const cv of [cvBase, cvGlow, cvTop]) { cv.style.width = W + 'px'; cv.style.height = H + 'px'; }
+  cvMask.width = Math.ceil((W * DPR) / 5); cvMask.height = Math.ceil((H * DPR) / 5);
+  if (!M) return;
+  const fit = fitTransform();
+  K0 = fit.k;
+  zoomB.scaleExtent([K0 * 0.7, K0 * 60]).translateExtent([[M.bounds[0] - 400, M.bounds[1] - 400], [M.bounds[2] + 400, M.bounds[3] + 400]]);
+  if (!fitted) { fitted = true; d3.select(cvTop).call(zoomB.transform, fit); }
+  else {
+    // keep the centre
+    const cx = (prevW / 2 - T.x) / T.k, cy = (prevH / 2 - T.y) / T.k;
+    d3.select(cvTop).call(zoomB.transform, d3.zoomIdentity.translate(W / 2 - cx * T.k, H / 2 - cy * T.k).scale(T.k));
+  }
+  requestRender();
+}
+function flyTo(bb, maxZ = 18, dur = 900) {
+  if (!bb) return;
+  const [x0, y0, x1, y1] = bb;
+  const pad = W < 600 ? 28 : 70;
+  const k = Math.min(K0 * maxZ, (W - 2 * pad) / Math.max(1, x1 - x0), (H - 2 * pad) / Math.max(1, y1 - y0));
+  const t = d3.zoomIdentity.translate(W / 2 - (k * (x0 + x1)) / 2, H / 2 - (k * (y0 + y1)) / 2).scale(k);
+  d3.select(cvTop).transition().duration(REDUCED ? 0 : dur).ease(d3.easeCubicInOut).call(zoomB.transform, t);
+}
+function zoomToLevel(zz) {
+  const t = T, cx = (W / 2 - t.x) / t.k, cy = (H / 2 - t.y) / t.k, k = K0 * zz;
+  d3.select(cvTop).transition().duration(REDUCED ? 0 : 600).call(zoomB.transform, d3.zoomIdentity.translate(W / 2 - cx * k, H / 2 - cy * k).scale(k));
+}
+function updateLadder() {
+  const Z = z();
+  const lvl = Z < 2.2 ? 0 : Z < 4.8 ? 1 : Z < 9 ? 2 : 3;
+  $$('#stops .stop').forEach((b, k) => b.setAttribute('aria-current', String(k === lvl)));
+}
+
+/* =============================== interaction =============================== */
+function pointerWorld(ev) {
+  const r = cvTop.getBoundingClientRect();
+  const sx = ev.clientX - r.left, sy = ev.clientY - r.top;
+  return { sx, sy, x: (sx - T.x) / T.k, y: (sy - T.y) / T.k };
+}
+function pick(ev) {
+  const p = pointerWorld(ev);
+  const Z = z();
+  let work = -1;
+  if (Z >= 1.9) work = workAt(p.x, p.y, 7 / T.k);
+  else if (st.derived) {
+    // flags are visible at every zoom
+    let best = -1, bd = (8 / T.k) ** 2;
+    for (const r of st.derived.readNow) { const w = M.works[r.i]; const d = (w.px - p.x) ** 2 + (w.py - p.y + 6 / T.k) ** 2; if (d < bd) { bd = d; best = r.i; } }
+    work = best;
+  }
+  const hex = hexAt(p.x, p.y);
+  return { ...p, work, hex };
+}
+function onMove(ev) {
+  if (ev.buttons) return;
+  const h = pick(ev);
+  const prev = st.hover;
+  st.hover = h;
+  if (!prev || prev.hex !== h.hex || prev.work !== h.work) requestRender();
+  showTip(h);
+}
+function showTip(h) {
+  if (h.hex < 0 && h.work < 0) { tip.hidden = true; return; }
+  const D = st.derived;
+  let html = '';
+  if (h.work >= 0) {
+    const w = M.works[h.work];
+    const status = D && D.readSet.has(w.i) ? `<span class="flag">⚑</span> read ${ym(D.readDate.get(w.i))}` : st.met && st.met.has(w.i) ? `met ${st.met.get(w.i)}×, unread` : 'not yet met';
+    html = `<div class="t">${esc(shortTitle(w.t, 70))}</div><div class="s">${esc(firstAuthor(w))}${w.y ? ' · ' + w.y : ''} · <span class="mono">${esc(w.call || 'no call number')}</span></div><div class="s">${esc(accOf(w).label)} · ${status}</div>`;
+  } else {
+    const sIdx = M.hsub[h.hex];
+    const fogS = D ? ['Explored', 'Frontier', 'Unexplored'][D.state[h.hex]] : '';
+    if (sIdx < 0) {
+      const isle = M.isles[-1 - sIdx];
+      html = `<div class="t">${esc(isle.n)}</div><div class="s">Uncharted Isles · ${isle.works.length} works without a call number</div><div class="s">${fogS}</div>`;
+    } else {
+      const s = M.subs[sIdx];
+      const ws = M.hexWorks[h.hex];
+      const tw = ws.length ? M.works[ws[0]].town : -1;
+      const town = tw >= 0 ? M.towns[tw] : null;
+      html = `<div class="t">${esc(s.c)} · ${esc(s.n)}</div>${town ? `<div class="s">${esc(rangeStr(town.lo, town.hi))} ${esc(town.n)}</div>` : ''}<div class="s">${ws.length} catalog works · ~${fmt1(M.hexGut[h.hex])} Gutenberg titles · ${fogS}</div>`;
+    }
+  }
+  tip.innerHTML = html; tip.hidden = false;
+  const tw = tip.offsetWidth, th = tip.offsetHeight;
+  let x = h.sx + 14, y = h.sy + 14;
+  if (x + tw > W - 8) x = h.sx - tw - 14;
+  if (y + th > H - 8) y = h.sy - th - 14;
+  tip.style.left = Math.max(8, x) + 'px'; tip.style.top = Math.max(8, y) + 'px';
+}
+function onClick(ev) {
+  const h = pick(ev);
+  if (h.work >= 0) { selectWork(h.work, { fly: false }); return; }
+  if (h.hex >= 0) {
+    const sIdx = M.hsub[h.hex];
+    if (sIdx >= 0) {
+      selectProvince(sIdx, { fly: z() < 1.8, tab: st.tab === 'atlas' || st.tab === 'prov' ? 'prov' : null });
+      if (st.tab === 'exp') { st.expRegion = { type: 'sub', si: sIdx }; planRoute(); renderExpedition(); }
+      if (st.tab === 'unseen') { st.unRegion = { type: 'sub', si: sIdx }; renderUnseen(); }
+      if (st.tab === 'guide') { st.guide.sc = M.subs[sIdx].c; resetGuide(); renderGuide(); }
+    } else {
+      const k = -1 - sIdx;
+      if (st.tab === 'unseen') { st.unRegion = { type: 'isle', k }; renderUnseen(); }
+    }
+  }
+}
+
+/* =============================== selection =============================== */
+function selectProvince(si, { fly = true, tab = 'prov' } = {}) {
+  st.prov = si; st.provMore = 60;
+  if (tab) setTab(tab);
+  renderProvince();
+  if (fly) flyTo(M.subs[si].bb, 8);
+  requestRender();
+}
+function selectWork(i, { fly = true } = {}) {
+  st.work = i;
+  const w = M.works[i];
+  if (w.sub >= 0 && st.prov !== w.sub) { st.prov = w.sub; if (st.tab === 'prov') renderProvince(); }
+  renderCard();
+  if (fly) {
+    const r = M.S * 2.2;
+    flyTo([w.px - r, w.py - r, w.px + r, w.py + r], 14);
+  }
+  requestRender();
+}
+function renderCard() {
+  if (st.work == null) { card.hidden = true; requestRender(); return; }
+  const w = M.works[st.work], D = st.derived;
+  const p = M.shelfPos[w.i];
+  const nbrs = [];
+  if (p >= 0) for (let d = -3; d <= 3; d++) { const q = p + d; if (q >= 0 && q < M.shelf.length) nbrs.push(M.shelf[q]); }
+  else nbrs.push(w.i);
+  const spines = nbrs.map((wi) => {
+    const x = M.works[wi];
+    const hgt = clamp(54 + Math.sqrt(x.pp || 200) * 1.6, 54, 92);
+    return `<button class="spine ${accOf(x).cls}${wi === w.i ? ' me' : ''}" style="height:${hgt}px" data-work="${wi}" title="${esc(x.call || '')} ${esc(x.t)}">${esc(shortTitle(x.t, 30))}</button>`;
+  }).join('');
+  const s = w.sub >= 0 ? M.subs[w.sub] : null;
+  const town = w.town >= 0 ? M.towns[w.town] : null;
+  const isRead = D && D.readSet.has(w.i);
+  const metN = st.met ? st.met.get(w.i) || 0 : 0;
+  const srcs = st.metSrc && st.metSrc.get(w.i);
+  const status = isRead
+    ? `<span class="flag">⚑</span> Read by the ${esc(st.reader.kind === 'example' ? 'example reader' : 'explorer')}, ${esc(ym(D.readDate.get(w.i)))}`
+    : metN ? `Met ${metN}× (${esc(srcs ? [...srcs].join(', ') : '')}) but not read` : 'Not yet met: in the fog';
+  const a = accOf(w);
+  card.innerHTML = `
+    <button class="x" type="button" data-close-card aria-label="Close card">×</button>
+    <div class="spines" aria-label="Neighbouring spines on the shelf">${spines}</div>
+    <div class="body">
+      <div class="call"><span class="mono">${esc(w.call || 'No call number')}</span><span>${s ? esc(s.c + ' · ' + shortTitle(s.n, 26)) : w.isle != null ? esc(M.isles[w.isle].n) : ''}</span></div>
+      <h3>${esc(w.t)}</h3>
+      ${w.st ? `<div class="stt">${esc(w.st)}</div>` : ''}
+      <div class="by">${esc((w.a || []).slice(0, 3).join(', ') || 'Unknown author')}${w.y ? ' · first published ' + w.y : ''}</div>
+      <div class="by num small">${w.pp ? fmt(w.pp) + ' pp · ' : ''}${fmt(w.ed || 0)} editions · ${fmt(w.rl || 0)} on reading logs${town ? ' · ' + esc(rangeStr(town.lo, town.hi) + ' ' + town.n) : ''}</div>
+      ${w.fs ? `<blockquote class="fs">“${esc(w.fs.length > 260 ? w.fs.slice(0, 257) + '…' : w.fs)}”<cite>First sentence, as recorded by Open Library</cite></blockquote>` : ''}
+      <div class="acc"><span class="badge ${a.cls}">${glyphSVG(a.cls)} ${esc(a.label)}</span><span class="small">${esc(a.long)}</span></div>
+      <div class="acc small">${accessLinks(w)}</div>
+      <div class="status">${status}</div>
+      <div class="row">
+        <button class="btn" type="button" data-act="center-work">Centre on map</button>
+        ${s ? `<button class="btn" type="button" data-act="exp-from-work">Expedition from here</button>` : ''}
+      </div>
+    </div>`;
+  card.hidden = false;
+  requestRender();
+}
+
+/* =============================== tabs =============================== */
+function setTab(tab) {
+  st.tab = tab;
+  $$('.tab').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
+  $$('.pb').forEach((p) => (p.hidden = p.id !== 'pb-' + tab));
+  if (tab === 'atlas') renderAtlas();
+  if (tab === 'prov') renderProvince();
+  if (tab === 'exp') { if (!st.route) planRoute(); renderExpedition(); }
+  if (tab === 'unseen') renderUnseen();
+  if (tab === 'guide') renderGuide();
+  requestRender();
+}
+
+/* ---------- Atlas ---------- */
+function computeLandfalls() {
+  const D = st.derived; if (!D) return [];
+  const cands = [];
+  const aff = interestProfile();
+  for (const h of D.frontier) for (const wi of M.hexWorks[h]) {
+    if (D.readSet.has(wi)) continue;
+    const w = M.works[wi];
+    const a = affinity(w, aff);
+    if (a < 0.2 || !/^[\x20-\x7E\u00C0-\u024F\u2018-\u201D\u2013\u2014]+$/.test(w.t)) continue;
+    cands.push({ i: wi, h, s: pop(w) * accBonus(w) * a });
+  }
+  cands.sort((a, b) => b.s - a.s);
+  const out = [], seenSub = new Map();
+  for (const c of cands) {
+    const sb = M.works[c.i].sub;
+    if ((seenSub.get(sb) || 0) >= 2) continue;
+    seenSub.set(sb, (seenSub.get(sb) || 0) + 1);
+    out.push(c); if (out.length >= 6) break;
+  }
+  return out;
+}
+// what the explorer reads about: share of read works returned by each subject search
+function interestProfile() {
+  const D = st.derived; const m = new Map(); if (!D) return m;
+  for (const r of D.readNow) for (const q of M.works[r.i].q || []) m.set(q, (m.get(q) || 0) + 1);
+  const mx = Math.max(1, ...m.values());
+  m.forEach((v, k) => m.set(k, v / mx));
+  return m;
+}
+function affinity(w, prof) { let a = 0; for (const q of w.q || []) a = Math.max(a, prof.get(q) || 0); return a; }
+function blindSpots() {
+  const D = st.derived; if (!D || !D.readNow.length) return [];
+  const out = [];
+  for (const s of M.subs) {
+    if (D.subRead[s.si] > 0 || s.cat < 8) continue;
+    // borders an explored province?
+    const nbr = s.adj.filter((o) => D.subRead[o] > 0);
+    if (!nbr.length) continue;
+    out.push({ s, nbr: nbr.sort((a, b) => D.subRead[b] - D.subRead[a])[0] });
+  }
+  return out.sort((a, b) => b.s.cat - a.s.cat).slice(0, 6);
+}
+function renderAtlas() {
+  const el = $('#pb-atlas'), D = st.derived; if (!D) return;
+  const rd = st.reader;
+  const nRead = D.readNow.length;
+  const entered = D.subRead.filter((x) => x > 0).length;
+  const pct = (100 * D.clear) / M.N;
+  st.landfalls = computeLandfalls();
+  const conts = M.classes.map((c) => ({ c, pct: (100 * D.clsClear[c.ki]) / c.nh, items: c.subs.reduce((a, si) => a + M.subs[si].cat + M.subs[si].gut, 0) }));
+  const firstDate = D.readNow[0]?.date;
+  el.innerHTML = `
+    <h2>The Known World</h2>
+    <p class="lede">${rd.kind === 'blank'
+      ? 'Nobody has read anything yet: only coastlines and class names are known. Choose an explorer to burn off the fog.'
+      : `${esc(rd.kind === 'example' ? 'The example reader (synthetic)' : 'Your list')} has planted ${fmt(nRead)} flags${firstDate ? ' since ' + esc(ym(firstDate)) : ''}. Everything else is rumour, or fog.`}</p>
+    <div class="kpis">
+      <div class="kpi accent"><div class="v">${pct < 10 ? fmt1(pct) : fmt(pct)}<small>%</small></div><div class="l">of the world explored (hexes in sight)</div></div>
+      <div class="kpi"><div class="v">${entered}<small> / ${M.subs.length}</small></div><div class="l">provinces entered</div></div>
+      <div class="kpi"><div class="v">${fmt(D.frontier.length)}</div><div class="l">frontier hexes glowing</div></div>
+    </div>
+    ${nRead ? `<div class="row" style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn" type="button" data-act="replay">Replay the settlement</button><button class="btn" type="button" data-act="fit">Whole world</button></div>` : ''}
+    ${st.landfalls.length ? `<h3>Best landfalls on the frontier</h3>
+    <p class="small" style="margin-top:-2px">Unread works in glowing hexes that match the explorer's subjects, ranked by readers × editions × access. Numbered on the map.</p>
+    <ol class="list">${st.landfalls.map((lf, k) => { const w = M.works[lf.i]; const a = accOf(w); return `<li class="li"><span class="n">${k + 1}</span><div><button class="tt" type="button" data-work="${w.i}">${esc(shortTitle(w.t, 60))}</button><div class="mt">${esc(firstAuthor(w))}${w.y ? ' · ' + w.y : ''} · <span class="mono">${esc(w.call)}</span></div></div><div class="rt"><span class="badge ${a.cls}">${esc(a.label)}</span></div></li>`; }).join('')}</ol>` : ''}
+    ${(() => { const b = blindSpots(); return b.length ? `<h3>Blind spots on your border</h3><p class="small" style="margin-top:-2px">Provinces you border but have never entered.</p><ul class="list">${b.map(({ s, nbr }) => `<li class="li"><span class="n" style="font-size:14px">${esc(s.c)}</span><div><button class="tt" type="button" data-prov="${s.si}">${esc(s.n)}</button><div class="mt">${fmt(s.cat)} works, none read · borders ${esc(M.subs[nbr].c)} (${D.subRead[nbr]} read)</div></div><span></span></li>`).join('')}</ul>` : ''; })()}
+    <h3>Continents</h3>
+    <div class="conts">${conts.map(({ c, pct, items }) => `<button class="cont" type="button" data-cls="${c.ki}"><span class="lt">${esc(c.c)}</span><span><span class="nm">${esc(c.n)}</span><span class="bar" aria-hidden="true"><i style="width:${Math.max(pct > 0 ? 1.5 : 0, pct).toFixed(1)}%"></i></span></span><span class="pc num">${pct < 1 && pct > 0 ? '<1' : fmt(pct)}%</span></button>`).join('')}</div>
+    <p class="note">Area is proportional to catalog works plus Gutenberg titles in each subclass: ${fmt(M.works.filter((w) => w.sub >= 0).length)} call-numbered Open Library works and ${fmt(M.subs.reduce((a, s) => a + s.gut, 0))} Gutenberg titles, about ${fmt((M.works.filter((w) => w.sub >= 0).length + M.subs.reduce((a, s) => a + s.gut, 0)) / M.N)} per hex. The catalog came from 50 subject searches, so its coastlines are partly artefacts of that sample.</p>`;
+}
+
+/* ---------- Province ---------- */
+function renderProvince() {
+  const el = $('#pb-prov'); if (!M) return;
+  if (st.prov == null) st.prov = M.subByCode.get('QA').si;
+  const s = M.subs[st.prov], D = st.derived;
+  const cls = M.classes[s.k];
+  const ws = s.works.map((i) => M.works[i]);
+  const accN = { free: 0, borrow: 0, pd: 0, none: 0 };
+  ws.forEach((w) => accN[accOf(w).cls]++);
+  const nread = D ? D.subRead[s.si] : 0;
+  const explored = D ? (100 * D.subClear[s.si]) / s.nh : 0;
+  const tot = Math.max(1, ws.length);
+  // towns
+  const towns = s.towns.map((ti) => M.towns[ti]).filter((t) => t.lv <= 3);
+  const townRead = (t) => (D ? regionWorks({ type: 'town', ti: t.ti }).filter((wi) => D.readSet.has(wi)).length : 0);
+  // settlements list
+  let list = ws.slice();
+  if (st.provFilter === 'unread') list = list.filter((w) => !(D && D.readSet.has(w.i)));
+  if (st.provFilter === 'free') list = list.filter((w) => w.acc === 'public' || w.acc === 'borrowable');
+  if (st.provFilter === 'flags') list = list.filter((w) => D && D.readSet.has(w.i));
+  if (st.provSort === 'pop') list.sort((a, b) => (b.rl || 0) - (a.rl || 0));
+  const shown = list.slice(0, st.provMore);
+  el.innerHTML = `
+    <div class="prov-head"><div class="code">${esc(s.c)}</div><div><p class="nm">${esc(s.n)}</p><div class="cl">Continent ${esc(cls.c)} · ${esc(cls.n)} · ${s.nh} hexes</div></div></div>
+    <div class="kpis">
+      <div class="kpi"><div class="v">${fmt(s.cat)}</div><div class="l">call-numbered works (settlements)</div></div>
+      <div class="kpi"><div class="v">${fmt(s.gut)}</div><div class="l">Gutenberg titles (forest)</div></div>
+      <div class="kpi accent"><div class="v">${nread}</div><div class="l">read · ${fmt(explored)}% explored</div></div>
+    </div>
+    <div class="accbar" role="img" aria-label="Access mix">${['free', 'borrow', 'pd', 'none'].map((k) => `<i class="${k}" style="width:${(100 * accN[k]) / tot}%"></i>`).join('')}</div>
+    <div class="acclg"><span class="free">free now ${accN.free}</span><span class="borrow">borrowable ${accN.borrow}</span><span class="pd">print-disabled ${accN.pd}</span><span class="none">no ebook ${accN.none}</span></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">
+      <button class="btn" type="button" data-act="fly-prov">Zoom to province</button>
+      <button class="btn" type="button" data-act="exp-prov">Plan an expedition</button>
+      <button class="btn" type="button" data-act="unseen-prov">Count unseen species</button>
+      <button class="btn accent" type="button" data-act="guide-prov">Field guide</button>
+    </div>
+    ${towns.length ? `<h3>Towns · outline ranges</h3><ul class="towns">${towns.map((t) => { const r = townRead(t); return `<li class="lv${t.lv}"><button type="button" data-town="${t.ti}"><span class="rg">${esc(rangeStr(t.lo, t.hi))}</span>${esc(t.n)}</button><span class="c num">${t.k}${r ? ` · <span class="flag">⚑${r}</span>` : ''}</span></li>`; }).join('')}</ul>` : ''}
+    <h3>Settlements</h3>
+    <div class="filters">
+      ${[['all', 'All'], ['unread', 'Unread'], ['free', 'Free or borrowable'], ['flags', 'Flags']].map(([k, l]) => `<button class="chip" type="button" data-pf="${k}" aria-pressed="${st.provFilter === k}">${l}</button>`).join('')}
+      <span style="flex:1"></span>
+      ${[['shelf', 'Shelf order'], ['pop', 'Most read']].map(([k, l]) => `<button class="chip" type="button" data-ps="${k}" aria-pressed="${st.provSort === k}">${l}</button>`).join('')}
+    </div>
+    <ul class="list">${shown.map((w) => { const a = accOf(w); const rd = D && D.readSet.has(w.i); return `<li class="li"><span>${glyphSVG(a.cls, rd)}</span><div><button class="tt" type="button" data-work="${w.i}">${esc(shortTitle(w.t, 70))}</button><div class="mt">${esc(firstAuthor(w))}${w.y ? ' · ' + w.y : ''}${rd ? ' · <span class="flag">read</span>' : ''}</div></div><span class="mono small">${esc((w.call || '').split(' ')[0])}</span></li>`; }).join('')}</ul>
+    ${list.length > shown.length ? `<button class="btn" type="button" data-act="more" style="margin-top:8px">Show ${Math.min(60, list.length - shown.length)} more of ${fmt(list.length - shown.length)}</button>` : ''}
+    ${!list.length ? '<p class="small">Nothing here matches.</p>' : ''}`;
+}
+
+/* ---------- Expedition ---------- */
+const INTRO = /\b(introduct\w*|elementary|primer|beginner'?s?|basic|basics|first course|for dummies|guide|essentials|fundamentals?|made simple|very short|everyone|popular|a short|outline of|principles of|what is)\b/i;
+const ADV = /\b(advanced|topics in|handbook|lectures?|seminar|monographs?|proceedings|symposium|conference|asymptotic|theory of|measure|stochastic|treatise|foundations)\b/i;
+function levelOf(w) {
+  const t = (w.t + ' ' + (w.st || '')).toLowerCase();
+  const subj = (w.s || []).join(' | ').toLowerCase();
+  if (INTRO.test(t) || /popular works|juvenile|textbooks/.test(subj)) return 0;
+  if (ADV.test(t)) return 2;
+  return 1;
+}
+function planRoute() {
+  const D = st.derived;
+  if (!st.expRegion) st.expRegion = defaultRegion('exp');
+  const rg = st.expRegion;
+  const ids = regionWorks(rg).filter((i) => !(D && D.readSet.has(i)));
+  const norm = (t) => t.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim().slice(0, 40);
+  const scored = ids.map((i) => {
+    const w = M.works[i];
+    let s = pop(w);
+    if (st.expFree) s += { public: 2.2, borrowable: 1.4, printdisabled: 0, no_ebook: -0.6 }[w.acc] ?? -0.6;
+    if (st.met && !st.met.has(i)) s += 0.4; // novelty: never met
+    if (!/^[\x20-\x7EÀ-ɏ‘-”–—]+$/.test(w.t)) s -= 3;
+    return { i, s };
+  }).sort((a, b) => b.s - a.s);
+  const picks = [], perTown = new Map(), titles = new Set();
+  for (const c of scored) {
+    const w = M.works[c.i];
+    const key = norm(w.t);
+    if (titles.has(key)) continue;
+    const tk = rg.type === 'sub' ? w.town : Math.floor(w.num || 0);
+    if ((perTown.get(tk) || 0) >= (rg.type === 'sub' ? 2 : 3)) continue;
+    perTown.set(tk, (perTown.get(tk) || 0) + 1); titles.add(key);
+    picks.push({ i: c.i, s: c.s, level: levelOf(w) });
+    if (picks.length >= st.expLegs) break;
+  }
+  // order: introductory first, then general, then specialised; popular first within a stage
+  picks.sort((a, b) => a.level - b.level || b.s - a.s);
+  const legs = picks.map((p, k) => {
+    const w = M.works[p.i];
+    const why = [];
+    if (p.level === 0) why.push('Introductory: a good first leg');
+    if (p.level === 2) why.push('Specialised: go after the earlier legs');
+    const regionMax = Math.max(...picks.map((q) => M.works[q.i].rl || 0));
+    if ((w.rl || 0) === regionMax && regionMax > 0) why.push(`most-read stop on the route (${fmt(w.rl)} reading logs)`);
+    if ((w.ed || 0) >= 20) why.push(`a classic: ${fmt(w.ed)} editions`);
+    if (w.acc === 'public') why.push('free to read now');
+    if (st.met && st.met.has(p.i)) why.push(`you have met it ${st.met.get(p.i)}× without reading it`);
+    else why.push('never met: pure fog');
+    const after = picks.slice(0, k).filter((q) => q.level < p.level && (M.works[q.i].town === w.town || rg.type === 'town')).map((q) => picks.indexOf(q) + 1).slice(-2);
+    return { ...p, why, after };
+  });
+  // base camp: the nearest settled work
+  let base = null;
+  if (D && D.readNow.length && legs.length) {
+    const f = M.works[legs[0].i]; let bd = Infinity;
+    for (const r of D.readNow) { const w = M.works[r.i]; if (w.sub < 0) continue; const d = (w.px - f.px) ** 2 + (w.py - f.py) ** 2; if (d < bd) { bd = d; base = r.i; } }
+  }
+  st.route = { legs, base, region: rg };
+}
+function defaultRegion(kind) {
+  const t = M.towns.find((t) => t.c === (kind === 'exp' ? 'HB' : 'QA') && (kind === 'exp' ? t.lo === 615 : t.lo === 273 && t.hi === 280));
+  if (t) return { type: 'town', ti: t.ti };
+  return { type: 'sub', si: M.subByCode.get('QA').si };
+}
+function regionOptions(cur) {
+  const D = st.derived;
+  const opts = [];
+  // provinces where the reader has flags first, then towns in them with >= 12 works, then all provinces
+  const entered = M.subs.filter((s) => D && D.subRead[s.si] > 0).sort((a, b) => D.subRead[b.si] - D.subRead[a.si]);
+  const rest = M.subs.filter((s) => !(D && D.subRead[s.si] > 0) && s.cat >= 5);
+  const val = (rg) => JSON.stringify(rg);
+  const sel = (rg) => (sameRegion(rg, cur) ? ' selected' : '');
+  let html = '<optgroup label="Provinces you have entered">';
+  for (const s of entered) { const rg = { type: 'sub', si: s.si }; html += `<option value='${val(rg)}'${sel(rg)}>${esc(s.c + ' · ' + shortTitle(s.n, 40))}</option>`; }
+  html += '</optgroup><optgroup label="Towns with 12+ works">';
+  for (const t of M.towns.filter((t) => t.k >= 12 && t.lv <= 2 && t.sub >= 0)) { const rg = { type: 'town', ti: t.ti }; html += `<option value='${val(rg)}'${sel(rg)}>${esc(t.c + ' ' + rangeStr(t.lo, t.hi) + ' · ' + shortTitle(t.n, 36))} (${t.k})</option>`; }
+  html += '</optgroup><optgroup label="Unentered provinces">';
+  for (const s of rest) { const rg = { type: 'sub', si: s.si }; html += `<option value='${val(rg)}'${sel(rg)}>${esc(s.c + ' · ' + shortTitle(s.n, 40))}</option>`; }
+  html += '</optgroup><optgroup label="Uncharted Isles">';
+  M.isles.forEach((isle) => { const rg = { type: 'isle', k: isle.k }; html += `<option value='${val(rg)}'${sel(rg)}>${esc(isle.n)} (${isle.works.length})</option>`; });
+  html += '</optgroup>';
+  return html;
+}
+function renderExpedition() {
+  const el = $('#pb-exp'); if (!M) return;
+  if (!st.route) planRoute();
+  const r = st.route, rg = st.expRegion, D = st.derived;
+  const legs = r.legs;
+  const ws = legs.map((l) => M.works[l.i]);
+  const pages = ws.reduce((a, w) => a + (w.pp || 0), 0);
+  const nFree = ws.filter((w) => w.acc === 'public').length, nBor = ws.filter((w) => w.acc === 'borrowable').length;
+  const STAGE = ['Foothills · introductory', 'The interior · general', 'High country · specialised'];
+  el.innerHTML = `
+    <h2>Plan an Expedition</h2>
+    <p class="lede">Pick a region; get a route through its unread works, from foothills to high country, with how to reach each one.</p>
+    <div class="field"><label for="exp-region">Region</label><select class="sel" id="exp-region">${regionOptions(rg)}</select></div>
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:10px">
+      <div class="field" style="margin:0"><label>Legs</label><div class="seg" role="group" aria-label="Number of legs">${[5, 6, 7, 8].map((n) => `<button type="button" data-legs="${n}" aria-pressed="${st.expLegs === n}">${n}</button>`).join('')}</div></div>
+      <label style="display:flex;gap:6px;align-items:center;font-size:13.5px;margin-top:16px"><input type="checkbox" id="exp-free" ${st.expFree ? 'checked' : ''}> Prefer works I can read today</label>
+    </div>
+    <div class="kpis" style="margin-top:14px">
+      <div class="kpi"><div class="v">${legs.length}</div><div class="l">legs</div></div>
+      <div class="kpi"><div class="v">${fmt(pages)}</div><div class="l">pages (median editions)</div></div>
+      <div class="kpi accent"><div class="v">${nFree}<small> + ${nBor}</small></div><div class="l">free now + borrowable</div></div>
+    </div>
+    ${legs.length ? `<ol class="route">
+      ${r.base != null ? (() => { const b = M.works[r.base]; return `<li class="leg base"><span class="medal" aria-hidden="true">⌂</span><div><div class="stage">Base camp · your nearest flag</div><button class="tt" type="button" data-work="${b.i}">${esc(shortTitle(b.t, 64))}</button><div class="mt">${esc(firstAuthor(b))} · read ${esc(ym(D.readDate.get(b.i)))}</div></div></li>`; })() : ''}
+      ${legs.map((lg, k) => { const w = M.works[lg.i]; const a = accOf(w); const tw = w.town >= 0 ? M.towns[w.town] : null; return `<li class="leg"><span class="medal" aria-hidden="true">${k + 1}</span><div>
+        <div class="stage">${STAGE[lg.level]}${lg.after.length ? ' · after leg ' + lg.after.join(' & ') : ''}</div>
+        <button class="tt" type="button" data-work="${w.i}">${esc(shortTitle(w.t, 72))}</button>
+        <div class="mt">${esc(firstAuthor(w))}${w.y ? ' · ' + w.y : ''} · <span class="mono">${esc(w.call || '')}</span>${w.pp ? ' · ' + fmt(w.pp) + ' pp' : ''}${tw ? ' · ' + esc(shortTitle(tw.n, 30)) : ''}</div>
+        <div class="why">${esc(lg.why.join('; '))}.</div>
+        <div class="acc"><span class="badge ${a.cls}">${glyphSVG(a.cls)} ${esc(a.label)}</span>${accessLinks(w)}</div>
+      </div></li>`; }).join('')}
+    </ol>` : '<p class="small">No unread works with call numbers here. Pick another region.</p>'}
+    <p class="note">How the route is built: unread works in the region are scored by reading-log and edition counts (plus a bonus for free or borrowable access and for works never met), at most two per town; then ordered from introductory titles to specialised ones (a title-keyword heuristic standing in for real prerequisite data), most popular first within each stage. Deterministic, computed in your browser.</p>`;
+}
+
+/* ---------- Unseen species ---------- */
+function computeUnseen() {
+  if (!st.unRegion) st.unRegion = defaultRegion('unseen');
+  const rg = st.unRegion;
+  const ids = regionWorks(rg);
+  const inR = new Set(ids);
+  const counts = new Map();
+  const seq = []; // cumulative distinct after each encounter in region
+  let distinct = 0;
+  const bySrc = { read: 0, shelf: 0, xref: 0, search: 0 };
+  for (const e of st.enc.ev) {
+    if (!inR.has(e.w)) continue;
+    const c = (counts.get(e.w) || 0) + 1; counts.set(e.w, c);
+    if (c === 1) distinct++;
+    seq.push(distinct); bySrc[e.src]++;
+  }
+  const c = chao1(counts.values(), st.unZ === 0.95 ? 1.959964 : 1.281552);
+  // where the unseen probably are: singletons by town (Good–Turing)
+  const byTown = new Map();
+  for (const [wi, n] of counts) {
+    const w = M.works[wi]; const tk = w.town >= 0 ? w.town : -1;
+    let row = byTown.get(tk); if (!row) byTown.set(tk, (row = { tk, f1: 0, met: 0, singletons: [], unmetTruth: 0, total: 0 }));
+    row.met++; if (n === 1) { row.f1++; row.singletons.push(wi); }
+  }
+  for (const wi of ids) {
+    const w = M.works[wi]; const tk = w.town >= 0 ? w.town : -1;
+    let row = byTown.get(tk); if (!row) byTown.set(tk, (row = { tk, f1: 0, met: 0, singletons: [], unmetTruth: 0, total: 0 }));
+    row.total++; if (!counts.has(wi)) row.unmetTruth++;
+  }
+  const where = [...byTown.values()].map((r) => ({ ...r, share: c.f1 ? r.f1 / c.f1 : 0 })).sort((a, b) => b.share - a.share || b.unmetTruth - a.unmetTruth);
+  st.unseen = { rg, ids, counts, seq, c, where, bySrc, truth: ids.length };
+  return st.unseen;
+}
+function renderUnseen() {
+  const el = $('#pb-unseen'); if (!M || !st.enc) return;
+  const U = computeUnseen();
+  const { c, truth, seq, bySrc } = U;
+  const pc = st.unZ === 0.95 ? '95%' : '80%';
+  const unseenEst = Math.max(0, c.est - c.S), unLo = Math.max(0, c.lo - c.S), unHi = Math.max(0, c.hi - c.S);
+  const stop = stopAfter(c, st.unThr);
+  const perWalk = Math.max(1, bySrc.shelf / Math.max(1, (st.reader.read || []).filter((r) => M.works[r.i].sub >= 0).length));
+  const truthGap = truth - c.S;
+  const within = truth >= c.lo && truth <= c.hi;
+  el.innerHTML = `
+    <h2>Unseen Species</h2>
+    <p class="lede">Ecologists estimate how many species a survey missed from how many it saw only once. Here the species are works, and the survey is everything the explorer has encountered.</p>
+    <div class="field"><label for="un-region">Region</label><select class="sel" id="un-region">${regionOptions(U.rg)}</select></div>
+    ${c.n === 0 ? `<p class="small" style="margin-top:12px">No encounters in this region yet: the estimator has nothing to work with. Every one of its ${fmt(truth)} works is unmet.</p>` : `
+    <div class="estimate">
+      <div class="big num">≈ ${fmt(unseenEst)} <small>works not yet met (${pc} CI ${fmt(unLo)}–${fmt(unHi)})</small></div>
+      <p>Met <b class="num">${fmt(c.S)}</b> distinct works in <b class="num">${fmt(c.n)}</b> encounters; <b class="num">${c.f1}</b> seen once, <b class="num">${c.f2}</b> twice. Bias-corrected Chao1 puts the total at <b class="num">${fmt(c.est)}</b> (${pc} CI ${fmt(c.lo)}–${fmt(c.hi)}).</p>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px">
+      <div class="seg" role="group" aria-label="Interval">${[0.8, 0.95].map((zz) => `<button type="button" data-unz="${zz}" aria-pressed="${st.unZ === zz}">${zz === 0.8 ? '80%' : '95%'} interval</button>`).join('')}</div>
+      <label style="display:flex;gap:6px;align-items:center;font-size:13.5px"><input type="checkbox" id="un-show" ${st.unShow ? 'checked' : ''}> Glow where the unseen probably are</label>
+    </div>
+    <h3>Species-accumulation curve</h3>
+    <div id="un-chart"></div>
+    <div class="rule-box"><b>Stopping rule</b>${c.pNew <= st.unThr
+      ? `The chance that your next encounter here is a new work is ${fmt1(100 * c.pNew)}%, already below your ${fmt(100 * st.unThr)}% threshold. <b style="display:inline;font:inherit;color:inherit;letter-spacing:0">Stop foraging here</b>; the rest of this region is better found by a different route (another search vocabulary, a neighbouring shelf).`
+      : `Right now ${fmt1(100 * c.pNew)}% of encounters here would be new works (Good–Turing, from the ${c.f1} singletons). Keep foraging until that falls below ${fmt(100 * st.unThr)}%: about <span class="num">${Number.isFinite(stop) ? fmt(stop) : 'many'}</span> more encounters${Number.isFinite(stop) ? `, roughly ${fmt(Math.ceil(stop / perWalk))} more books read here with their shelf walks` : ''}.`}
+      <div style="margin-top:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><label for="un-thr" class="small">Threshold</label><select class="sel" id="un-thr">${[0.1, 0.05, 0.02, 0.01].map((t) => `<option value="${t}"${st.unThr === t ? ' selected' : ''}>${fmt(100 * t)}% new</option>`).join('')}</select></div>
+    </div>
+    <h3>Check against the catalog</h3>
+    <p style="font-size:14px">This catalog actually holds <b class="num">${fmt(truth)}</b> call-numbered works in this region, so <b class="num">${fmt(truthGap)}</b> are truly unmet. ${within ? `That falls inside the ${pc} interval.` : truth > c.hi ? `That is above the interval: as expected, Chao1 is a lower bound, and every probe (shelf walks, cross-references, top search results) favours popular works, so rare ones are under-sampled.` : `That is below the interval: the probes here overlap less than random sampling would, which inflates the singleton count.`}</p>
+    <h3>Where the unseen probably are</h3>
+    <table class="mini"><thead><tr><th>Town</th><th class="r">Singletons</th><th class="r">Unmet (truth)</th></tr></thead><tbody>
+      ${U.where.filter((r) => r.f1 || r.unmetTruth).slice(0, 7).map((r) => { const t = r.tk >= 0 ? M.towns[r.tk] : null; return `<tr><td>${t ? `<button class="linkish" type="button" data-town="${t.ti}">${esc(rangeStr(t.lo, t.hi) + ' ' + shortTitle(t.n, 34))}</button>` : '<span class="small">outside the outline ranges</span>'}</td><td class="r"><span class="shr" style="width:${Math.round(40 * r.share)}px"></span> ${r.f1}</td><td class="r">${r.unmetTruth}</td></tr>`; }).join('')}
+    </tbody></table>
+    <p class="small">Good–Turing logic: unseen works are likeliest where many works were seen exactly once. The glowing circles on the map mark those singletons.</p>
+    <details class="method"><summary>Method and caveats</summary>
+      <p>Encounters (${fmt(c.n)} here): ${fmt(bySrc.read)} books read, ${fmt(bySrc.shelf)} shelf-walk sightings (four neighbours either side of each book read), ${fmt(bySrc.xref)} subject cross-references (top three works per specific heading) and ${fmt(bySrc.search)} search results (top 30 by reading logs for each of the explorer's searches). For the example reader these are derived from its synthetic history, not observed.</p>
+      <p>Estimator: <code>Ŝ = S_obs + ((n−1)/n)·f₁(f₁−1)/(2(f₂+1))</code>, with Chao's log-normal interval. Extrapolated curve: <code>S(n+m) = S_obs + f̂₀[1 − (1 − f₁/(n f̂₀ + f₁))^m]</code> (Chao et al. 2014). Stopping rule: the estimated chance the next encounter is new, <code>(f₁/n)·(n−1)f₁/((n−1)f₁+2f₂)</code> (Chao &amp; Jost 2012).</p>
+      <p>Assumptions that fail here: encounters are not independent draws (shelf walks are clustered), and probes favour popular works, so treat the interval as a floor. The catalog itself is a sample of about 7k works from 50 subject searches.</p>
+    </details>`}`;
+  if (c.n) drawUnseenChart($('#un-chart'), U);
+  requestRender();
+}
+function drawUnseenChart(host, U) {
+  const { c, seq, truth } = U;
+  const Wc = Math.max(280, host.clientWidth || 360), Hc = 220, m = { l: 40, r: 14, t: 14, b: 30 };
+  const nMax = Math.max(c.n * 2.2, 20);
+  const f0 = c.est - c.S, f0lo = c.lo - c.S, f0hi = c.hi - c.S;
+  const yMax = Math.max(truth, c.hi, c.S) * 1.08 + 2;
+  const x = d3.scaleLinear().domain([0, nMax]).range([m.l, Wc - m.r]);
+  const y = d3.scaleLinear().domain([0, yMax]).range([Hc - m.b, m.t]);
+  const step = Math.max(1, Math.floor(seq.length / 300));
+  const obs = [[0, 0]]; for (let k = 0; k < seq.length; k += step) obs.push([k + 1, seq[k]]); obs.push([seq.length, seq[seq.length - 1]]);
+  const ext = (ff) => d3.range(0, nMax - c.n + 1, Math.max(1, (nMax - c.n) / 80)).map((mm) => [c.n + mm, extrap(c, ff, mm)]);
+  const eMid = ext(f0), eLo = ext(f0lo), eHi = ext(f0hi);
+  const line = d3.line().x((d) => x(d[0])).y((d) => y(d[1]));
+  const area = d3.area().x((d) => x(d[0])).y0((d, i) => y(eLo[i][1])).y1((d, i) => y(eHi[i][1]));
+  const ax = d3.axisBottom(x).ticks(5).tickSizeOuter(0), ay = d3.axisLeft(y).ticks(5).tickSizeOuter(0);
+  host.innerHTML = '';
+  const svg = d3.select(host).append('svg').attr('class', 'chart').attr('viewBox', `0 0 ${Wc} ${Hc}`).attr('role', 'img')
+    .attr('aria-label', `Species accumulation: ${c.S} distinct works after ${c.n} encounters, extrapolating toward about ${Math.round(c.est)}.`);
+  svg.append('rect').attr('x', x(c.n)).attr('y', y(c.hi)).attr('width', x(nMax) - x(c.n)).attr('height', Math.max(0, y(c.lo) - y(c.hi))).attr('fill', 'var(--accent)').attr('opacity', 0.07);
+  svg.append('path').attr('d', area(eMid)).attr('fill', 'var(--accent)').attr('opacity', 0.16);
+  svg.append('line').attr('x1', x(0)).attr('x2', x(nMax)).attr('y1', y(c.est)).attr('y2', y(c.est)).attr('stroke', 'var(--accent)').attr('stroke-dasharray', '2 3').attr('stroke-width', 1.2);
+  svg.append('line').attr('x1', x(0)).attr('x2', x(nMax)).attr('y1', y(truth)).attr('y2', y(truth)).attr('stroke', 'var(--sepia)').attr('stroke-dasharray', '1 3').attr('stroke-width', 1.4).attr('stroke-linecap', 'round');
+  svg.append('line').attr('x1', x(c.n)).attr('x2', x(c.n)).attr('y1', y(0)).attr('y2', y(yMax)).attr('stroke', 'var(--rule-strong)').attr('stroke-width', 1);
+  svg.append('path').attr('d', line(eMid)).attr('fill', 'none').attr('stroke', 'var(--accent)').attr('stroke-width', 2).attr('stroke-dasharray', '5 4');
+  svg.append('path').attr('d', line(obs)).attr('fill', 'none').attr('stroke', 'var(--ink)').attr('stroke-width', 2);
+  svg.append('g').attr('class', 'ax').attr('transform', `translate(0,${Hc - m.b})`).call(ax);
+  svg.append('g').attr('class', 'ax').attr('transform', `translate(${m.l},0)`).call(ay);
+  const lab = (tx, ty, t, col, anchor = 'end') => svg.append('text').attr('x', tx).attr('y', ty).attr('text-anchor', anchor).attr('fill', col).text(t);
+  lab(Wc - m.r, y(c.est) - 5, `Chao1 ≈ ${Math.round(c.est)}`, 'var(--accent-ink)');
+  const ty = Math.abs(y(truth) - y(c.est)) < 13 ? (truth > c.est ? y(truth) - 5 : y(truth) + 13) : y(truth) - 5;
+  lab(Wc - m.r, ty, `catalog holds ${truth}`, 'var(--sepia)');
+  lab(x(c.n) - 4, m.t + 10, 'today', 'var(--ink-3)');
+  lab(Wc - m.r, Hc - 4, 'encounters →', 'var(--ink-3)');
+  lab(m.l - 32, m.t - 3, 'works met', 'var(--ink-3)', 'start');
+}
+
+/* ---------- Field guide ---------- */
+function resetGuide() { st.guide.status = 'idle'; st.guide.text = ''; st.guide.source = null; st.guide.log = []; st.guide.dropped = 0; st.guide.cited = []; }
+function guideFor(sc) { return (M.guides.guides || []).find((g) => g.sc === sc); }
+function renderGuide() {
+  const el = $('#pb-guide'); if (!M) return;
+  if (!st.guide.sc) st.guide.sc = st.prov != null ? M.subs[st.prov].c : 'QA';
+  const s = M.subByCode.get(st.guide.sc);
+  const pre = guideFor(st.guide.sc);
+  const G = st.guide;
+  const live = sampleFn ? true : sampleFn === null ? false : null;
+  let body = '';
+  if (G.status === 'thinking') body = `<p class="thinking">Claude is surveying ${esc(s.c)}</p>${G.log.length ? `<div class="toolog">${G.log.map(esc).join('<br>')}</div>` : ''}`;
+  else if (G.status === 'streaming' || G.status === 'done' || G.status === 'error') body = `<div class="guide">${renderGuideText(G.text, s)}</div>`;
+  if (G.status === 'idle') {
+    if (pre) { G.source = 'pre'; G.text = pre.text; body = `<div class="guide">${renderGuideText(pre.text, s)}</div>`; }
+    else { G.source = 'template'; G.text = templateGuide(s); body = `<div class="guide">${renderGuideText(G.text, s)}</div>`; }
+  }
+  const sourceBadge = G.source === 'live' ? '<span class="badge ai">AI-generated live by Claude</span>'
+    : G.source === 'pre' ? `<span class="badge ai">AI-generated</span><span class="badge pre">precomputed example</span>`
+      : G.source === 'template' ? '<span class="badge pre">templated from the records (no AI)</span>' : '';
+  const provOpts = M.subs.filter((x) => x.cat >= 5).map((x) => `<option value="${esc(x.c)}"${x.c === s.c ? ' selected' : ''}>${esc(x.c + ' · ' + shortTitle(x.n, 44))}${guideFor(x.c) ? ' ✦' : ''}</option>`).join('');
+  el.innerHTML = `
+    <h2>A Field Guide</h2>
+    <p class="lede">A naturalist's guide to one province: its landmarks, what is free to forage, rare sightings, and where it borders.</p>
+    <div class="field"><label for="g-prov">Province (✦ = precomputed guide)</label><select class="sel" id="g-prov">${provOpts}</select></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center">
+      ${live === true ? `<button class="btn accent" type="button" data-act="guide-live" ${G.status === 'thinking' || G.status === 'streaming' ? 'disabled' : ''}>Write it live with Claude</button>` : ''}
+      ${G.status === 'thinking' || G.status === 'streaming' ? '<button class="btn" type="button" data-act="guide-stop">Stop</button>' : ''}
+      ${live === false ? '<span class="badge pre">Live generation available when opened in Claude</span>' : live === null ? '<span class="small">Checking for Claude…</span>' : ''}
+    </div>
+    <div class="guide-meta">${sourceBadge}${G.source && G.source !== 'template' ? `<span>${G.source === 'pre' ? esc(PROVENANCE) : 'Grounded by a search tool over this province; every cited work was checked against the catalog'}</span>` : ''}</div>
+    ${body}
+    ${G.status === 'done' || G.source === 'pre' ? `<p class="note">${G.cited.length} cited works resolved and pinned on the map${G.dropped ? `; ${G.dropped} citation${G.dropped > 1 ? 's' : ''} that did not resolve ${G.dropped > 1 ? 'were' : 'was'} removed` : ''}. Click a citation to visit it.</p>` : ''}
+    ${G.status === 'error' ? `<p class="note">${esc(G.err || 'Generation stopped.')}</p>` : ''}`;
+  requestRender();
+}
+function templateGuide(s) {
+  const ws = s.works.map((i) => M.works[i]);
+  const byEd = ws.slice().sort((a, b) => (b.ed || 0) - (a.ed || 0));
+  const free = ws.filter((w) => w.acc === 'public').sort((a, b) => (b.ed || 0) - (a.ed || 0));
+  const old = ws.filter((w) => w.y && w.y > 1000).sort((a, b) => a.y - b.y);
+  const withFs = byEd.find((w) => w.fs && w.fs.length < 220);
+  const towns = s.towns.map((t) => M.towns[t]).filter((t) => t.lv === 1).sort((a, b) => b.k - a.k).slice(0, 3);
+  const nb = s.adj.map((o) => M.subs[o]).filter((o) => o.cat > 0).slice(0, 3);
+  const L = [];
+  L.push(`## Lay of the land`);
+  L.push(`${s.c} (${s.n}) holds ${s.cat} call-numbered works in this catalog and about ${s.gut} Gutenberg titles.${towns.length ? ' Its largest towns are ' + towns.map((t) => `${rangeStr(t.lo, t.hi)} ${t.n} (${t.k})`).join(', ') + '.' : ''}`);
+  if (byEd[0]) { L.push(`## Capital`); L.push(`The most-edited work is ${byEd[0].t} by ${firstAuthor(byEd[0])} [${byEd[0].id}], with ${byEd[0].ed} editions.`); }
+  if (free.length) { L.push(`## Free to forage`); L.push(free.slice(0, 3).map((w) => `- ${w.t} (${firstAuthor(w)}) [${w.id}]`).join('\n')); }
+  if (old[0]) { L.push(`## Oldest recorded`); L.push(`${old[0].t} [${old[0].id}], first published ${old[0].y} according to Open Library.`); }
+  if (withFs) { L.push(`## A first line`); L.push(`“${withFs.fs}” [${withFs.id}]`); }
+  if (nb.length) { L.push(`## Borderlands`); L.push(`Borders ${nb.map((o) => `${o.c} (${o.n})`).join(', ')}.`); }
+  return L.join('\n\n');
+}
+function renderGuideText(text, s) {
+  // minimal markdown: ## headings, - bullets, paragraphs; [OL...W] citations validated
+  const okIds = new Set(s ? s.works.map((i) => M.works[i].id) : []);
+  const cited = [];
+  let dropped = 0;
+  const inline = (t) => {
+    let h = esc(t).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/(^|[^*])\*([^*]+)\*/g, '$1<i>$2</i>');
+    h = h.replace(/\[(OL\d+W)\]/g, (m, id) => {
+      const i = M.byId.get(id);
+      if (i === undefined || (!okIds.has(id) && st.guide.source !== 'pre')) { dropped++; return ''; }
+      if (!cited.includes(i)) cited.push(i);
+      return `<button class="cite" type="button" data-work="${i}" title="${esc(M.works[i].t)}">${cited.indexOf(i) + 1}</button>`;
+    });
+    return h;
+  };
+  const blocks = String(text).replace(/\r/g, '').split(/\n{2,}/);
+  const html = blocks.map((b) => {
+    const t = b.trim(); if (!t) return '';
+    if (/^#{1,4}\s/.test(t)) return `<h4>${inline(t.replace(/^#{1,4}\s*/, ''))}</h4>`;
+    if (/^[-*]\s/m.test(t) && t.split('\n').every((ln) => /^[-*]\s/.test(ln.trim()) || !ln.trim())) return `<ul>${t.split('\n').filter((ln) => ln.trim()).map((ln) => `<li>${inline(ln.replace(/^\s*[-*]\s*/, ''))}</li>`).join('')}</ul>`;
+    return `<p>${inline(t).replace(/\n/g, '<br>')}</p>`;
+  }).join('');
+  st.guide.cited = cited; st.guide.dropped = dropped;
+  return html;
+}
+let guideCtl = null;
+async function guideLive() {
+  const sample = sampleFn; if (!sample) return;
+  const s = M.subByCode.get(st.guide.sc); if (!s) return;
+  const D = st.derived;
+  resetGuide(); st.guide.status = 'thinking'; st.guide.source = 'live'; renderGuide();
+  guideCtl = new AbortController();
+  const rows = (list) => list.map((w) => ({ id: w.id, title: w.t, subtitle: w.st || undefined, author: firstAuthor(w), year: w.y || null, call: w.call, access: w.acc, editions: w.ed || 0, reading_logs: w.rl || 0, town: w.town >= 0 ? `${rangeStr(M.towns[w.town].lo, M.towns[w.town].hi)} ${M.towns[w.town].n}` : null, read_by_explorer: !!(D && D.readSet.has(w.i)) }));
+  const tools = [
+    {
+      name: 'search_province',
+      description: `Search the works of province ${s.c} (${s.n}) in this map's catalog. Returns up to 15 works as {id,title,author,year,call,access,editions,reading_logs,town,read_by_explorer}. sort: "editions" (landmarks), "readers" (popular), "year" (oldest first), "shelf" (call-number order). query filters by words in title, subtitle or subject headings. access filters to "public" (free now) or "borrowable".`,
+      inputSchema: { type: 'object', properties: { query: { type: 'string' }, sort: { type: 'string', enum: ['editions', 'readers', 'year', 'shelf'] }, access: { type: 'string', enum: ['any', 'public', 'borrowable'] } } },
+      execute: (inp) => {
+        const q = String(inp.query || '').toLowerCase().split(/\s+/).filter(Boolean);
+        let ws = s.works.map((i) => M.works[i]);
+        if (q.length) ws = ws.filter((w) => { const h = (w.t + ' ' + (w.st || '') + ' ' + (w.s || []).join(' ')).toLowerCase(); return q.every((t) => h.includes(t)); });
+        if (inp.access === 'public' || inp.access === 'borrowable') ws = ws.filter((w) => w.acc === inp.access);
+        const sort = String(inp.sort || 'editions');
+        if (sort === 'readers') ws.sort((a, b) => (b.rl || 0) - (a.rl || 0));
+        else if (sort === 'year') ws = ws.filter((w) => w.y > 1000).sort((a, b) => a.y - b.y);
+        else if (sort === 'shelf') ws.sort((a, b) => M.shelfPos[a.i] - M.shelfPos[b.i]);
+        else ws.sort((a, b) => (b.ed || 0) - (a.ed || 0));
+        st.guide.log.push(`search_province(${[inp.query && `"${inp.query}"`, sort, inp.access && inp.access !== 'any' && inp.access].filter(Boolean).join(', ')}) → ${Math.min(15, ws.length)} of ${ws.length}`);
+        if (st.guide.status === 'thinking') renderGuide();
+        return rows(ws.slice(0, 15));
+      },
+    },
+    {
+      name: 'list_towns',
+      description: `List the outline ranges ("towns") of province ${s.c} with how many catalog works each holds and how many the explorer has read.`,
+      inputSchema: { type: 'object', properties: {} },
+      execute: () => {
+        st.guide.log.push('list_towns()');
+        return s.towns.map((ti) => M.towns[ti]).filter((t) => t.lv <= 2).map((t) => ({ range: `${t.c} ${rangeStr(t.lo, t.hi)}`, name: t.n, works: t.k, read: D ? regionWorks({ type: 'town', ti: t.ti }).filter((wi) => D.readSet.has(wi)).length : 0 }));
+      },
+    },
+  ];
+  const nb = s.adj.map((o) => M.subs[o]).map((o) => `${o.c} (${o.n})`).join(', ');
+  const prompt = `You are writing a short naturalist's field guide to one "province" of a map of the Library of Congress Classification. Provinces are LC subclasses; towns are outline ranges; settlements are works in a 7,127-work sample of Open Library (plus Gutenberg titles as "forest").
+
+Province: ${s.c}, ${s.n}. ${s.cat} call-numbered works in this catalog, about ${s.gut} Gutenberg titles. Neighbouring provinces on the map: ${nb}.
+The explorer (${st.reader.kind === 'example' ? 'a synthetic example reader interested in forecasting, probability, decision theory, ML, economics and philosophy of science' : 'the person viewing this map'}) has read ${D ? D.subRead[s.si] : 0} works here.
+
+Use the tools to look before you write: call list_towns once, then search_province two to four times (landmarks by editions, free works with access "public", the oldest by year, and one query matched to the explorer's interests).
+
+Write about 230 words in this exact shape, with these five headings as lines starting with "## ":
+## Lay of the land
+## Landmarks
+## Free to forage
+## Rare sightings
+## For this explorer
+Rules: name only works returned by the tools, and after each work you name put its id in square brackets, like [OL123W]. Do not invent works, dates or facts not in the tool results; years come from Open Library and may be wrong, so hedge any year that looks implausible. No quotations. Plain prose, two to four sentences per section; a "-" bullet list is fine in "Free to forage".`;
+  try {
+    const { text, truncated } = await sample(prompt, {
+      tools, signal: guideCtl.signal,
+      onText: ({ text }) => { st.guide.status = 'streaming'; st.guide.text = text; renderGuide(); },
+    });
+    st.guide.text = text; st.guide.status = 'done'; st.guide.err = truncated ? 'The guide was cut short.' : '';
+  } catch (e) {
+    const code = e && e.code;
+    if (code === 'not_granted' || code === 'sampling_disabled' || code === 'capability_disabled' || code === 'not_declared' || code === 'capability_removed') { sampleFn = null; resetGuide(); }
+    else if (code === 'tools_unavailable') { st.guide.status = 'error'; st.guide.err = 'This view cannot run page tools, so the guide cannot be grounded; showing the precomputed version instead.'; st.guide.text = ''; resetGuide(); }
+    else if (code === 'cancelled') { st.guide.status = e.text ? 'done' : 'idle'; st.guide.text = e.text || ''; if (!e.text) resetGuide(); }
+    else { st.guide.status = e && e.text ? 'error' : 'idle'; st.guide.text = (e && e.text) || ''; st.guide.err = code === 'rate_limited' ? 'Claude is busy for this account right now; try again in a while.' : 'Generation was interrupted; try again.'; if (!e?.text) resetGuide(); }
+  } finally {
+    guideCtl = null;
+    renderGuide();
+  }
+}
+
+/* ---------- explorer & settle ---------- */
+function setReader(reader, { animate = false } = {}) {
+  st.reader = reader;
+  st.enc = encounterLog(reader);
+  st.met = st.enc.met;
+  st.metSrc = new Map();
+  for (const e of st.enc.ev) { let s = st.metSrc.get(e.w); if (!s) st.metSrc.set(e.w, (s = new Set())); s.add({ read: 'read', shelf: 'shelf walk', xref: 'cross-reference', search: 'search' }[e.src]); }
+  st.route = null; st.unseen = null;
+  if (animate && !REDUCED && reader.read.length) {
+    const t0 = performance.now(), dur = 2600;
+    const step = (now) => {
+      const u = clamp((now - t0) / dur, 0, 1);
+      st.derived = deriveReader(reader, u * u * (3 - 2 * u));
+      requestRender();
+      if (u < 1) requestAnimationFrame(step); else afterReader();
+    };
+    st.derived = deriveReader(reader, 0);
+    requestAnimationFrame(step);
+  } else { st.derived = deriveReader(reader, 1); afterReader(); }
+}
+function afterReader() {
+  const rd = st.reader;
+  $('#who').innerHTML = `<b>${esc(rd.label)}</b><span class="ex">${esc(rd.note)}</span> · <span class="num">${fmt(rd.read.length)}</span> flags`;
+  $('#cart-meta').innerHTML = `<b>${fmt(M.works.filter((w) => w.sub >= 0).length)}</b> call-numbered works · <b>${fmt(M.subs.reduce((a, s) => a + s.gut, 0))}</b> Gutenberg titles<br>Surveyed October 2026 · explored by <span class="who">${esc(rd.kind === 'example' ? 'an example reader (synthetic)' : rd.kind === 'blank' ? 'nobody yet' : 'your reading list')}</span>`;
+  setTab(st.tab);
+  if (st.work != null) renderCard();
+}
+
+function tokens(s) { return String(s).toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter((t) => t.length > 1 && !STOP.has(t)); }
+const STOP = new Set(['the', 'of', 'and', 'a', 'an', 'to', 'in', 'on', 'for', 'by', 'with', 'from', 'at', 'or', 'its', 'as']);
+let tokIndex = null;
+function matchList(text) {
+  if (!tokIndex) {
+    tokIndex = new Map();
+    M.works.forEach((w) => new Set(tokens(w.t)).forEach((t) => { let a = tokIndex.get(t); if (!a) tokIndex.set(t, (a = [])); a.push(w.i); }));
+  }
+  const lines = text.split(/\n+/).map((l) => l.trim()).filter(Boolean).slice(0, 400);
+  const out = [];
+  for (const line of lines) {
+    const [tPart, aPart] = line.split(/\s+(?:by|—|–|-)\s+(?=[^—–-]+$)/i);
+    const tt = tokens(tPart), at = tokens(aPart || '');
+    if (!tt.length) { out.push({ line, i: -1 }); continue; }
+    const rare = tt.slice().sort((a, b) => (tokIndex.get(a)?.length || 1e9) - (tokIndex.get(b)?.length || 1e9))[0];
+    const cands = tokIndex.get(rare) || [];
+    let best = -1, bs = 0;
+    for (const i of cands) {
+      const w = M.works[i]; const wt = new Set(tokens(w.t.split(/:\s/)[0]));
+      const inter = tt.filter((t) => wt.has(t)).length;
+      let s = inter / (tt.length + wt.size - inter);
+      if (at.length) { const wa = new Set(tokens((w.a || []).join(' '))); s += 0.25 * at.filter((t) => wa.has(t)).length / at.length; }
+      s += 0.02 * Math.log1p(w.rl || 0);
+      if (s > bs) { bs = s; best = i; }
+    }
+    out.push({ line, i: bs >= 0.55 ? best : -1 });
+  }
+  return out;
+}
+
+/* =============================== events =============================== */
+function bind() {
+  const sel = d3.select(cvTop);
+  zoomB = d3.zoom().on('zoom', (e) => { T = e.transform; requestRender(); tip.hidden = true; });
+  sel.call(zoomB);
+  cvTop.addEventListener('pointermove', onMove);
+  cvTop.addEventListener('pointerleave', () => { tip.hidden = true; st.hover = null; requestRender(); });
+  cvTop.addEventListener('click', onClick);
+  cvTop.addEventListener('keydown', (e) => {
+    const step = 60;
+    const map = { ArrowLeft: [step, 0], ArrowRight: [-step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] };
+    if (map[e.key]) { e.preventDefault(); sel.call(zoomB.translateBy, map[e.key][0] / T.k, map[e.key][1] / T.k); }
+    if (e.key === '+' || e.key === '=') sel.transition().duration(250).call(zoomB.scaleBy, 1.6);
+    if (e.key === '-') sel.transition().duration(250).call(zoomB.scaleBy, 1 / 1.6);
+  });
+  $('#z-in').onclick = () => sel.transition().duration(REDUCED ? 0 : 300).call(zoomB.scaleBy, 1.7);
+  $('#z-out').onclick = () => sel.transition().duration(REDUCED ? 0 : 300).call(zoomB.scaleBy, 1 / 1.7);
+  $('#z-fit').onclick = () => sel.transition().duration(REDUCED ? 0 : 700).call(zoomB.transform, fitTransform());
+  $$('#stops .stop').forEach((b) => (b.onclick = () => zoomToLevel(+b.dataset.z)));
+  $$('.tab').forEach((b) => (b.onclick = () => setTab(b.dataset.tab)));
+  $('#legend').addEventListener('toggle', () => requestRender());
+  // delegated clicks
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-work],[data-prov],[data-town],[data-cls],[data-act],[data-pf],[data-ps],[data-legs],[data-unz],[data-fog],[data-close-card],[data-close]');
+    if (!t) return;
+    if (t.hasAttribute('data-close')) { t.closest('dialog').close(); return; }
+    if (t.hasAttribute('data-close-card')) { st.work = null; renderCard(); return; }
+    if (t.dataset.work != null) { selectWork(+t.dataset.work, { fly: true }); return; }
+    if (t.dataset.prov != null) { selectProvince(+t.dataset.prov, { fly: true, tab: 'prov' }); return; }
+    if (t.dataset.town != null) {
+      const tw = M.towns[+t.dataset.town];
+      st.prov = tw.sub;
+      if (st.tab === 'unseen') { st.unRegion = { type: 'town', ti: tw.ti }; renderUnseen(); }
+      flyTo(regionBBox({ type: 'town', ti: tw.ti }), 16); requestRender(); return;
+    }
+    if (t.dataset.cls != null) { flyTo(M.classes[+t.dataset.cls].bb, 6); return; }
+    if (t.dataset.pf) { st.provFilter = t.dataset.pf; st.provMore = 60; renderProvince(); return; }
+    if (t.dataset.ps) { st.provSort = t.dataset.ps; renderProvince(); return; }
+    if (t.dataset.legs) { st.expLegs = +t.dataset.legs; planRoute(); renderExpedition(); requestRender(); return; }
+    if (t.dataset.unz) { st.unZ = +t.dataset.unz; renderUnseen(); return; }
+    if (t.dataset.fog) { st.fog = t.dataset.fog; store.set('fog', st.fog); renderLegend(); requestRender(); return; }
+    const act = t.dataset.act;
+    if (act === 'replay') setReader(st.reader, { animate: true });
+    else if (act === 'fit') sel.transition().duration(REDUCED ? 0 : 700).call(zoomB.transform, fitTransform());
+    else if (act === 'fly-prov') flyTo(M.subs[st.prov].bb, 8);
+    else if (act === 'exp-prov') { st.expRegion = { type: 'sub', si: st.prov }; planRoute(); setTab('exp'); flyTo(M.subs[st.prov].bb, 8); }
+    else if (act === 'unseen-prov') { st.unRegion = { type: 'sub', si: st.prov }; setTab('unseen'); flyTo(M.subs[st.prov].bb, 8); }
+    else if (act === 'guide-prov') { st.guide.sc = M.subs[st.prov].c; resetGuide(); setTab('guide'); }
+    else if (act === 'more') { st.provMore += 60; renderProvince(); }
+    else if (act === 'center-work') { const w = M.works[st.work]; const r = M.S * 2.2; flyTo([w.px - r, w.py - r, w.px + r, w.py + r], 14); }
+    else if (act === 'exp-from-work') {
+      const w = M.works[st.work];
+      st.expRegion = w.town >= 0 ? { type: 'town', ti: w.town } : { type: 'sub', si: w.sub };
+      planRoute(); setTab('exp'); flyTo(regionBBox(st.expRegion), 12);
+    }
+    else if (act === 'guide-live') guideLive();
+    else if (act === 'guide-stop') guideCtl?.abort();
+  });
+  document.addEventListener('change', (e) => {
+    const t = e.target;
+    if (t.id === 'exp-region') { st.expRegion = JSON.parse(t.value); planRoute(); renderExpedition(); flyTo(regionBBox(st.expRegion), 12); }
+    if (t.id === 'exp-free') { st.expFree = t.checked; planRoute(); renderExpedition(); requestRender(); }
+    if (t.id === 'un-region') { st.unRegion = JSON.parse(t.value); renderUnseen(); flyTo(regionBBox(st.unRegion), 12); }
+    if (t.id === 'un-show') { st.unShow = t.checked; requestRender(); }
+    if (t.id === 'un-thr') { st.unThr = +t.value; renderUnseen(); }
+    if (t.id === 'g-prov') { st.guide.sc = t.value; resetGuide(); const s = M.subByCode.get(t.value); if (s) { st.prov = s.si; flyTo(s.bb, 8); } renderGuide(); }
+  });
+  // dialogs
+  $('#btn-about').onclick = () => $('#dlg-about').showModal();
+  $('#btn-settle').onclick = () => {
+    const d = $('#dlg-settle');
+    $('#who-' + (st.reader.kind)).checked = true;
+    const saved = store.get('list'); if (saved && !$('#paste').value) $('#paste').value = saved;
+    d.showModal();
+  };
+  $('#paste').addEventListener('input', () => { $('#who-custom').checked = true; });
+  $('#settle-check').onclick = () => showMatches();
+  $('#settle-go').onclick = () => {
+    const kind = $('input[name="who"]:checked').value;
+    let rd;
+    if (kind === 'example') rd = exampleReader();
+    else if (kind === 'blank') rd = blankReader();
+    else {
+      const res = showMatches();
+      const ids = [...new Set(res.filter((r) => r.i >= 0).map((r) => r.i))];
+      if (!ids.length) return;
+      store.set('list', $('#paste').value);
+      rd = customReader(ids);
+    }
+    store.set('who', kind);
+    $('#dlg-settle').close();
+    st.work = null; card.hidden = true;
+    setReader(rd, { animate: true });
+    d3.select(cvTop).transition().duration(REDUCED ? 0 : 700).call(zoomB.transform, fitTransform());
+  };
+  new ResizeObserver(() => { resize(); if (st.tab === 'unseen' && st.unseen) renderUnseen(); }).observe(mapwrap);
+  const mq = matchMedia('(prefers-color-scheme: dark)');
+  const onTheme = () => { readTheme(); renderLegend(); requestRender(); };
+  mq.addEventListener ? mq.addEventListener('change', onTheme) : mq.addListener(onTheme);
+  new MutationObserver(onTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+}
+function showMatches() {
+  const res = matchList($('#paste').value);
+  const ok = res.filter((r) => r.i >= 0), bad = res.filter((r) => r.i < 0);
+  $('#matchres').innerHTML = res.length ? `<b>${ok.length}</b> of ${res.length} lines matched.${ok.length ? '<br>' + ok.slice(0, 12).map((r) => `✓ ${esc(shortTitle(M.works[r.i].t, 50))} <span class="small">(${esc(firstAuthor(M.works[r.i]))})</span>`).join('<br>') + (ok.length > 12 ? '<br>…' : '') : ''}${bad.length ? `<br><span class="small">Not in this catalog: ${bad.slice(0, 8).map((r) => esc(r.line)).join('; ')}${bad.length > 8 ? '…' : ''}</span>` : ''}` : 'Paste some titles first.';
+  return res;
+}
+function renderLegend() {
+  const sw = (inner) => `<svg width="22" height="16" viewBox="-11 -8 22 16" aria-hidden="true">${inner}</svg>`;
+  $('#lg').innerHTML = `
+    ${sw('<path d="M0 3V-7" stroke="var(--ink)" stroke-width="1"/><path d="M0 -7 6.5 -4.6 0 -2.2Z" fill="var(--accent)"/>')}<span>Flag: a work the explorer read</span>
+    ${sw('<circle r="2.6" fill="none" stroke="var(--ink-2)" stroke-dasharray="1.5 1.8"/>')}<span>Rumoured: met, never read</span>
+    ${sw('<circle r="3.2" fill="var(--free)"/>')}<span>Free to read now</span>
+    ${sw('<circle r="3.2" fill="none" stroke="var(--borrow)" stroke-width="1.3"/><circle r="1.1" fill="var(--borrow)"/>')}<span>Borrowable (IA loan)</span>
+    ${sw('<circle r="3.2" fill="none" stroke="var(--pd)" stroke-width="1.3"/>')}<span>Print-disabled only</span>
+    ${sw('<path d="M-2.6 -2.6 2.6 2.6M2.6 -2.6-2.6 2.6" stroke="var(--none)" stroke-width="1.3"/>')}<span>Ruin: no ebook</span>
+    ${sw('<path d="M-8 4C-5 2-3-5 0-5 3-5 5 2 8 4Z" fill="var(--land-2)" stroke="var(--sepia)"/><path d="M1-3 2 1M3-1 4 2" stroke="var(--sepia)" stroke-width=".7"/>')}<span>Peak: much-reprinted work</span>
+    ${sw('<rect x="-9" y="-6" width="18" height="12" fill="url(#stp)" stroke="var(--rule)"/><defs><pattern id="stp" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r=".8" fill="var(--sepia)"/></pattern></defs>')}<span>Forest: Gutenberg titles</span>
+    ${sw('<path d="M-8 0H8" stroke="var(--accent)" stroke-width="6" opacity=".45" style="filter:blur(1.5px)"/>')}<span>Frontier glow (brighter = more within reach)</span>
+    ${sw('<path d="M-6 -5 0 -6.5 6 -5 6 5 0 6.5 -6 5Z" fill="none" stroke="var(--ink-3)" stroke-width="1"/>')}<span>One hex ≈ ${fmt((M.works.filter((w) => w.sub >= 0).length + M.subs.reduce((a, s) => a + s.gut, 0)) / M.N)} titles</span>
+    <div class="fogctl"><span class="small">Fog</span><div class="seg" role="group" aria-label="Fog">${[['full', 'Full'], ['thin', 'Thin'], ['off', 'Lifted']].map(([k, l]) => `<button type="button" data-fog="${k}" aria-pressed="${st.fog === k}">${l}</button>`).join('')}</div></div>`;
+}
+
+/* =============================== boot =============================== */
+async function boot() {
+  readTheme();
+  bind();
+  resize();
+  const j = (u) => fetch(u).then((r) => { if (!r.ok) throw new Error(u + ' ' + r.status); return r.json(); });
+  let world, cat, guides = null;
+  try {
+    [world, cat] = await Promise.all([j('data/terra-incognita/world.json'), j('data/catalog.json')]);
+    guides = await j('data/terra-incognita/field-guides.json').catch(() => null);
+  } catch (e) {
+    $('#loading').textContent = 'The survey data could not be loaded (' + e.message + ').';
+    return;
+  }
+  M = buildModel(world, cat, guides);
+  if (window.innerWidth < 900) $('#legend').open = false;
+  renderLegend();
+  try { await Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 1500))]); } catch { /* fonts optional */ }
+  resize();
+  const who = store.get('who');
+  let rd = exampleReader();
+  if (who === 'blank') rd = blankReader();
+  else if (who === 'custom') { const saved = store.get('list'); if (saved) { const ids = [...new Set(matchList(saved).filter((r) => r.i >= 0).map((r) => r.i))]; if (ids.length) rd = customReader(ids); } }
+  st.prov = M.subByCode.get('QA').si;
+  setReader(rd, { animate: false });
+  $('#loading').hidden = true;
+  requestRender();
+  document.fonts && document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', () => requestRender());
+}
+boot();
+})();
+</script>

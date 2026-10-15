@@ -1,6 +1,6 @@
 ---
 title: "Curation: Syllabi, Experts and Reviews"
-description: How serious readers decide what to read, compared across syllabi (Open Syllabus), expert interviews (Five Books), great-books canons, public bookshelves, long-form review communities, Goodreads/StoryGraph and curated newsletters; what the evidence says about recommenders versus expert curation; a four-hour method for building a reading list in a new field; and how to keep LLM-generated lists from inventing books.
+description: How serious readers choose what to read (Open Syllabus, Five Books, great-books canons, public shelves, ACX and LessWrong reviews, Goodreads, curated newsletters) and what the evidence says about recommenders versus expert curation. Includes a four-hour method for a new field's reading list and guards against LLM-invented books.
 ---
 
 *Status: draft, October 2026. Counts, prices and product statuses are as of October 15, 2026 unless another date is given. Some figures rest only on secondary sources and are marked that way: Goodreads and StoryGraph user counts, the Yeomans et al. percentages, the Danish library audit, and Shepherd's status. The Open Library lookups, the bookshelf count and the LCC spread in the worked example are my own checks, run on October 15, 2026. Sources: the [R11 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R11-reading-practice-curation-devices.md) and the [R05 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R05-book-discovery-and-catalogs.md). Fabrication rates come from the [R04 dossier](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R04-ai-research-assistants.md). Primary sources are linked inline.*
@@ -163,8 +163,7 @@ Other review channels are worth checking for technical books: the book-review se
 
 ### Goodreads and The StoryGraph
 
-- **Goodreads** reported more than 150 million members (September 2023, [Wikipedia](https://en.wikipedia.org/wiki/Goodreads), secondary). It stopped issuing API keys on December 8, 2020, and `goodreads.com/api` now redirects to the homepage (checked October 15, 2026). An aggregator reported a "did not finish" shelf and shopping from shelves in March 2026 [secondary].
-- **The StoryGraph** reached 5 million sign-ups by January 2026 ([Wikipedia](https://en.wikipedia.org/wiki/The_StoryGraph), secondary, low reliability). It serves a Cloudflare challenge to scripted clients and has no public API that I know of.
+Goodreads ([member count](https://en.wikipedia.org/wiki/Goodreads), secondary) stopped issuing API keys on December 8, 2020, and `goodreads.com/api` now redirects to the homepage (checked October 15, 2026). The StoryGraph ([sign-ups](https://en.wikipedia.org/wiki/The_StoryGraph), secondary, low reliability) serves a Cloudflare challenge to scripted clients and has no public API that I know of.
 
 **What the ratings measure.** They measure enjoyment among self-selected readers who chose to finish and rate a book. For a technical monograph, the raters are a small, unrepresentative group. In Salganik, Dodds and Watts's music-market experiment (14,341 participants), showing download counts made success both more unequal and less predictable: "the best songs rarely did poorly, and the worst rarely did well, but any other result was possible" ([*Science* 2006](https://www.princeton.edu/~mjs3/salganik_dodds_watts06_full.pdf)). Treat rating counts as a tie-breaker, not a filter.
 

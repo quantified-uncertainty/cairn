@@ -276,6 +276,19 @@ const LEDGER = [
   },
 ];
 
+// Short chart labels for claims (key `${id}|${claimIndex}`); the full value stays in `value`.
+const FIGS = {
+  '2402.07862|0': '+24–28%', '2402.07862|1': '+41% vs +29%', '2402.19379|1': '+17–28%',
+  '2505.17989|1': '14B ≈ o1', '2512.22625|0': '−0.020 log loss', '2601.06336|0': '−27% Brier',
+  '2601.07992|0': '0 pass', '2604.04220|1': 'hurts 12%', '2605.00844|0': 'r = 0.77',
+  '2605.03762|0': '1.37% leak', '2605.16358|0': '8.6→1.6% leak', '2607.18269|1': 'gap 35.8→8.9%',
+  '2606.26583|0': '67.6 vs 70.2%', '2607.24573|0': '−0.023 Brier', '2609.22246|0': 'Brier .18→.37',
+  '2609.28876|1': '12 of 12', '2609.33257|0': '11 of 16',
+  '2312.06941|0': '≈ individuals', '2402.19379|0': '≈ crowd', '2505.17989|0': '>10% ROI', '2507.04562|0': '< experts',
+  '2510.03349|0': '< experts', '2511.02458|0': '≈ SPF panel', '2511.07678|0': '= supers', '2511.07678|1': '< market',
+  '2604.04220|0': '< market', '2607.18269|0': '< market', '2607.09921|0': '−24% vs market', '2609.28876|0': '< market',
+};
+
 // Read and set aside: relevant-looking papers with no figure or measured comparison,
 // or papers that turned out to be about a different question.
 const SET_ASIDE = [
@@ -379,11 +392,11 @@ for (const e of LEDGER) {
   const p = byId.get(e.id);
   if (!p) { failures.push(`${e.id}: not in papers.json`); continue; }
   const claims = [];
-  for (const c of e.claims) {
+  e.claims.forEach((c, ci) => {
     const bad = c.quotes.filter((q) => !verify(e.id, q));
-    if (bad.length) { failures.push(`${e.id}: dropped claim "${c.metric}" (span not found: ${bad.map((b) => JSON.stringify(b.slice(0, 60))).join(', ')})`); continue; }
-    claims.push(c);
-  }
+    if (bad.length) { failures.push(`${e.id}: dropped claim "${c.metric}" (span not found: ${bad.map((b) => JSON.stringify(b.slice(0, 60))).join(', ')})`); return; }
+    claims.push(FIGS[`${e.id}|${ci}`] ? { ...c, fig: FIGS[`${e.id}|${ci}`] } : c);
+  });
   if (!claims.length) { failures.push(`${e.id}: dropped paper (no verified claims)`); continue; }
   papers.push({ ...meta(p), ab: p.ab, short: e.short, type: e.type, system: e.system, group: e.group, self: !!e.self, lr: e.lr, lo: e.lo, hi: e.hi, rationale: e.rationale, claims });
 }

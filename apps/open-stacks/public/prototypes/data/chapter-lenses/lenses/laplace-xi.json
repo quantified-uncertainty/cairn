@@ -1,0 +1,1316 @@
+{
+ "id": "laplace-xi",
+ "tab": {
+  "order": 1,
+  "short": "Laplace",
+  "num": "XI"
+ },
+ "book": 58881,
+ "chapter": {
+  "start": 2860,
+  "n": "Ch. XI",
+  "title": "Concerning the Probabilities of Testimonies",
+  "end": 3285,
+  "words": 4672,
+  "key": "58881:2860"
+ },
+ "why": "This chapter is a chain of worked problems: urns, witnesses who lie or err, and the fractions that follow. Prose cannot show whether the fractions are right, so the lens leads with recomputable calculations, one per problem, with the witness's reliability on a slider. The argument that connects the problems, and the people Laplace uses as warnings, get a short tree and a cast list.",
+ "lenses": [
+  {
+   "type": "LiveCalculation",
+   "title": "Number 79 from an urn of a thousand",
+   "why": "Laplace states each step as a printed fraction, so every step can be recomputed and compared.",
+   "src": [
+    {
+     "q": "A single number has been drawn from an urn which contains a thousand of them. A witness to this drawing announces that number 79 is drawn; one asks the probability of drawing this number.",
+     "L": [
+      2877,
+      2879
+     ]
+    }
+   ],
+   "params": [
+    {
+     "id": "v",
+     "label": "Veracity of the witness",
+     "value": "1 - 1/10",
+     "min": 0.05,
+     "max": 0.99,
+     "step": 0.01,
+     "src": [
+      {
+       "q": "experience has made known that this witness deceives one time in ten",
+       "L": [
+        2880,
+        2880
+       ]
+      }
+     ]
+    },
+    {
+     "id": "N",
+     "label": "Numbers in the urn",
+     "value": "1000",
+     "min": 2,
+     "max": 1000000,
+     "scale": "log",
+     "src": [
+      {
+       "q": "an urn which contains a thousand of them",
+       "L": [
+        2877,
+        2878
+       ]
+      }
+     ]
+    }
+   ],
+   "steps": [
+    {
+     "id": "ver",
+     "label": "Probability that his testimony is true",
+     "expr": "v",
+     "stated": "1/10",
+     "src": [
+      {
+       "q": "so that the probability of his testimony is 1/10",
+       "L": [
+        2880,
+        2881
+       ]
+      }
+     ],
+     "note": "The premise says he deceives one time in ten, so his testimony is true 9 times in 10. The printed 1/10 is one of two corrections the transcriber's note promises for page 110; neither was applied to this file.",
+     "erratum": [
+      {
+       "q": "Two further corrections have also been made: 9/10 in place of 1/10, and 9/10 in place of 6/10, on page 110",
+       "L": [
+        22,
+        23
+       ],
+       "scope": "book"
+      }
+     ],
+     "check": {
+      "value": "9/10",
+      "status": "differs"
+     }
+    },
+    {
+     "id": "h1",
+     "label": "He tells the truth: 79 is drawn and he says so",
+     "expr": "1/N * v",
+     "printed": "1/1000 * 6/10",
+     "stated": "9/10000",
+     "src": [
+      {
+       "q": "the probability that the witness will announce number 79 is the probability itself of the drawing of this number, that is to say, 1/1000. It is necessary to multiply it by the probability 6/10 of the veracity of the witness; one will have then 9/10000 for the probability of the event observed in this hypothesis.",
+       "L": [
+        2887,
+        2891
+       ]
+      }
+     ],
+     "note": "As printed, 1/1000 × 6/10 = 6/10000, not 9/10000. With the veracity of 9/10 that the premise implies, the printed result is right.",
+     "erratum": [
+      {
+       "q": "Two further corrections have also been made: 9/10 in place of 1/10, and 9/10 in place of 6/10, on page 110",
+       "L": [
+        22,
+        23
+       ],
+       "scope": "book"
+      }
+     ],
+     "check": {
+      "value": "9/10000",
+      "printedValue": "3/5000",
+      "status": "misprint"
+     }
+    },
+    {
+     "id": "nd",
+     "label": "He deceives: 79 was not drawn",
+     "expr": "(N-1)/N",
+     "stated": "999/1000",
+     "src": [
+      {
+       "q": "If the witness deceives, number 79 is not drawn, and the probability of this case is 999/1000.",
+       "L": [
+        2891,
+        2893
+       ]
+      }
+     ],
+     "check": {
+      "value": "999/1000",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "pk",
+     "label": "…and of the 999 numbers not drawn he names 79",
+     "expr": "nd * 1/(N-1)",
+     "stated": "1/1000",
+     "src": [
+      {
+       "q": "the probability that he will choose number 79 is 1/999; multiplying, then, this probability by the preceding one, we shall have 1/1000 for the probability that the witness will announce number 79 in the second hypothesis.",
+       "L": [
+        2896,
+        2899
+       ]
+      }
+     ],
+     "check": {
+      "value": "1/1000",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "h2",
+     "label": "…times the chance that he deceives",
+     "expr": "pk * (1-v)",
+     "stated": "1/10000",
+     "src": [
+      {
+       "q": "It is necessary again to multiply this probability by 1/10 of the hypothesis itself, which gives 1/10000 for the probability of the event relative to this hypothesis.",
+       "L": [
+        2899,
+        2901
+       ]
+      }
+     ],
+     "check": {
+      "value": "1/10000",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "post",
+     "label": "Probability that 79 was drawn (the sixth principle)",
+     "expr": "h1/(h1+h2)",
+     "stated": "9/10",
+     "src": [
+      {
+       "q": "the probability of the first hypothesis, and this probability will be 9/10; that is to say, the veracity itself of the witness.",
+       "L": [
+        2905,
+        2906
+       ]
+      }
+     ],
+     "note": "For any size of urn the answer equals the witness's veracity: with numbered balls a liar has 999 lies to choose from, so his lie rarely lands on 79.",
+     "check": {
+      "value": "9/10",
+      "status": "ok"
+     }
+    }
+   ],
+   "plot": {
+    "x": "v",
+    "y": [
+     "post"
+    ],
+    "caption": "P(79 drawn) against veracity: the diagonal. Testimony to one number out of many is worth exactly the witness's veracity."
+   }
+  },
+  {
+   "type": "LiveCalculation",
+   "title": "When a lying witness has an interest in 79",
+   "why": "A second printed chain; the slider shows how the witness's motive drags the result down.",
+   "src": [
+    {
+     "q": "If the witness, wishing to deceive, has some interest in choosing number 79 among the numbers not drawn",
+     "L": [
+      2911,
+      2912
+     ]
+    }
+   ],
+   "params": [
+    {
+     "id": "v",
+     "label": "Veracity of the witness",
+     "value": "9/10",
+     "min": 0.05,
+     "max": 0.99,
+     "step": 0.01
+    },
+    {
+     "id": "N",
+     "label": "Numbers in the urn",
+     "value": "1000",
+     "min": 2,
+     "max": 100000,
+     "scale": "log"
+    },
+    {
+     "id": "c",
+     "label": "Chance a lying witness picks 79",
+     "value": "1/9",
+     "min": 0.001,
+     "max": 1,
+     "step": 0.001,
+     "src": [
+      {
+       "q": "Supposing it to be 1/9",
+       "L": [
+        2917,
+        2917
+       ]
+      }
+     ]
+    }
+   ],
+   "steps": [
+    {
+     "id": "t",
+     "label": "He tells the truth (as before)",
+     "expr": "1/N * v",
+     "src": [
+      {
+       "q": "In truth this same interest increases the probability 9/10 that the witness will speak the truth if number 79 is drawn.",
+       "L": [
+        2925,
+        2927
+       ]
+      }
+     ],
+     "check": {
+      "value": "9/10000",
+      "status": "computed"
+     }
+    },
+    {
+     "id": "f",
+     "label": "He deceives and picks 79 on purpose",
+     "expr": "(N-1)/N * c * (1-v)",
+     "stated": "111/10000",
+     "src": [
+      {
+       "q": "it will be necessary to multiply by this fraction the probability 999/1000 in order to get in the hypothesis of the falsehood the probability of the event observed, which it is necessary still to multiply by 1/10, which gives 111/10000 for the probability of the event in the second hypothesis.",
+       "L": [
+        2917,
+        2921
+       ]
+      }
+     ],
+     "check": {
+      "value": "111/10000",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "post",
+     "label": "Probability that 79 was drawn",
+     "expr": "t/(t+f)",
+     "stated": "9/120",
+     "src": [
+      {
+       "q": "Then the probability of the first hypothesis, or of the drawing of number 79, is reduced by the preceding rule to 9/120.",
+       "L": [
+        2921,
+        2923
+       ]
+      }
+     ],
+     "check": {
+      "value": "3/40",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "cap",
+     "label": "Even if interest made him certain to report a true 79",
+     "expr": "(1/N)/((1/N)+f)",
+     "stated": "10/121",
+     "src": [
+      {
+       "q": "But this probability cannot exceed unity or 10/10; thus the probability of the drawing of number 79 will not surpass 10/121.",
+       "L": [
+        2927,
+        2928
+       ]
+      }
+     ],
+     "check": {
+      "value": "10/121",
+      "status": "ok"
+     }
+    }
+   ],
+   "plot": {
+    "x": "c",
+    "y": [
+     "post"
+    ],
+    "caption": "P(79 drawn) as the liar's interest in 79 grows: motive, not honesty, sets the ceiling."
+   }
+  },
+  {
+   "type": "LiveCalculation",
+   "title": "One white ball among 999 black: the extraordinary fact",
+   "why": "The chapter's central result. A liar who sees black has only one false thing to say, so his lies all land on 'white'.",
+   "src": [
+    {
+     "q": "Suppose now that the urn contains 999 black balls and one white ball, and that one ball having been drawn a witness of the drawing announces that this ball is white.",
+     "L": [
+      2946,
+      2948
+     ]
+    }
+   ],
+   "params": [
+    {
+     "id": "v",
+     "label": "Veracity of the witness",
+     "value": "9/10",
+     "min": 0.05,
+     "max": 0.999,
+     "step": 0.001
+    },
+    {
+     "id": "B",
+     "label": "Black balls in the urn",
+     "value": "999",
+     "min": 1,
+     "max": 1000000,
+     "scale": "log"
+    }
+   ],
+   "steps": [
+    {
+     "id": "h1",
+     "label": "White is drawn and he says so",
+     "expr": "1/(B+1) * v",
+     "stated": "9/10000",
+     "src": [
+      {
+       "q": "The probability of the event observed, determined _à priori_ in the first hypothesis, will be here, as in the preceding question, equal to 9/10000.",
+       "L": [
+        2948,
+        2950
+       ]
+      }
+     ],
+     "check": {
+      "value": "9/10000",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "h2",
+     "label": "Black is drawn and he says white",
+     "expr": "B/(B+1) * (1-v)",
+     "stated": "999/10000",
+     "src": [
+      {
+       "q": "It is necessary to multiply it by the probability 1/10 of the falsehood, which gives 999/10000 for the probability of the event observed relative to the second hypothesis.",
+       "L": [
+        2952,
+        2954
+       ]
+      }
+     ],
+     "check": {
+      "value": "999/10000",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "post",
+     "label": "Probability that the white ball was drawn",
+     "expr": "h1/(h1+h2)",
+     "stated": "9/1008",
+     "src": [
+      {
+       "q": "one will have 9/1008 for the probability of the first hypothesis and of the drawing of a white ball",
+       "L": [
+        2961,
+        2962
+       ]
+      }
+     ],
+     "check": {
+      "value": "1/112",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "lie",
+     "label": "Probability that a black ball was drawn",
+     "expr": "h2/(h1+h2)",
+     "stated": "999/1008",
+     "src": [
+      {
+       "q": "and 999/1008 for the probability of the second hypothesis and of the drawing of a black ball.",
+       "L": [
+        2962,
+        2963
+       ]
+      }
+     ],
+     "check": {
+      "value": "111/112",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "mil",
+     "label": "The same with a million balls, one white",
+     "expr": "(999999/1000000*(1-v)) / (999999/1000000*(1-v) + 1/1000000*v)",
+     "stated": "999999/1000008",
+     "src": [
+      {
+       "q": "it would approach it much nearer and would become 999999/1000008 if the urn contained a million balls of which one was white",
+       "L": [
+        2964,
+        2966
+       ]
+      }
+     ],
+     "check": {
+      "value": "111111/111112",
+      "status": "ok"
+     }
+    }
+   ],
+   "plot": {
+    "x": "B",
+    "y": [
+     "post"
+    ],
+    "caption": "P(white drawn | he says white) as the urn fills with black: belief collapses as the fact becomes extraordinary."
+   }
+  },
+  {
+   "type": "LiveCalculation",
+   "title": "Two witnesses who agree on number 2",
+   "why": "The concurrence problem: independent agreement is strong evidence when there are many ways to lie.",
+   "src": [
+    {
+     "q": "Two witnesses of this drawing announce that number 2 has been drawn, and one asks for the resultant probability of the totality of these testimonies.",
+     "L": [
+      3211,
+      3213
+     ]
+    }
+   ],
+   "params": [
+    {
+     "id": "a",
+     "label": "Veracity of the first witness",
+     "value": "9/10",
+     "min": 0.05,
+     "max": 0.99,
+     "step": 0.01,
+     "src": [
+      {
+       "q": "veracities which we will suppose to be 9/10 and 7/10",
+       "L": [
+        3217,
+        3217
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b",
+     "label": "Veracity of the second witness",
+     "value": "7/10",
+     "min": 0.05,
+     "max": 0.99,
+     "step": 0.01
+    },
+    {
+     "id": "N",
+     "label": "Numbers in the urn",
+     "value": "100",
+     "min": 2,
+     "max": 100000,
+     "scale": "log",
+     "src": [
+      {
+       "q": "the drawing of a number from an urn which contains a hundred of them",
+       "L": [
+        3209,
+        3210
+       ]
+      }
+     ]
+    }
+   ],
+   "steps": [
+    {
+     "id": "h1",
+     "label": "Number 2 drawn and both tell the truth",
+     "expr": "1/N * a * b",
+     "stated": "63/10000",
+     "src": [
+      {
+       "q": "one will have then 63/10000 for the probability of the event observed in this hypothesis.",
+       "L": [
+        3217,
+        3219
+       ]
+      }
+     ],
+     "check": {
+      "value": "63/10000",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "h2",
+     "label": "Not drawn, both lie, and both happen to name 2",
+     "expr": "(N-1)/N * (1/(N-1))^2 * (1-a) * (1-b)",
+     "stated": "1/330000",
+     "src": [
+      {
+       "q": "one will have thus 1/330000 for the probability of the event observed in the second hypothesis.",
+       "L": [
+        3226,
+        3227
+       ]
+      }
+     ],
+     "check": {
+      "value": "1/330000",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "post",
+     "label": "Probability that number 2 was drawn",
+     "expr": "h1/(h1+h2)",
+     "stated": "2079/2080",
+     "src": [
+      {
+       "q": "this probability will be then 2079/2080, and the probability of the failure to draw this number and of the falsehood of the witnesses will be 1/2080.",
+       "L": [
+        3230,
+        3232
+       ]
+      }
+     ],
+     "check": {
+      "value": "2079/2080",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "two",
+     "label": "The same witnesses, an urn of only 1 and 2",
+     "expr": "(1/2*a*b)/(1/2*a*b + 1/2*(1-a)*(1-b))",
+     "stated": "21/22",
+     "src": [
+      {
+       "q": "If the urn should contain only the numbers 1 and 2 one would find in the same manner 21/22 for the probability of the drawing of number 2",
+       "L": [
+        3234,
+        3235
+       ]
+      }
+     ],
+     "check": {
+      "value": "21/22",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "ratio",
+     "label": "How much likelier their falsehood is with two numbers",
+     "expr": "(1-two)/(1-post)",
+     "stated": "94",
+     "check": {
+      "value": "1040/11",
+      "status": "ok"
+     },
+     "src": [
+      {
+       "q": "a probability at least ninety-four times larger than the preceding one.",
+       "L": [
+        3237,
+        3237
+       ]
+      }
+     ]
+    }
+   ],
+   "plot": {
+    "x": "N",
+    "y": [
+     "post"
+    ],
+    "caption": "P(number 2 drawn) as the urn grows: the less probable the fact, the harder for two liars to agree on it by chance."
+   }
+  },
+  {
+   "type": "LiveCalculation",
+   "title": "Urns A and B: two ordinary testimonies, one extraordinary conclusion",
+   "why": "Laplace's answer to the 'dead fifteen days, alive yesterday' objection, done as arithmetic.",
+   "src": [
+    {
+     "q": "In order to make it plain let us consider two urns, A and B, of which the first contains a million white balls and the second a million black balls.",
+     "L": [
+      3020,
+      3022
+     ]
+    }
+   ],
+   "params": [
+    {
+     "id": "v",
+     "label": "Veracity of each witness",
+     "value": "9/10",
+     "min": 0.05,
+     "max": 0.999,
+     "step": 0.001,
+     "src": [
+      {
+       "q": "Let us represent by 9/10 the probability that he announces the truth",
+       "L": [
+        3037,
+        3038
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M",
+     "label": "Balls in each urn",
+     "value": "1000000",
+     "min": 1,
+     "max": 10000000,
+     "scale": "log"
+    }
+   ],
+   "steps": [
+    {
+     "id": "t1",
+     "label": "Both speak the truth: white from A reappears from B",
+     "expr": "1/2 * 1/(M+1) * v*v",
+     "stated": "81/200000200",
+     "src": [
+      {
+       "q": "Multiplying it by the product of the probabilities 9/10 and 9/10 that the witnesses speak the truth one will have 81/200000200 for the probability of the event observed in this first hypothesis.",
+       "L": [
+        3049,
+        3051
+       ]
+      }
+     ],
+     "check": {
+      "value": "81/200000200",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "t2",
+     "label": "First truthful, second not",
+     "expr": "1/2 * M/(M+1) * v*(1-v)",
+     "stated": "9000000/200000200",
+     "src": [
+      {
+       "q": "one will have 9000000/200000200 for the probability for the event observed in the second hypothesis.",
+       "L": [
+        3061,
+        3062
+       ]
+      }
+     ],
+     "check": {
+      "value": "45000/1000001",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "t3",
+     "label": "First not, second truthful",
+     "expr": "1/2 * M/(M+1) * (1-v)*v",
+     "stated": "9000000/200000200",
+     "src": [
+      {
+       "q": "one will have 9000000/200000200 for the probability of the event observed relative to this hypothesis.",
+       "L": [
+        3071,
+        3073
+       ]
+      }
+     ],
+     "check": {
+      "value": "45000/1000001",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "t4",
+     "label": "Neither speaks the truth",
+     "expr": "1/2 * 1/(M+1) * (1-v)*(1-v)",
+     "stated": "1/200000200",
+     "src": [
+      {
+       "q": "one will have 1/200000200 for the probability of the event observed in this hypothesis.",
+       "L": [
+        3080,
+        3081
+       ]
+      }
+     ],
+     "check": {
+      "value": "1/200000200",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "post",
+     "label": "Probability that white was drawn both times",
+     "expr": "t1/(t1+t2+t3+t4)",
+     "stated": "81/18000082",
+     "src": [
+      {
+       "q": "and then one has for this probability 81/18000082, an extremely small fraction.",
+       "L": [
+        3087,
+        3088
+       ]
+      }
+     ],
+     "check": {
+      "value": "81/18000082",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "ind",
+     "label": "Two unconnected pairs of urns instead",
+     "expr": "v*v",
+     "stated": "81/100",
+     "src": [
+      {
+       "q": "the probability of the thing announced by the two witnesses will be the product of the probabilities of their testimonies, or 81/100",
+       "L": [
+        3093,
+        3095
+       ]
+      }
+     ],
+     "check": {
+      "value": "81/100",
+      "status": "ok"
+     }
+    },
+    {
+     "id": "ratio",
+     "label": "How many times greater",
+     "expr": "ind/post",
+     "stated": "180000",
+     "check": {
+      "value": "9000041/50",
+      "status": "ok"
+     },
+     "src": [
+      {
+       "q": "it will then be at least a hundred and eighty thousand times greater than the preceding one.",
+       "L": [
+        3095,
+        3096
+       ]
+      }
+     ]
+    }
+   ],
+   "plot": {
+    "x": "M",
+    "y": [
+     "post"
+    ],
+    "caption": "P(white both times) as the urns grow: the combination, not either testimony, is what is improbable."
+   }
+  },
+  {
+   "type": "ArgumentTree",
+   "title": "The argument of the chapter",
+   "why": "Between the calculations Laplace argues a single thesis against named opponents.",
+   "nodes": [
+    {
+     "kind": "thesis",
+     "text": "The more extraordinary the fact attested, the more probable it is that the witness errs or lies.",
+     "src": [
+      {
+       "q": "Applying this conclusion to all extraordinary deeds it results from it that the probability of the error or of the falsehood of the witness becomes as much greater as the fact attested is more extraordinary.",
+       "L": [
+        2992,
+        2994
+       ]
+      }
+     ],
+     "children": [
+      {
+       "kind": "support",
+       "text": "The white-ball urn: a single liar's falsehood has only one place to land.",
+       "src": [
+        {
+         "q": "We see thus how the probability of the falsehood increases in the measure that the deed becomes more extraordinary.",
+         "L": [
+          2967,
+          2969
+         ]
+        }
+       ],
+       "children": []
+      },
+      {
+       "kind": "support",
+       "text": "Allowing the witness to be honestly mistaken, as well as to lie, makes the extraordinary still less credible.",
+       "src": [
+        {
+         "q": "We have supposed up to this time that the witness was not mistaken at all; but if one admits, however, the chance of his error the extraordinary incident becomes more improbable.",
+         "L": [
+          2971,
+          2973
+         ]
+        }
+       ],
+       "children": []
+      },
+      {
+       "kind": "objection",
+       "text": "Some authors: seeing an extraordinary fact is like seeing an ordinary one, so the witness deserves equal credence.",
+       "src": [
+        {
+         "q": "Some authors have advanced the contrary on this basis that the view of an extraordinary fact being perfectly similar to that of an ordinary fact the same motives ought to lead us to give the witness the same credence when he affirms the one or the other of these facts.",
+         "L": [
+          2994,
+          2998
+         ]
+        }
+       ],
+       "children": [
+        {
+         "kind": "reply",
+         "text": "Common sense rejects this, and the calculus measures how far.",
+         "src": [
+          {
+           "q": "Simple common sense rejects such a strange assertion; but the calculus of probabilities, while confirming the findings of common sense, appreciates the greatest improbability of testimonies in regard to extraordinary facts.",
+           "L": [
+            2998,
+            3001
+           ]
+          }
+         ],
+         "children": []
+        }
+       ]
+      },
+      {
+       "kind": "objection",
+       "text": "Two equally credible witnesses: one saw a man dead fifteen days ago, the other saw him alive yesterday. Each fact alone is ordinary.",
+       "src": [
+        {
+         "q": "These authors insist and suppose two witnesses equally worthy of belief, of whom the first attests that he saw an individual dead fifteen days ago whom the second witness affirms to have seen yesterday full of life.",
+         "L": [
+          3003,
+          3005
+         ]
+        }
+       ],
+       "children": [
+        {
+         "kind": "reply",
+         "text": "An impossible conclusion is the limit of extraordinary ones; urns A and B show how far combined testimony loses value.",
+         "src": [
+          {
+           "q": "but an impossible conclusion is the limit of extraordinary conclusions, as error is the limit of improbable conclusions",
+           "L": [
+            3013,
+            3015
+           ]
+          }
+         ],
+         "children": []
+        }
+       ]
+      },
+      {
+       "kind": "claim",
+       "text": "So a suspension of natural laws needs an immense weight of testimony; ordinary rules of criticism do not apply.",
+       "src": [
+        {
+         "q": "One may judge by this the immense weight of testimonies necessary to admit a suspension of natural laws, and how improper it would be to apply to this case the ordinary rules of criticism.",
+         "L": [
+          3113,
+          3116
+         ]
+        }
+       ],
+       "children": []
+      },
+      {
+       "kind": "example",
+       "text": "Dominant opinion can make the absurd look credible: Racine and Pascal on a Port-Royal miracle.",
+       "src": [
+        {
+         "q": "Two great men of the century of Louis XIV.—Racine and Pascal—are striking examples of this.",
+         "L": [
+          3130,
+          3131
+         ]
+        }
+       ],
+       "children": []
+      },
+      {
+       "kind": "claim",
+       "text": "Pascal's wager, in Craig's geometric form, fails: the infinite promise itself makes the testimony infinitely improbable.",
+       "src": [
+        {
+         "q": "Also calculus teaches us that this exaggeration itself enfeebles the probability of their testimony to the point of rendering it infinitely small or zero.",
+         "L": [
+          3183,
+          3186
+         ]
+        }
+       ],
+       "children": []
+      },
+      {
+       "kind": "claim",
+       "text": "Independent witnesses who agree are more credible the less probable the fact is in itself.",
+       "src": [
+        {
+         "q": "One sees by this how much the probability of the falsehood of the witnesses diminishes when the fact which they attest is less probable in itself.",
+         "L": [
+          3238,
+          3240
+         ]
+        }
+       ],
+       "children": []
+      },
+      {
+       "kind": "claim",
+       "text": "Testimony passed down a chain of witnesses decays; time erodes historical facts as it erodes monuments.",
+       "src": [
+        {
+         "q": "The action of time enfeebles then, without ceasing, the probability of historical facts just as it changes the most durable monuments.",
+         "L": [
+          3270,
+          3271
+         ]
+        }
+       ],
+       "children": [
+        {
+         "kind": "limit",
+         "text": "Craig computed when the proofs of Christianity would fade out; Laplace calls the analysis faulty.",
+         "src": [
+          {
+           "q": "he finds that this ought to take place 1454 years after the time when he writes. But his analysis is as faulty as his hypothesis upon the duration of the moon is bizarre.",
+           "L": [
+            3283,
+            3285
+           ]
+          }
+         ],
+         "children": []
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "Counterexample",
+   "title": "Where Laplace limits his own rule",
+   "why": "The chapter's strongest rule has an exception that Laplace states himself.",
+   "cases": [
+    {
+     "rule": "Testimony to an extremely improbable event deserves no credence.",
+     "ruleSrc": [
+      {
+       "q": "We would give no credence to the testimony of a man who should attest to us that in throwing a hundred dice into the air they had all fallen on the same face.",
+       "L": [
+        3101,
+        3103
+       ]
+      }
+     ],
+     "case": "Had we seen it ourselves and checked for illusion and deception, we would accept it. Improbability alone is not impossibility.",
+     "src": [
+      {
+       "q": "But after this examination we should not hesitate to admit it in spite of its extreme improbability; and no one would be tempted, in order to explain it, to recur to a denial of the laws of vision.",
+       "L": [
+        3107,
+        3109
+       ]
+      }
+     ],
+     "verdict": "limit",
+     "note": "Venn takes up this same example in his footnote 7 (chapter XVII).",
+     "xref": {
+      "lens": "venn-xvii",
+      "label": "Venn, ch. XVII, n. 7",
+      "q": "Laplace, for instance (_Essai_, ed. 1825, p. 149), says that if we saw 100 dies",
+      "L": [
+       15913,
+       15914
+      ]
+     }
+    },
+    {
+     "rule": "Reports of events contrary to natural law lower belief in what they report.",
+     "ruleSrc": [
+      {
+       "q": "All those who without offering this immensity of testimonies support this when making recitals of events contrary to those laws, decrease rather than augment the belief which they wish to inspire",
+       "L": [
+        3116,
+        3119
+       ]
+      }
+     ],
+     "case": "Among the uneducated the wonderful raises belief instead: what lowers credence for some raises it for others.",
+     "src": [
+      {
+       "q": "But that which diminishes the belief of educated men increases often that of the uneducated, always greedy for the wonderful.",
+       "L": [
+        3120,
+        3122
+       ]
+      }
+     ],
+     "verdict": "bends"
+    }
+   ]
+  },
+  {
+   "type": "CastList",
+   "title": "People in the chapter",
+   "why": "The chapter cites few people, but each is used as a warning or an opponent.",
+   "people": [
+    {
+     "name": "Jean Racine",
+     "as": "Racine",
+     "role": "warning",
+     "gloss": "Poet; reports the Port-Royal cure as a miracle.",
+     "src": [
+      {
+       "q": "It is painful to see with what complaisance Racine, this admirable painter of the human heart and the most perfect poet that has ever lived, reports as miraculous the recovery of Mlle. Perrier",
+       "L": [
+        3132,
+        3134
+       ]
+      }
+     ],
+     "xref": {
+      "lens": "hume-x",
+      "label": "Also in Hume, §96 n. 24",
+      "q": "The famous Racine gives an account of this miracle in his famous history of Port-Royal",
+      "L": [
+       3952,
+       3953
+      ]
+     }
+    },
+    {
+     "name": "Blaise Pascal",
+     "as": "Pascal",
+     "role": "opponent",
+     "gloss": "Argues the cure was necessary to religion; author of the wager Laplace rebuts.",
+     "src": [
+      {
+       "q": "it is painful to read the reasons by which Pascal seeks to prove that this miracle should be necessary to religion",
+       "L": [
+        3135,
+        3137
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Marguerite Périer",
+     "as": "Mlle. Perrier",
+     "role": "case",
+     "gloss": "Pascal's niece, cured of a lachrymal fistula by touching a relic of the Holy Thorn, 1656.",
+     "src": [
+      {
+       "q": "The young Perrier had been afflicted for three years and a half by a lachrymal fistula",
+       "L": [
+        3138,
+        3139
+       ]
+      }
+     ],
+     "xref": {
+      "lens": "hume-x",
+      "label": "Hume: 'the niece of the famous Pascal'",
+      "q": "Yet they all give evidence for a miracle, wrought on the niece of the famous Pascal",
+      "L": [
+       3950,
+       3951
+      ]
+     }
+    },
+    {
+     "name": "John Locke",
+     "as": "the philosopher Locke",
+     "role": "opponent",
+     "gloss": "Quoted for allowing that strangeness need not lessen assent to supernatural events.",
+     "src": [
+      {
+       "q": "even in the Essay on the Human Understanding by the philosopher Locke, who says, in speaking of the degree of assent",
+       "L": [
+        3153,
+        3155
+       ]
+      }
+     ]
+    },
+    {
+     "name": "John Craig",
+     "as": "Craig, an English mathematician",
+     "role": "opponent",
+     "gloss": "Put Pascal's wager in geometric form; dated the fading of Christianity's proofs.",
+     "src": [
+      {
+       "q": "that Craig, an English mathematician, has produced under a geometric form",
+       "L": [
+        3170,
+        3171
+       ]
+      },
+      {
+       "q": "Craig has tried to submit to calculus the gradual enfeebling of the proofs of the Christian religion",
+       "L": [
+        3281,
+        3282
+       ]
+      }
+     ]
+    },
+    {
+     "name": "The Jesuits",
+     "as": "the Jesuits",
+     "role": "context",
+     "gloss": "Persecutors of the Port-Royal monks at the time of the cure.",
+     "src": [
+      {
+       "q": "in order to justify the doctrine of the monks of this abbey, at that time persecuted by the Jesuits.",
+       "L": [
+        3137,
+        3138
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "Glossary",
+   "title": "Terms of 1814, in Truscott and Emory's 1902 translation",
+   "why": "A few words carry technical meanings a modern reader could misread.",
+   "terms": [
+    {
+     "term": "veracity",
+     "period": "The probability that a witness tells the truth.",
+     "modern": "A witness's reliability, P(report is true); in modern terms a hit rate set equal to one minus the false-report rate.",
+     "src": [
+      {
+       "q": "that is to say, the veracity itself of the witness.",
+       "L": [
+        2906,
+        2906
+       ]
+      }
+     ]
+    },
+    {
+     "term": "à priori",
+     "period": "Before the testimony is taken into account.",
+     "modern": "Prior probability.",
+     "src": [
+      {
+       "q": "it is necessary first to determine _à priori_ the probability of the event in each hypothesis.",
+       "L": [
+        2885,
+        2887
+       ]
+      }
+     ]
+    },
+    {
+     "term": "the sixth principle",
+     "period": "Laplace's rule for the probability of causes drawn from observed events.",
+     "modern": "Bayes' theorem with a discrete set of hypotheses: posterior proportional to prior × likelihood.",
+     "src": [
+      {
+       "q": "we shall have, by the sixth principle, the probability of the first hypothesis",
+       "L": [
+        2904,
+        2905
+       ]
+      }
+     ]
+    },
+    {
+     "term": "calculus",
+     "period": "The calculus of probabilities.",
+     "modern": "Probability theory (not differential calculus).",
+     "src": [
+      {
+       "q": "it is indeed important to submit it to calculus",
+       "L": [
+        2866,
+        2866
+       ]
+      }
+     ]
+    },
+    {
+     "term": "lachrymal fistula",
+     "period": "A chronic ulcer at the corner of the eye.",
+     "modern": "A fistula of the tear (lacrimal) sac, usually after infection.",
+     "src": [
+      {
+       "q": "afflicted for three years and a half by a lachrymal fistula",
+       "L": [
+        3139,
+        3139
+       ]
+      }
+     ]
+    },
+    {
+     "term": "recitals",
+     "period": "Narrations of events.",
+     "modern": "Accounts, reports.",
+     "src": [
+      {
+       "q": "support this when making recitals of events contrary to those laws",
+       "L": [
+        3117,
+        3118
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "verification": {
+  "date": "2026-10-15",
+  "anchors": 70,
+  "verified": 70,
+  "dropped": [],
+  "checks": {
+   "ok": 24,
+   "approx": 0,
+   "misprint": 1,
+   "differs": 1,
+   "computed": 1
+  },
+  "method": "Each anchor must occur verbatim in the chapter text after collapsing whitespace; failing elements are dropped. Expressions are evaluated in exact rational arithmetic."
+ },
+ "provenance": "Precomputed by Claude, October 2026 (AI-generated; spot-check before relying on it)"
+}

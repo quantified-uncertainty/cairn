@@ -343,6 +343,37 @@ for (const r of outline.ranges) {
   if (n >= 4) ranges.push([r.c, r.lo, r.hi, r.d, r.n]);
 }
 
+// ---------- 8. A precomputed librarian trail (AI-written captions, validated ids) ----------
+// Captions were written by Claude in October 2026 from the records shown and general knowledge
+// of the history of statistics; they contain no quotations. Every ref must resolve to a row
+// in this file or the script fails.
+const TRAILS = [
+  {
+    q: 'Where do I start on the history of Bayesian thought?',
+    title: 'Bayes, from the 1763 essay to the working textbook',
+    stops: [
+      ['OL16059512W', 'Start with the story: a narrative history of Bayes\' rule from its 18th-century origins to code-breaking and modern computing. It gives you the map before the primary sources.'],
+      ['OL14986078W', 'The seed. Bayes\' essay, published posthumously by Richard Price in 1763, asks how to infer an unknown chance from observed frequencies.'],
+      [58881, 'Laplace turns inverse probability into a general method and explains it for a lay reader, including his sunrise example. Its year here is estimated from his life dates.'],
+      ['OL2630376W', 'Boole recasts logic as algebra and applies it to probability, and he objects to assuming equal priors when nothing is known.'],
+      [57359, 'The frequentist reply: Venn defines probability as a proportion in a long series and rejects inverse probability. This is the third edition.'],
+      [74864, 'Jevons keeps the Laplacean line alive, treating scientific induction as inverse probability.'],
+      ['OL35949W', 'Keynes treats probability as a logical relation between propositions, a bridge from the 19th-century logicians to 20th-century subjectivism.'],
+      ['OL5911565W', 'Jaynes rebuilds probability as extended logic, from Cox\'s theorem to maximum entropy, in a textbook published after his death.'],
+      ['OL12630389W', 'The standard applied text: hierarchical models, model checking and computation.'],
+      ['OL20743446W', 'A teaching-first course in Bayesian modelling with code, where many practitioners now begin.'],
+    ],
+  },
+];
+const rowOf = new Map(W.id.map((id, i) => [String(id), i]));
+const trails = TRAILS.map((t) => ({
+  q: t.q, title: t.title,
+  stops: t.stops.map(([ref, caption]) => {
+    if (!rowOf.has(String(ref))) throw new Error(`trail ref ${ref} does not resolve`);
+    return { ref: String(ref), caption };
+  }),
+}));
+
 mkdirSync(OUTDIR, { recursive: true });
 const out = {
   source: 'Open Library Search API (CC0) catalog.json, Project Gutenberg catalog feed (gutenberg.json + pg_catalog.csv author dates), LC Classification Outline',
@@ -358,6 +389,7 @@ const out = {
   subjects: vocab,
   subjectDf: vocabDf,
   ranges,
+  trails: { provenance: 'Precomputed by Claude, October 2026 (AI-generated; spot-check before relying on it)', list: trails },
   works: W,
 };
 writeFileSync(join(OUTDIR, 'room.json'), JSON.stringify(out));
