@@ -1,0 +1,50 @@
+/* Text layer over raster pages, find bar, quote button, printed page labels. */
+
+/* The layer: transparent words over the page image, laid out in whole-page
+   coordinates and mapped onto the panel by a transform set in JS. */
+.pg > .tl { position: absolute; left: 0; top: 0; transform-origin: 0 0; line-height: 1; text-align: initial; z-index: 1; pointer-events: none; mix-blend-mode: multiply; -webkit-text-size-adjust: none; text-size-adjust: none; forced-color-adjust: none; }
+.tl span, .tl br { color: transparent; position: absolute; white-space: pre; cursor: text; transform-origin: 0 0; pointer-events: auto; z-index: 1; }
+.tl .run span { position: static; z-index: auto; }       /* words inside a text run (a pdf.js item or an OCR line) */
+.tl span.markedContent { top: 0; height: 0; }
+.tl.ocr span { font-family: sans-serif; }
+.tl ::selection { color: transparent; background: rgb(214 140 30 / .34); }
+.tl br::selection { background: transparent; }
+.tl .eoc { display: block; position: absolute; inset: 100% 0 0; z-index: 0; cursor: default; user-select: none; }
+.tl.selecting .eoc { top: 0; pointer-events: auto; }
+.pg.has-tl > canvas, .pg.has-tl > .pno { user-select: none; -webkit-user-select: none; }
+.hiddenCanvasElement { position: absolute; top: 0; left: 0; width: 0; height: 0; display: none; } /* pdf.js text measuring */
+
+/* Word highlights: find, plus a quiet default for any other named highlight
+   (read-aloud and others style their own .hl-<name> to taste). The layer
+   multiplies onto the page, so marks look like ink from a highlighter. */
+.tl .w[class*="hl-"] { background: rgb(226 165 74 / .45); border-radius: 2px; }
+.tl .w.hl-find { background: rgb(255 222 70 / .78); }
+.tl .w.hl-find-cur { background: rgb(255 140 0 / .9); box-shadow: 0 0 0 2px rgb(255 140 0 / .9); }
+.tl .w.hl-find-cur.flash { animation: tl-flash .7s ease-out 1; }
+@keyframes tl-flash { 0% { box-shadow: 0 0 0 14px rgb(255 140 0 / 0); } 30% { box-shadow: 0 0 0 7px rgb(255 140 0 / .45); } 100% { box-shadow: 0 0 0 2px rgb(255 140 0 / .9); } }
+::highlight(find-cur) { background-color: #ff9a1f; color: #1a1611; }
+
+/* Find bar: a slim field in the item's header line, beside the position. */
+#findbar { position: fixed; z-index: 15; display: flex; align-items: center; gap: 2px; padding: 1px 3px 1px 9px; background: var(--bg-3); border: 1px solid var(--line); border-radius: 5px; box-shadow: 0 8px 24px #0009; }
+#findbar .fb-icon { width: 10px; height: 10px; border: 1.5px solid var(--ink-3); border-radius: 50%; position: relative; margin-right: 5px; flex: none; }
+#findbar .fb-icon::after { content: ""; position: absolute; width: 5px; height: 1.5px; background: var(--ink-3); right: -5px; bottom: -2px; transform: rotate(45deg); }
+#findbar input { width: 220px; background: none; border: 0; color: var(--ink); font: 13px var(--sans); padding: 2px; outline: none; }
+#findbar input::placeholder { color: var(--ink-3); }
+#findbar .fb-count { font: 11px var(--mono); color: var(--ink-2); min-width: 46px; text-align: right; padding-right: 6px; white-space: nowrap; }
+#findbar.miss .fb-count { color: var(--bad); }
+#findbar button { border: 0; padding: 0 7px; color: var(--ink-2); font-size: 13px; line-height: 20px; border-radius: 3px; }
+#findbar button:hover { background: #fff1; color: var(--ink); }
+#findbar:focus-within { border-color: var(--ink-3); }
+
+/* Find hits on the page strip: a yellow tick on the thin line, a bar on thumbnails. */
+#scrub:not(:hover):not(.pinned) .th.fh:not(.cur) { opacity: 1; background: #ffd94a; }
+.th.fh::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: #ffd94a; z-index: 1; }
+
+/* Quote button, next to the end of a selection. */
+#tl-quote { position: fixed; z-index: 16; display: flex; align-items: center; gap: 7px; padding: 4px 6px 4px 10px; background: var(--bg-3); color: var(--ink); border: 1px solid var(--ink-3); border-radius: 4px; font-size: 12px; box-shadow: 0 6px 18px #0009; }
+#tl-quote:hover { border-color: var(--accent); color: var(--accent); }
+#tl-quote kbd { font-size: 10px; }
+
+/* Printed page numbers in the position line. */
+#pos .plabel { color: var(--ink-2); }
+#pos .plabel::before { content: " · "; color: var(--ink-3); }

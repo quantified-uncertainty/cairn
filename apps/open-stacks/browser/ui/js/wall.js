@@ -1,52 +1,813 @@
-// The wall: the queue as a grid of covers that riffle through pages on hover.
-import { $, h, P, registerView } from './util.js';
-import { items, LANES, LANE_COLORS } from './corpus.js';
+// The wall: the queue laid out like a bookshop table. Every item gets a cover
+// that suits it (book covers with library labels, typeset title pages for
+// papers, post cards with lead images and opening lines, cloth bindings for
+// texts). A depth slider moves every visible tile through its pages at once;
+// hovering a tile scrubs it like a video thumbnail; contact sheets show pages
+// from across each item. Heavy work (page images, pdf.js renders, post text)
+// happens only for tiles near the viewport, nearest first, and is dropped as
+// soon as it is no longer wanted.
+import { $, h, P, on, store, lru, fmtDate, registerView, registerKey, keyHelp } from './util.js';
+import { items, LANES, LANE_COLORS, laneMax } from './corpus.js';
 import { state } from './state.js';
-import { openDoc, isFlow } from './docs.js';
-import { renderPage } from './render.js';
+import { openDoc, peekDoc, isFlow, scanUrl, pdfjs, extractors, prepareFlow } from './docs.js';
 import { setView } from './chrome.js';
 import { showFeed } from './feed.js';
+import { goPage } from './nav.js';
+import { summaries } from './summary.js';
 
-let wallShown = 0;
-const wallObs = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) addTiles(48); }, { root: $('#wall'), rootMargin: '600px' });
-export function showWall() { wallShown = 0; $('#grid').replaceChildren(); addTiles(72); wallObs.observe($('#grid-more')); }
+// ---------- settings ----------
+const SIZES = [130, 160, 200, 250, 310, 380]; // tile widths (px), - and + step through them
+const STEP = 0.05;                              // , and . move the depth by 5%
+const W = { size: 2, sheet: false, f: 0, ...store.get('wall', {}) };
+const saveW = () => store.set('wall', { size: W.size, sheet: W.sheet, f: W.f });
+const DPR = Math.min(2, window.devicePixelRatio || 1);
+const STALE = new Error('stale');
+// Where the time goes (wallStats().perf): [count, total ms] per kind of work.
+const perf = { fetch: [0, 0], open: [0, 0], render: [0, 0], digest: [0, 0] };
+const timed = async (k, p) => { const t = performance.now(); try { return await p; } finally { perf[k][0]++; perf[k][1] += performance.now() - t; } };
+
+// Small per-item facts kept between sessions so covers come up complete at
+// once: page counts, and for posts the lead image and opening lines.
+const META = store.get('wallMeta', {});
+let metaT = null;
+function setMeta(id, m) {
+  META[id] = { ...META[id], ...m };
+  clearTimeout(metaT);
+  metaT = setTimeout(() => {
+    const keys = Object.keys(META);
+    for (const k of keys.slice(0, Math.max(0, keys.length - 900))) delete META[k];
+    store.set('wallMeta', META);
+  }, 1500);
+}
+
+// ---------- item helpers ----------
+const hash = (s) => { let x = 2166136261; for (let i = 0; i < s.length; i++) x = Math.imul(x ^ s.charCodeAt(i), 16777619); return x >>> 0; };
+const iaOf = (it) => it.ia || (/archive\.org\/download\/([^/]+)\//.exec(it.url || '') || [])[1] || null;
+const isPost = (it) => it.kind === 'html' && /lesswrong|alignmentforum|effectivealtruism/.test(it.url || it.page || '');
+/** What kind of cover an item gets: book (cover scan), paper, post or cloth (a bound text). */
+function kindOf(it) {
+  if (it.kind === 'scan' || (it.kind === 'pdf' && iaOf(it))) return 'book';
+  if (it.kind === 'pdf') return 'paper';
+  return isPost(it) ? 'post' : 'cloth';
+}
+const nOf = (it) => digested(it)?.n || it.n || META[it.id]?.n || 0;
+/** Can this tile show pages right now? Posts need their text in memory; PDFs and scans only a page count. */
+const canShow = (it) => (isFlow(it) ? !!digested(it) : !!nOf(it));
+/** "Houston, Edwin James, 1847-1914. [from old catalog]" -> "Edwin James Houston". */
+function cleanAu(a) {
+  let s = String(a || '').split(/\s*;\s*/)[0].replace(/\s*[([][^)\]]*[)\]]/g, '')
+    .replace(/,?\s*(?:b\.|d\.|fl\.|ca\.)?\s*\d{3,4}\??(?:\s*-\s*\d{0,4}\??)?\.?\s*$/, '').replace(/[,;]\s*$/, '').trim();
+  const m = /^([A-Z][\p{L}'’-]+), ((?:[A-Z][\p{L}'’.-]*\.?\s?){1,3})$/u.exec(s); // "Last, First M." (a person, not a firm)
+  if (m) s = `${m[2].trim().replace(/\b([A-Z])(?![\p{L}.])/gu, '$1.')} ${m[1]}`;
+  return s;
+}
+const tsize = (t) => { const n = t.length; return n <= 16 ? 't-xl' : n <= 30 ? 't-l' : n <= 54 ? 't-m' : n <= 84 ? 't-s' : 't-xs'; };
+const minutes = (it) => (it.words ? Math.max(1, Math.round(it.words / 230)) : 0);
+const karma = (it) => (it.score ? Math.min(1, Math.log1p(it.score) / Math.log1p(laneMax[it.lane] || it.score)) : 0);
+const subject = (it) => (/shelved under "([^"]+)"/.exec(it.why || '') || [])[1] || '';
+/** The page at fraction f of an item with n pages. */
+const kAt = (n, f) => Math.max(0, Math.min(n - 1, Math.round(f * (n - 1))));
+
+// Featured posts (the top eighth of their lane by karma) span two columns.
+const pct = new Map();
+function topShare(it) {
+  if (!pct.has(it.lane)) {
+    const s = items.filter((x) => x.lane === it.lane && isPost(x)).map((x) => x.score || 0).sort((a, b) => b - a);
+    pct.set(it.lane, s);
+  }
+  const s = pct.get(it.lane);
+  return s.length ? s.indexOf(it.score || 0) / s.length : 1;
+}
+
+// ---------- a work queue: nearest tile first, stale work dropped ----------
+class Queue {
+  constructor(max) { this.max = max; this.jobs = []; this.running = new Set(); }
+  /** level 0 is wanted now; higher levels (prefetching) run only when nothing lower is waiting. */
+  add(key, T, fn, alive = () => T.vis, level = 0) {
+    const dup = this.jobs.find((j) => j.key === key) || [...this.running].find((j) => j.key === key);
+    if (dup) return dup.promise;
+    let res, rej;
+    const promise = new Promise((a, b) => { res = a; rej = b; });
+    promise.catch(() => {});
+    this.jobs.push({ key, T, fn, alive, level, promise, res, rej });
+    this.pump();
+    return promise;
+  }
+  pump() {
+    while (this.running.size < this.max && this.jobs.length) {
+      this.jobs = this.jobs.filter((j) => j.alive() || (j.rej(STALE), false));
+      if (!this.jobs.length) return;
+      // Nearest the middle of the screen first (by position in the grid, so no layout is forced).
+      const mid = centre();
+      let best = 0, bd = Infinity;
+      this.jobs.forEach((j, x) => { const d = j.level * 1e6 + Math.abs(j.T.idx - mid); if (d < bd) { bd = d; best = x; } });
+      const job = this.jobs.splice(best, 1)[0];
+      this.running.add(job);
+      Promise.resolve().then(() => job.fn(job)).then(job.res, job.rej).finally(() => { this.running.delete(job); this.pump(); });
+    }
+  }
+  /** Drop queued jobs nobody wants; cancel running renders nobody wants. */
+  sweep() {
+    this.jobs = this.jobs.filter((j) => j.alive() || (j.rej(STALE), false));
+    for (const j of this.running) if (!j.alive()) j.cancel?.();
+  }
+  clear() { for (const j of this.jobs) j.rej(STALE); this.jobs = []; for (const j of this.running) j.cancel?.(); }
+}
+/** Index of the tile in the middle of the screen, refreshed on scroll. */
+let mid = null;
+function centre() {
+  if (mid == null) {
+    const r = wallEl.getBoundingClientRect();
+    const el = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)?.closest?.('#grid .tile');
+    mid = byEl.get(el)?.idx ?? tiles.find((T) => T.vis)?.idx ?? 0;
+  }
+  return mid;
+}
+const netQ = new Queue(5); // post text and pdf downloads
+const cpuQ = new Queue(2); // pdf.js renders (partly on the main thread): two at a time keeps scrolling smooth
+
+function serverPrefetch(urls, pri, group) {
+  fetch('/prefetch', { method: 'POST', body: JSON.stringify({ urls, pri, group }) }).catch(() => {});
+}
+
+// ---------- posts and texts: a digest of the text, page by page ----------
+const digests = new Map();
+const digested = (it) => digests.get(it.id)?.done;
+async function fetchFlow(it) {
+  const r = await fetch(P(it.url));
+  if (!r.ok) throw new Error('fetch ' + r.status);
+  const backup = r.clone();
+  let html;
+  try { html = await (extractors[it.kind] || extractors.web)(it, r); } catch { html = await extractors.web(it, backup); }
+  return prepareFlow(it, html);
+}
+// Opening lines that are housekeeping, not the piece: asides in brackets, crosspost notes, status lines.
+const SKIP = /^([([]|(epistemic|confidence) status|cross-?post|this (post|essay|piece) (was|is) (cross|also|originally)|this is a (cross-?post|linkpost)|thanks to|acknowledg|edit\b|update\b|note:|content warning|cw:|tw:|written (with|by)|also (available|posted)|audio version|originally (posted|published)|summary of|link ?post)/i;
+/** Text of each stable page (as feed.js cuts them), the lead image candidates and the opening lines. */
+function digest(it) {
+  const p = lru(digests, it.id, async () => {
+    const peek = peekDoc(it);
+    const d = peek ? await peek : await timed('digest', fetchFlow(it));
+    const doc = new DOMParser().parseFromString(d.html, 'text/html');
+    const pages = Array.from({ length: d.n }, () => []);
+    const imgs = [];
+    const addImg = (pg, im) => {
+      const src = im?.getAttribute('src');
+      if (!src || src.startsWith('data:')) return;
+      imgs.push(src);
+      if (pg.length < 18) pg.push({ t: 'img', src });
+    };
+    for (const b of doc.body.querySelectorAll('[data-vp]')) {
+      const pg = pages[Number(b.dataset.vp)]; if (!pg) continue;
+      if (b.tagName === 'IMG') { addImg(pg, b); continue; }
+      const x = b.textContent.replace(/\s+/g, ' ').trim();
+      if (x && pg.length < 18) {
+        const t = /^H[1-6]$/.test(b.tagName) ? 'h' : { LI: 'li', DT: 'li', DD: 'li', BLOCKQUOTE: 'q', PRE: 'pre', TABLE: 'tb' }[b.tagName] || 'p';
+        pg.push({ t, x: x.slice(0, 900) });
+      }
+      for (const im of b.querySelectorAll('img')) addImg(pg, im);
+    }
+    let first = '';
+    for (const pg of pages.slice(0, 3)) for (const b of pg) {
+      if (first || (b.t !== 'p' && b.t !== 'li') || b.x.length < 60 || SKIP.test(b.x)) continue;
+      first = b.x.replace(/^(tl;?dr|summary|in short|short version)\s*[:.\-–—]\s*/i, '');
+    }
+    let pull = '';
+    for (const s of doc.body.querySelectorAll('strong, b')) {
+      const x = s.textContent.replace(/\s+/g, ' ').trim();
+      const vp = Number(s.closest('[data-vp]')?.dataset.vp ?? 99);
+      if (vp < 4 && x.length >= 45 && x.length <= 210 && /\s/.test(x) && !/:$/.test(x) && !SKIP.test(x)) { pull = x; break; }
+    }
+    const out = { n: d.n, pages, imgs: [...new Set(imgs)], first: clip(first, 300), pull };
+    setMeta(it.id, { n: d.n, first: out.first, pull, nimg: out.imgs.length });
+    return out;
+  }, 160);
+  p.then((v) => { p.done = v; }, () => {});
+  return p;
+}
+const clip = (s, n) => (s.length <= n ? s : s.slice(0, s.lastIndexOf(' ', n) > n * 0.6 ? s.lastIndexOf(' ', n) : n) + '…');
+
+/** The first image in a post big enough to lead with (checked by loading it). */
+const leads = new Map();
+function leadImage(it, D) {
+  if (META[it.id]?.lead !== undefined) return Promise.resolve(META[it.id].lead);
+  return lru(leads, it.id, async () => {
+    for (const src of D.imgs.filter((s) => !/\.svg(\?|$)|gravatar|emoji|latex|codecogs|badge|favicon/i.test(s)).slice(0, 4)) {
+      const ok = await new Promise((res) => {
+        const im = new Image(); const t = setTimeout(() => { im.src = ''; res(false); }, 6000);
+        im.onload = () => { clearTimeout(t); const r = im.naturalWidth / Math.max(1, im.naturalHeight); res(im.naturalWidth >= 240 && im.naturalHeight >= 110 && r > 0.45 && r < 3.4); };
+        im.onerror = () => { clearTimeout(t); res(false); };
+        im.src = src;
+      });
+      if (ok) { setMeta(it.id, { lead: src }); return src; }
+    }
+    setMeta(it.id, { lead: '' });
+    return '';
+  }, 300);
+}
+
+// ---------- PDFs: small renders through a shared pair of pdf.js workers ----------
+const pdocs = new Map();
+let workers = null, wn = 0;
+function pdfDoc(it) {
+  // Always the wall's own copy, even when the feed has the file open: see disableFontFace below.
+  return lru(pdocs, it.id, async () => {
+    const [lib, buf] = await Promise.all([pdfjs(), timed('fetch', fetch(P(it.url)).then((r) => { if (!r.ok) throw new Error('PDF ' + r.status); return r.arrayBuffer(); }))]);
+    workers ||= ['a', 'b', 'c'].map((x) => new lib.PDFWorker({ name: 'wall-' + x }));
+    // Three workers parse and build pages in parallel; only drawing is on the main thread.
+    // No FontFaces: each one added to the document makes Chrome relayout every
+    // line of text on the page; glyphs drawn as paths look the same at this size.
+    const pdf = await timed('open', lib.getDocument({ data: buf, isEvalSupported: false, disableFontFace: true, worker: workers[wn++ % 3] }).promise);
+    it.n ||= pdf.numPages;
+    setMeta(it.id, { n: pdf.numPages });
+    return { n: pdf.numPages, pdf };
+  }, 40); // every visible PDF stays open, so moving the slider only renders
+}
+const thumbs = new Map(); // `${id}|${k}|${w}` -> Promise<canvas>, margins trimmed
+async function renderThumb(d, it, k, w, job) {
+  const key = `${it.id}|${k}|${w}`;
+  const make = async () => {
+    const t0 = performance.now();
+    const page = await d.pdf.getPage(k + 1);
+    const v0 = page.getViewport({ scale: 1 });
+    const mx = v0.width * 0.075, my = v0.height * 0.06; // trim most of the margin
+    const scale = w / (v0.width - 2 * mx);
+    const vp = page.getViewport({ scale, offsetX: -mx * scale, offsetY: -my * scale });
+    const c = document.createElement('canvas');
+    c.width = w; c.height = Math.round((v0.height - 2 * my) * scale);
+    const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+    const task = page.render({ canvasContext: g, viewport: vp });
+    job.cancel = () => task.cancel();
+    await task.promise;
+    job.cancel = null;
+    page.cleanup();
+    perf.render[0]++; perf.render[1] += performance.now() - t0;
+    return c;
+  };
+  return lru(thumbs, key, make, 260);
+}
+/** A cached render, or a copy of it when it is already on screen elsewhere. */
+const useCanvas = (c) => { if (!c.isConnected) return c; const x = document.createElement('canvas'); x.width = c.width; x.height = c.height; x.getContext('2d').drawImage(c, 0, 0); return x; };
+
+// ---------- summaries: a verdict pill when one is cached ----------
+const asked = new Set();
+function verdict(T) {
+  const s = summaries.get(T.it.id);
+  if (s && !s.error) { paintPill(T, s); return; }
+  if (asked.has(T.it.id)) return;
+  asked.add(T.it.id);
+  fetch('/summary?id=' + encodeURIComponent(T.it.id)).then((r) => r.json()).then((x) => { if (x && !x.error) { T.sum = x; paintPill(T, x); } }).catch(() => {});
+}
+function paintPill(T, s) {
+  if (!s?.verdict) return;
+  T.pill.className = 'pill ' + s.verdict;
+  T.pill.textContent = s.verdict;
+  T.pill.title = [s.why_care, s.minutes ? `${s.minutes} min` : ''].filter(Boolean).join(' · ');
+}
+on('summary:updated', ({ id, summary }) => { for (const T of tiles) if (T.it.id === id) paintPill(T, summary); });
+
+// ---------- covers ----------
+const div = (cls, text) => h('div', { className: cls, textContent: text || '' });
+function coverPost(T) {
+  const { it } = T; const m = META[it.id] || {};
+  const lead = T.lead ?? m.lead;
+  const style = lead ? 'photo' : ['paper', 'ink', 'tint'][hash(it.id) % 3];
+  const line = it.hook || (style === 'paper' || style === 'photo' ? m.first || m.pull : m.pull || m.first) || '';
+  const quote = !it.hook && line && line === m.pull;
+  const tt = div('tt ' + tsize(it.t), it.t);
+  const ex = h('div', { className: 'ex' + (quote ? ' quote' : '') });
+  if (line && style === 'paper' && !quote) {
+    // Small-caps lead-in, like the opening of a magazine piece.
+    const w = line.split(' '); ex.append(h('span', { className: 'lead', textContent: w.slice(0, 3).join(' ') }), ' ' + w.slice(3).join(' '));
+  } else ex.textContent = line;
+  const k = karma(it), mins = minutes(it);
+  const ft = h('div', { className: 'ft' },
+    k ? h('span', { className: 'kb', title: `${it.score} karma` }, h('i', { style: `width:${Math.round(k * 100)}%` })) : null,
+    h('span', { className: 'kn', textContent: [it.score ? it.score : '', mins ? mins + ' min' : ''].filter(Boolean).join(' · ') }));
+  const src = div('src', it.src || LANES[it.lane]);
+  if (style === 'photo') {
+    const im = h('img', { className: 'ph', alt: '', decoding: 'async', src: lead, referrerPolicy: 'no-referrer' });
+    im.onerror = () => { T.lead = ''; setMeta(it.id, { lead: '' }); repaintCover(T); };
+    return h('div', { className: 'cv post s-photo' }, im, h('div', { className: 'tx' }, src, tt, ex, ft));
+  }
+  return h('div', { className: 'cv post s-' + style }, src, tt, ex, ft);
+}
+function coverPaper(T) {
+  const { it } = T;
+  const style = ['classic', 'swiss', 'journal', 'series', 'mono'][hash(it.id) % 5];
+  const yr = it.y ? String(it.y) : '';
+  const venue = [it.src || 'paper', style === 'swiss' ? '' : yr].filter(Boolean).join(' · ');
+  const n = nOf(it);
+  return h('div', { className: 'cv paper p-' + style },
+    div('hd', venue),
+    div('tt ' + tsize(it.t), it.t),
+    style === 'classic' || style === 'mono' ? h('div', { className: 'rule' }) : null,
+    div('ab', it.hook || it.why || ''),
+    style === 'swiss' ? div('yr', yr) : null,
+    n ? div('pp', n + ' pp') : null);
+}
+function coverBook(T) {
+  const { it } = T; const ia = iaOf(it);
+  const im = h('img', { className: 'cov', alt: '', decoding: 'async', loading: 'lazy', src: P(`https://archive.org/services/img/${ia}`) });
+  const cv = h('div', { className: 'cv book' }, im,
+    h('div', { className: 'lbl' }, subject(it) ? div('sj', subject(it)) : null, div('tt', it.t.replace(/\s*\.\.+\s*$/, '')), div('yr', [it.y, nOf(it) ? nOf(it) + ' pp' : ''].filter(Boolean).join(' · '))));
+  im.onerror = () => { const c = coverCloth(T); cv.replaceWith(c); T.cv = c; };
+  return cv;
+}
+function coverCloth(T) {
+  const { it } = T;
+  return h('div', { className: `cv cloth c${hash(it.id) % 5}` },
+    h('div', { className: 'fr' }, div('tt ' + tsize(it.t), it.t), h('div', { className: 'rule' }), div('au', cleanAu(it.a)), div('src', it.src || '')));
+}
+const COVERS = { post: coverPost, paper: coverPaper, book: coverBook, cloth: coverCloth };
+function repaintCover(T) {
+  const c = COVERS[T.kind](T);
+  c.classList.add('fresh');
+  T.cv.replaceWith(c); T.cv = c;
+}
+
+// ---------- page layers (depth and contact sheets share one; scrubbing has its own) ----------
+function layer(T, name) {
+  const rt = div('rt', T.it.t), pn = div('pn'), bar = h('i');
+  const body = div('pb');
+  const el = h('div', { className: 'pv ' + name }, h('div', { className: 'rh' }, rt, pn), body, h('div', { className: 'bar' }, bar));
+  T.face.append(el);
+  return { name, el, body, pn, bar, cells: [], keys: [], loads: [], gen: 0, ready: -1, ks: null, w: 0 };
+}
+/** Show pages ks in layer L. Old pages stay up until the new ones are ready, so nothing flashes. */
+function showPages(T, L, ks, n, cols) {
+  const w = cellWidth(T, cols);
+  if (L.ks && L.ks.join() === ks.join() && L.w === w && (L.ready === L.gen || L.busy)) return;
+  const gen = ++L.gen; L.ks = ks; L.w = w; L.n = n; L.busy = true; L.filled = 0;
+  if (L.cells.length !== ks.length) {
+    L.cells = ks.map(() => div('cell')); L.keys = ks.map(() => null);
+    for (const ld of L.loads) if (ld) ld.im.src = '';
+    L.loads = [];
+    L.body.replaceChildren(...L.cells);
+  }
+  const rows = Math.ceil(ks.length / cols);
+  L.body.style.gridTemplate = `repeat(${rows}, minmax(0, 1fr)) / repeat(${cols}, minmax(0, 1fr))`;
+  L.el.classList.toggle('many', ks.length > 2);
+  L.pn.textContent = ks.length > 2 ? `${n} pp` : `${ks.length > 1 && ks[1] < n ? `${ks[0] + 1}–${ks[1] + 1}` : ks[0] + 1} / ${n}`;
+  L.bar.style.width = (n > 1 ? (ks[0] / (n - 1)) * 100 : 0) + '%';
+  ks.forEach((k, j) => { L.cells[j].dataset.k = k; });
+  const done = (j, key, node) => {
+    if (gen !== L.gen) return;
+    if (node) { L.cells[j].replaceChildren(node); L.keys[j] = key; if (L.name === 'gl') T.face.classList.add('paged'); }
+    L.cells[j].classList.remove('wait');
+    if (++L.filled === ks.length) { L.ready = gen; L.busy = false; L.at = performance.now(); }
+  };
+  const it = T.it;
+  if (it.kind === 'scan') {
+    const sw = scanW(w);
+    ks.forEach((k, j) => {
+      if (k >= n) return done(j, 'x', div('end'));
+      const url = P(scanUrl(it, k, sw));
+      if (L.keys[j] === url) return done(j);
+      L.cells[j].classList.add('wait');
+      const prev = L.loads[j];
+      if (prev?.url === url) { prev.gen = gen; return; }
+      if (prev) prev.im.src = '';
+      const im = new Image(); im.decoding = 'async'; im.alt = '';
+      const ld = L.loads[j] = { im, url, gen };
+      im.onload = () => { if (L.loads[j] === ld) L.loads[j] = null; im.decode().catch(() => {}).then(() => done(j, url, im)); };
+      im.onerror = () => { if (L.loads[j] === ld) { L.loads[j] = null; done(j, 'err', div('err', 'page unavailable')); } };
+      ld.gen = gen; im.src = url;
+    });
+    return;
+  }
+  if (isFlow(it)) {
+    const D = digested(it);
+    ks.forEach((k, j) => { const key = 'f' + k; if (L.keys[j] === key) done(j); else done(j, key, k < n ? mini(D, k) : div('end')); });
+    return;
+  }
+  // PDF: one job renders this layer's pages, nearest tiles first; a newer request makes it stale.
+  ks.forEach((k, j) => { if (L.keys[j] !== `p${k}|${w}`) L.cells[j].classList.add('wait'); });
+  const alive = () => T.vis && L.gen === gen;
+  cpuQ.add(`${it.id}|${L.name}|${gen}`, T, async (job) => {
+    const d = await pdfDoc(it);
+    for (const [j, k] of ks.entries()) {
+      if (!alive()) throw STALE;
+      const key = `p${k}|${w}`;
+      if (L.keys[j] === key) { done(j); continue; }
+      if (k >= d.n) { done(j, 'x', div('end')); continue; }
+      try { const c = await renderThumb(d, it, k, w, job); done(j, key, useCanvas(c)); } catch (e) { if (!alive()) throw STALE; done(j, 'err', div('err', 'page unavailable')); }
+    }
+    if (L.name === 'gl' && ks.length === 1) preRender(T, d.n, w);
+  }, alive).catch((e) => { if (e !== STALE && gen === L.gen) ks.forEach((k, j) => { if (L.cells[j].classList.contains('wait')) done(j, 'err', div('err', 'could not open')); }); });
+  setTimeout(() => cpuQ.sweep(), 0);
+}
+/** While idle, render the next depth (in the direction you are moving) so , and . feel instant. */
+function preRender(T, n, w) {
+  if (mode() !== 'depth') return;
+  const f0 = W.f;
+  [[lastDir, 1], [-lastDir, 2]].forEach(([d, level]) => {
+    const f = Math.round((f0 + d * STEP) * 100) / 100;
+    if (f <= 0 || f > 1) return;
+    const k = kAt(n, f); const key = `${T.it.id}|${k}|${w}`;
+    if (thumbs.has(key)) return;
+    cpuQ.add('pre|' + key, T, async (job) => renderThumb(await pdfDoc(T.it), T.it, k, w, job), () => T.vis && W.f === f0 && mode() === 'depth', level);
+  });
+}
+// Tile widths, measured once per layout (all columns are equal; wide tiles span two).
+let colW = 0;
+const faceW = (T) => { if (!colW) colW = tiles.find((x) => !x.wide && x.face.clientWidth)?.face.clientWidth || SIZES[W.size]; return T.wide ? colW * 2 + 22 : colW; };
+window.addEventListener('resize', () => { colW = 0; mid = null; });
+function cellWidth(T, cols) {
+  const fw = faceW(T);
+  return Math.max(60, Math.round(((fw / cols) * DPR) / 40) * 40); // buckets, so caches hit
+}
+const scanW = (w) => (w > 130 ? 200 : 120);
+const sheetW = (T, cols) => scanW(cellWidth(T, cols));
+/** A stable page of a post as a small printed page. */
+function mini(D, k) {
+  const el = div('mini');
+  for (const b of D?.pages[k] || []) {
+    if (b.t === 'img') el.append(h('img', { src: b.src, alt: '', decoding: 'async', referrerPolicy: 'no-referrer' }));
+    else el.append(h({ h: 'h5', q: 'blockquote', pre: 'pre' }[b.t] || 'p', { className: b.t === 'li' ? 'li' : b.t === 'tb' ? 'tb' : '', textContent: b.x }));
+  }
+  return el;
+}
+
+// ---------- tiles ----------
+let tiles = [];
+const byEl = new Map();
+let built = null; // what the grid shows: {order, pos, lane}
+let added = 0;
+const wallEl = $('#wall');
+const grid = $('#grid');
+
+function makeTile(i, canWide) {
+  const it = items[i];
+  const kind = kindOf(it);
+  const wideOk = canWide && kind === 'post' && topShare(it) < 0.12;
+  const wide = wideOk && W.size <= 3;
+  const face = h('div', { className: 'face' });
+  const pill = h('span', { className: 'pill-slot' });
+  const date = it.d ? fmtDate(it) : it.y ? String(it.y) : '';
+  const meta = h('div', { className: 'meta' }, h('i', { className: 'dot', title: LANES[it.lane] || '' }),
+    h('span', { className: 'au', textContent: cleanAu(it.a) || it.src || '' }), date ? h('span', { className: 'dt', textContent: date }) : null, pill);
+  const el = h('div', { className: `tile k-${kind}${wide ? ' wide' : ''}`, tabIndex: 0, title: it.t }, face, meta);
+  el.style.setProperty('--c', LANE_COLORS[it.lane] || '#7a6f60');
+  el.dataset.i = i;
+  const T = { i, it, kind, wide, wideOk, el, face, pill, vis: false, gl: null, sl: null };
+  T.cv = COVERS[kind](T);
+  face.append(T.cv);
+  byEl.set(el, T);
+  wire(T);
+  return T;
+}
+
+function addTiles(n) {
+  const order = state.order;
+  const from = state.pos + added;
+  const slice = order.slice(from, from + n);
+  if (!slice.length) return;
+  let lastWide = tiles.findLastIndex((T) => T.wide);
+  const frag = document.createDocumentFragment();
+  const flows = [];
+  for (const i of slice) {
+    const idx = tiles.length;
+    const T = makeTile(i, idx - lastWide > 5 && idx > 0);
+    T.idx = idx;
+    if (T.wide) lastWide = idx;
+    tiles.push(T); frag.append(T.el); io.observe(T.el);
+    if (isFlow(T.it) && !META[T.it.id]?.first && flows.length < 40) flows.push(T.it.url);
+  }
+  grid.append(frag);
+  added += slice.length;
+  // Have the server fetch the posts' text ahead of the covers that need it.
+  if (flows.length) serverPrefetch(flows, 45, 'wall-docs');
+  paintInfo();
+}
+
+let scrollRaf = false;
+wallEl.addEventListener('scroll', () => { if (!scrollRaf) { scrollRaf = true; requestAnimationFrame(() => { scrollRaf = false; mid = null; }); } }, { passive: true });
+const sentinel = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) addTiles(60); }, { root: wallEl, rootMargin: '900px' });
+const io = new IntersectionObserver((es) => {
+  for (const e of es) { const T = byEl.get(e.target); if (!T) continue; if (e.isIntersecting) enter(T); else leave(T); }
+  schedulePrefetch();
+}, { root: wallEl, rootMargin: '250px 0px 450px 0px' });
+
+function enter(T) {
+  if (T.vis) return;
+  T.vis = true;
+  clearTimeout(T.dropT);
+  verdict(T);
+  if (T.kind === 'post') {
+    const m = META[T.it.id];
+    if (!m?.first || m.lead === undefined) {
+      netQ.add('d|' + T.it.id, T, () => digest(T.it)).then((D) => {
+        const had = META[T.it.id]?.lead;
+        repaintCover(T);
+        return leadImage(T.it, D).then((src) => { if (src && src !== had) { T.lead = src; repaintCover(T); } });
+      }).catch(() => {});
+    }
+  }
+  apply(T);
+}
+function leave(T) {
+  if (!T.vis) return;
+  T.vis = false;
+  for (const L of [T.gl, T.sl]) if (L) { for (const ld of L.loads) if (ld) ld.im.src = ''; L.loads = []; L.gen++; L.busy = false; L.ks = null; }
+  // Free the page renders once the tile has been away for a while.
+  T.dropT = setTimeout(() => { if (T.vis) return; for (const L of [T.gl, T.sl]) if (L) { L.el.remove(); } T.gl = T.sl = null; T.face.classList.remove('paged'); }, 6000);
+}
+
+// ---------- the global mode: covers, depth or contact sheets ----------
+const mode = () => (W.sheet ? 'sheet' : W.f > 0 ? 'depth' : 'cover');
+function sheetDims(T) {
+  const big = faceW(T) / (T.wide ? 2 : 1) >= 230;
+  return T.wide ? (big ? [6, 3] : [4, 2]) : (big ? [3, 3] : [2, 2]);
+}
+/** Bring a visible tile in line with the global mode. */
+function apply(T) {
+  const md = mode();
+  T.el.dataset.mode = md;
+  if (md === 'cover' || !T.vis) return;
+  if (!canShow(T.it)) { ensureN(T).then(() => { if (T.vis) apply(T); }).catch(() => { T.el.dataset.mode = 'cover'; }); return; }
+  const n = nOf(T.it);
+  T.gl ||= layer(T, 'gl');
+  if (md === 'sheet') {
+    const [c, r] = sheetDims(T); const N = c * r;
+    const ks = [...new Set(Array.from({ length: N }, (_, j) => kAt(n, (j + 0.5) / N)))];
+    // Short items have fewer distinct pages than cells: fit the grid to them.
+    const cols = ks.length >= N ? c : Math.min(c, ks.length <= 2 ? ks.length : Math.ceil(Math.sqrt(ks.length * (T.wide ? 2 : 1))));
+    showPages(T, T.gl, ks, n, cols);
+  } else {
+    const k = kAt(n, W.f);
+    showPages(T, T.gl, T.wide && n > 1 ? [Math.min(k, n - 2), Math.min(k, n - 2) + 1] : [k], n, T.wide && n > 1 ? 2 : 1);
+  }
+}
+/** Learn the page count: posts need their text, PDFs need opening. */
+function ensureN(T) {
+  const it = T.it;
+  if (isFlow(it)) return netQ.add('d|' + it.id, T, () => digest(it));
+  if (it.kind === 'pdf') return netQ.add('o|' + it.id, T, () => pdfDoc(it));
+  return Promise.resolve();
+}
+function applyAll() {
+  for (const T of tiles) if (T.vis) apply(T); else T.el.dataset.mode = mode();
+  cpuQ.sweep(); netQ.sweep();
+  schedulePrefetch();
+}
+
+// Dragging the slider: posts update every frame (their pages are in memory);
+// page images and PDF renders wait for the hand to pause for a moment, so a
+// fast drag does not start hundreds of downloads.
+let lastInput = 0, applyT = null, rafP = false, lastDir = 1;
+function setDepth(f, how = 'step') {
+  const nf = Math.max(0, Math.min(1, Math.round(f * 100) / 100));
+  if (nf !== W.f) lastDir = nf > W.f ? 1 : -1;
+  W.f = nf;
+  if (W.sheet) { W.sheet = false; paintBar(); }
+  paintDepth();
+  saveW();
+  const now = performance.now();
+  const dragging = how === 'drag' && now - lastInput < 160;
+  lastInput = now;
+  clearTimeout(applyT);
+  if (!dragging) { applyAll(); return; }
+  if (!rafP) {
+    rafP = true;
+    requestAnimationFrame(() => {
+      rafP = false;
+      for (const T of tiles) if (T.vis && (isFlow(T.it) || mode() === 'cover')) apply(T);
+      for (const T of tiles) if (T.vis && T.gl && mode() === 'depth') { const n = nOf(T.it); if (n) { const k = kAt(n, W.f); T.gl.pn.textContent = `${k + 1} / ${n}`; T.gl.bar.style.width = (n > 1 ? (k / (n - 1)) * 100 : 0) + '%'; } }
+      if (mode() === 'cover') for (const T of tiles) T.el.dataset.mode = 'cover';
+    });
+  }
+  applyT = setTimeout(applyAll, 140);
+}
+const stepDepth = (d) => setDepth(Math.round((W.f + d * STEP) / STEP) * STEP);
+function toggleSheet() { W.sheet = !W.sheet; saveW(); paintBar(); applyAll(); }
+function setSize(d) {
+  const s = Math.max(0, Math.min(SIZES.length - 1, W.size + d));
+  if (s === W.size) return;
+  const anchor = document.activeElement?.closest?.('#grid .tile') || tiles.find((T) => T.vis && T.el.getBoundingClientRect().top >= 0)?.el;
+  W.size = s; saveW(); paintBar(); colW = 0; mid = null;
+  // Wide (featured) tiles only at the smaller sizes.
+  for (const T of tiles) { T.wide = T.wideOk && s <= 3; T.el.classList.toggle('wide', T.wide); }
+  anchor?.scrollIntoView({ block: 'center' });
+  requestAnimationFrame(() => { for (const T of tiles) if (T.gl) T.gl.ks = null; applyAll(); });
+}
+
+// Prefetch on the server: the pages visible tiles need now (so the server
+// fetches them all in parallel, not six at a time as the browser would), and
+// after a pause the neighbouring depths, so stepping with , and . is instant.
+let pfT = null;
+function schedulePrefetch() {
+  clearTimeout(pfT);
+  pfT = setTimeout(() => {
+    if (mode() === 'cover') return;
+    const vis = tiles.filter((T) => T.vis && T.it.kind === 'scan');
+    const pdfs = tiles.filter((T) => T.vis && T.it.kind === 'pdf' && !pdocs.has(T.it.id)).map((T) => T.it.url);
+    if (pdfs.length) serverPrefetch(pdfs, 70, 'wall-pdfs');
+    const now = [], next = [], back = [];
+    for (const T of vis) {
+      const n = T.it.n; if (!n) continue;
+      if (W.sheet) { const [c, r] = sheetDims(T); const N = c * r; for (let j = 0; j < N; j++) now.push(scanUrl(T.it, kAt(n, (j + 0.5) / N), sheetW(T, c))); continue; }
+      now.push(scanUrl(T.it, kAt(n, W.f), 200));
+      // The next depth in the direction you are moving first, then one back and two ahead.
+      for (const [d, to] of [[lastDir, next], [-lastDir, back], [2 * lastDir, back]]) { const f = W.f + d * STEP; if (f > 0 && f <= 1) to.push(scanUrl(T.it, kAt(n, f), 200)); }
+    }
+    serverPrefetch(now, 80, 'wall-now');
+    serverPrefetch(next, 56, 'wall-next');
+    serverPrefetch(back, 48, 'wall-near');
+  }, 60);
+}
+
+// ---------- hover scrubbing ----------
+function wire(T) {
+  const { el, face } = T;
+  let warmT = null;
+  face.addEventListener('pointerenter', () => {
+    T.hover = true;
+    if (T.it.kind === 'scan') {
+      const n = T.it.n; const S = Math.min(n, 40);
+      serverPrefetch(Array.from({ length: S }, (_, j) => scanUrl(T.it, kAt(n, j / Math.max(1, S - 1)), 200)), 75, 'wall-scrub');
+    } else if (!canShow(T.it)) ensureN(T).catch(() => {});
+    warmT = setTimeout(() => warm(T), 350);
+  });
+  face.addEventListener('pointermove', (e) => scrub(T, e));
+  face.addEventListener('pointerleave', () => {
+    T.hover = false; clearTimeout(warmT);
+    if (T.sl) { T.sl.el.classList.remove('on'); T.scrubK = null; }
+  });
+  el.addEventListener('click', (e) => {
+    const cell = e.target.closest('.gl .cell');
+    const k = T.scrubK ?? (cell && mode() === 'sheet' ? Number(cell.dataset.k) : mode() === 'depth' && T.gl?.ks ? T.gl.ks[0] : null);
+    openAt(T, k);
+  });
+  el.addEventListener('focus', () => { clearTimeout(warmT); warmT = setTimeout(() => warm(T), 250); });
+}
+function scrub(T, e) {
+  if (!canShow(T.it)) return;
+  const n = nOf(T.it);
+  const r = T.face.getBoundingClientRect();
+  const x = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+  // Scans snap to the 40 pages prefetched on hover; others go page by page.
+  const S = T.it.kind === 'scan' ? Math.min(n, 40) : n;
+  const k = kAt(n, Math.round(x * (S - 1)) / Math.max(1, S - 1));
+  if (k === T.scrubK) return;
+  T.scrubK = k;
+  T.sl ||= layer(T, 'sl');
+  T.sl.el.classList.add('on');
+  showPages(T, T.sl, [k], n, 1);
+}
+/** Get the item ready for the feed: the document opened, the first spread fetched. */
+function warm(T) {
+  const it = T.it;
+  if (it.kind === 'scan') { const s = T.scrubK ?? 0; serverPrefetch([0, 1, 2].map((j) => scanUrl(it, Math.min(it.n - 1, s + j), 1000)), 70, 'wall-open'); }
+  else openDoc(it).catch(() => {});
+}
+
+// ---------- opening in the feed ----------
+let pendingFlow = null;
+function openAt(T, k) {
+  let pos = state.order.indexOf(T.i);
+  if (pos < 0) { state.order.splice(state.pos + 1, 0, T.i); pos = state.pos + 1; }
+  state.pos = pos; state.zoom = false;
+  if (k != null && k >= 0) {
+    state.hist.set(T.i, []);
+    if (isFlow(T.it)) { pendingFlow = { id: T.it.id, k }; state.start.delete(T.i); } else state.start.set(T.i, k);
+  }
+  setView('feed');
+}
+// A post opens at its first column; once laid out, move to the stable page asked for.
+on('spread:rendered', ({ it, flow }) => {
+  if (!pendingFlow || !flow || it.id !== pendingFlow.id) return;
+  const { k } = pendingFlow; pendingFlow = null;
+  if (k > 0) goPage(k);
+});
+
+// ---------- keyboard ----------
+function focused() { return byEl.get(document.activeElement?.closest?.('#grid .tile')) || null; }
+function moveFocus(key) {
+  const cur = focused();
+  if (!cur) { const T = tiles.find((x) => x.vis && x.el.getBoundingClientRect().top >= 40) || tiles[0]; T?.el.focus(); return; }
+  const at = tiles.indexOf(cur);
+  const near = tiles.slice(Math.max(0, at - 60), at + 60).filter((T) => T !== cur);
+  const r = cur.el.getBoundingClientRect(); const cx = r.left + r.width / 2;
+  const rows = new Map(); // tiles stand on a common baseline per row
+  for (const T of near) { const q = T.el.getBoundingClientRect(); const b = Math.round(q.bottom / 6); (rows.get(b) || rows.set(b, []).get(b)).push({ T, q }); }
+  const same = Math.round(r.bottom / 6);
+  const row = (b) => [...rows.entries()].filter(([x]) => Math.abs(x - b) <= 1).flatMap(([, v]) => v);
+  const below = [...rows.keys()].filter((b) => b > same + 1).sort((a, b) => a - b)[0];
+  const above = [...rows.keys()].filter((b) => b < same - 1).sort((a, b) => b - a)[0];
+  let pick = null;
+  if (key === 'ArrowRight' || key === 'ArrowLeft') {
+    const dir = key === 'ArrowRight' ? 1 : -1;
+    const side = row(same).filter(({ q }) => (q.left - r.left) * dir > 4).sort((a, b) => (a.q.left - b.q.left) * dir)[0];
+    const wrap = dir > 0 ? (below != null ? row(below).sort((a, b) => a.q.left - b.q.left)[0] : null) : (above != null ? row(above).sort((a, b) => b.q.left - a.q.left)[0] : null);
+    pick = (side || wrap)?.T;
+  } else {
+    const b = key === 'ArrowDown' ? below : above;
+    if (b != null) pick = row(b).sort((x, y) => Math.abs(x.q.left + x.q.width / 2 - cx) - Math.abs(y.q.left + y.q.width / 2 - cx))[0]?.T;
+    if (!pick && key === 'ArrowDown') { addTiles(60); requestAnimationFrame(() => moveFocus(key)); return; }
+  }
+  if (pick) { pick.el.focus({ preventScroll: true }); pick.el.scrollIntoView({ block: 'nearest' }); }
+}
+const KEYS = {
+  ',': () => stepDepth(-1), '.': () => stepDepth(1), g: toggleSheet,
+  '+': () => setSize(1), '=': () => setSize(1), '-': () => setSize(-1),
+  ArrowLeft: moveFocus, ArrowRight: moveFocus, ArrowUp: moveFocus, ArrowDown: moveFocus,
+  Enter: () => { const T = focused(); if (T) openAt(T, mode() === 'depth' && T.gl?.ks ? T.gl.ks[0] : null); },
+  Escape: () => setView('feed'),
+};
+// The key registry holds one binding per key, and the feed already binds the
+// arrows, Enter, + and -; so the wall takes its keys first, in the capture
+// phase, and only while it is showing.
+window.addEventListener('keydown', (e) => {
+  if (state.view !== 'wall' || e.metaKey || e.ctrlKey || e.altKey || !$('#keys').hidden || !$('#search').hidden) return;
+  const t = e.target;
+  if (t.isContentEditable || /^(TEXTAREA|SELECT)$/.test(t.tagName) || (t.tagName === 'INPUT' && t.type !== 'range')) return;
+  if (t.type === 'range' && /^(Arrow|Home|End|Page)/.test(e.key)) return;
+  const fn = KEYS[e.key];
+  if (!fn) return;
+  e.preventDefault(); e.stopPropagation();
+  fn(e.key);
+}, true);
+registerKey([',', '.'], (e) => stepDepth(e.key === '.' ? 1 : -1), { view: 'wall', help: [', .', 'wall: move every tile through its pages (depth)'], order: 64 });
+keyHelp.push(
+  { label: 'g', text: 'wall: contact sheets, pages from across each item', order: 65 },
+  { label: '+ - ← → ↑ ↓', text: 'wall: tile size / move between tiles; Enter opens, Esc returns', order: 66 });
+
+// ---------- the toolbar ----------
+const slider = h('input', { type: 'range', min: 0, max: 100, step: 1, value: Math.round(W.f * 100), className: 'depth', title: 'Depth: move every tile through its pages (, and .)' });
+slider.setAttribute('aria-label', 'Depth through every item');
+slider.addEventListener('input', () => setDepth(slider.value / 100, 'drag'));
+slider.addEventListener('change', () => { setDepth(slider.value / 100); slider.blur(); });
+const readout = h('span', { className: 'ro' });
+const sheetBtn = h('button', { className: 'ghost', title: 'Contact sheets: pages from across each item (g)', onclick: toggleSheet }, h('span', { className: 'gi' }), 'Contact sheet');
+const sizeOut = h('span', { className: 'sz' });
+const info = h('span', { className: 'info' });
+const bar = h('div', { id: 'wall-bar' },
+  h('div', { className: 'dw' },
+    h('button', { className: 'ghost cov-btn', title: 'Covers (depth 0)', onclick: () => { if (W.sheet) toggleSheet(); setDepth(0); }, textContent: 'Covers' }),
+    h('div', { className: 'track' }, slider, h('div', { className: 'ticks' }, ...[0, 25, 50, 75, 100].map((x) => h('i', { style: `left:${x}%` })))),
+    readout, h('span', { className: 'hint' }, h('kbd', { textContent: ',' }), h('kbd', { textContent: '.' }))),
+  sheetBtn,
+  h('div', { className: 'szc' },
+    h('button', { className: 'ghost', title: 'Smaller tiles (-)', textContent: '−', onclick: () => setSize(-1) }), sizeOut,
+    h('button', { className: 'ghost', title: 'Larger tiles (+)', textContent: '+', onclick: () => setSize(1) })),
+  info);
+wallEl.prepend(bar);
+function paintDepth() {
+  slider.value = Math.round(W.f * 100);
+  slider.style.setProperty('--p', W.f * 100 + '%');
+  readout.textContent = W.sheet ? 'whole item' : W.f === 0 ? 'covers' : W.f >= 1 ? 'last page' : `${Math.round(W.f * 100)}% in`;
+  bar.classList.toggle('deep', W.f > 0 && !W.sheet);
+}
+function paintBar() {
+  paintDepth();
+  sheetBtn.classList.toggle('on', W.sheet);
+  bar.classList.toggle('sheet', W.sheet);
+  slider.title = W.sheet ? 'Contact sheets show the whole item; move the slider to go back to one page per tile' : 'Depth: move every tile through its pages (, and .)';
+  grid.style.setProperty('--tw', SIZES[W.size] + 'px');
+  grid.dataset.size = W.size;
+  sizeOut.textContent = `${SIZES[W.size]}`;
+}
+function paintInfo() {
+  const left = Math.max(0, state.order.length - state.pos);
+  info.textContent = `${state.lane === 'all' ? 'All lanes' : LANES[state.lane] || state.lane} · ${left} ahead · hover to scrub, click to open`;
+}
+
+// ---------- the view ----------
+export function showWall() {
+  paintBar();
+  const same = built && built.order === state.order && built.pos === state.pos && built.lane === state.lane;
+  if (same && tiles.length) { paintInfo(); applyAll(); return; }
+  for (const T of tiles) { io.unobserve(T.el); clearTimeout(T.dropT); }
+  netQ.clear(); cpuQ.clear();
+  tiles = []; byEl.clear(); added = 0; colW = 0; mid = null;
+  grid.replaceChildren();
+  built = { order: state.order, pos: state.pos, lane: state.lane };
+  addTiles(72);
+  sentinel.observe($('#grid-more'));
+  wallEl.scrollTop = 0;
+}
+function hideWall() {
+  netQ.clear(); cpuQ.clear();
+  for (const T of tiles) for (const L of [T.gl, T.sl]) if (L) { for (const ld of L.loads) if (ld) ld.im.src = ''; L.loads = []; L.gen++; L.busy = false; L.ks = null; }
+}
+registerView('wall', { label: 'Wall', key: 'w', order: 1, roots: () => [wallEl], show: showWall, hide: hideWall });
+
+/** For tests and other modules: what the wall is doing. */
+export function wallStats() {
+  const vis = tiles.filter((T) => T.vis);
+  const inView = vis.filter((T) => { const r = T.el.getBoundingClientRect(); return r.bottom > 0 && r.top < wallEl.clientHeight; });
+  const pending = mode() === 'cover' ? 0 : inView.filter((T) => !T.gl || T.gl.ready !== T.gl.gen || T.gl.busy).length;
+  return { tiles: tiles.length, visible: vis.length, inView: inView.length, pending, mode: mode(), f: W.f, size: SIZES[W.size], queued: netQ.jobs.length + cpuQ.jobs.length, running: netQ.running.size + cpuQ.running.size,
+    perf: Object.fromEntries(Object.entries(perf).map(([k, [c, ms]]) => [k, c ? `${c} × ${Math.round(ms / c)} ms` : '-'])) };
+}
+export { setDepth, toggleSheet, setSize };
+
+/** A plain typographic cover (kept for other modules that want one). */
 export function typoFace(it) {
   return h('div', { className: 'typo', style: `--c:${LANE_COLORS[it.lane] || '#6b5a3a'}` },
     h('div', { className: 'tt', textContent: it.t }),
     h('div', { className: 'aa', textContent: [it.a, it.y].filter(Boolean).join(' · ') }),
     h('div', { className: 'xx', textContent: it.hook || it.why || '' }));
 }
-function addTiles(n) {
-  const from = state.pos + wallShown;
-  for (const i of state.order.slice(from, from + n)) {
-    const it = items[i];
-    const face = h('div', { className: 'face' });
-    if (it.kind === 'scan') face.append(h('img', { loading: 'lazy', alt: it.t, src: P(`https://archive.org/services/img/${it.ia}`) }));
-    else face.append(typoFace(it));
-    const tile = h('div', { className: 'tile', tabIndex: 0 }, face, h('div', { className: 'cap', textContent: it.t }), h('div', { className: 'sub', textContent: [LANES[it.lane], it.y].filter(Boolean).join(' · ') }));
-    tile.onclick = () => { state.pos = state.order.indexOf(i); setView('feed'); };
-    let timer = null; let f = 0;
-    tile.onmouseenter = async () => {
-      if (timer || isFlow(it)) return;
-      const d = it.kind === 'scan' ? { n: it.n } : await openDoc(it).catch(() => null);
-      if (!d) return; it.n ||= d.n;
-      const ks = [0, 0.1, 0.25, 0.4, 0.6, 0.8].map((x) => Math.min(d.n - 1, Math.floor(d.n * x)));
-      const step = async () => {
-        const k = ks[f++ % ks.length];
-        const panels = await renderPage(it, k).catch(() => null);
-        const pnl = panels?.find((x) => x.canvas);
-        if (!pnl || !timer) return;
-        face.querySelectorAll('.rf').forEach((x) => x.remove());
-        const el = pnl.canvas.cloneNode(); el.getContext('2d').drawImage(pnl.canvas, 0, 0);
-        el.classList.add('rf'); Object.assign(el.style, { position: 'absolute', inset: '0', width: '100%', height: '100%', objectFit: 'cover' });
-        face.append(el);
-      };
-      timer = setInterval(step, 700); step();
-    };
-    tile.onmouseleave = () => { clearInterval(timer); timer = null; };
-    $('#grid').append(tile);
-  }
-  wallShown += n;
-}
-registerView('wall', { label: 'Wall', key: 'w', order: 1, roots: () => [$('#wall')], show: showWall });
 export { showFeed };

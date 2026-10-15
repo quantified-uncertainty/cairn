@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+# Start the Stacks Browser if it is not already running, then open it.
+#
+#   bin/stacks              start (in the background) and open http://localhost:4747
+#   bin/stacks --port 4800  another port (or STACKS_PORT)
+#   bin/stacks --no-open    start without opening a browser tab
+#   bin/stacks stop         stop the server this script started
+#   bin/stacks status       is it running? (prints /status)
+#   bin/stacks log          follow the server log
+#
+# The server log and pid live in the cache folder ($STACKS_CACHE or ~/.cache/open-stacks).
+set -euo pipefail
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PORT="${STACKS_PORT:-4747}"
+OPEN=1
+CMD=start
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --port) PORT="$2"; shift 2 ;;
+    --port=*) PORT="${1#--port=}"; shift ;;
+    --no-open) OPEN=0; shift ;;
+    start|stop|status|log) CMD="$1"; shift ;;
+    -h|--help) sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) echo "unknown option: $1" >&2; exit 2 ;;
+  esac
+done
+
+CACHE_DIR="${STACKS_CACHE:-$HOME/.cache/open-stacks}"
+mkdir -p "$CACHE_DIR"
+LOG="$CACHE_DIR/server-$PORT.log"
+PIDFILE="$CACHE_DIR/server-$PORT.pid"
+URL="http://localhost:$PORT"
+
+up() { curl -fsS -m 2 "$URL/status" >/dev/null 2>&1; }
+
+# Finder and launchd start with a bare PATH: look where Node usually lives.
+find_node() {
+  command -v node >/dev/null 2>&1 && return 0
+  for d in /opt/homebrew/bin /usr/local/bin "$HOME/.volta/bin" "$HOME/.local/bin" "$HOME/.local/share/fnm/aliases/default/bin"; do
+    [ -x "$d/node" ] && { PATH="$d:$PATH"; return 0; }
+  done
+  if [ -s "$HOME/.nvm/nvm.sh" ]; then
+    # shellcheck disable=SC1091
+    . "$HOME/.nvm/nvm.sh" >/dev/null 2>&1 && command -v node >/dev/null 2>&1 && return 0
+  fi
+  local latest
+  latest="$(ls -d "$HOME"/.nvm/versions/node/*/bin 2>/dev/null | sort -V | tail -1 || true)"
+  [ -n "$latest" ] && [ -x "$latest/node" ] && { PATH="$latest:$PATH"; return 0; }
+  return 1
+}
+
+open_url() {
+  [ "$OPEN" = 1 ] || return 0
+  if command -v open >/dev/null 2>&1 && [ "$(uname)" = Darwin ]; then open "$URL"
+  elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$URL" >/dev/null 2>&1 &
+  else echo "Open $URL in your browser."
+  fi
+}
+
+case "$CMD" in
+  status)
+    if up; then echo "running on $URL"; curl -fsS -m 2 "$URL/status"; echo; else echo "not running on port $PORT"; exit 1; fi ;;
+  log)
+    exec tail -n 40 -f "$LOG" ;;
+  stop)
+    if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+      kill "$(cat "$PIDFILE")" && rm -f "$PIDFILE" && echo "stopped"
+    elif up; then echo "a server is answering on $URL but was not started by bin/stacks; stop it where you started it" >&2; exit 1
+    else echo "not running"; rm -f "$PIDFILE"; fi ;;
+  start)
+    if up; then
+      echo "Stacks Browser already running on $URL"
+    else
+      find_node || { echo "Node.js 20+ not found. Install it from https://nodejs.org (or: brew install node) and try again." >&2; exit 1; }
+      echo "Starting Stacks Browser on $URL (log: $LOG)"
+      cd "$DIR"
+      nohup node server.mjs --port "$PORT" >>"$LOG" 2>&1 &
+      echo $! > "$PIDFILE"
+      # Wait until it answers (up to 20 s); give up early if it died.
+      for _ in $(seq 1 100); do
+        up && break
+        if ! kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then echo "The server exited. Last lines of $LOG:" >&2; tail -n 15 "$LOG" >&2; exit 1; fi
+        sleep 0.2
+      done
+      up || { echo "Server did not answer within 20 s; see $LOG" >&2; exit 1; }
+      echo "Ready."
+    fi
+    open_url ;;
+esac

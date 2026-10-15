@@ -78,8 +78,17 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
+// --open: open the app in the default browser once listening (npm start).
+const openApp = () => process.argv.includes('--open') && import('child_process').then(({ spawn }) =>
+  spawn({ darwin: 'open', win32: 'explorer' }[process.platform] || 'xdg-open', [`http://localhost:${PORT}`], { stdio: 'ignore', detached: true }).on('error', () => {}).unref());
+server.on('error', (e) => {
+  if (e.code !== 'EADDRINUSE') throw e;
+  console.log(`Port ${PORT} is in use (already running?). Try --port N.`);
+  openApp(); setTimeout(() => process.exit(1), 300);
+});
 server.listen(PORT, () => {
   const ai = hasKey() ? `summaries on (${MODEL})` : 'summaries off (set ANTHROPIC_API_KEY)';
   console.log(`Stacks Browser on http://localhost:${PORT}  ·  cache ${CACHE}  ·  ${ai}`);
   for (const fn of startHooks) Promise.resolve().then(() => fn()).catch((e) => console.warn('start hook:', e.message));
+  openApp();
 });

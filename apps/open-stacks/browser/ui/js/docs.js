@@ -41,9 +41,11 @@ export const extractors = {
 };
 
 const docs = new Map();
+// Keyed by id and URL: an item can switch source (an arXiv PDF read as its HTML version).
+const docKey = (it) => it.id + '|' + (it.url || '');
 export function openDoc(it) {
   if (it.kind === 'scan') return Promise.resolve({ n: it.n, outline: [] });
-  return lru(docs, it.id, async () => {
+  return lru(docs, docKey(it), async () => {
     if (it.kind === 'pdf') {
       const [lib, buf] = await Promise.all([pdfjs(), fetch(P(it.url)).then((r) => { if (!r.ok) throw new Error('PDF ' + r.status); return r.arrayBuffer(); })]);
       const pdf = await lib.getDocument({ data: buf, isEvalSupported: false }).promise;
@@ -56,7 +58,7 @@ export function openDoc(it) {
   }, 16);
 }
 /** The cached document if it is already open (no fetch). */
-export const peekDoc = (it) => docs.get(it.id);
+export const peekDoc = (it) => docs.get(docKey(it));
 
 const VP_WORDS = 280; // words per stable "page" of a flow document
 const BLOCKS = 'p,li,h1,h2,h3,h4,h5,h6,pre,table,figure,blockquote,dt,dd,img,iframe,hr';

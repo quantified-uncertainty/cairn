@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reading Stats · Stacks</title>
+<link rel="icon" href="data:,">
+<style>
+  :root {
+    --bg: #15130f; --bg-2: #1d1a15; --bg-3: #26221b; --line: #34302a;
+    --ink: #ece6da; --ink-2: #a79f91; --ink-3: #6f685d;
+    --accent: #e2a54a; --ok: #7fb37a; --warn: #d9a441; --bad: #c9705f;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --sans: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font: 13px/1.45 var(--sans); margin: 0; }
+  a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
+  header { display: flex; align-items: center; gap: 14px; padding: 8px 20px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--bg); z-index: 2; }
+  .brand { font: 600 15px var(--serif); display: flex; align-items: center; gap: 8px; }
+  .mark { width: 14px; height: 16px; background: linear-gradient(90deg, var(--accent) 0 3px, transparent 3px 5px, var(--ink-2) 5px 8px, transparent 8px 10px, var(--ink-3) 10px 14px); }
+  header .sub { color: var(--ink-2); font: 15px var(--serif); }
+  .range { display: flex; gap: 4px; margin-left: 12px; }
+  button { font: inherit; color: var(--ink-2); background: none; border: 1px solid var(--line); border-radius: 99px; padding: 2px 11px; cursor: pointer; }
+  button:hover { border-color: var(--ink-3); }
+  button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  header .right { margin-left: auto; color: var(--ink-3); font-size: 12px; display: flex; gap: 14px; align-items: center; }
+  main { max-width: 1240px; margin: 0 auto; padding: 18px 20px 60px; }
+  h2 { font: 500 15px var(--serif); margin: 0 0 10px; color: var(--ink); }
+  h2 .note { font: 12px var(--sans); color: var(--ink-3); margin-left: 8px; }
+  section { background: var(--bg-2); border: 1px solid var(--line); border-radius: 4px; padding: 14px 16px; min-width: 0; }
+  .tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+  .tile { background: var(--bg-2); border: 1px solid var(--line); border-radius: 4px; padding: 10px 14px; }
+  .tile .l { color: var(--ink-2); font-size: 12px; }
+  .tile .v { font: 600 26px/1.25 var(--sans); margin-top: 2px; }
+  .tile .v small { font-size: 13px; font-weight: 400; color: var(--ink-2); margin-left: 3px; }
+  .tile .d { color: var(--ink-3); font-size: 12px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; margin-top: 14px; align-items: start; }
+  .full { margin-top: 14px; }
+  svg { display: block; max-width: 100%; height: auto; overflow: visible; }
+  svg text { fill: var(--ink-3); font: 11px var(--sans); font-variant-numeric: tabular-nums; }
+  svg .lbl { fill: var(--ink-2); }
+  svg .grid { stroke: var(--line); stroke-width: 1; }
+  svg .hit { fill: transparent; } svg .hit:hover { fill: #ffffff08; }
+  svg .bar { fill: var(--accent); }
+  svg .bar.dim { fill: var(--ink-3); }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th { text-align: left; font-weight: 400; color: var(--ink-3); font-size: 12px; padding: 4px 8px 4px 0; border-bottom: 1px solid var(--line); }
+  td { padding: 5px 8px 5px 0; border-bottom: 1px solid #ffffff08; vertical-align: baseline; }
+  td.num, th.num { text-align: right; }
+  td.t { font-family: var(--serif); font-size: 13.5px; max-width: 520px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  td.t .a { color: var(--ink-3); font: 12px var(--sans); margin-left: 6px; }
+  .lane { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); white-space: nowrap; }
+  .sw { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+  .empty { color: var(--ink-3); padding: 20px 0; text-align: center; }
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 3px 14px; margin: 0; }
+  .kv dt { color: var(--ink-3); } .kv dd { margin: 0; font-variant-numeric: tabular-nums; }
+  .meter { height: 6px; border-radius: 3px; background: var(--bg-3); overflow: hidden; margin: 6px 0 10px; }
+  .meter > div { height: 100%; background: var(--accent); border-radius: 3px; }
+  .keys kbd { font: 11px var(--mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 3px; padding: 0 4px; color: var(--ink-2); }
+  .keys span { margin-right: 12px; white-space: nowrap; color: var(--ink-3); }
+  .tip { position: fixed; pointer-events: none; background: var(--bg-3); border: 1px solid var(--line); border-radius: 3px; padding: 5px 8px; font-size: 12px; box-shadow: 0 6px 20px #0008; z-index: 9; white-space: nowrap; }
+  .tip b { font-weight: 600; }
+  footer { color: var(--ink-3); font-size: 12px; margin-top: 18px; }
+  @media (max-width: 900px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid2 { grid-template-columns: minmax(0, 1fr); } header { flex-wrap: wrap; } }
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="/" title="Back to the stacks" style="color:inherit;text-decoration:none"><span class="mark" aria-hidden="true"></span>Stacks</a>
+  <span class="sub">Reading stats</span>
+  <div class="range" id="range">
+    <button data-d="1">Today</button><button data-d="7">7 days</button><button data-d="30">30 days</button><button data-d="0">All</button>
+  </div>
+  <div class="right"><span id="span"></span><a href="/">Back to the stacks</a></div>
+</header>
+<main>
+  <div class="tiles" id="tiles"></div>
+  <section><h2 id="days-h">Minutes per day <span class="note">active time on an item: tab visible, some input in the last 5 minutes</span></h2><div id="days"></div></section>
+  <div class="grid2">
+    <section><h2>Time per lane</h2><div id="lanes"></div></section>
+    <section><h2>Page-turn latency <span class="note">key press or click to spread on screen</span></h2><div id="lat"></div></section>
+  </div>
+  <section class="full"><h2>Most time spent</h2><div id="top"></div></section>
+  <div class="grid2">
+    <section><h2>Cache</h2><div id="cache"></div></section>
+    <section><h2>Summaries and keys</h2><div id="misc"></div></section>
+  </div>
+  <footer>Everything here comes from <code>events.jsonl</code> in your cache folder. It never leaves this machine.</footer>
+</main>
+<script type="module" src="/stats.js"></script>
+</body>
+</html>

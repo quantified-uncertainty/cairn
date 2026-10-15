@@ -1,0 +1,51 @@
+/* Read aloud: the player bar (bottom right) and the lit word and sentence on
+   raster text-layer spans (flow text uses ::highlight(tts-*) in style.css). */
+#ra-bar {
+  position: fixed; right: 16px; bottom: 14px; z-index: 25;
+  display: flex; align-items: center; gap: 7px; height: 32px; padding: 0 5px 0 4px;
+  background: var(--bg-3); border: 1px solid var(--line); border-radius: 17px;
+  box-shadow: 0 8px 26px #000a, 0 1px 0 #0006;
+  font: 11px var(--mono); color: var(--ink-2);
+  transition: bottom .15s ease, transform .18s ease;
+}
+#ra-bar.dodge { transform: translateY(-46px); }
+/* clear the page strip when it opens into thumbnails */
+body:has(#scrub:hover) #ra-bar, body:has(#scrub.pinned) #ra-bar { bottom: 104px; }
+#ra-bar button { border: 0; padding: 0; color: inherit; }
+#ra-bar .ra-play {
+  position: relative; width: 24px; height: 24px; flex: none; border-radius: 50%;
+  display: grid; place-items: center; background: var(--accent); color: #1a1611;
+}
+#ra-bar .ra-play:hover { filter: brightness(1.08); }
+#ra-bar.loading .ra-play::after {
+  content: ""; position: absolute; inset: -3px; border-radius: 50%;
+  border: 2px solid transparent; border-top-color: var(--accent); animation: ra-spin .8s linear infinite;
+}
+@keyframes ra-spin { to { transform: rotate(1turn); } }
+#ra-bar .ra-prog { width: 88px; height: 14px; flex: none; cursor: pointer; position: relative; }
+#ra-bar .ra-prog::before, #ra-bar .ra-prog i { content: ""; position: absolute; left: 0; top: 6px; height: 2px; border-radius: 1px; }
+#ra-bar .ra-prog::before { right: 0; background: var(--line); }
+#ra-bar .ra-prog i { background: var(--accent); width: 0; transition: width .25s linear; }
+#ra-bar .ra-prog:hover::before { background: var(--ink-3); }
+#ra-bar .ra-left { min-width: 34px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+#ra-bar select {
+  appearance: none; -webkit-appearance: none; background: none; border: 1px solid transparent; border-radius: 3px;
+  color: var(--ink-2); font: inherit; padding: 2px 4px; cursor: pointer; max-width: 118px; text-overflow: ellipsis;
+}
+#ra-bar select:hover { border-color: var(--line); color: var(--ink); }
+#ra-bar select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+#ra-bar select option, #ra-bar select optgroup { background: var(--bg-2); color: var(--ink); }
+#ra-bar .ra-speed { color: var(--ink); }
+#ra-bar .ra-x { width: 20px; height: 20px; border-radius: 50%; font: 15px/1 var(--sans); color: var(--ink-3); }
+#ra-bar .ra-x:hover { color: var(--ink); background: var(--bg-2); }
+#ra-bar .ra-note {
+  position: absolute; right: 0; bottom: calc(100% + 7px); width: max-content; max-width: 360px;
+  background: var(--bg-2); color: var(--ink); border: 1px solid var(--line); border-left: 3px solid var(--warn);
+  border-radius: 4px; padding: 6px 10px; font: 12px/1.4 var(--sans); box-shadow: 0 8px 24px #0009; cursor: pointer;
+}
+
+/* Raster pages: text-layer spans (transparent text over the canvas) tinted in place. */
+.hl-tts-sentence { background-color: #e2a54a30 !important; mix-blend-mode: multiply; border-radius: 1px; }
+.hl-tts-word { background-color: #e2a54aa6 !important; mix-blend-mode: multiply; border-radius: 2px; box-shadow: 0 0 0 1px #e2a54aa6; }
+
+@media (prefers-reduced-motion: reduce) { #ra-bar.loading .ra-play::after { animation: none; } #ra-bar .ra-prog i { transition: none; } }

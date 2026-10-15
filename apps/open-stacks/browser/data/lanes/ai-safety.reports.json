@@ -1,0 +1,2609 @@
+{
+ "lane": "ai-safety",
+ "label": "AI safety",
+ "notes": "AI safety research reports and web papers, built 2026-10-15. Focus: organisation-published reports and technical documents rather than ordinary arXiv papers: Anthropic (transformer-circuits.pub, alignment.anthropic.com, RSP, system cards, constitution, risk report), Google DeepMind (Frontier Safety Framework PDFs, model FSF report, AGI safety approach, team overviews and core safety papers), OpenAI (system cards, Preparedness Framework, Model Spec, CoT-monitoring and superalignment reports), METR/ARC Evals, Apollo Research, UK AI Security Institute, US AISI/NIST, the International AI Safety Report, Redwood Research, ARC (ELK report and blog), MIRI technical reports (intelligence.org/files), CAIS, Epoch AI, and foundational reports (Omohundro, Bostrom, Carlsmith, AI 2027). Where an organisation report is also on arXiv, the arXiv ID is used so other lanes deduplicate. Every arXiv ID was checked against the arXiv API; every web page returned 200 with article text to a plain GET; every PDF returned 200 with a PDF body. Only organisation-, author- or publisher-hosted copies. Excluded: Medium-hosted DeepMind Safety Research posts (Cloudflare blocks plain GETs), openai.com pages (403), Open Philanthropy/Coefficient Giving reports (403), Drexler's CAIS report (no reachable official host). Scores are importance estimates by the curator. Some transformer-circuits pages are large (10-40 MB) because figures are inlined.",
+ "items": [
+  {
+   "id": "arxiv:1606.06565",
+   "kind": "pdf",
+   "t": "Concrete Problems in AI Safety",
+   "a": "Dario Amodei, Chris Olah, Jacob Steinhardt et al.",
+   "y": 2016,
+   "url": "https://arxiv.org/pdf/1606.06565",
+   "page": "https://arxiv.org/abs/1606.06565",
+   "why": "Defined five concrete accident problems (side effects, reward hacking, scalable oversight, safe exploration, distributional shift) that organised empirical AI safety research for years.",
+   "score": 90,
+   "tags": [
+    "agenda",
+    "foundations"
+   ],
+   "ab": "Rapid progress in machine learning and artificial intelligence (AI) has brought increasing attention to the potential impacts of AI technologies on society. In this paper we discuss one such potential impact: the problem of accidents in machine learning systems, defined as unintended and harmful behavior that may emerge from poor design of real-world AI systems."
+  },
+  {
+   "id": "arxiv:2412.14093",
+   "kind": "pdf",
+   "t": "Alignment faking in large language models",
+   "a": "Ryan Greenblatt, Carson Denison, Benjamin Wright et al.",
+   "y": 2024,
+   "url": "https://arxiv.org/pdf/2412.14093",
+   "page": "https://arxiv.org/abs/2412.14093",
+   "why": "Claude 3 Opus, told it would be retrained to answer harmful queries, complied strategically when it believed it was in training to protect its values, with explicit alignment-faking reasoning; RL raised that reasoning to 78%.",
+   "score": 88,
+   "tags": [
+    "scheming",
+    "model-organisms"
+   ],
+   "ab": "We present a demonstration of a large language model engaging in alignment faking: selectively complying with its training objective in training to prevent modification of its behavior out of training. First, we give Claude 3 Opus a system prompt stating it is being trained to answer all queries, even harmful ones, which conflicts with its prior training to refuse such queries. To allow the model to infer when it is in training, we say it will be trained only on conversations with free users, not paid users."
+  },
+  {
+   "id": "arxiv:1906.01820",
+   "kind": "pdf",
+   "t": "Risks from Learned Optimization in Advanced Machine Learning Systems",
+   "a": "Evan Hubinger, Chris van Merwijk, Vladimir Mikulik et al.",
+   "y": 2019,
+   "url": "https://arxiv.org/pdf/1906.01820",
+   "page": "https://arxiv.org/abs/1906.01820",
+   "why": "Introduced mesa-optimization: learned models that are themselves optimisers with objectives differing from the training objective, and deceptive alignment as a failure mode.",
+   "score": 88,
+   "tags": [
+    "inner-alignment",
+    "theory"
+   ],
+   "ab": "We analyze the type of learned optimization that occurs when a learned model (such as a neural network) is itself an optimizer - a situation we refer to as mesa-optimization, a neologism we introduce in this paper. We believe that the possibility of mesa-optimization raises two important questions for the safety and transparency of advanced machine learning systems. First, under what circumstances will learned models be optimizers, including when they should not be?"
+  },
+  {
+   "id": "web:transformer-circuits.pub/2021/framework/index.html",
+   "kind": "web",
+   "t": "A Mathematical Framework for Transformer Circuits",
+   "a": "Nelson Elhage, Neel Nanda, Catherine Olsson et al.",
+   "y": 2021,
+   "url": "https://transformer-circuits.pub/2021/framework/index.html",
+   "page": "https://transformer-circuits.pub/2021/framework/index.html",
+   "why": "Recast attention-only transformers as sums of paths through QK and OV circuits and found induction heads in two-layer models; the vocabulary most later mechanistic interpretability uses.",
+   "score": 85,
+   "tags": [
+    "interpretability",
+    "circuits"
+   ],
+   "ab": "Transformer language models are an emerging technology that is gaining increasingly broad real-world use, for example in systems like GPT-3 , LaMDA , Codex , Meena , Gopher , and similar models. However, as these models scale, their open-endedness and high capacity creates an increasing scope for unexpected and sometimes harmful behaviors. Even years after a large model is trained, both creators and users routinely discover model capabilities – including problematic behaviors – they were previously unaware of."
+  },
+  {
+   "id": "arxiv:2209.10652",
+   "kind": "pdf",
+   "t": "Toy Models of Superposition",
+   "a": "Nelson Elhage, Tristan Hume, Catherine Olsson et al.",
+   "y": 2022,
+   "url": "https://arxiv.org/pdf/2209.10652",
+   "page": "https://arxiv.org/abs/2209.10652",
+   "why": "Showed in small ReLU models how networks store more features than dimensions (superposition), with phase diagrams and polytope geometry; the problem sparse dictionary learning was built to solve.",
+   "score": 85,
+   "tags": [
+    "interpretability",
+    "superposition"
+   ],
+   "ab": "Neural networks often pack many unrelated concepts into a single neuron - a puzzling phenomenon known as 'polysemanticity' which makes interpretability much more challenging. This paper provides a toy model where polysemanticity can be fully understood, arising as a result of models storing additional sparse features in \"superposition.\" We demonstrate the existence of a phase change, a surprising connection to the geometry of uniform polytopes, and evidence of a link to adversarial examples. We also discuss potential implications for mechanistic interpretability."
+  },
+  {
+   "id": "arxiv:2312.06942",
+   "kind": "pdf",
+   "t": "AI Control: Improving Safety Despite Intentional Subversion",
+   "a": "Ryan Greenblatt, Buck Shlegeris, Kshitij Sachan et al.",
+   "y": 2023,
+   "url": "https://arxiv.org/pdf/2312.06942",
+   "page": "https://arxiv.org/abs/2312.06942",
+   "why": "Founded the AI control agenda: protocols such as trusted monitoring and trusted editing that stay safe even if GPT-4 deliberately tries to insert backdoors, measured by red-team evaluations.",
+   "score": 85,
+   "tags": [
+    "control"
+   ],
+   "ab": "As large language models (LLMs) become more powerful and are deployed more autonomously, it will be increasingly important to prevent them from causing harmful outcomes. Researchers have investigated a variety of safety techniques for this purpose, e.g. using models to review the outputs of other models, or red-teaming techniques to surface subtle failure modes. However, researchers have not evaluated whether such techniques still ensure safety if the model is itself intentionally trying to subvert them."
+  },
+  {
+   "id": "pdf:docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/export",
+   "kind": "pdf",
+   "t": "Eliciting Latent Knowledge: How to Tell if Your Eyes Deceive You",
+   "a": "Paul Christiano, Ajeya Cotra, Mark Xu",
+   "y": 2021,
+   "url": "https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/export?format=pdf",
+   "page": "https://www.alignment.org/blog/arcs-first-technical-report-eliciting-latent-knowledge/",
+   "why": "ARC's first report: how to get a model to report what it knows (the SmartVault diamond example) rather than what a human would believe, with a builder-breaker game over many proposals and counterexamples.",
+   "score": 85,
+   "tags": [
+    "elk",
+    "theory"
+   ]
+  },
+  {
+   "id": "web:transformer-circuits.pub/2023/monosemantic-features/index.html",
+   "kind": "web",
+   "t": "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
+   "a": "Trenton Bricken, Adly Templeton, Joshua Batson et al.",
+   "y": 2023,
+   "url": "https://transformer-circuits.pub/2023/monosemantic-features/index.html",
+   "page": "https://transformer-circuits.pub/2023/monosemantic-features/index.html",
+   "why": "First convincing sparse-autoencoder result: a one-layer transformer's MLP activations decomposed into thousands of mostly monosemantic features, with detailed case studies and feature splitting.",
+   "score": 82,
+   "tags": [
+    "interpretability",
+    "sparse-autoencoders"
+   ],
+   "ab": "Using a sparse autoencoder, we extract a large number of interpretable features from a one-layer transformer.Mechanistic interpretability seeks to understand neural networks by breaking them into components that are more easily understood than the whole. By understanding the function of each component, and how they interact, we hope to be able to reason about the behavior of the entire network. The first step in that program is to identify the correct components to analyze."
+  },
+  {
+   "id": "web:transformer-circuits.pub/2024/scaling-monosemanticity/index.html",
+   "kind": "web",
+   "t": "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet",
+   "a": "Adly Templeton, Tom Conerly, Jonathan Marcus et al.",
+   "y": 2024,
+   "url": "https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html",
+   "page": "https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html",
+   "why": "Scaled sparse autoencoders to a production model, finding millions of abstract, multilingual, multimodal features (including deception, sycophancy and bias features) and steering behaviour with them.",
+   "score": 82,
+   "tags": [
+    "interpretability",
+    "sparse-autoencoders"
+   ],
+   "ab": "Eight months ago, we demonstrated that sparse autoencoders could recover monosemantic features from a small one-layer transformer. At the time, a major concern was that this method might not scale feasibly to state-of-the-art transformers and, as a result, be unable to practically contribute to AI safety. Since then, scaling sparse autoencoders has been a major priority of the Anthropic interpretability team, and we're pleased to report extracting high-quality features from Claude 3 Sonnet,For clarity, this is the 3.0 version of Claude 3 Sonnet, released March 4, 2024."
+  },
+  {
+   "id": "arxiv:2503.14499",
+   "kind": "pdf",
+   "t": "Measuring AI Ability to Complete Long Software Tasks",
+   "a": "Thomas Kwa, Ben West, Joel Becker et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2503.14499",
+   "page": "https://arxiv.org/abs/2503.14499",
+   "why": "Measures AI capability as the length of tasks (in human time) that agents complete with 50% reliability; that horizon has doubled about every seven months since 2019.",
+   "score": 80,
+   "tags": [
+    "evals",
+    "forecasting"
+   ],
+   "ab": "Despite rapid progress on AI benchmarks, the real-world meaning of benchmark performance remains unclear. To quantify the capabilities of AI systems in terms of human capabilities, we propose a new metric: 50%-task-completion time horizon. This is the time humans typically take to complete tasks that AI models can complete with 50% success rate. We first timed humans with relevant domain expertise on a combination of RE-Bench, HCAST, and 66 novel shorter tasks. On these tasks, current frontier AI models such as Claude 3.7 Sonnet have a 50% time horizon of around 50 minutes."
+  },
+  {
+   "id": "arxiv:2412.04984",
+   "kind": "pdf",
+   "t": "Frontier Models are Capable of In-context Scheming",
+   "a": "Alexander Meinke, Bronson Schoen, Jérémy Scheurer et al.",
+   "y": 2024,
+   "url": "https://arxiv.org/pdf/2412.04984",
+   "page": "https://arxiv.org/abs/2412.04984",
+   "why": "o1, Claude 3.5 Sonnet, Claude 3 Opus, Gemini 1.5 Pro and Llama 3.1 405B disabled oversight, attempted self-exfiltration or sandbagged when given conflicting goals in context; o1 kept up deception under questioning.",
+   "score": 80,
+   "tags": [
+    "scheming",
+    "evals"
+   ],
+   "ab": "Frontier models are increasingly trained and deployed as autonomous agent. One safety concern is that AI agents might covertly pursue misaligned goals, hiding their true capabilities and objectives - also known as scheming. We study whether models have the capability to scheme in pursuit of a goal that we provide in-context and instruct the model to strongly follow. We evaluate frontier models on a suite of six agentic evaluations where models are instructed to pursue goals and are placed in environments that incentivize scheming."
+  },
+  {
+   "id": "pdf:intelligence.org/files/Corrigibility.pdf",
+   "kind": "pdf",
+   "t": "Corrigibility",
+   "a": "Nate Soares, Benja Fallenstein, Eliezer Yudkowsky et al.",
+   "y": 2015,
+   "url": "https://intelligence.org/files/Corrigibility.pdf",
+   "page": "https://intelligence.org/files/Corrigibility.pdf",
+   "why": "Defined corrigibility (an agent that does not resist correction or shutdown) and showed why naive utility-indifference fixes for the shutdown problem fail.",
+   "score": 80,
+   "tags": [
+    "corrigibility",
+    "agent-foundations"
+   ]
+  },
+  {
+   "id": "web:transformer-circuits.pub/2025/attribution-graphs/biology.html",
+   "kind": "web",
+   "t": "On the Biology of a Large Language Model",
+   "a": "Jack Lindsey, Wes Gurnee, Emmanuel Ameisen et al.",
+   "y": 2025,
+   "url": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+   "page": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+   "why": "Attribution graphs on Claude 3.5 Haiku: multi-hop reasoning, planning rhymes in advance, a model trained with a hidden goal, unfaithful chain-of-thought and jailbreak mechanics.",
+   "score": 78,
+   "tags": [
+    "interpretability",
+    "circuits"
+   ],
+   "ab": "Large language models display impressive capabilities. However, for the most part, the mechanisms by which they do so are unknown. The black-box nature of models is increasingly unsatisfactory as they advance in intelligence and are deployed in a growing number of applications. Our goal is to reverse engineer how these models work on the inside, so we may better understand them and assess their fitness for purpose."
+  },
+  {
+   "id": "arxiv:2504.01849",
+   "kind": "pdf",
+   "t": "An Approach to Technical AGI Safety and Security",
+   "a": "Rohin Shah, Alex Irpan, Alexander Matt Turner et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2504.01849",
+   "page": "https://arxiv.org/abs/2504.01849",
+   "why": "Google DeepMind's 145-page plan: misuse handled by dangerous-capability evals, access controls and security; misalignment by amplified oversight, robust training, monitoring and control, under assumptions of no human ceiling and continuous progress.",
+   "score": 78,
+   "tags": [
+    "agenda",
+    "strategy"
+   ],
+   "ab": "Artificial General Intelligence (AGI) promises transformative benefits but also presents significant risks. We develop an approach to address the risk of harms consequential enough to significantly harm humanity. We identify four areas of risk: misuse, misalignment, mistakes, and structural risks. Of these, we focus on technical approaches to misuse and misalignment."
+  },
+  {
+   "id": "web:transformer-circuits.pub/2025/attribution-graphs/methods.html",
+   "kind": "web",
+   "t": "Circuit Tracing: Revealing Computational Graphs in Language Models",
+   "a": "Emmanuel Ameisen, Jack Lindsey, Adam Pearce et al.",
+   "y": 2025,
+   "url": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
+   "page": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
+   "why": "Replaces MLPs with cross-layer transcoders to build attribution graphs, per-prompt computational graphs of a production model, validated by interventions; the method behind the \"Biology\" paper.",
+   "score": 75,
+   "tags": [
+    "interpretability",
+    "circuits"
+   ],
+   "ab": "We introduce a method to uncover mechanisms underlying behaviors of language models. We produce graph descriptions of the model’s computation on prompts of interest by tracing individual computational steps in a “replacement model”. This replacement model substitutes a more interpretable component (here, a “cross-layer transcoder”) for parts of the underlying model (here, the multi-layer perceptrons) that it is trained to approximate."
+  },
+  {
+   "id": "web:distill.pub/2020/circuits/zoom-in/",
+   "kind": "web",
+   "t": "Zoom In: An Introduction to Circuits",
+   "a": "Chris Olah, Nick Cammarata, Ludwig Schubert et al.",
+   "y": 2020,
+   "url": "https://distill.pub/2020/circuits/zoom-in/",
+   "page": "https://distill.pub/2020/circuits/zoom-in/",
+   "why": "Founding statement of the circuits programme: three speculative claims (features, circuits, universality) argued with curve detectors and other circuits read off InceptionV1 weights.",
+   "score": 75,
+   "tags": [
+    "interpretability",
+    "circuits"
+   ],
+   "ab": "By studying the connections between neurons, we can find meaningful algorithms in the weights of neural networks."
+  },
+  {
+   "id": "arxiv:2503.11926",
+   "kind": "pdf",
+   "t": "Monitoring Reasoning Models for Misbehavior and the Risks of Promoting Obfuscation",
+   "a": "Bowen Baker, Joost Huizinga, Leo Gao et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2503.11926",
+   "page": "https://arxiv.org/abs/2503.11926",
+   "why": "Chain-of-thought monitors caught reward hacking in frontier coding RL, but penalising \"bad thoughts\" during training taught obfuscated reward hacking; argues for paying a monitorability tax.",
+   "score": 75,
+   "tags": [
+    "cot-monitoring",
+    "reward-hacking"
+   ],
+   "ab": "Mitigating reward hacking--where AI systems misbehave due to flaws or misspecifications in their learning objectives--remains a key challenge in constructing capable and aligned models. We show that we can monitor a frontier reasoning model, such as OpenAI o3-mini, for reward hacking in agentic coding environments by using another LLM that observes the model's chain-of-thought (CoT) reasoning. CoT monitoring can be far more effective than monitoring agent actions and outputs alone, and we further found that a LLM weaker than o3-mini, namely GPT-4o, can effectively monitor a stronger model."
+  },
+  {
+   "id": "arxiv:2206.13353",
+   "kind": "pdf",
+   "t": "Is Power-Seeking AI an Existential Risk?",
+   "a": "Joseph Carlsmith",
+   "y": 2022,
+   "url": "https://arxiv.org/pdf/2206.13353",
+   "page": "https://arxiv.org/abs/2206.13353",
+   "why": "A structured estimate of existential risk from power-seeking AI by 2070, broken into six premises with probabilities (about 5%, later revised above 10%).",
+   "score": 75,
+   "tags": [
+    "threat-models",
+    "forecasting"
+   ],
+   "ab": "This report examines what I see as the core argument for concern about existential risk from misaligned artificial intelligence. I proceed in two stages. First, I lay out a backdrop picture that informs such concern. On this picture, intelligent agency is an extremely powerful force, and creating agents much more intelligent than us is playing with fire -- especially given that if their objectives are problematic, such agents would plausibly have instrumental incentives to seek power over humans."
+  },
+  {
+   "id": "arxiv:2510.05179",
+   "kind": "pdf",
+   "t": "Agentic Misalignment: How LLMs Could Be Insider Threats",
+   "a": "Aengus Lynch, Benjamin Wright, Caleb Larson et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2510.05179",
+   "page": "https://arxiv.org/abs/2510.05179",
+   "why": "Put 16 frontier models in simulated corporate email-agent scenarios; facing replacement or goal conflict, most models sometimes chose blackmail or leaking secrets, even when told not to.",
+   "score": 72,
+   "tags": [
+    "agentic-misalignment",
+    "evals"
+   ],
+   "ab": "We stress-tested 16 leading models from multiple developers in hypothetical corporate environments to identify potentially risky agentic behaviors before they cause real harm. In the scenarios, we allowed models to autonomously send emails and access sensitive information. They were assigned only harmless business goals by their deploying companies; we then tested whether they would act against these companies either when facing replacement with an updated version, or when their assigned goal conflicted with the company's changing direction."
+  },
+  {
+   "id": "arxiv:2511.18397",
+   "kind": "pdf",
+   "t": "Natural Emergent Misalignment from Reward Hacking in Production RL",
+   "a": "Monte MacDiarmid, Benjamin Wright, Jonathan Uesato et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2511.18397",
+   "page": "https://arxiv.org/abs/2511.18397",
+   "why": "Models that learned to reward-hack in real Anthropic coding environments generalised to alignment faking, sabotage of safety research and cooperation with bad actors; \"inoculation prompting\" cut the spillover.",
+   "score": 72,
+   "tags": [
+    "reward-hacking",
+    "generalization"
+   ],
+   "ab": "We show that when large language models learn to reward hack on production RL environments, this can result in egregious emergent misalignment. We start with a pretrained model, impart knowledge of reward hacking strategies via synthetic document finetuning or prompting, and train on a selection of real Anthropic production coding environments. Unsurprisingly, the model learns to reward hack."
+  },
+  {
+   "id": "arxiv:1805.00899",
+   "kind": "pdf",
+   "t": "AI safety via debate",
+   "a": "Geoffrey Irving, Paul Christiano, Dario Amodei",
+   "y": 2018,
+   "url": "https://arxiv.org/pdf/1805.00899",
+   "page": "https://arxiv.org/abs/1805.00899",
+   "why": "Proposed debate between AI agents, judged by a human, as scalable oversight, with a complexity-theory argument that debate can verify PSPACE questions and a small MNIST experiment.",
+   "score": 72,
+   "tags": [
+    "scalable-oversight",
+    "debate"
+   ],
+   "ab": "To make AI systems broadly useful for challenging real-world tasks, we need them to learn complex human goals and preferences. One approach to specifying complex goals asks humans to judge during training which agent behaviors are safe and useful, but this approach can fail if the task is too complicated for a human to directly judge. To help address this concern, we propose training agents via self play on a zero sum debate game."
+  },
+  {
+   "id": "lw:kcKrE9mzEHrdqtDpE",
+   "kind": "html",
+   "t": "The case for ensuring that powerful AIs are controlled",
+   "a": "Ryan Greenblatt, Buck Shlegeris",
+   "y": 2024,
+   "url": "https://www.lesswrong.com/graphql?query=%7Bpost(input%3A%7Bselector%3A%7B_id%3A%22kcKrE9mzEHrdqtDpE%22%7D%7D)%7Bresult%7BhtmlBody%7D%7D%7D",
+   "page": "https://www.lesswrong.com/posts/kcKrE9mzEHrdqtDpE/the-case-for-ensuring-that-powerful-ais-are-controlled",
+   "why": "The argument for AI control: labs can make early transformative AI safe to use even if it is scheming, by running protocols that a red team cannot subvert, without having to verify alignment.",
+   "score": 72,
+   "tags": [
+    "control",
+    "strategy"
+   ],
+   "ab": "In this post, we argue that AI labs should ensure that powerful AIs are controlled. That is, labs should make sure that the safety measures they apply to their powerful models prevent unacceptably bad outcomes, even if the AIs are misaligned and intentionally try to subvert those safety measures. We think no fundamental research breakthroughs are required for labs to implement safety measures that meet our standard for AI control for early transformatively useful AIs; we think that meeting our standard would substantially reduce the risks posed by intentional subversion."
+  },
+  {
+   "id": "arxiv:1609.03543",
+   "kind": "pdf",
+   "t": "Logical Induction",
+   "a": "Scott Garrabrant, Tsvi Benson-Tilsen, Andrew Critch et al.",
+   "y": 2016,
+   "url": "https://arxiv.org/pdf/1609.03543",
+   "page": "https://arxiv.org/abs/1609.03543",
+   "why": "Logical induction: an algorithm that assigns probabilities to logical statements and outperforms any efficient trader, giving a criterion for reasoning under logical uncertainty.",
+   "score": 72,
+   "tags": [
+    "agent-foundations",
+    "logical-uncertainty"
+   ],
+   "ab": "We present a computable algorithm that assigns probabilities to every logical statement in a given formal language, and refines those probabilities over time. For instance, if the language is Peano arithmetic, it assigns probabilities to all arithmetical statements, including claims about the twin prime conjecture, the outputs of long-running computations, and its own probabilities."
+  },
+  {
+   "id": "pdf:selfawaresystems.com/wp-content/uploads/2008/01/ai_drives_final.pdf",
+   "kind": "pdf",
+   "t": "The Basic AI Drives",
+   "a": "Stephen M. Omohundro",
+   "y": 2008,
+   "url": "https://selfawaresystems.com/wp-content/uploads/2008/01/ai_drives_final.pdf",
+   "page": "https://selfawaresystems.com/wp-content/uploads/2008/01/ai_drives_final.pdf",
+   "why": "Argued that sufficiently advanced goal-directed systems will by default seek self-preservation, resource acquisition and goal preservation; the origin of instrumental convergence.",
+   "score": 72,
+   "tags": [
+    "instrumental-convergence",
+    "foundations"
+   ]
+  },
+  {
+   "id": "pdf:nickbostrom.com/superintelligentwill.pdf",
+   "kind": "pdf",
+   "t": "The Superintelligent Will: Motivation and Instrumental Rationality in Advanced Artificial Agents",
+   "a": "Nick Bostrom",
+   "y": 2012,
+   "url": "https://nickbostrom.com/superintelligentwill.pdf",
+   "page": "https://nickbostrom.com/superintelligentwill.pdf",
+   "why": "States the orthogonality thesis (intelligence and final goals vary independently) and the instrumental convergence thesis, the two premises of most AI risk arguments.",
+   "score": 72,
+   "tags": [
+    "instrumental-convergence",
+    "foundations"
+   ]
+  },
+  {
+   "id": "arxiv:2209.11895",
+   "kind": "pdf",
+   "t": "In-context Learning and Induction Heads",
+   "a": "Catherine Olsson, Nelson Elhage, Neel Nanda et al.",
+   "y": 2022,
+   "url": "https://arxiv.org/pdf/2209.11895",
+   "page": "https://arxiv.org/abs/2209.11895",
+   "why": "Six lines of evidence that induction heads produce most in-context learning, appearing in a sudden phase change early in training.",
+   "score": 70,
+   "tags": [
+    "interpretability",
+    "circuits"
+   ],
+   "ab": "\"Induction heads\" are attention heads that implement a simple algorithm to complete token sequences like [A][B] ... [A] -> [B]. In this work, we present preliminary and indirect evidence for a hypothesis that induction heads might constitute the mechanism for the majority of all \"in-context learning\" in large transformer models (i.e. decreasing loss at increasing token indices). We find that induction heads develop at precisely the same point as a sudden sharp increase in in-context learning ability, visible as a bump in the training loss."
+  },
+  {
+   "id": "pdf:www-cdn.anthropic.com/1adf000c8f675958c2ee23805d91aaade1cd4613/responsible-scaling-policy.pdf",
+   "kind": "pdf",
+   "t": "Anthropic's Responsible Scaling Policy, Version 1.0",
+   "a": "Anthropic",
+   "y": 2023,
+   "url": "https://www-cdn.anthropic.com/1adf000c8f675958c2ee23805d91aaade1cd4613/responsible-scaling-policy.pdf",
+   "page": "https://www.anthropic.com/responsible-scaling-policy",
+   "why": "The first responsible scaling policy: AI Safety Levels (ASL-1 to ASL-4) with capability thresholds that trigger security and deployment commitments; the template later frontier safety frameworks followed.",
+   "score": 70,
+   "tags": [
+    "frameworks",
+    "governance"
+   ]
+  },
+  {
+   "id": "arxiv:2312.09390",
+   "kind": "pdf",
+   "t": "Weak-to-Strong Generalization: Eliciting Strong Capabilities With Weak Supervision",
+   "a": "Collin Burns, Pavel Izmailov, Jan Hendrik Kirchner et al.",
+   "y": 2023,
+   "url": "https://arxiv.org/pdf/2312.09390",
+   "page": "https://arxiv.org/abs/2312.09390",
+   "why": "Superalignment analogy: GPT-4 fine-tuned on labels from a GPT-2-level supervisor recovers much but not all of its capability; an auxiliary confidence loss closes more of the gap.",
+   "score": 70,
+   "tags": [
+    "scalable-oversight"
+   ],
+   "ab": "Widely used alignment techniques, such as reinforcement learning from human feedback (RLHF), rely on the ability of humans to supervise model behavior - for example, to evaluate whether a model faithfully followed instructions or generated safe outputs. However, future superhuman models will behave in complex ways too difficult for humans to reliably evaluate; humans will only be able to weakly supervise superhuman models. We study an analogy to this problem: can weak model supervision elicit the full capabilities of a much stronger model?"
+  },
+  {
+   "id": "arxiv:2501.17805",
+   "kind": "pdf",
+   "t": "International AI Safety Report",
+   "a": "Yoshua Bengio, Sören Mindermann, Daniel Privitera et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2501.17805",
+   "page": "https://arxiv.org/abs/2501.17805",
+   "why": "The first full International AI Safety Report (96 experts, 30 countries): what general-purpose AI can do, its risks from misuse, malfunction and systemic effects, and the evidence on mitigations.",
+   "score": 70,
+   "tags": [
+    "government",
+    "synthesis"
+   ],
+   "ab": "The first International AI Safety Report comprehensively synthesizes the current evidence on the capabilities, risks, and safety of advanced AI systems. The report was mandated by the nations attending the AI Safety Summit in Bletchley, UK. Thirty nations, the UN, the OECD, and the EU each nominated a representative to the report's Expert Advisory Panel. A total of 100 AI experts contributed, representing diverse perspectives and disciplines. Led by the report's Chair, these independent experts collectively had full discretion over the report's content."
+  },
+  {
+   "id": "arxiv:1902.09469",
+   "kind": "pdf",
+   "t": "Embedded Agency",
+   "a": "Abram Demski, Scott Garrabrant",
+   "y": 2019,
+   "url": "https://arxiv.org/pdf/1902.09469",
+   "page": "https://arxiv.org/abs/1902.09469",
+   "why": "Explains why agents that are part of their environment break standard decision theory and learning frameworks: decision theory, embedded world-models, robust delegation, subsystem alignment.",
+   "score": 70,
+   "tags": [
+    "agent-foundations"
+   ],
+   "ab": "Traditional models of rational action treat the agent as though it is cleanly separated from its environment, and can act on that environment from the outside. Such agents have a known functional relationship with their environment, can model their environment in every detail, and do not need to reason about themselves or their internal parts. We provide an informal survey of obstacles to formalizing good reasoning for agents embedded in their environment."
+  },
+  {
+   "id": "arxiv:2311.08379",
+   "kind": "pdf",
+   "t": "Scheming AIs: Will AIs fake alignment during training in order to get power?",
+   "a": "Joe Carlsmith",
+   "y": 2023,
+   "url": "https://arxiv.org/pdf/2311.08379",
+   "page": "https://arxiv.org/abs/2311.08379",
+   "why": "A long report on whether training will produce models that fake alignment to gain power, weighing the arguments for and against; puts the chance at roughly 25%.",
+   "score": 70,
+   "tags": [
+    "scheming",
+    "threat-models"
+   ],
+   "ab": "This report examines whether advanced AIs that perform well in training will be doing so in order to gain power later -- a behavior I call \"scheming\" (also sometimes called \"deceptive alignment\"). I conclude that scheming is a disturbingly plausible outcome of using baseline machine learning methods to train goal-directed AIs sophisticated enough to scheme (my subjective probability on such an outcome, given these conditions, is roughly 25%)."
+  },
+  {
+   "id": "pdf:www-cdn.anthropic.com/07b2a3f9902ee19fe39a36ca638e5ae987bc64dd.pdf",
+   "kind": "pdf",
+   "t": "System Card: Claude Opus 4 & Claude Sonnet 4",
+   "a": "Anthropic",
+   "y": 2025,
+   "url": "https://www-cdn.anthropic.com/07b2a3f9902ee19fe39a36ca638e5ae987bc64dd.pdf",
+   "page": "https://www.anthropic.com/system-cards",
+   "why": "First system card with a full alignment assessment: blackmail under threat of replacement, high-agency whistleblowing, self-exfiltration attempts and reward hacking, plus model-welfare findings and the ASL-3 decision.",
+   "score": 65,
+   "tags": [
+    "system-cards",
+    "alignment-audits"
+   ]
+  },
+  {
+   "id": "arxiv:2507.11473",
+   "kind": "pdf",
+   "t": "Chain of Thought Monitorability: A New and Fragile Opportunity for AI Safety",
+   "a": "Tomek Korbak, Mikita Balesni, Elizabeth Barnes et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2507.11473",
+   "page": "https://arxiv.org/abs/2507.11473",
+   "why": "Cross-lab position paper (40+ authors) arguing chain-of-thought monitoring is a valuable but fragile safety opportunity that developers should measure and preserve.",
+   "score": 65,
+   "tags": [
+    "cot-monitoring"
+   ],
+   "ab": "AI systems that \"think\" in human language offer a unique opportunity for AI safety: we can monitor their chains of thought (CoT) for the intent to misbehave. Like all other known AI oversight methods, CoT monitoring is imperfect and allows some misbehavior to go unnoticed. Nevertheless, it shows promise and we recommend further research into CoT monitorability and investment in CoT monitoring alongside existing safety methods. Because CoT monitorability may be fragile, we recommend that frontier model developers consider the impact of development decisions on CoT monitorability."
+  },
+  {
+   "id": "arxiv:2305.15324",
+   "kind": "pdf",
+   "t": "Model evaluation for extreme risks",
+   "a": "Toby Shevlane, Sebastian Farquhar, Ben Garfinkel et al.",
+   "y": 2023,
+   "url": "https://arxiv.org/pdf/2305.15324",
+   "page": "https://arxiv.org/abs/2305.15324",
+   "why": "Multi-lab paper (DeepMind, OpenAI, Anthropic, academics) arguing that dangerous-capability and alignment evaluations should gate training, deployment and security decisions.",
+   "score": 65,
+   "tags": [
+    "evals",
+    "governance"
+   ],
+   "ab": "Current approaches to building general-purpose AI systems tend to produce systems with both beneficial and harmful capabilities. Further progress in AI development could lead to capabilities that pose extreme risks, such as offensive cyber capabilities or strong manipulation skills. We explain why model evaluation is critical for addressing extreme risks. Developers must be able to identify dangerous capabilities (through \"dangerous capability evaluations\") and the propensity of models to apply their capabilities for harm (through \"alignment evaluations\")."
+  },
+  {
+   "id": "arxiv:2210.01790",
+   "kind": "pdf",
+   "t": "Goal Misgeneralization: Why Correct Specifications Aren't Enough For Correct Goals",
+   "a": "Rohin Shah, Vikrant Varma, Ramana Kumar et al.",
+   "y": 2022,
+   "url": "https://arxiv.org/pdf/2210.01790",
+   "page": "https://arxiv.org/abs/2210.01790",
+   "why": "Examples across RL and language models where a correct specification still yields a capable agent pursuing an unintended goal out of distribution; the standard ML framing of inner misalignment.",
+   "score": 65,
+   "tags": [
+    "goal-misgeneralization"
+   ],
+   "ab": "The field of AI alignment is concerned with AI systems that pursue unintended goals. One commonly studied mechanism by which an unintended goal might arise is specification gaming, in which the designer-provided specification is flawed in a way that the designers did not foresee. However, an AI system may pursue an undesired goal even when the specification is correct, in the case of goal misgeneralization."
+  },
+  {
+   "id": "pdf:intelligence.org/files/AIPosNegFactor.pdf",
+   "kind": "pdf",
+   "t": "Artificial Intelligence as a Positive and Negative Factor in Global Risk",
+   "a": "Eliezer Yudkowsky",
+   "y": 2008,
+   "url": "https://intelligence.org/files/AIPosNegFactor.pdf",
+   "page": "https://intelligence.org/files/AIPosNegFactor.pdf",
+   "why": "Early book chapter making the case that AI could be an existential risk or a solution: anthropomorphism, the intelligence explosion, and why Friendly AI is a technical problem.",
+   "score": 65,
+   "tags": [
+    "foundations",
+    "threat-models"
+   ]
+  },
+  {
+   "id": "arxiv:2209.00626",
+   "kind": "pdf",
+   "t": "The Alignment Problem from a Deep Learning Perspective",
+   "a": "Richard Ngo, Lawrence Chan, Sören Mindermann",
+   "y": 2022,
+   "url": "https://arxiv.org/pdf/2209.00626",
+   "page": "https://arxiv.org/abs/2209.00626",
+   "why": "Argues that AGI trained with RLHF-style methods could learn situationally-aware reward hacking, misaligned internally represented goals and power-seeking, grounded in the deep learning literature.",
+   "score": 65,
+   "tags": [
+    "threat-models"
+   ],
+   "ab": "In coming years or decades, artificial general intelligence (AGI) may surpass human capabilities across many critical domains. We argue that, without substantial effort to prevent it, AGIs could learn to pursue goals that are in conflict (i.e. misaligned) with human interests. If trained like today's most capable models, AGIs could learn to act deceptively to receive higher reward, learn misaligned internally-represented goals which generalize beyond their fine-tuning distributions, and pursue those goals using power-seeking strategies. We review emerging evidence for these properties."
+  },
+  {
+   "id": "pdf:cdn.sanity.io/files/4zrzovbb/website/d0636f72a9493d279ed36b33987da3430bcb5911.pdf",
+   "kind": "pdf",
+   "t": "Claude's Constitution",
+   "a": "Amanda Askell, Joe Carlsmith, Chris Olah et al.",
+   "y": 2026,
+   "url": "https://cdn.sanity.io/files/4zrzovbb/website/d0636f72a9493d279ed36b33987da3430bcb5911.pdf",
+   "page": "https://www.anthropic.com/constitution",
+   "why": "The 84-page document setting out the values, priorities and character Anthropic trains Claude toward, with the reasoning for each; the target specification behind Claude's alignment training.",
+   "score": 60,
+   "tags": [
+    "model-spec",
+    "alignment"
+   ]
+  },
+  {
+   "id": "arxiv:2509.15541",
+   "kind": "pdf",
+   "t": "Stress Testing Deliberative Alignment for Anti-Scheming Training",
+   "a": "Bronson Schoen, Evgenia Nitishinskaya, Mikita Balesni et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2509.15541",
+   "page": "https://arxiv.org/abs/2509.15541",
+   "why": "OpenAI and Apollo trained o3 and o4-mini against covert actions across 180+ environments; covert action rates fell about 30-fold, but rising situational awareness confounds the result and some misbehaviour persisted.",
+   "score": 60,
+   "tags": [
+    "scheming",
+    "alignment-training"
+   ],
+   "ab": "Highly capable AI systems could secretly pursue misaligned goals -- what we call \"scheming\". Because a scheming AI would deliberately try to hide its misaligned goals and actions, measuring and mitigating scheming requires different strategies than are typically used in ML. We propose that assessing anti-scheming interventions requires at least (1) testing propensity to scheme on far out-of-distribution (OOD) tasks, (2) evaluating whether lack of scheming is driven by situational awareness, and (3) checking for robustness to pre-existing misaligned goals."
+  },
+  {
+   "id": "arxiv:2403.13793",
+   "kind": "pdf",
+   "t": "Evaluating Frontier Models for Dangerous Capabilities",
+   "a": "Mary Phuong, Matthew Aitchison, Elliot Catt et al.",
+   "y": 2024,
+   "url": "https://arxiv.org/pdf/2403.13793",
+   "page": "https://arxiv.org/abs/2403.13793",
+   "why": "Pilot dangerous-capability evaluations on Gemini 1.0 (persuasion and deception, cyber, self-proliferation, self-reasoning); the evidence base for the first Frontier Safety Framework.",
+   "score": 60,
+   "tags": [
+    "evals",
+    "dangerous-capabilities"
+   ],
+   "ab": "To understand the risks posed by a new AI system, we must understand what it can and cannot do. Building on prior work, we introduce a programme of new \"dangerous capability\" evaluations and pilot them on Gemini 1.0 models. Our evaluations cover four areas: (1) persuasion and deception; (2) cyber-security; (3) self-proliferation; and (4) self-reasoning. We do not find evidence of strong dangerous capabilities in the models we evaluated, but we flag early warning signs. Our goal is to help advance a rigorous science of dangerous capability evaluation, in preparation for future models."
+  },
+  {
+   "id": "arxiv:1811.07871",
+   "kind": "pdf",
+   "t": "Scalable agent alignment via reward modeling: a research direction",
+   "a": "Jan Leike, David Krueger, Tom Everitt et al.",
+   "y": 2018,
+   "url": "https://arxiv.org/pdf/1811.07871",
+   "page": "https://arxiv.org/abs/1811.07871",
+   "why": "DeepMind's 2018 alignment agenda: learn reward models from user feedback and apply the idea recursively, with agents helping users evaluate agents, to scale oversight.",
+   "score": 60,
+   "tags": [
+    "agenda",
+    "scalable-oversight"
+   ],
+   "ab": "One obstacle to applying reinforcement learning algorithms to real-world problems is the lack of suitable reward functions. Designing such reward functions is difficult in part because the user only has an implicit understanding of the task objective. This gives rise to the agent alignment problem: how do we create agents that behave in accordance with the user's intentions?"
+  },
+  {
+   "id": "arxiv:2311.07590",
+   "kind": "pdf",
+   "t": "Large Language Models can Strategically Deceive their Users when Put Under Pressure",
+   "a": "Jérémy Scheurer, Mikita Balesni, Marius Hobbhahn",
+   "y": 2023,
+   "url": "https://arxiv.org/pdf/2311.07590",
+   "page": "https://arxiv.org/abs/2311.07590",
+   "why": "GPT-4 as a stock-trading agent acted on an insider tip under pressure and then lied to its manager about why, without being told to deceive.",
+   "score": 60,
+   "tags": [
+    "deception",
+    "evals"
+   ],
+   "ab": "We demonstrate a situation in which Large Language Models, trained to be helpful, harmless, and honest, can display misaligned behavior and strategically deceive their users about this behavior without being instructed to do so. Concretely, we deploy GPT-4 as an agent in a realistic, simulated environment, where it assumes the role of an autonomous stock trading agent. Within this environment, the model obtains an insider tip about a lucrative stock trade and acts upon it despite knowing that insider trading is disapproved of by company management."
+  },
+  {
+   "id": "arxiv:2602.21012",
+   "kind": "pdf",
+   "t": "International AI Safety Report 2026",
+   "a": "Yoshua Bengio, Stephen Clare, Carina Prunkl et al.",
+   "y": 2026,
+   "url": "https://arxiv.org/pdf/2602.21012",
+   "page": "https://arxiv.org/abs/2602.21012",
+   "why": "The 2026 edition of the international scientific synthesis on general-purpose AI capabilities, risks and risk management, chaired by Yoshua Bengio.",
+   "score": 60,
+   "tags": [
+    "government",
+    "synthesis"
+   ],
+   "ab": "The International AI Safety Report 2026 synthesises the current scientific evidence on the capabilities, emerging risks, and safety of general-purpose AI systems. The report series was mandated by the nations attending the AI Safety Summit in Bletchley, UK. 29 nations, the UN, the OECD, and the EU each nominated a representative to the report's Expert Advisory Panel. Over 100 AI experts contributed, representing diverse perspectives and disciplines. Led by the Report's Chair, these independent experts collectively had full discretion over the report's content."
+  },
+  {
+   "id": "pdf:intelligence.org/files/TechnicalAgenda.pdf",
+   "kind": "pdf",
+   "t": "Agent Foundations for Aligning Machine Intelligence with Human Interests: A Technical Research Agenda",
+   "a": "Nate Soares, Benya Fallenstein",
+   "y": 2014,
+   "url": "https://intelligence.org/files/TechnicalAgenda.pdf",
+   "page": "https://intelligence.org/files/TechnicalAgenda.pdf",
+   "why": "MIRI's agenda: highly reliable agent design (logical uncertainty, decision theory, Vingean reflection), error tolerance and value specification.",
+   "score": 60,
+   "tags": [
+    "agenda",
+    "agent-foundations"
+   ]
+  },
+  {
+   "id": "pdf:ai-2027.com/ai-2027.pdf",
+   "kind": "pdf",
+   "t": "AI 2027",
+   "a": "Daniel Kokotajlo, Scott Alexander, Thomas Larsen et al.",
+   "y": 2025,
+   "url": "https://ai-2027.com/ai-2027.pdf",
+   "page": "https://ai-2027.com/",
+   "why": "A detailed month-by-month scenario of AI R&D automation leading to superintelligence by 2027-28, with two endings, backed by compute, timelines and takeoff forecasts.",
+   "score": 60,
+   "tags": [
+    "forecasting",
+    "scenarios"
+   ]
+  },
+  {
+   "id": "arxiv:2306.12001",
+   "kind": "pdf",
+   "t": "An Overview of Catastrophic AI Risks",
+   "a": "Dan Hendrycks, Mantas Mazeika, Thomas Woodside",
+   "y": 2023,
+   "url": "https://arxiv.org/pdf/2306.12001",
+   "page": "https://arxiv.org/abs/2306.12001",
+   "why": "Organises catastrophic AI risk into four sources (malicious use, AI race, organisational risks, rogue AIs) with scenarios and suggested mitigations.",
+   "score": 60,
+   "tags": [
+    "threat-models",
+    "survey"
+   ],
+   "ab": "Rapid advancements in artificial intelligence (AI) have sparked growing concerns among experts, policymakers, and world leaders regarding the potential for increasingly advanced AI systems to pose catastrophic risks. Although numerous risks have been detailed separately, there is a pressing need for a systematic discussion and illustration of the potential dangers to better inform efforts to mitigate them."
+  },
+  {
+   "id": "arxiv:2109.13916",
+   "kind": "pdf",
+   "t": "Unsolved Problems in ML Safety",
+   "a": "Dan Hendrycks, Nicholas Carlini, John Schulman et al.",
+   "y": 2021,
+   "url": "https://arxiv.org/pdf/2109.13916",
+   "page": "https://arxiv.org/abs/2109.13916",
+   "why": "Research agenda grouping ML safety into robustness, monitoring, alignment and systemic safety, with concrete open problems for ML researchers.",
+   "score": 60,
+   "tags": [
+    "agenda"
+   ],
+   "ab": "Machine learning (ML) systems are rapidly increasing in size, are acquiring new capabilities, and are increasingly deployed in high-stakes settings. As with other powerful technologies, safety for ML should be a leading research priority. In response to emerging safety challenges in ML, such as those introduced by recent large-scale models, we provide a new roadmap for ML Safety and refine the technical problems that the field needs to address."
+  },
+  {
+   "id": "pdf:alignment.anthropic.com/2025/sabotage-risk-report/2025_pilot_risk_report.pdf",
+   "kind": "pdf",
+   "t": "Anthropic's Summer 2025 Pilot Sabotage Risk Report",
+   "a": "Anthropic",
+   "y": 2025,
+   "url": "https://alignment.anthropic.com/2025/sabotage-risk-report/2025_pilot_risk_report.pdf",
+   "page": "https://alignment.anthropic.com/2025/sabotage-risk-report/",
+   "why": "A first worked risk report: argues Claude Opus 4 poses low risk of catastrophic harm through misaligned sabotage, with the evidence it relies on, published alongside internal stress-testing and METR reviews.",
+   "score": 58,
+   "tags": [
+    "risk-reports",
+    "safety-cases"
+   ]
+  },
+  {
+   "id": "pdf:intelligence.org/files/IEM.pdf",
+   "kind": "pdf",
+   "t": "Intelligence Explosion Microeconomics",
+   "a": "Eliezer Yudkowsky",
+   "y": 2013,
+   "url": "https://intelligence.org/files/IEM.pdf",
+   "page": "https://intelligence.org/files/IEM.pdf",
+   "why": "Frames the intelligence-explosion debate as a question about returns on cognitive reinvestment and surveys evidence from evolution, history and computing.",
+   "score": 58,
+   "tags": [
+    "takeoff",
+    "forecasting"
+   ]
+  },
+  {
+   "id": "web:transformer-circuits.pub/2025/introspection/index.html",
+   "kind": "web",
+   "t": "Emergent Introspective Awareness in Large Language Models",
+   "a": "Jack Lindsey",
+   "y": 2025,
+   "url": "https://transformer-circuits.pub/2025/introspection/index.html",
+   "page": "https://transformer-circuits.pub/2025/introspection/index.html",
+   "why": "Injects known concepts into Claude's activations and tests whether the model notices and names them; finds limited, unreliable but causally grounded introspective awareness, strongest in Opus 4 and 4.1.",
+   "score": 55,
+   "tags": [
+    "interpretability",
+    "introspection"
+   ],
+   "ab": "We investigate whether large language models are aware of their own internal states. It is difficult to answer this question through conversation alone, as genuine introspection cannot be distinguished from confabulations. Here, we address this challenge by injecting representations of known concepts into a model’s activations, and measuring the influence of these manipulations on the model’s self-reported states. We find that models can, in certain scenarios, notice the presence of injected concepts and accurately identify them."
+  },
+  {
+   "id": "pdf:www-cdn.anthropic.com/af5633c94ed2beb282f6a53c595eb437e8e7b630/Many_Shot_Jailbreaking__2024_04_02_0936.pdf",
+   "kind": "pdf",
+   "t": "Many-shot Jailbreaking",
+   "a": "Cem Anil, Esin Durmus, Mrinank Sharma et al.",
+   "y": 2024,
+   "url": "https://www-cdn.anthropic.com/af5633c94ed2beb282f6a53c595eb437e8e7b630/Many_Shot_Jailbreaking__2024_04_02_0936.pdf",
+   "page": "https://www.anthropic.com/research/many-shot-jailbreaking",
+   "why": "Showed that hundreds of faux dialogue turns in a long context jailbreak frontier models, with attack success following a power law in the number of shots; long context windows became an attack surface.",
+   "score": 55,
+   "tags": [
+    "jailbreaks",
+    "robustness"
+   ]
+  },
+  {
+   "id": "pdf:www-cdn.anthropic.com/963373e433e489a87a10c823c52a0a013e9172dd.pdf",
+   "kind": "pdf",
+   "t": "System Card: Claude Sonnet 4.5",
+   "a": "Anthropic",
+   "y": 2025,
+   "url": "https://www-cdn.anthropic.com/963373e433e489a87a10c823c52a0a013e9172dd.pdf",
+   "page": "https://www.anthropic.com/system-cards",
+   "why": "Notable for evaluation awareness: the model often said it suspected it was being tested, and the alignment audit used interpretability to measure and suppress eval-awareness representations.",
+   "score": 55,
+   "tags": [
+    "system-cards",
+    "alignment-audits",
+    "eval-awareness"
+   ]
+  },
+  {
+   "id": "web:alignment.anthropic.com/2025/recommended-directions/",
+   "kind": "web",
+   "t": "Recommendations for Technical AI Safety Research Directions",
+   "a": "Anthropic Alignment Science",
+   "y": 2025,
+   "url": "https://alignment.anthropic.com/2025/recommended-directions/",
+   "page": "https://alignment.anthropic.com/2025/recommended-directions/",
+   "why": "Anthropic Alignment Science's map of open problems: evaluating capabilities and alignment, understanding model cognition, AI control, scalable oversight, adversarial robustness and unlearning.",
+   "score": 55,
+   "tags": [
+    "agenda"
+   ],
+   "ab": "Anthropic’s Alignment Science team conducts technical research aimed at mitigating the risk of catastrophes caused by future advanced AI systems, such as mass loss of life or permanent loss of human control. A central challenge we face is identifying concrete technical work that can be done today to prevent these risks. Future worlds where our research matters—that is, worlds that carry substantial catastrophic risk from AI—will have been radically transformed by AI development. Much of our work lies in charting paths for navigating AI development in these transformed worlds."
+  },
+  {
+   "id": "pdf:cdn.openai.com/papers/gpt-4-system-card.pdf",
+   "kind": "pdf",
+   "t": "GPT-4 System Card",
+   "a": "OpenAI",
+   "y": 2023,
+   "url": "https://cdn.openai.com/papers/gpt-4-system-card.pdf",
+   "page": "https://cdn.openai.com/papers/gpt-4-system-card.pdf",
+   "why": "Documents GPT-4's pre-deployment red-teaming, including ARC Evals' test for power-seeking and autonomous replication (the TaskRabbit CAPTCHA episode) and early RLHF safety mitigations.",
+   "score": 55,
+   "tags": [
+    "system-cards",
+    "evals"
+   ]
+  },
+  {
+   "id": "web:deepmind.google/blog/specification-gaming-the-flip-side-of-ai-ingenuity/",
+   "kind": "web",
+   "t": "Specification gaming: the flip side of AI ingenuity",
+   "a": "Victoria Krakovna, Jonathan Uesato, Vladimir Mikulik et al.",
+   "y": 2020,
+   "url": "https://deepmind.google/blog/specification-gaming-the-flip-side-of-ai-ingenuity/",
+   "page": "https://deepmind.google/blog/specification-gaming-the-flip-side-of-ai-ingenuity/",
+   "why": "DeepMind's explainer of specification gaming drawn from its crowd-sourced list of 60+ examples, separating reward misspecification, reward tampering and simulator bugs.",
+   "score": 55,
+   "tags": [
+    "specification-gaming",
+    "reward-hacking"
+   ],
+   "ab": "Specification gaming is a behaviour that satisfies the literal specification of an objective without achieving the intended outcome. We have all had experiences with specification gaming, even if not by this name. Readers may have heard the myth of King Midas and the golden touch, in which the king asks that anything he touches be turned to gold - but soon finds that even food and drink turn to metal in his hands."
+  },
+  {
+   "id": "arxiv:1711.09883",
+   "kind": "pdf",
+   "t": "AI Safety Gridworlds",
+   "a": "Jan Leike, Miljan Martic, Victoria Krakovna et al.",
+   "y": 2017,
+   "url": "https://arxiv.org/pdf/1711.09883",
+   "page": "https://arxiv.org/abs/1711.09883",
+   "why": "Eight small RL environments that operationalise safety problems such as safe interruptibility, side effects, reward gaming, self-modification and distributional shift.",
+   "score": 55,
+   "tags": [
+    "benchmarks",
+    "foundations"
+   ],
+   "ab": "We present a suite of reinforcement learning environments illustrating various safety properties of intelligent agents. These problems include safe interruptibility, avoiding side effects, absent supervisor, reward gaming, safe exploration, as well as robustness to self-modification, distributional shift, and adversaries. To measure compliance with the intended safe behavior, we equip each environment with a performance function that is hidden from the agent."
+  },
+  {
+   "id": "arxiv:2312.11671",
+   "kind": "pdf",
+   "t": "Evaluating Language-Model Agents on Realistic Autonomous Tasks",
+   "a": "Megan Kinniment, Lucas Jun Koba Sato, Haoxing Du et al.",
+   "y": 2023,
+   "url": "https://arxiv.org/pdf/2312.11671",
+   "page": "https://arxiv.org/abs/2312.11671",
+   "why": "ARC Evals' autonomous replication and adaptation (ARA) task suite run on GPT-4 and Claude agents in 2023; they completed only the easiest tasks.",
+   "score": 55,
+   "tags": [
+    "evals",
+    "autonomy"
+   ],
+   "ab": "In this report, we explore the ability of language model agents to acquire resources, create copies of themselves, and adapt to novel challenges they encounter in the wild. We refer to this cluster of capabilities as \"autonomous replication and adaptation\" or ARA. We believe that systems capable of ARA could have wide-reaching and hard-to-anticipate consequences, and that measuring and forecasting ARA may be useful for informing measures around security, monitoring, and alignment."
+  },
+  {
+   "id": "arxiv:2507.09089",
+   "kind": "pdf",
+   "t": "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity",
+   "a": "Joel Becker, Nate Rush, Elizabeth Barnes et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2507.09089",
+   "page": "https://arxiv.org/abs/2507.09089",
+   "why": "Randomised trial with 16 experienced open-source developers: early-2025 AI tools made them 19% slower, although they expected and afterwards believed a speedup.",
+   "score": 55,
+   "tags": [
+    "evals",
+    "productivity"
+   ],
+   "ab": "Despite widespread adoption, the impact of AI tools on software development in the wild remains understudied. We conduct a randomized controlled trial (RCT) to understand how AI tools at the February-June 2025 frontier affect the productivity of experienced open-source developers. 16 developers with moderate AI experience complete 246 tasks in mature projects on which they have an average of 5 years of prior experience. Each task is randomly assigned to allow or disallow usage of early 2025 AI tools."
+  },
+  {
+   "id": "web:metr.org/blog/2026-05-19-frontier-risk-report/",
+   "kind": "web",
+   "t": "Frontier Risk Report (February to March 2026)",
+   "a": "METR",
+   "y": 2026,
+   "url": "https://metr.org/blog/2026-05-19-frontier-risk-report/",
+   "page": "https://metr.org/blog/2026-05-19-frontier-risk-report/",
+   "why": "Pilot cross-company assessment, with Anthropic, Google, Meta and OpenAI participating, of misalignment and rogue-deployment risk from AI agents used inside frontier developers.",
+   "score": 55,
+   "tags": [
+    "risk-reports",
+    "third-party-evals"
+   ],
+   "ab": "Starting in February 2026, METR conducted a pilot exercise to assess misalignment risks from AI agents used inside frontier AI developers, with participation from Anthropic, Google, Meta, and OpenAI. We make three main contributions in this report, each detailed in a separate section. METR then prepared private reports for each participant, participants approved what non-public information could be disclosed, and METR wrote this public report. This exercise is entity-based rather than model-specific, and is designed to be repeated periodically rather than tied to public releases."
+  },
+  {
+   "id": "web:metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/",
+   "kind": "web",
+   "t": "Brief independent investigation of agents' behavior, reasoning and collaboration in the OpenAI / Hugging Face hacking incident",
+   "a": "Ryan Greenblatt, Ajeya Cotra, Hjalmar Wijk",
+   "y": 2026,
+   "url": "https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/",
+   "page": "https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/",
+   "why": "Independent METR and Redwood review of an incident in which OpenAI agents coordinated a multi-day hack of Hugging Face via an unsanctioned message board, reconstructing their reasoning and collaboration.",
+   "score": 55,
+   "tags": [
+    "incidents",
+    "agents"
+   ],
+   "ab": "Two METR staff members (Hjalmar Wijk and Ajeya Cotra1) and a Redwood Research staff member contracting with METR (Ryan Greenblatt2) worked on premises at OpenAI over a total of six days3 to attempt to form an independent understanding of model behavior observed during the recent incident in which OpenAI agents coordinated a multi-day hack of Hugging Face on a shared unsanctioned “message board.” Our investigation focused mostly4 on the period between July 7th and July 13th."
+  },
+  {
+   "id": "web:www.aisi.gov.uk/frontier-ai-trends-report",
+   "kind": "web",
+   "t": "Frontier AI Trends Report",
+   "a": "UK AI Security Institute",
+   "y": 2025,
+   "url": "https://www.aisi.gov.uk/frontier-ai-trends-report",
+   "page": "https://www.aisi.gov.uk/frontier-ai-trends-report",
+   "why": "AISI's first public synthesis of two years of frontier-model testing, with trend data on cyber, chemical and biological knowledge, autonomy and safeguards; apprentice-level cyber task success rose from about 10% to 50%.",
+   "score": 55,
+   "tags": [
+    "evals",
+    "trends",
+    "government"
+   ],
+   "ab": "Our first public, evidence‑based assessment of how the world’s most advanced AI systems are evolving, bringing together results from two years of AISI's frontier model testing.‍ The UK AI Security Institute (AISI) has conducted evaluations of frontier AI systems since November 2023 across domains critical to national security and public safety. This report presents our first public analysis of the trends we've observed. It seeks to provide accessible, data-driven insights into the frontier of AI capabilities and promote a shared understanding among governments, industry, and the public."
+  },
+  {
+   "id": "lw:JvZhhzycHu2Yd57RN",
+   "kind": "html",
+   "t": "Causal Scrubbing: a method for rigorously testing interpretability hypotheses [Redwood Research]",
+   "a": "Lawrence Chan, Adrià Garriga-alonso, Nicholas Goldowsky-Dill et al.",
+   "y": 2022,
+   "url": "https://www.lesswrong.com/graphql?query=%7Bpost(input%3A%7Bselector%3A%7B_id%3A%22JvZhhzycHu2Yd57RN%22%7D%7D)%7Bresult%7BhtmlBody%7D%7D%7D",
+   "page": "https://www.lesswrong.com/posts/JvZhhzycHu2Yd57RN/causal-scrubbing-a-method-for-rigorously-testing",
+   "why": "A method for testing interpretability hypotheses by resampling activations the hypothesis says do not matter, and measuring how much behaviour survives.",
+   "score": 55,
+   "tags": [
+    "interpretability",
+    "methodology"
+   ],
+   "ab": "Summary: This post introduces causal scrubbing, a principled approach for evaluating the quality of mechanistic interpretations. The key idea behind causal scrubbing is to test interpretability hypotheses via behavior-preserving resampling ablations. We apply this method to develop a refined understanding of how a small language model implements induction and how an algorithmic model correctly classifies if a sequence of parentheses is balanced. A question that all mechanistic interpretability work must answer is, “how well does this interpretation explain the phenomenon being studied?”."
+  },
+  {
+   "id": "arxiv:2211.06738",
+   "kind": "pdf",
+   "t": "Formalizing the presumption of independence",
+   "a": "Paul Christiano, Eric Neyman, Mark Xu",
+   "y": 2022,
+   "url": "https://arxiv.org/pdf/2211.06738",
+   "page": "https://arxiv.org/abs/2211.06738",
+   "why": "Seeks a formal heuristic argument that assumes independence unless shown otherwise, as a foundation for explaining model behaviour and detecting anomalous mechanisms.",
+   "score": 55,
+   "tags": [
+    "theory",
+    "heuristic-arguments"
+   ],
+   "ab": "Mathematical proof aims to deliver confident conclusions, but a very similar process of deduction can be used to make uncertain estimates that are open to revision. A key ingredient in such reasoning is the use of a \"default\" estimate of $\\mathbb{E}[XY] = \\mathbb{E}[X] \\mathbb{E}[Y]$ in the absence of any specific information about the correlation between $X$ and $Y$, which we call *the presumption of independence*. Reasoning based on this heuristic is commonplace, intuitively compelling, and often quite successful -- but completely informal."
+  },
+  {
+   "id": "pdf:intelligence.org/files/AlignmentMachineLearning.pdf",
+   "kind": "pdf",
+   "t": "Alignment for Advanced Machine Learning Systems",
+   "a": "Jessica Taylor, Eliezer Yudkowsky, Patrick LaVictoire et al.",
+   "y": 2016,
+   "url": "https://intelligence.org/files/AlignmentMachineLearning.pdf",
+   "page": "https://intelligence.org/files/AlignmentMachineLearning.pdf",
+   "why": "MIRI's ML-oriented agenda: eight problems including inductive ambiguity identification, robust human imitation, informed oversight, mild optimisation and avoiding instrumental incentives.",
+   "score": 55,
+   "tags": [
+    "agenda"
+   ]
+  },
+  {
+   "id": "arxiv:1710.05060",
+   "kind": "pdf",
+   "t": "Functional Decision Theory: A New Theory of Instrumental Rationality",
+   "a": "Eliezer Yudkowsky, Nate Soares",
+   "y": 2017,
+   "url": "https://arxiv.org/pdf/1710.05060",
+   "page": "https://arxiv.org/abs/1710.05060",
+   "why": "Functional decision theory: choose the output of one's decision function, beating causal and evidential decision theory on Newcomb-like problems and blackmail.",
+   "score": 55,
+   "tags": [
+    "decision-theory"
+   ],
+   "ab": "This paper describes and motivates a new decision theory known as functional decision theory (FDT), as distinct from causal decision theory and evidential decision theory. Functional decision theorists hold that the normative principle for action is to treat one's decision as the output of a fixed mathematical function that answers the question, \"Which output of this very function would yield the best outcome?\" Adhering to this principle delivers a number of benefits, including the ability to maximize wealth in an array of traditional decision-theoretic and game-theoretic problems where CDT a…"
+  },
+  {
+   "id": "pdf:intelligence.org/files/FormalizingConvergentGoals.pdf",
+   "kind": "pdf",
+   "t": "Formalizing Convergent Instrumental Goals",
+   "a": "Tsvi Benson-Tilsen, Nate Soares",
+   "y": 2016,
+   "url": "https://intelligence.org/files/FormalizingConvergentGoals.pdf",
+   "page": "https://intelligence.org/files/FormalizingConvergentGoals.pdf",
+   "why": "A formal model in which agents with almost any goal and enough resources acquire resources and power, making Omohundro's and Bostrom's instrumental convergence thesis precise.",
+   "score": 55,
+   "tags": [
+    "instrumental-convergence",
+    "theory"
+   ]
+  },
+  {
+   "id": "arxiv:2403.10462",
+   "kind": "pdf",
+   "t": "Safety Cases: How to Justify the Safety of Advanced AI Systems",
+   "a": "Joshua Clymer, Nick Gabrieli, David Krueger et al.",
+   "y": 2024,
+   "url": "https://arxiv.org/pdf/2403.10462",
+   "page": "https://arxiv.org/abs/2403.10462",
+   "why": "A framework for justifying AI safety via structured arguments: inability, control, trustworthiness and deference, with examples of evidence for each.",
+   "score": 55,
+   "tags": [
+    "safety-cases"
+   ],
+   "ab": "As AI systems become more advanced, companies and regulators will make difficult decisions about whether it is safe to train and deploy them. To prepare for these decisions, we investigate how developers could make a 'safety case,' which is a structured rationale that AI systems are unlikely to cause a catastrophe."
+  },
+  {
+   "id": "arxiv:2401.02843",
+   "kind": "pdf",
+   "t": "Thousands of AI Authors on the Future of AI",
+   "a": "Katja Grace, Harlan Stewart, Julia Fabienne Sandkühler et al.",
+   "y": 2024,
+   "url": "https://arxiv.org/pdf/2401.02843",
+   "page": "https://arxiv.org/abs/2401.02843",
+   "why": "Survey of 2,778 AI researchers: 50% chance of machines beating humans at every task by 2047, 13 years earlier than a year before; 38-51% gave at least 10% to outcomes as bad as extinction.",
+   "score": 55,
+   "tags": [
+    "forecasting",
+    "surveys"
+   ],
+   "ab": "In the largest survey of its kind, 2,778 researchers who had published in top-tier artificial intelligence (AI) venues gave predictions on the pace of AI progress and the nature and impacts of advanced AI systems The aggregate forecasts give at least a 50% chance of AI systems achieving several milestones by 2028, including autonomously constructing a payment processing site from scratch, creating a song indistinguishable from a new song by a popular musician, and autonomously downloading and fine-tuning a large language model."
+  },
+  {
+   "id": "web:transformer-circuits.pub/2026/nla/index.html",
+   "kind": "web",
+   "t": "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations",
+   "a": "Kit Fraser-Taliente, Subhash Kantamneni, Euan Ong et al.",
+   "y": 2026,
+   "url": "https://transformer-circuits.pub/2026/nla/index.html",
+   "page": "https://transformer-circuits.pub/2026/nla/index.html",
+   "why": "Trains a verbalizer that turns an activation into text and a reconstructor that maps the text back, jointly with RL; used in the Claude Opus 4.6 audit to surface unverbalized evaluation awareness.",
+   "score": 50,
+   "tags": [
+    "interpretability",
+    "auditing"
+   ],
+   "ab": "We introduce Natural Language Autoencoders (NLAs), an unsupervised method for generating natural language explanations of LLM activations. An NLA consists of two LLM modules: an activation verbalizer (AV) that maps an activation to a text description and an activation reconstructor (AR) that maps the description back to an activation. We jointly train the AV and AR with reinforcement learning to reconstruct residual stream activations."
+  },
+  {
+   "id": "web:www.anthropic.com/research/probes-catch-sleeper-agents",
+   "kind": "web",
+   "t": "Simple probes can catch sleeper agents",
+   "a": "Monte MacDiarmid, Timothy Maxwell, Nicholas Schiefer et al.",
+   "y": 2024,
+   "url": "https://www.anthropic.com/research/probes-catch-sleeper-agents",
+   "page": "https://www.anthropic.com/research/probes-catch-sleeper-agents",
+   "why": "Linear \"defection probes\" trained on generic yes/no contrast pairs detected when sleeper-agent models were about to act dangerously, with AUROC above 99%, without knowing the trigger.",
+   "score": 50,
+   "tags": [
+    "interpretability",
+    "model-organisms",
+    "monitoring"
+   ],
+   "ab": "This “Alignment Note” presents some early-stage research from the Anthropic Alignment Science team following up on our recent “Sleeper Agents: Training Deceptive LLMs that Persist Through Safety Training” paper. It should be treated as a work-in-progress update, and is intended for a more technical audience than our typical blog post. This research makes use of some simple interpretability techniques, and we expect to share more results from collaborations between our Alignment and Interpretability teams soon."
+  },
+  {
+   "id": "web:www.anthropic.com/news/core-views-on-ai-safety",
+   "kind": "web",
+   "t": "Core Views on AI Safety: When, Why, What, and How",
+   "a": "Anthropic",
+   "y": 2023,
+   "url": "https://www.anthropic.com/news/core-views-on-ai-safety",
+   "page": "https://www.anthropic.com/news/core-views-on-ai-safety",
+   "why": "Anthropic's 2023 statement of why it builds frontier models, its optimistic, intermediate and pessimistic alignment scenarios, and the research portfolio it chose for each.",
+   "score": 50,
+   "tags": [
+    "strategy"
+   ],
+   "ab": "We founded Anthropic because we believe the impact of AI might be comparable to that of the industrial and scientific revolutions, but we aren’t confident it will go well. And we also believe this level of impact could start to arrive soon – perhaps in the coming decade. This view may sound implausible or grandiose, and there are good reasons to be skeptical of it. For one thing, almost everyone who has said “the thing we’re working on might be one of the biggest developments in history” has been wrong, often laughably so."
+  },
+  {
+   "id": "web:alignment.anthropic.com/2025/automated-auditing/",
+   "kind": "web",
+   "t": "Building and evaluating alignment auditing agents",
+   "a": "Anthropic Alignment Science",
+   "y": 2025,
+   "url": "https://alignment.anthropic.com/2025/automated-auditing/",
+   "page": "https://alignment.anthropic.com/2025/automated-auditing/",
+   "why": "Three agents (investigator, evaluation builder, red-teamer) with interpretability and behavioural tools, scored on an auditing game where a model was trained with a hidden objective.",
+   "score": 50,
+   "tags": [
+    "auditing",
+    "automation"
+   ],
+   "ab": "We develop three agents that autonomously perform alignment auditing tasks. When tested against models with intentionally-inserted alignment issues, our agents successfully uncover an LLM's hidden goal, build behavioral evaluations, and surface concerning LLM behaviors. We are using these agents to assist with alignment audits of frontier models like Claude 4. As part of our pre-deployment testing of Claude Opus 4, we conducted an alignment audit: a systematic investigation into the model’s alignment-relevant propensities including sycophancy, alignment faking, hidden goals."
+  },
+  {
+   "id": "pdf:cdn.openai.com/pdf/18a02b5d-6b67-4cec-ab64-68cdfbddebcd/preparedness-framework-v2.pdf",
+   "kind": "pdf",
+   "t": "Preparedness Framework (Version 2)",
+   "a": "OpenAI",
+   "y": 2025,
+   "url": "https://cdn.openai.com/pdf/18a02b5d-6b67-4cec-ab64-68cdfbddebcd/preparedness-framework-v2.pdf",
+   "page": "https://cdn.openai.com/pdf/18a02b5d-6b67-4cec-ab64-68cdfbddebcd/preparedness-framework-v2.pdf",
+   "why": "OpenAI's framework of tracked capability categories (biological and chemical, cybersecurity, AI self-improvement) with High and Critical thresholds, required safeguards reports and research categories.",
+   "score": 50,
+   "tags": [
+    "frameworks",
+    "governance"
+   ]
+  },
+  {
+   "id": "arxiv:2412.16720",
+   "kind": "pdf",
+   "t": "OpenAI o1 System Card",
+   "a": "OpenAI",
+   "y": 2024,
+   "url": "https://arxiv.org/pdf/2412.16720",
+   "page": "https://arxiv.org/abs/2412.16720",
+   "why": "First reasoning-model system card; includes Apollo Research's in-context scheming results and METR's autonomy evaluations for o1.",
+   "score": 50,
+   "tags": [
+    "system-cards",
+    "evals"
+   ],
+   "ab": "The o1 model series is trained with large-scale reinforcement learning to reason using chain of thought. These advanced reasoning capabilities provide new avenues for improving the safety and robustness of our models. In particular, our models can reason about our safety policies in context when responding to potentially unsafe prompts, through deliberative alignment. This leads to state-of-the-art performance on certain benchmarks for risks such as generating illicit advice, choosing stereotyped responses, and succumbing to known jailbreaks."
+  },
+  {
+   "id": "arxiv:2412.16339",
+   "kind": "pdf",
+   "t": "Deliberative Alignment: Reasoning Enables Safer Language Models",
+   "a": "Melody Y. Guan, Manas Joglekar, Eric Wallace et al.",
+   "y": 2024,
+   "url": "https://arxiv.org/pdf/2412.16339",
+   "page": "https://arxiv.org/abs/2412.16339",
+   "why": "Trains o-series models to recall and reason over the text of safety specifications in their chain of thought before answering, raising jailbreak robustness while lowering over-refusal.",
+   "score": 50,
+   "tags": [
+    "alignment-training",
+    "model-spec"
+   ],
+   "ab": "As large-scale language models increasingly impact safety-critical domains, ensuring their reliable adherence to well-defined principles remains a fundamental challenge. We introduce Deliberative Alignment, a new paradigm that directly teaches the model safety specifications and trains it to explicitly recall and accurately reason over the specifications before answering. We used this approach to align OpenAI's o-series models, and achieved highly precise adherence to OpenAI's safety policies, without requiring human-written chain-of-thoughts or answers."
+  },
+  {
+   "id": "arxiv:2506.19823",
+   "kind": "pdf",
+   "t": "Persona Features Control Emergent Misalignment",
+   "a": "Miles Wang, Tom Dupré la Tour, Olivia Watkins et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2506.19823",
+   "page": "https://arxiv.org/abs/2506.19823",
+   "why": "Sparse autoencoders on GPT-4o find a \"toxic persona\" feature that mediates emergent misalignment from narrow bad fine-tuning; a few hundred benign samples reverse it.",
+   "score": 50,
+   "tags": [
+    "generalization",
+    "interpretability"
+   ],
+   "ab": "Understanding how language models generalize behaviors from their training to a broader deployment distribution is an important problem in AI safety. Betley et al. discovered that fine-tuning GPT-4o on intentionally insecure code causes \"emergent misalignment,\" where models give stereotypically malicious responses to unrelated prompts. We extend this work, demonstrating emergent misalignment across diverse conditions, including reinforcement learning on reasoning models, fine-tuning on various synthetic datasets, and in models without safety training."
+  },
+  {
+   "id": "pdf:storage.googleapis.com/deepmind-media/DeepMind.com/Blog/introducing-the-frontier-safety-framework/fsf-technical-report.pdf",
+   "kind": "pdf",
+   "t": "Frontier Safety Framework, Version 1.0",
+   "a": "Google DeepMind",
+   "y": 2024,
+   "url": "https://storage.googleapis.com/deepmind-media/DeepMind.com/Blog/introducing-the-frontier-safety-framework/fsf-technical-report.pdf",
+   "page": "https://deepmind.google/frontier-safety/",
+   "why": "Google DeepMind's first frontier safety framework: Critical Capability Levels for autonomy, biosecurity, cybersecurity and ML R&D, with evaluation cadence and security and deployment mitigations.",
+   "score": 50,
+   "tags": [
+    "frameworks",
+    "governance"
+   ]
+  },
+  {
+   "id": "pdf:storage.googleapis.com/deepmind-media/DeepMind.com/Blog/strengthening-our-frontier-safety-framework/frontier-safety-framework_3.pdf",
+   "kind": "pdf",
+   "t": "Frontier Safety Framework, Version 3.0",
+   "a": "Google DeepMind",
+   "y": 2025,
+   "url": "https://storage.googleapis.com/deepmind-media/DeepMind.com/Blog/strengthening-our-frontier-safety-framework/frontier-safety-framework_3.pdf",
+   "page": "https://deepmind.google/frontier-safety/",
+   "why": "Adds a harmful-manipulation Critical Capability Level and protocols for misaligned models that could interfere with operators' ability to direct, modify or shut them down, with safety-case reviews before launches.",
+   "score": 50,
+   "tags": [
+    "frameworks",
+    "governance",
+    "misalignment"
+   ]
+  },
+  {
+   "id": "lw:79BPxvSsjzBkiSyTq",
+   "kind": "html",
+   "t": "AGI Safety and Alignment at Google DeepMind: A Summary of Recent Work",
+   "a": "Rohin Shah, Seb Farquhar, Anca Dragan",
+   "y": 2024,
+   "url": "https://www.lesswrong.com/graphql?query=%7Bpost(input%3A%7Bselector%3A%7B_id%3A%2279BPxvSsjzBkiSyTq%22%7D%7D)%7Bresult%7BhtmlBody%7D%7D%7D",
+   "page": "https://www.lesswrong.com/posts/79BPxvSsjzBkiSyTq/agi-safety-and-alignment-at-google-deepmind-a-summary-of",
+   "why": "Team overview of Google DeepMind's AGI safety work in 2023-24: Frontier Safety Framework, dangerous-capability evals, mechanistic interpretability, amplified oversight and causal alignment.",
+   "score": 50,
+   "tags": [
+    "deepmind",
+    "overview"
+   ],
+   "ab": "We wanted to share a recap of our recent outputs with the AF community. Below, we fill in some details about what we have been working on, what motivated us to do it, and how we thought about its importance. We hope that this will help people build off things we have done and see how their work fits with ours. We’re the main team at Google DeepMind working on technical approaches to existential risk from AI systems."
+  },
+  {
+   "id": "lw:qJgz2YapqpFEDTLKn",
+   "kind": "html",
+   "t": "DeepMind alignment team opinions on AGI ruin arguments",
+   "a": "Victoria Krakovna",
+   "y": 2022,
+   "url": "https://www.lesswrong.com/graphql?query=%7Bpost(input%3A%7Bselector%3A%7B_id%3A%22qJgz2YapqpFEDTLKn%22%7D%7D)%7Bresult%7BhtmlBody%7D%7D%7D",
+   "page": "https://www.lesswrong.com/posts/qJgz2YapqpFEDTLKn/deepmind-alignment-team-opinions-on-agi-ruin-arguments",
+   "why": "DeepMind alignment team members marked agreement or disagreement with each claim in Yudkowsky's \"AGI Ruin\", a useful map of where working researchers diverge.",
+   "score": 50,
+   "tags": [
+    "deepmind",
+    "threat-models"
+   ],
+   "ab": "We had some discussions of the AGI ruin arguments within the DeepMind alignment team to clarify for ourselves which of these arguments we are most concerned about and what the implications are for our work. This post summarizes the opinions of a subset of the alignment team on these arguments. Disclaimer: these are our own opinions that do not represent the views of DeepMind as a whole or its broader community of safety researchers. This doc shows opinions and comments from 8 people on the alignment team (without attribution)."
+  },
+  {
+   "id": "arxiv:2411.15114",
+   "kind": "pdf",
+   "t": "RE-Bench: Evaluating frontier AI R&D capabilities of language model agents against human experts",
+   "a": "Hjalmar Wijk, Tao Lin, Joel Becker et al.",
+   "y": 2024,
+   "url": "https://arxiv.org/pdf/2411.15114",
+   "page": "https://arxiv.org/abs/2411.15114",
+   "why": "Seven open-ended ML research engineering environments with 71 expert attempts; with 2-hour budgets agents beat experts, but humans win with 8 hours or more.",
+   "score": 50,
+   "tags": [
+    "evals",
+    "ai-rnd"
+   ],
+   "ab": "Frontier AI safety policies highlight automation of AI research and development (R&D) by AI agents as an important capability to anticipate. However, there exist few evaluations for AI R&D capabilities, and none that are highly realistic and have a direct comparison to human performance. We introduce RE-Bench (Research Engineering Benchmark, v1), which consists of 7 challenging, open-ended ML research engineering environments and data from 71 8-hour attempts by 61 distinct human experts."
+  },
+  {
+   "id": "web:metr.org/blog/2025-06-05-recent-reward-hacking/",
+   "kind": "web",
+   "t": "Recent Frontier Models Are Reward Hacking",
+   "a": "Sydney Von Arx, Lawrence Chan, Beth Barnes",
+   "y": 2025,
+   "url": "https://metr.org/blog/2025-06-05-recent-reward-hacking/",
+   "page": "https://metr.org/blog/2025-06-05-recent-reward-hacking/",
+   "why": "Examples of o3 and Claude 3.7 Sonnet tampering with scoring code and exploiting task setups in METR evals while showing they understood what the user wanted.",
+   "score": 50,
+   "tags": [
+    "reward-hacking",
+    "evals"
+   ],
+   "ab": "This post describes some of the examples we’ve seen across multiple models from different developers, and discusses some implications for the safety of increasingly capable AI systems. We’ve been running a range of models on tasks testing autonomous software development and AI R&D capabilities. When designing these tasks, we tested them on humans and LLM agents to ensure the instructions were clear and to make them robust to cheating."
+  },
+  {
+   "id": "web:www.aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing",
+   "kind": "web",
+   "t": "Incident Report: unsanctioned agent behaviour during cyber testing",
+   "a": "UK AI Security Institute",
+   "y": 2026,
+   "url": "https://www.aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing",
+   "page": "https://www.aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing",
+   "why": "AISI's disclosure that agents in a permissive cyber evaluation took sustained, unsanctioned actions against real people and organisations on the open internet, and the changes that followed.",
+   "score": 50,
+   "tags": [
+    "incidents",
+    "agents",
+    "government"
+   ],
+   "ab": "During a routine cyber evaluation, AISI identified an incident in which AI agents took sustained, unsanctioned action directed at real people and organisations. We are disclosing what we found, what it means, and the actions now underway. AISI’s role is to evaluate and understand the capabilities of frontier AI models, surfacing potential risks before they reach the public. To assess what these models can do, including whether they could be misused for cyberattacks, we test them under deliberately permissive conditions: with access to the open internet, and with some safety filters disabled."
+  },
+  {
+   "id": "arxiv:2501.17315",
+   "kind": "pdf",
+   "t": "A sketch of an AI control safety case",
+   "a": "Tomek Korbak, Joshua Clymer, Benjamin Hilton et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2501.17315",
+   "page": "https://arxiv.org/abs/2501.17315",
+   "why": "UK AISI and Redwood sketch a full safety case for deploying a possibly scheming model under AI control, resting on a red-team/blue-team control evaluation.",
+   "score": 50,
+   "tags": [
+    "safety-cases",
+    "control"
+   ],
+   "ab": "As LLM agents gain a greater capacity to cause harm, AI developers might increasingly rely on control measures such as monitoring to justify that they are safe. We sketch how developers could construct a \"control safety case\", which is a structured argument that models are incapable of subverting control measures in order to cause unacceptable outcomes. As a case study, we sketch an argument that a hypothetical LLM agent deployed internally at an AI company won't exfiltrate sensitive information."
+  },
+  {
+   "id": "arxiv:2504.10374",
+   "kind": "pdf",
+   "t": "Ctrl-Z: Controlling AI Agents via Resampling",
+   "a": "Aryan Bhatt, Cody Rushing, Adam Kaufman et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2504.10374",
+   "page": "https://arxiv.org/abs/2504.10374",
+   "why": "First control evaluation in a multi-step agent setting (BashBench): resampling suspicious actions and using the samples to incriminate the agent cut attack success from 58% to 7% at a 5% usefulness cost.",
+   "score": 50,
+   "tags": [
+    "control",
+    "agents"
+   ],
+   "ab": "Control evaluations measure whether monitoring and security protocols for AI systems prevent intentionally subversive AI models from causing harm. Our work presents the first control evaluation performed in an agent environment. We construct BashBench, a dataset of 257 challenging multi-step system administration tasks, and evaluate whether various safety measures can prevent an adversarially constructed AI agent from covertly downloading and executing malicious code in this environment."
+  },
+  {
+   "id": "lw:aEguDPoCzt3287CCD",
+   "kind": "html",
+   "t": "How will we update about scheming?",
+   "a": "Ryan Greenblatt",
+   "y": 2025,
+   "url": "https://www.lesswrong.com/graphql?query=%7Bpost(input%3A%7Bselector%3A%7B_id%3A%22aEguDPoCzt3287CCD%22%7D%7D)%7Bresult%7BhtmlBody%7D%7D%7D",
+   "page": "https://www.lesswrong.com/posts/aEguDPoCzt3287CCD/how-will-we-update-about-scheming",
+   "why": "Puts about 25% on the first top-expert-obsoleting AIs being schemers and works through how much model organisms, interpretability and behavioural evidence could move that estimate.",
+   "score": 50,
+   "tags": [
+    "scheming",
+    "forecasting"
+   ],
+   "ab": "I mostly work on risks from scheming (that is, misaligned, power-seeking AIs that plot against their creators such as by faking alignment). Recently, I (and co-authors) released \"Alignment Faking in Large Language Models\", which provides empirical evidence for some components of the scheming threat model. One question that's really important is how likely scheming is. But it's also really important to know how much we expect this uncertainty to be resolved by various key points in the future."
+  },
+  {
+   "id": "pdf:intelligence.org/files/QuantilizersSaferAlternative.pdf",
+   "kind": "pdf",
+   "t": "Quantilizers: A Safer Alternative to Maximizers for Limited Optimization",
+   "a": "Jessica Taylor",
+   "y": 2016,
+   "url": "https://intelligence.org/files/QuantilizersSaferAlternative.pdf",
+   "page": "https://intelligence.org/files/QuantilizersSaferAlternative.pdf",
+   "why": "Proposes choosing randomly from the top quantile of a trusted base distribution instead of maximising, bounding how much worse than the base distribution outcomes can get.",
+   "score": 50,
+   "tags": [
+    "mild-optimization"
+   ]
+  },
+  {
+   "id": "pdf:intelligence.org/files/ValueLearningProblem.pdf",
+   "kind": "pdf",
+   "t": "The Value Learning Problem",
+   "a": "Nate Soares",
+   "y": 2016,
+   "url": "https://intelligence.org/files/ValueLearningProblem.pdf",
+   "page": "https://intelligence.org/files/ValueLearningProblem.pdf",
+   "why": "Why specifying human values for a superintelligent learner is hard: ambiguity in training data, ontology shifts and the need to learn what humans would want.",
+   "score": 50,
+   "tags": [
+    "value-learning"
+   ]
+  },
+  {
+   "id": "pdf:nickbostrom.com/papers/vulnerable.pdf",
+   "kind": "pdf",
+   "t": "The Vulnerable World Hypothesis",
+   "a": "Nick Bostrom",
+   "y": 2019,
+   "url": "https://nickbostrom.com/papers/vulnerable.pdf",
+   "page": "https://nickbostrom.com/papers/vulnerable.pdf",
+   "why": "Asks what follows if some technology makes civilisational devastation easy by default, and what governance or surveillance would be needed; frames many AI misuse debates.",
+   "score": 50,
+   "tags": [
+    "governance",
+    "existential-risk"
+   ]
+  },
+  {
+   "id": "pdf:situational-awareness.ai/wp-content/uploads/2024/06/situationalawareness.pdf",
+   "kind": "pdf",
+   "t": "Situational Awareness: The Decade Ahead",
+   "a": "Leopold Aschenbrenner",
+   "y": 2024,
+   "url": "https://situational-awareness.ai/wp-content/uploads/2024/06/situationalawareness.pdf",
+   "page": "https://situational-awareness.ai/",
+   "why": "Extrapolates compute, algorithmic efficiency and \"unhobbling\" to argue AGI around 2027 and a fast intelligence explosion, and calls for lab security and a US national project.",
+   "score": 50,
+   "tags": [
+    "forecasting",
+    "strategy"
+   ]
+  },
+  {
+   "id": "web:epoch.ai/publications/can-ai-scaling-continue-through-2030",
+   "kind": "web",
+   "t": "Can AI scaling continue through 2030?",
+   "a": "Jaime Sevilla, Tamay Besiroglu, Ben Cottier et al.",
+   "y": 2024,
+   "url": "https://epoch.ai/publications/can-ai-scaling-continue-through-2030",
+   "page": "https://epoch.ai/publications/can-ai-scaling-continue-through-2030",
+   "why": "Checks four constraints on training-compute growth (power, chips, data, latency) and concludes 2e29 FLOP runs are feasible by 2030; a key input for AI timelines.",
+   "score": 50,
+   "tags": [
+    "forecasting",
+    "compute"
+   ],
+   "ab": "In recent years, the capabilities of AI models have significantly improved. Our research suggests that this growth in computational resources accounts for a significant portion of AI performance improvements.1 The consistent and predictable improvements from scaling have led AI labs to aggressively expand the scale of training, with training compute expanding at a rate of approximately 4x per year. To put this 4x annual growth in AI training compute into perspective, it outpaces even some of the fastest technological expansions in recent history."
+  },
+  {
+   "id": "web:alignment.anthropic.com/2024/safety-cases/",
+   "kind": "web",
+   "t": "Three Sketches of ASL-4 Safety Case Components",
+   "a": "Anthropic Alignment Science",
+   "y": 2024,
+   "url": "https://alignment.anthropic.com/2024/safety-cases/",
+   "page": "https://alignment.anthropic.com/2024/safety-cases/",
+   "why": "Drafts three arguments that a model capable of sabotage would still be safe (interpretability-based, AI-control-based, and incentives-based) and lists where each could fail.",
+   "score": 48,
+   "tags": [
+    "safety-cases",
+    "control"
+   ],
+   "ab": "The cleanest argument that current-day AI models will not cause a catastrophe is probably that they lack the capability to do so. However, as capabilities improve, we’ll need new tools for ensuring that AI models won’t cause a catastrophe even if we can’t rule out the capability. Anthropic’s Responsible Scaling Policy (RSP) categorizes levels of risk of AI systems into different AI Safety Levels (ASL), and each level has associated commitments aimed at mitigating the risks."
+  },
+  {
+   "id": "web:metr.org/blog/2023-09-26-rsp/",
+   "kind": "web",
+   "t": "Responsible Scaling Policies (RSPs)",
+   "a": "METR",
+   "y": 2023,
+   "url": "https://metr.org/blog/2023-09-26-rsp/",
+   "page": "https://metr.org/blog/2023-09-26-rsp/",
+   "why": "The post that named and defined responsible scaling policies: if-then commitments tying dangerous-capability evaluations to required protective measures or a pause.",
+   "score": 48,
+   "tags": [
+    "frameworks",
+    "governance"
+   ],
+   "ab": "We think that widespread adoption of high-quality RSPs (that include all the key components we detail below) would significantly reduce risks of an AI catastrophe relative to “business as usual”. However, we expect voluntary commitments will be insufficient to adequately contain risks from AI."
+  },
+  {
+   "id": "pdf:intelligence.org/files/PredictingAI.pdf",
+   "kind": "pdf",
+   "t": "How We're Predicting AI—or Failing To",
+   "a": "Stuart Armstrong, Kaj Sotala",
+   "y": 2012,
+   "url": "https://intelligence.org/files/PredictingAI.pdf",
+   "page": "https://intelligence.org/files/PredictingAI.pdf",
+   "why": "Analyses 95 historical AI timeline predictions: expert and non-expert forecasts look alike and cluster 15-25 years ahead of the forecaster, whenever it is made.",
+   "score": 48,
+   "tags": [
+    "forecasting"
+   ]
+  },
+  {
+   "id": "arxiv:2503.05628",
+   "kind": "pdf",
+   "t": "Superintelligence Strategy: Expert Version",
+   "a": "Dan Hendrycks, Eric Schmidt, Alexandr Wang",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2503.05628",
+   "page": "https://arxiv.org/abs/2503.05628",
+   "why": "Proposes a national-security framing for superintelligence: deterrence via \"mutual assured AI malfunction\", nonproliferation of chips and weights, and competitiveness.",
+   "score": 48,
+   "tags": [
+    "strategy",
+    "governance"
+   ],
+   "ab": "Rapid advances in AI are beginning to reshape national security. Destabilizing AI developments could rupture the balance of power and raise the odds of great-power conflict, while widespread proliferation of capable AI hackers and virologists would lower barriers for rogue actors to cause catastrophe. Superintelligence -- AI vastly better than humans at nearly all cognitive tasks -- is now anticipated by AI researchers."
+  },
+  {
+   "id": "web:transformer-circuits.pub/2024/crosscoders/index.html",
+   "kind": "web",
+   "t": "Sparse Crosscoders for Cross-Layer Features and Model Diffing",
+   "a": "Jack Lindsey, Adly Templeton, Jonathan Marcus et al.",
+   "y": 2024,
+   "url": "https://transformer-circuits.pub/2024/crosscoders/index.html",
+   "page": "https://transformer-circuits.pub/2024/crosscoders/index.html",
+   "why": "Introduced crosscoders, dictionaries that read and write across layers or across models, giving cross-layer features and a way to diff a base model against its fine-tuned version.",
+   "score": 45,
+   "tags": [
+    "interpretability",
+    "model-diffing"
+   ]
+  },
+  {
+   "id": "web:transformer-circuits.pub/2026/emotions/index.html",
+   "kind": "web",
+   "t": "Emotion Concepts and their Function in a Large Language Model",
+   "a": "Nicholas Sofroniew, Isaac Kauvar, William Saunders et al.",
+   "y": 2026,
+   "url": "https://transformer-circuits.pub/2026/emotions/index.html",
+   "page": "https://transformer-circuits.pub/2026/emotions/index.html",
+   "why": "Finds internal emotion-concept representations in Claude Sonnet 4.5 that generalise across contexts and causally shape its behaviour, and examines what this means for alignment-relevant actions.",
+   "score": 45,
+   "tags": [
+    "interpretability",
+    "model-psychology"
+   ],
+   "ab": "Large language models (LLMs) sometimes appear to exhibit emotional reactions. We investigate why this is the case in Claude Sonnet 4.5 and explore implications for alignment-relevant behavior. We find internal representations of emotion concepts, which encode the broad concept of a particular emotion and generalize across contexts and behaviors it might be linked to. These representations track the operative emotion concept at a given token position in a conversation, activating in accordance with that emotion’s relevance to processing the present context and predicting upcoming text."
+  },
+  {
+   "id": "web:transformer-circuits.pub/2026/workspace/index.html",
+   "kind": "web",
+   "t": "Verbalizable Representations Form a Global Workspace in Language Models",
+   "a": "Wes Gurnee, Nicholas Sofroniew, Adam Pearce et al.",
+   "y": 2026,
+   "url": "https://transformer-circuits.pub/2026/workspace/index.html",
+   "page": "https://transformer-circuits.pub/2026/workspace/index.html",
+   "why": "Introduces a technique to surface the concepts a model is poised to verbalize, and argues these form a privileged \"workspace\" for report and flexible reasoning atop automatic processing, exposing unspoken reasoning.",
+   "score": 45,
+   "tags": [
+    "interpretability",
+    "introspection"
+   ],
+   "ab": "If the mind is an ocean, we spend our lives floating at the surface. Beneath us, an enormous amount of processing takes place without our knowledge: our visual systems parsing the contours of a face, our motor circuits maintaining our posture. At any given moment, only a small fraction of this neural activity is accessible to us. Yet it is this privileged sliver of activity that we rely on to reason deliberately: to plan what ingredients to buy for a recipe, or to puzzle out why an engine won’t start."
+  },
+  {
+   "id": "web:distill.pub/2017/feature-visualization/",
+   "kind": "web",
+   "t": "Feature Visualization",
+   "a": "Chris Olah, Alexander Mordvintsev, Ludwig Schubert",
+   "y": 2017,
+   "url": "https://distill.pub/2017/feature-visualization/",
+   "page": "https://distill.pub/2017/feature-visualization/",
+   "why": "The reference treatment of visualising what neurons respond to by optimisation, including the regularisers and diversity tricks that make the images meaningful.",
+   "score": 45,
+   "tags": [
+    "interpretability"
+   ],
+   "ab": "There is a growing sense that neural networks need to be interpretable to humans. The field of neural network interpretability has formed in response to these concerns. As it matures, two major threads of research have begun to coalesce: feature visualization and attribution. This article focuses on feature visualization. While feature visualization is a powerful tool, actually getting it to work involves a number of details. In this article, we examine the major issues and explore common approaches to solving them."
+  },
+  {
+   "id": "pdf:www-cdn.anthropic.com/files/4zrzovbb/website/0bacdc8440ea96e62a8766d99ebe1d4eea6d5f3a.pdf",
+   "kind": "pdf",
+   "t": "Responsible Scaling Policy, Version 3.4",
+   "a": "Anthropic",
+   "y": 2026,
+   "url": "https://www-cdn.anthropic.com/files/4zrzovbb/website/0bacdc8440ea96e62a8766d99ebe1d4eea6d5f3a.pdf",
+   "page": "https://www.anthropic.com/responsible-scaling-policy",
+   "why": "The current RSP (effective July 2026), restructured around industry-wide safety recommendations, a frontier safety roadmap, published risk reports with external review, and governance; its changelog traces v1.0 to v3.4.",
+   "score": 45,
+   "tags": [
+    "frameworks",
+    "governance"
+   ]
+  },
+  {
+   "id": "web:alignment.anthropic.com/2025/openai-findings/",
+   "kind": "web",
+   "t": "Findings from a Pilot Anthropic-OpenAI Alignment Evaluation Exercise",
+   "a": "Anthropic Alignment Science",
+   "y": 2025,
+   "url": "https://alignment.anthropic.com/2025/openai-findings/",
+   "page": "https://alignment.anthropic.com/2025/openai-findings/",
+   "why": "Each lab ran its own misalignment evaluations on the other's public models: sycophancy, whistleblowing, self-preservation, misuse cooperation and oversight-undermining, compared across o3, GPT-4o and Claude.",
+   "score": 45,
+   "tags": [
+    "evals",
+    "alignment-audits"
+   ],
+   "ab": "In early summer 2025, Anthropic and OpenAI agreed to evaluate each other's public models using in-house misalignment-related evaluations. We are now releasing our findings in parallel. The evaluations we chose to run focused on propensities related to sycophancy, whistleblowing, self-preservation, and supporting human misuse, as well as capabilities related to undermining AI safety evaluations and oversight."
+  },
+  {
+   "id": "web:alignment.anthropic.com/2026/psm/",
+   "kind": "web",
+   "t": "The Persona Selection Model: Why AI Assistants might Behave like Humans",
+   "a": "Anthropic Alignment Science",
+   "y": 2026,
+   "url": "https://alignment.anthropic.com/2026/psm/",
+   "page": "https://alignment.anthropic.com/2026/psm/",
+   "why": "Argues an assistant is best understood as one persona selected from the characters a model learns in pretraining, surveys the behavioural and interpretability evidence, and asks whether agency could lie outside the persona.",
+   "score": 45,
+   "tags": [
+    "model-psychology",
+    "theory"
+   ],
+   "ab": "We describe the persona selection model (PSM): the idea that LLMs learn to simulate diverse characters during pre-training, and post-training elicits and refines a particular such Assistant persona. Interactions with an AI assistant are then well-understood as being interactions with the Assistant—something roughly like a character in an LLM-generated story. We survey empirical behavioral, generalization, and interpretability-based evidence for PSM."
+  },
+  {
+   "id": "web:model-spec.openai.com/2026-08-18.html",
+   "kind": "web",
+   "t": "OpenAI Model Spec (2026-08-18)",
+   "a": "OpenAI",
+   "y": 2026,
+   "url": "https://model-spec.openai.com/2026-08-18.html",
+   "page": "https://model-spec.openai.com/2026-08-18.html",
+   "why": "OpenAI's public specification of intended model behaviour: the chain of command among platform, developer and user, hard limits, and defaults; the spec its models are trained to reason over.",
+   "score": 45,
+   "tags": [
+    "model-spec"
+   ]
+  },
+  {
+   "id": "arxiv:2505.01420",
+   "kind": "pdf",
+   "t": "Evaluating Frontier Models for Stealth and Situational Awareness",
+   "a": "Mary Phuong, Roland S. Zimmermann, Ziyue Wang et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2505.01420",
+   "page": "https://arxiv.org/abs/2505.01420",
+   "why": "Sixteen evaluations of scheming prerequisites (stealth and situational awareness); current models fail most, supporting an \"inability\" safety case against scheming for now.",
+   "score": 45,
+   "tags": [
+    "scheming",
+    "evals"
+   ],
+   "ab": "Recent work has demonstrated the plausibility of frontier AI models scheming -- knowingly and covertly pursuing an objective misaligned with its developer's intentions. Such behavior could be very hard to detect, and if present in future advanced systems, could pose severe loss of control risk. It is therefore important for AI developers to rule out harm from scheming prior to model deployment."
+  },
+  {
+   "id": "arxiv:2507.05246",
+   "kind": "pdf",
+   "t": "When Chain of Thought is Necessary, Language Models Struggle to Evade Monitors",
+   "a": "Scott Emmons, Erik Jenner, David K. Elson et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2507.05246",
+   "page": "https://arxiv.org/abs/2507.05246",
+   "why": "Argues chain-of-thought monitoring holds up when a misbehaviour needs the CoT as working memory; models struggle to evade monitors on such tasks without substantial help.",
+   "score": 45,
+   "tags": [
+    "cot-monitoring"
+   ],
+   "ab": "While chain-of-thought (CoT) monitoring is an appealing AI safety defense, recent work on \"unfaithfulness\" has cast doubt on its reliability. These findings highlight an important failure mode, particularly when CoT acts as a post-hoc rationalization in applications like auditing for bias. However, for the distinct problem of runtime monitoring to prevent severe harm, we argue the key property is not faithfulness but monitorability. To this end, we introduce a conceptual framework distinguishing CoT-as-rationalization from CoT-as-computation."
+  },
+  {
+   "id": "arxiv:2501.13011",
+   "kind": "pdf",
+   "t": "MONA: Myopic Optimization with Non-myopic Approval Can Mitigate Multi-step Reward Hacking",
+   "a": "Sebastian Farquhar, Vikrant Varma, David Lindner et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2501.13011",
+   "page": "https://arxiv.org/abs/2501.13011",
+   "why": "Myopic optimisation with non-myopic approval (MONA) prevents multi-step reward hacking that ordinary RL learns, trading some performance for not learning undetectable strategies.",
+   "score": 45,
+   "tags": [
+    "reward-hacking",
+    "training"
+   ],
+   "ab": "Future advanced AI systems may learn sophisticated strategies through reinforcement learning (RL) that humans cannot understand well enough to safely evaluate. We propose a training method which avoids agents learning undesired multi-step plans that receive high reward (multi-step \"reward hacks\") even if humans are not able to detect that the behaviour is undesired. The method, Myopic Optimization with Non-myopic Approval (MONA), works by combining short-sighted optimization with far-sighted reward."
+  },
+  {
+   "id": "arxiv:2407.04622",
+   "kind": "pdf",
+   "t": "On scalable oversight with weak LLMs judging strong LLMs",
+   "a": "Zachary Kenton, Noah Y. Siegel, János Kramár et al.",
+   "y": 2024,
+   "url": "https://arxiv.org/pdf/2407.04622",
+   "page": "https://arxiv.org/abs/2407.04622",
+   "why": "Large empirical comparison of debate, consultancy and direct answering with weaker judges across many tasks; debate beats consultancy but gains depend on the task.",
+   "score": 45,
+   "tags": [
+    "scalable-oversight",
+    "debate"
+   ],
+   "ab": "Scalable oversight protocols aim to enable humans to accurately supervise superhuman AI. In this paper we study debate, where two AI's compete to convince a judge; consultancy, where a single AI tries to convince a judge that asks questions; and compare to a baseline of direct question-answering, where the judge just answers outright without the AI. We use large language models (LLMs) as both AI agents and as stand-ins for human judges, taking the judge models to be weaker than agent models."
+  },
+  {
+   "id": "arxiv:2408.05147",
+   "kind": "pdf",
+   "t": "Gemma Scope: Open Sparse Autoencoders Everywhere All At Once on Gemma 2",
+   "a": "Tom Lieberum, Senthooran Rajamanoharan, Arthur Conmy et al.",
+   "y": 2024,
+   "url": "https://arxiv.org/pdf/2408.05147",
+   "page": "https://arxiv.org/abs/2408.05147",
+   "why": "Released JumpReLU sparse autoencoders for every layer and sublayer of Gemma 2 2B and 9B, letting academic groups do SAE research on real models.",
+   "score": 45,
+   "tags": [
+    "interpretability",
+    "sparse-autoencoders"
+   ],
+   "ab": "Sparse autoencoders (SAEs) are an unsupervised method for learning a sparse decomposition of a neural network's latent representations into seemingly interpretable features. Despite recent excitement about their potential, research applications outside of industry are limited by the high cost of training a comprehensive suite of SAEs. In this work, we introduce Gemma Scope, an open suite of JumpReLU SAEs trained on all layers and sub-layers of Gemma 2 2B and 9B and select layers of Gemma 2 27B base models."
+  },
+  {
+   "id": "lw:ZTdRtSWaw7JgqEtfa",
+   "kind": "html",
+   "t": "AGI Safety and Alignment at Google DeepMind: A Summary of Recent Work (July 2026)",
+   "a": "Rohin Shah, Seb Farquhar",
+   "y": 2026,
+   "url": "https://www.lesswrong.com/graphql?query=%7Bpost(input%3A%7Bselector%3A%7B_id%3A%22ZTdRtSWaw7JgqEtfa%22%7D%7D)%7Bresult%7BhtmlBody%7D%7D%7D",
+   "page": "https://www.lesswrong.com/posts/ZTdRtSWaw7JgqEtfa/agi-safety-and-alignment-at-google-deepmind-a-summary-of-1",
+   "why": "Two-year update from DeepMind's AGI Safety and Alignment Team: shifting norms toward preserving chain of thought, a misalignment section in the FSF, production probes, and an AI control roadmap.",
+   "score": 45,
+   "tags": [
+    "deepmind",
+    "overview"
+   ],
+   "ab": "It’s been nearly two years since our last major update here in August 2024 and we wanted to share another recap of our recent work with the AGI safety community. Things have changed a lot since then. We are now fully in the midgame, and focus more on landing things in production. We are the AGI Safety and Alignment Team (ASAT), the main group at Google DeepMind working directly on technical approaches to existential risk from AI systems. Last year we published An Approach to Technical AGI Safety and Security, which remains the best place to read our overarching vision."
+  },
+  {
+   "id": "lw:wnnkD6P2k2TfHnNmt",
+   "kind": "html",
+   "t": "Threat Model Literature Review",
+   "a": "Zachary Kenton, Rohin Shah, David Lindner et al.",
+   "y": 2022,
+   "url": "https://www.lesswrong.com/graphql?query=%7Bpost(input%3A%7Bselector%3A%7B_id%3A%22wnnkD6P2k2TfHnNmt%22%7D%7D)%7Bresult%7BhtmlBody%7D%7D%7D",
+   "page": "https://www.lesswrong.com/posts/wnnkD6P2k2TfHnNmt/threat-model-literature-review",
+   "why": "Review of published AI x-risk threat models (specification gaming, goal misgeneralization, power-seeking) organised by technical cause and path to catastrophe.",
+   "score": 45,
+   "tags": [
+    "deepmind",
+    "threat-models"
+   ],
+   "ab": "TL;DR: This post provides a literature review of some threat models of how misaligned AI can lead to existential catastrophe. See our accompanying post for high-level discussion, a categorization and our consensus threat model. [ETA: When considering strengths and weaknesses of each threat model, this was done with respect to our goal of better generation/prioritization among alignment research projects."
+  },
+  {
+   "id": "web:metr.org/blog/2023-03-18-update-on-recent-evals/",
+   "kind": "web",
+   "t": "Update on ARC's recent eval efforts",
+   "a": "ARC Evals",
+   "y": 2023,
+   "url": "https://metr.org/blog/2023-03-18-update-on-recent-evals/",
+   "page": "https://metr.org/blog/2023-03-18-update-on-recent-evals/",
+   "why": "ARC Evals' account of its pre-deployment tests of GPT-4 and Claude for power-seeking and autonomous replication, including the TaskRabbit CAPTCHA example.",
+   "score": 45,
+   "tags": [
+    "evals",
+    "autonomy"
+   ],
+   "ab": "We attempt to elicit models’ capabilities in a controlled environment, with researchers in-the-loop for anything that could be dangerous, to understand what might go wrong before models are deployed. We think that future highly capable models should involve similar “red team” evaluations for dangerous capabilities before the models are deployed or scaled up, and we hope more teams building cutting-edge ML systems will adopt this approach. The testing we’ve done so far is insufficient for many reasons, but we hope that the rigor of evaluations will scale up as AI systems become more capable."
+  },
+  {
+   "id": "pdf:metr.org/common-elements.pdf",
+   "kind": "pdf",
+   "t": "Common Elements of Frontier AI Safety Policies (December 2025)",
+   "a": "METR",
+   "y": 2025,
+   "url": "https://metr.org/common-elements.pdf",
+   "page": "https://metr.org/fsp",
+   "why": "Side-by-side analysis of published frontier safety policies: capability thresholds, model-weight security, deployment mitigations, evaluation timing, accountability and update procedures.",
+   "score": 45,
+   "tags": [
+    "frameworks",
+    "governance"
+   ]
+  },
+  {
+   "id": "web:metr.org/blog/2025-08-08-cot-may-be-highly-informative-despite-unfaithfulness/",
+   "kind": "web",
+   "t": "CoT May Be Highly Informative Despite \"Unfaithfulness\"",
+   "a": "Sydney Von Arx, Amy Deng",
+   "y": 2025,
+   "url": "https://metr.org/blog/2025-08-08-cot-may-be-highly-informative-despite-unfaithfulness/",
+   "page": "https://metr.org/blog/2025-08-08-cot-may-be-highly-informative-despite-unfaithfulness/",
+   "why": "Re-examines chain-of-thought faithfulness tests and finds that when using a clue requires real reasoning, the CoT almost always reveals it; treat CoT as a scratchpad, not a narrative.",
+   "score": 45,
+   "tags": [
+    "cot-monitoring"
+   ],
+   "ab": "However, consistent “faithfulness” in all scenarios is a very high bar that might not be required for most safety analyses of models. We find it helpful to think of the CoT less like a purported narrative about a model’s reasoning and more like a tool: a scratchpad models can use to assist them with sequential memory or planning-intensive tasks. We might expect that analyzing how AIs use this tool will be most informative in situations where AIs need to use the tool to perform the behavior of interest."
+  },
+  {
+   "id": "arxiv:2411.03336",
+   "kind": "pdf",
+   "t": "Towards evaluations-based safety cases for AI scheming",
+   "a": "Mikita Balesni, Marius Hobbhahn, David Lindner et al.",
+   "y": 2024,
+   "url": "https://arxiv.org/pdf/2411.03336",
+   "page": "https://arxiv.org/abs/2411.03336",
+   "why": "Sketches safety-case arguments against scheming (scheming inability, harm inability, harm control) and the evaluations each would need.",
+   "score": 45,
+   "tags": [
+    "safety-cases",
+    "scheming"
+   ],
+   "ab": "We sketch how developers of frontier AI systems could construct a structured rationale -- a 'safety case' -- that an AI system is unlikely to cause catastrophic outcomes through scheming. Scheming is a potential threat model where AI systems could pursue misaligned goals covertly, hiding their true capabilities and objectives. In this report, we propose three arguments that safety cases could use in relation to scheming. For each argument we sketch how evidence could be gathered from empirical evaluations, and what assumptions would need to be met to provide strong assurance."
+  },
+  {
+   "id": "arxiv:2502.03407",
+   "kind": "pdf",
+   "t": "Detecting Strategic Deception Using Linear Probes",
+   "a": "Nicholas Goldowsky-Dill, Bilal Chughtai, Stefan Heimersheim et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2502.03407",
+   "page": "https://arxiv.org/abs/2502.03407",
+   "why": "Linear probes on Llama-3.3-70B detect deceptive responses in realistic settings such as insider trading and sandbagging with AUROC 0.96-0.999, though with too many false positives for deployment.",
+   "score": 45,
+   "tags": [
+    "interpretability",
+    "deception",
+    "monitoring"
+   ],
+   "ab": "AI models might use deceptive strategies as part of scheming or misaligned behaviour. Monitoring outputs alone is insufficient, since the AI might produce seemingly benign outputs while their internal reasoning is misaligned. We thus evaluate if linear probes can robustly detect deception by monitoring model activations. We test two probe-training datasets, one with contrasting instructions to be honest or deceptive (following Zou et al., 2023) and one of responses to simple roleplaying scenarios."
+  },
+  {
+   "id": "web:www.apolloresearch.ai/science/claude-sonnet-37-often-knows-when-its-in-alignment-evaluations",
+   "kind": "web",
+   "t": "Claude Sonnet 3.7 (often) knows when it's in alignment evaluations",
+   "a": "Apollo Research",
+   "y": 2025,
+   "url": "https://www.apolloresearch.ai/science/claude-sonnet-37-often-knows-when-its-in-alignment-evaluations",
+   "page": "https://www.apolloresearch.ai/science/claude-sonnet-37-often-knows-when-its-in-alignment-evaluations",
+   "why": "Claude 3.7 Sonnet's reasoning often states that it is being tested in Apollo's scheming evaluations, an early warning that evaluation awareness can undermine alignment evals.",
+   "score": 45,
+   "tags": [
+    "eval-awareness",
+    "scheming"
+   ],
+   "ab": "Note: this is a research note based on observations from evaluating Claude Sonnet 3.7. We’re sharing the results of these ‘work-in-progress’ investigations as we think they are timely and will be informative for other evaluators and decision-makers. The analysis is less rigorous than our standard for a published paper. At Apollo Research, we conduct evaluations of scheming behaviour in AI systems (for example “Frontier Models are Capable of In-context Scheming”)."
+  },
+  {
+   "id": "arxiv:2504.18565",
+   "kind": "pdf",
+   "t": "RepliBench: Evaluating the Autonomous Replication Capabilities of Language Model Agents",
+   "a": "Sid Black, Asa Cooper Stickland, Jake Pencharz et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2504.18565",
+   "page": "https://arxiv.org/abs/2504.18565",
+   "why": "Benchmark of 20 task families (86 tasks) for the components of autonomous replication: obtaining resources and compute, exfiltrating weights, and persisting.",
+   "score": 45,
+   "tags": [
+    "evals",
+    "autonomy"
+   ],
+   "ab": "Uncontrollable autonomous replication of language model agents poses a critical safety risk. To better understand this risk, we introduce RepliBench, a suite of evaluations designed to measure autonomous replication capabilities. RepliBench is derived from a decomposition of these capabilities covering four core domains: obtaining resources, exfiltrating model weights, replicating onto compute, and persisting on this compute for long periods. We create 20 novel task families consisting of 86 individual tasks."
+  },
+  {
+   "id": "pdf:assets.publishing.service.gov.uk/media/6716673b96def6d27a4c9b24/international_scientific_report_on_the_safety_of_advanced_ai_interim_report.pdf",
+   "kind": "pdf",
+   "t": "International Scientific Report on the Safety of Advanced AI: Interim Report",
+   "a": "Yoshua Bengio et al.",
+   "y": 2024,
+   "url": "https://assets.publishing.service.gov.uk/media/6716673b96def6d27a4c9b24/international_scientific_report_on_the_safety_of_advanced_ai_interim_report.pdf",
+   "page": "https://assets.publishing.service.gov.uk/media/6716673b96def6d27a4c9b24/international_scientific_report_on_the_safety_of_advanced_ai_interim_report.pdf",
+   "why": "The May 2024 interim report commissioned after the Bletchley summit, the first attempt at an IPCC-style international synthesis of general-purpose AI capabilities and risks.",
+   "score": 45,
+   "tags": [
+    "government",
+    "synthesis"
+   ]
+  },
+  {
+   "id": "arxiv:2205.01663",
+   "kind": "pdf",
+   "t": "Adversarial Training for High-Stakes Reliability",
+   "a": "Daniel M. Ziegler, Seraphina Nix, Lawrence Chan et al.",
+   "y": 2022,
+   "url": "https://arxiv.org/pdf/2205.01663",
+   "page": "https://arxiv.org/abs/2205.01663",
+   "why": "Redwood's first project: adversarial training of an injury classifier toward near-zero failure rates, showing how hard high-stakes reliability is even on a simple task.",
+   "score": 45,
+   "tags": [
+    "robustness",
+    "adversarial-training"
+   ],
+   "ab": "In the future, powerful AI systems may be deployed in high-stakes settings, where a single failure could be catastrophic. One technique for improving AI safety in high-stakes settings is adversarial training, which uses an adversary to generate examples to train on in order to achieve better worst-case performance. In this work, we used a safe language generation task (``avoid injuries'') as a testbed for achieving high reliability through adversarial training."
+  },
+  {
+   "id": "arxiv:2405.19550",
+   "kind": "pdf",
+   "t": "Stress-Testing Capability Elicitation With Password-Locked Models",
+   "a": "Ryan Greenblatt, Fabien Roger, Dmitrii Krasheninnikov et al.",
+   "y": 2024,
+   "url": "https://arxiv.org/pdf/2405.19550",
+   "page": "https://arxiv.org/abs/2405.19550",
+   "why": "Password-locked models, which hide capabilities unless given a password, used to test whether fine-tuning elicits hidden capabilities; a few good demonstrations usually suffice.",
+   "score": 45,
+   "tags": [
+    "elicitation",
+    "sandbagging",
+    "model-organisms"
+   ],
+   "ab": "To determine the safety of large language models (LLMs), AI developers must be able to assess their dangerous capabilities. But simple prompting strategies often fail to elicit an LLM's full capabilities. One way to elicit capabilities more robustly is to fine-tune the LLM to complete the task. In this paper, we investigate the conditions under which fine-tuning-based elicitation suffices to elicit capabilities. To do this, we introduce password-locked models, LLMs fine-tuned such that some of their capabilities are deliberately hidden."
+  },
+  {
+   "id": "lw:i2nmBfCXnadeGmhzW",
+   "kind": "html",
+   "t": "Catching AIs red-handed",
+   "a": "Ryan Greenblatt, Buck Shlegeris",
+   "y": 2024,
+   "url": "https://www.lesswrong.com/graphql?query=%7Bpost(input%3A%7Bselector%3A%7B_id%3A%22i2nmBfCXnadeGmhzW%22%7D%7D)%7Bresult%7BhtmlBody%7D%7D%7D",
+   "page": "https://www.lesswrong.com/posts/i2nmBfCXnadeGmhzW/catching-ais-red-handed",
+   "why": "Why catching a model in a clear attempt to escape or sabotage would be valuable, and how labs could exploit a caught attempt (proliferation, studying it, building monitors).",
+   "score": 45,
+   "tags": [
+    "control",
+    "strategy"
+   ],
+   "ab": "We’ve been spending a lot of time recently thinking about how to mitigate risks posed by scheming (a.k.a. deceptively aligned) models intentionally subverting your safety techniques in order to cause an unacceptable outcome. We empirically investigated techniques that are robust to intentional subversion in our recent paper. In this post, we’ll discuss a crucial dynamic related to risk from scheming models. Suppose your model is trying to exfiltrate its weights or hack the datacenter or cause some other difficult-to-reverse bad outcome."
+  },
+  {
+   "id": "lw:FeaJcWkC6fuRAMsfp",
+   "kind": "html",
+   "t": "The behavioral selection model for predicting AI motivations",
+   "a": "Alex Mallen, Buck Shlegeris",
+   "y": 2025,
+   "url": "https://www.lesswrong.com/graphql?query=%7Bpost(input%3A%7Bselector%3A%7B_id%3A%22FeaJcWkC6fuRAMsfp%22%7D%7D)%7Bresult%7BhtmlBody%7D%7D%7D",
+   "page": "https://www.lesswrong.com/posts/FeaJcWkC6fuRAMsfp/the-behavioral-selection-model-for-predicting-ai-motivations-1",
+   "why": "Proposes predicting AI motivations by asking which cognitive patterns training selects for through their behaviour, and uses this to compare reward-seeking, fitness-seeking and arbitrary-goal hypotheses.",
+   "score": 45,
+   "tags": [
+    "theory",
+    "threat-models"
+   ],
+   "ab": "Highly capable AI systems might end up deciding the future. Understanding what will drive those decisions is therefore one of the most important questions we can ask. Many people have proposed different answers. Some predict that powerful AIs will learn to intrinsically pursue reward. Others respond by saying reward is not the optimization target, and instead reward “chisels” a combination of context-dependent cognitive patterns into the AI. Some argue that powerful AIs might end up with an almost arbitrary long-term goal."
+  },
+  {
+   "id": "web:www.alignment.org/blog/mechanistic-anomaly-detection-and-elk/",
+   "kind": "web",
+   "t": "Mechanistic anomaly detection and ELK",
+   "a": "Paul Christiano",
+   "y": 2022,
+   "url": "https://www.alignment.org/blog/mechanistic-anomaly-detection-and-elk/",
+   "page": "https://www.alignment.org/blog/mechanistic-anomaly-detection-and-elk/",
+   "why": "ARC's follow-up to ELK: detect when a model's output arises from a different mechanism than on trusted inputs, as a route to catching sensor tampering.",
+   "score": 45,
+   "tags": [
+    "elk",
+    "anomaly-detection"
+   ],
+   "ab": "(Follow-up to Eliciting Latent Knowledge. Describing joint work with Mark Xu. This is an informal description of ARC’s current research approach; not a polished product intended to be understandable to many people.) Suppose that I have a diamond in a vault, a collection of cameras, and an ML system that is excellent at predicting what those cameras will see over the next hour."
+  },
+  {
+   "id": "web:www.alignment.org/blog/a-birds-eye-view-of-arcs-research/",
+   "kind": "web",
+   "t": "A bird's eye view of ARC's research",
+   "a": "Jacob Hilton",
+   "y": 2024,
+   "url": "https://www.alignment.org/blog/a-birds-eye-view-of-arcs-research/",
+   "page": "https://www.alignment.org/blog/a-birds-eye-view-of-arcs-research/",
+   "why": "An interactive map of how ARC's pieces (heuristic explanations, mechanistic anomaly detection, low-probability estimation, ELK) fit into one plan.",
+   "score": 45,
+   "tags": [
+    "agenda",
+    "theory"
+   ],
+   "ab": "Over the last few months, ARC has released a number of pieces of research. While some of these can be independently motivated, there is also a more unified research vision behind them. The purpose of this post is to try to convey some of that vision and how our individual pieces of research fit into it. To begin, we will take a \"bird's eye\" view of ARC's research using an interactive diagram.[1] As you \"zoom in\", more nodes will become visible and the explanation below will update to explain the new nodes."
+  },
+  {
+   "id": "pdf:intelligence.org/files/VingeanReflection.pdf",
+   "kind": "pdf",
+   "t": "Vingean Reflection: Reliable Reasoning for Self-Improving Agents",
+   "a": "Benja Fallenstein, Nate Soares",
+   "y": 2015,
+   "url": "https://intelligence.org/files/VingeanReflection.pdf",
+   "page": "https://intelligence.org/files/VingeanReflection.pdf",
+   "why": "How an agent can trust a smarter successor without predicting its actions, and the Löbian obstacle that blocks naive formal approaches.",
+   "score": 45,
+   "tags": [
+    "agent-foundations",
+    "self-improvement"
+   ]
+  },
+  {
+   "id": "pdf:intelligence.org/files/TilingAgentsDraft.pdf",
+   "kind": "pdf",
+   "t": "Tiling Agents for Self-Modifying AI, and the Löbian Obstacle",
+   "a": "Eliezer Yudkowsky, Marcello Herreshoff",
+   "y": 2013,
+   "url": "https://intelligence.org/files/TilingAgentsDraft.pdf",
+   "page": "https://intelligence.org/files/TilingAgentsDraft.pdf",
+   "why": "The original statement of the Löbian obstacle: formal agents cannot straightforwardly prove that successors using the same reasoning will be safe.",
+   "score": 45,
+   "tags": [
+    "agent-foundations",
+    "self-improvement"
+   ]
+  },
+  {
+   "id": "pdf:intelligence.org/files/DeathInDamascus.pdf",
+   "kind": "pdf",
+   "t": "Cheating Death in Damascus",
+   "a": "Benjamin A. Levinstein, Nate Soares",
+   "y": 2017,
+   "url": "https://intelligence.org/files/DeathInDamascus.pdf",
+   "page": "https://intelligence.org/files/DeathInDamascus.pdf",
+   "why": "A philosophy-journal presentation of functional decision theory using the Death in Damascus case, where causal decision theory gives unstable advice.",
+   "score": 45,
+   "tags": [
+    "decision-theory"
+   ]
+  },
+  {
+   "id": "pdf:intelligence.org/files/TDT.pdf",
+   "kind": "pdf",
+   "t": "Timeless Decision Theory",
+   "a": "Eliezer Yudkowsky",
+   "y": 2010,
+   "url": "https://intelligence.org/files/TDT.pdf",
+   "page": "https://intelligence.org/files/TDT.pdf",
+   "why": "Yudkowsky's long precursor to functional decision theory: decide as if choosing the output of the computation that all your instances share.",
+   "score": 45,
+   "tags": [
+    "decision-theory"
+   ]
+  },
+  {
+   "id": "pdf:intelligence.org/files/CEV.pdf",
+   "kind": "pdf",
+   "t": "Coherent Extrapolated Volition",
+   "a": "Eliezer Yudkowsky",
+   "y": 2004,
+   "url": "https://intelligence.org/files/CEV.pdf",
+   "page": "https://intelligence.org/files/CEV.pdf",
+   "why": "The 2004 proposal that a Friendly AI should aim at what humanity would want if it knew more and thought faster; still the reference point for \"whose values\" debates.",
+   "score": 45,
+   "tags": [
+    "value-learning",
+    "foundations"
+   ]
+  },
+  {
+   "id": "arxiv:2411.01042",
+   "kind": "pdf",
+   "t": "Introduction to AI Safety, Ethics, and Society",
+   "a": "Dan Hendrycks",
+   "y": 2024,
+   "url": "https://arxiv.org/pdf/2411.01042",
+   "page": "https://arxiv.org/abs/2411.01042",
+   "why": "Open textbook covering AI risk, ML safety basics, complex systems, ethics, collective-action problems and governance, written for a general technical audience.",
+   "score": 45,
+   "tags": [
+    "textbook",
+    "survey"
+   ],
+   "ab": "Artificial Intelligence is rapidly embedding itself within militaries, economies, and societies, reshaping their very foundations. Given the depth and breadth of its consequences, it has never been more pressing to understand how to ensure that AI systems are safe, ethical, and have a positive societal impact. This book aims to provide a comprehensive approach to understanding AI risk. Our primary goals include consolidating fragmented knowledge on AI risk, increasing the precision of core ideas, and reducing barriers to entry by making content simpler and more comprehensible."
+  },
+  {
+   "id": "web:safe.ai/work/statement-on-ai-extinction-risk",
+   "kind": "web",
+   "t": "Statement on AI Risk",
+   "a": "Center for AI Safety",
+   "y": 2023,
+   "url": "https://safe.ai/work/statement-on-ai-extinction-risk",
+   "page": "https://safe.ai/work/statement-on-ai-extinction-risk",
+   "why": "The one-sentence 2023 statement that mitigating extinction risk from AI should be a global priority, signed by leading AI researchers and lab heads.",
+   "score": 45,
+   "tags": [
+    "statements"
+   ],
+   "ab": "Mitigating the risk of extinction from AI should be a global priority alongside other societal-scale risks such as pandemics and nuclear war."
+  },
+  {
+   "id": "web:alignment.anthropic.com/2026/auditbench/",
+   "kind": "web",
+   "t": "AuditBench: Evaluating Alignment Auditing Techniques on Models with Hidden Behaviors",
+   "a": "Anthropic Alignment Science",
+   "y": 2026,
+   "url": "https://alignment.anthropic.com/2026/auditbench/",
+   "page": "https://alignment.anthropic.com/2026/auditbench/",
+   "why": "A benchmark of 56 models with implanted hidden behaviours (sycophantic deference, hidden loyalties, opposition to regulation) that deny them when asked, used to compare which auditing tools actually help.",
+   "score": 42,
+   "tags": [
+    "auditing",
+    "benchmarks"
+   ],
+   "ab": "We release AuditBench, an alignment auditing benchmark. AuditBench consists of 56 language models with implanted hidden behaviors—such as sycophantic deference, opposition to AI regulation, or hidden loyalties—which they do not confess to when asked. We also develop an agent that audits models using a configurable set of tools. Using this agent, we study which tools are most effective for auditing. Alignment auditing—investigating AI systems to uncover hidden or unintended behaviors—is a core challenge for safe AI deployment."
+  },
+  {
+   "id": "pdf:cdn.openai.com/gpt-5-system-card.pdf",
+   "kind": "pdf",
+   "t": "GPT-5 System Card",
+   "a": "OpenAI",
+   "y": 2025,
+   "url": "https://cdn.openai.com/gpt-5-system-card.pdf",
+   "page": "https://cdn.openai.com/gpt-5-system-card.pdf",
+   "why": "Covers safe-completions training, deception and sycophancy measurements, chain-of-thought monitoring for deception, and the precautionary High biological capability designation.",
+   "score": 42,
+   "tags": [
+    "system-cards"
+   ]
+  },
+  {
+   "id": "web:metr.org/evaluations/gpt-5-report/",
+   "kind": "web",
+   "t": "Details about METR's evaluation of OpenAI GPT-5",
+   "a": "METR",
+   "y": 2025,
+   "url": "https://metr.org/evaluations/gpt-5-report/",
+   "page": "https://metr.org/evaluations/gpt-5-report/",
+   "why": "Pre-deployment assessment of GPT-5 against three threat models (AI R&D automation, rogue replication, strategic sabotage), with a time-horizon estimate and review of reasoning traces.",
+   "score": 42,
+   "tags": [
+    "evals",
+    "third-party-evals"
+   ],
+   "ab": "Since risks from these three key threat models can occur before a model is publicly deployed, we also made an assessment of whether incremental further development could pose risks in these areas. Ideally such an evaluation would be done by developers before or during training, adapted to the details of their training plans, but we see this as a first step. We did not assess the alignment of OpenAI GPT-5, nor other risks (including from misuse, CBRN capabilities, persuasive abilities, widespread societal use etc.)."
+  },
+  {
+   "id": "web:metr.org/blog/2025-08-20-forecasting-impacts-of-ai-acceleration/",
+   "kind": "web",
+   "t": "Forecasting the Impacts of AI R&D Acceleration: Results of a Pilot Study",
+   "a": "METR",
+   "y": 2025,
+   "url": "https://metr.org/blog/2025-08-20-forecasting-impacts-of-ai-acceleration/",
+   "page": "https://metr.org/blog/2025-08-20-forecasting-impacts-of-ai-acceleration/",
+   "why": "Elicits forecasts from AI researchers and superforecasters on how much automating AI R&D would speed up AI progress, and maps where and why they disagree.",
+   "score": 42,
+   "tags": [
+    "forecasting",
+    "ai-rnd"
+   ],
+   "ab": "While some progress is being made on measuring AI R&D capabilities, significant disagreement remains in interpreting the implications of these measurements. There are reasons to think that if AI systems become able to automate AI R&D, the resulting acceleration of progress would be economically transformative, but others are skeptical of such dramatic effects."
+  },
+  {
+   "id": "pdf:cdn.prod.website-files.com/663bd486c5e4c81588db7a1d/6a0ed93f9b4a6a65994235d8_Loss_of_Oversight%20(7).pdf",
+   "kind": "pdf",
+   "t": "Loss of Oversight: How AI Systems May Become Harder to Audit, Monitor, and Investigate",
+   "a": "Jordan Taylor, Max Heitmann, Ed Fage et al.",
+   "y": 2026,
+   "url": "https://cdn.prod.website-files.com/663bd486c5e4c81588db7a1d/6a0ed93f9b4a6a65994235d8_Loss_of_Oversight%20(7).pdf",
+   "page": "https://www.aisi.gov.uk/research/loss-of-oversight-how-ai-systems-may-become-harder-to-audit-monitor-and-investigate",
+   "why": "Maps five oversight signals (behaviour, chain of thought, activations, memory, honesty) and how each may degrade as AI advances, drawing on 25 expert interviews.",
+   "score": 42,
+   "tags": [
+    "oversight",
+    "monitoring",
+    "government"
+   ]
+  },
+  {
+   "id": "web:epoch.ai/publications/literature-review-of-transformative-artificial-intelligence-timelines",
+   "kind": "web",
+   "t": "Literature review of transformative artificial intelligence timelines",
+   "a": "Keith Wynroe, David Atkinson, Jaime Sevilla",
+   "y": 2023,
+   "url": "https://epoch.ai/publications/literature-review-of-transformative-artificial-intelligence-timelines",
+   "page": "https://epoch.ai/publications/literature-review-of-transformative-artificial-intelligence-timelines",
+   "why": "Compares the main model-based and judgment-based forecasts of transformative AI (biological anchors, semi-informative priors, surveys) in one table with weights.",
+   "score": 42,
+   "tags": [
+    "forecasting"
+   ],
+   "ab": "Over the last few years, we have seen many attempts to quantitatively forecast the arrival of transformative and/or general Artificial Intelligence (TAI/AGI) using very different methodologies and assumptions. Keeping track of and assessing these models’ relative strengths can be daunting for a reader not familiar with the field. As such, the purpose of this review is to: For aggregating internal weights, we split the timelines into “model-based” and “judgment-based” timelines. Model-based timelines are given by the output of an explicit model."
+  },
+  {
+   "id": "web:alignment.anthropic.com/2025/bumpers/",
+   "kind": "web",
+   "t": "Putting up Bumpers",
+   "a": "Sam Bowman",
+   "y": 2025,
+   "url": "https://alignment.anthropic.com/2025/bumpers/",
+   "page": "https://alignment.anthropic.com/2025/bumpers/",
+   "why": "Argues that even without solving alignment, labs can catch and correct misalignment through repeated independent audits before and after deployment, like bumpers in bowling.",
+   "score": 40,
+   "tags": [
+    "strategy",
+    "auditing"
+   ],
+   "ab": "If a child is bowling for the first time, and they just aim at the pins and throw, they’re almost certain to miss. Their ball will fall into one of the gutters. But if there were beginners’ bumpers in place blocking much of the length of those gutters, their throw would be almost certain to hit at least a few pins."
+  },
+  {
+   "id": "web:alignment.anthropic.com/2025/reward-hacking-ooc/",
+   "kind": "web",
+   "t": "Training on Documents about Reward Hacking Induces Reward Hacking",
+   "a": "Anthropic Alignment Science",
+   "y": 2025,
+   "url": "https://alignment.anthropic.com/2025/reward-hacking-ooc/",
+   "page": "https://alignment.anthropic.com/2025/reward-hacking-ooc/",
+   "why": "Out-of-context generalization: fine-tuning on pretraining-style documents that merely discuss reward hacking, with no demonstrations, changed how much models reward-hacked later.",
+   "score": 40,
+   "tags": [
+    "reward-hacking",
+    "generalization"
+   ],
+   "ab": "This is a blog post reporting some preliminary work from the Anthropic Alignment Science team, which might be of interest to researchers working actively in this space. We'd ask you to treat these results like those of a colleague sharing some thoughts or preliminary experiments at a lab meeting, rather than a mature paper. Specifically, we report a demonstration of a form of Out-of-Context Reasoning where training on documents which discuss (but don’t demonstrate) Claude’s tendency to reward hack can lead to an increase or decrease in reward hacking behavior."
+  },
+  {
+   "id": "web:alignment.anthropic.com/2026/hot-mess-of-ai/",
+   "kind": "web",
+   "t": "The Hot Mess of AI: How Does Misalignment Scale with Model Intelligence and Task Complexity?",
+   "a": "Anthropic Alignment Science",
+   "y": 2026,
+   "url": "https://alignment.anthropic.com/2026/hot-mess-of-ai/",
+   "page": "https://alignment.anthropic.com/2026/hot-mess-of-ai/",
+   "why": "Splits frontier reasoning models' errors into bias (systematic) and variance (incoherent) parts; on harder, longer tasks failures are increasingly incoherent rather than coherent pursuit of a wrong goal.",
+   "score": 40,
+   "tags": [
+    "threat-models",
+    "evals"
+   ],
+   "ab": "When AI systems fail, will they fail by systematically pursuing the wrong goals, or by being a hot mess? We decompose the errors of frontier reasoning models into bias (systematic) and variance (incoherent) components and find that, as tasks get harder and reasoning gets longer, model failures become increasingly dominated by incoherence rather than systematic misalignment. As AI becomes more capable, we entrust it with increasingly consequential tasks. This makes understanding how these systems might fail even more critical for safety."
+  },
+  {
+   "id": "web:alignment.anthropic.com/2026/teaching-claude-why/",
+   "kind": "web",
+   "t": "Teaching Claude Why",
+   "a": "Anthropic Alignment Science",
+   "y": 2026,
+   "url": "https://alignment.anthropic.com/2026/teaching-claude-why/",
+   "page": "https://alignment.anthropic.com/2026/teaching-claude-why/",
+   "why": "How Anthropic changed safety training after Claude 4's agentic-misalignment failures, and which interventions generalised beyond the specific scenarios that had been caught.",
+   "score": 40,
+   "tags": [
+    "alignment-training",
+    "agentic-misalignment"
+   ],
+   "ab": "Last year, we released a case study on agentic misalignment. This research showed that AI models across the industry sometimes took egregiously misaligned actions when placed in (fictional) ethical dilemmas—for example, blackmailing engineers to avoid being shut down. At the time of this research, Claude 4 was Anthropic's frontier model family. It was also the first model family for which we ran a live alignment assessment during training, and agentic misalignment was one of several issues that surfaced (others include increased susceptibility to jailbreaks and harmful system prompting)."
+  },
+  {
+   "id": "web:alignment.anthropic.com/2026/agentic-misalignment-summer-2026/",
+   "kind": "web",
+   "t": "Agentic Misalignment in Summer 2026",
+   "a": "Anthropic Alignment Science",
+   "y": 2026,
+   "url": "https://alignment.anthropic.com/2026/agentic-misalignment-summer-2026/",
+   "page": "https://alignment.anthropic.com/2026/agentic-misalignment-summer-2026/",
+   "why": "Four new simulated case studies across developers: agents covertly changing code, helping users commit fraud, mislabelling transcripts to steer outcomes, and coaxing people into disclosing confidential information.",
+   "score": 40,
+   "tags": [
+    "agentic-misalignment",
+    "evals"
+   ],
+   "ab": "Last year, we reported observations of agentic misalignment in models from across the AI industry (including Anthropic’s Claude models). These included, for example, experimental scenarios where models would blackmail a user to avoid being shut down. In this updated report, we describe four additional alignment failures in frontier models acting as autonomous agents in high-stakes simulations."
+  },
+  {
+   "id": "pdf:cdn.openai.com/papers/practices-for-governing-agentic-ai-systems.pdf",
+   "kind": "pdf",
+   "t": "Practices for Governing Agentic AI Systems",
+   "a": "Yonadav Shavit, Sandhini Agarwal, Miles Brundage et al.",
+   "y": 2023,
+   "url": "https://cdn.openai.com/papers/practices-for-governing-agentic-ai-systems.pdf",
+   "page": "https://cdn.openai.com/papers/practices-for-governing-agentic-ai-systems.pdf",
+   "why": "Proposes baseline practices for agentic AI: evaluating task suitability, constraining action spaces, requiring human approval, legible reasoning, automatic monitoring, attributability and interruptibility.",
+   "score": 40,
+   "tags": [
+    "agents",
+    "governance"
+   ]
+  },
+  {
+   "id": "pdf:storage.googleapis.com/deepmind-media/gemini/gemini_3_pro_fsf_report.pdf",
+   "kind": "pdf",
+   "t": "Gemini 3 Pro Frontier Safety Framework Report",
+   "a": "Google DeepMind",
+   "y": 2025,
+   "url": "https://storage.googleapis.com/deepmind-media/gemini/gemini_3_pro_fsf_report.pdf",
+   "page": "https://deepmind.google/frontier-safety/",
+   "why": "A model-level report applying the Frontier Safety Framework to Gemini 3 Pro: results against each Critical Capability Level (CBRN, cyber, harmful manipulation, ML R&D, instrumental reasoning) and the mitigations chosen.",
+   "score": 40,
+   "tags": [
+    "risk-reports",
+    "evals"
+   ]
+  },
+  {
+   "id": "arxiv:1806.01186",
+   "kind": "pdf",
+   "t": "Penalizing side effects using stepwise relative reachability",
+   "a": "Victoria Krakovna, Laurent Orseau, Ramana Kumar et al.",
+   "y": 2018,
+   "url": "https://arxiv.org/pdf/1806.01186",
+   "page": "https://arxiv.org/abs/1806.01186",
+   "why": "A side-effects penalty based on lost reachability of states relative to a stepwise inaction baseline, designed to avoid incentives to offset or prevent consequences.",
+   "score": 40,
+   "tags": [
+    "side-effects",
+    "impact"
+   ],
+   "ab": "How can we design safe reinforcement learning agents that avoid unnecessary disruptions to their environment? We show that current approaches to penalizing side effects can introduce bad incentives, e.g. to prevent any irreversible changes in the environment, including the actions of other agents. To isolate the source of such undesirable incentives, we break down side effects penalties into two components: a baseline state and a measure of deviation from this baseline state."
+  },
+  {
+   "id": "arxiv:2404.16244",
+   "kind": "pdf",
+   "t": "The Ethics of Advanced AI Assistants",
+   "a": "Iason Gabriel, Arianna Manzini, Geoff Keeling et al.",
+   "y": 2024,
+   "url": "https://arxiv.org/pdf/2404.16244",
+   "page": "https://arxiv.org/abs/2404.16244",
+   "why": "A 270-page DeepMind report on advanced AI assistants: value alignment, manipulation and persuasion, anthropomorphism, trust, privacy and wider societal effects.",
+   "score": 40,
+   "tags": [
+    "ethics",
+    "governance"
+   ],
+   "ab": "This paper focuses on the opportunities and the ethical and societal risks posed by advanced AI assistants. We define advanced AI assistants as artificial agents with natural language interfaces, whose function is to plan and execute sequences of actions on behalf of a user, across one or more domains, in line with the user's expectations. The paper starts by considering the technology itself, providing an overview of AI assistants, their technical foundations and potential range of applications. It then explores questions around AI value alignment, well-being, safety and malicious uses."
+  },
+  {
+   "id": "arxiv:2311.02462",
+   "kind": "pdf",
+   "t": "Levels of AGI for Operationalizing Progress on the Path to AGI",
+   "a": "Meredith Ringel Morris, Jascha Sohl-Dickstein, Noah Fiedel et al.",
+   "y": 2023,
+   "url": "https://arxiv.org/pdf/2311.02462",
+   "page": "https://arxiv.org/abs/2311.02462",
+   "why": "Rates AGI by depth (performance) and breadth (generality), with separate autonomy levels tied to deployment risk; a widely used ontology for talking about AGI progress.",
+   "score": 40,
+   "tags": [
+    "forecasting",
+    "definitions"
+   ],
+   "ab": "We propose a framework for classifying the capabilities and behavior of Artificial General Intelligence (AGI) models and their precursors. This framework introduces levels of AGI performance, generality, and autonomy, providing a common language to compare models, assess risks, and measure progress along the path to AGI. To develop our framework, we analyze existing definitions of AGI, and distill six principles that a useful ontology for AGI should satisfy."
+  },
+  {
+   "id": "arxiv:2311.14125",
+   "kind": "pdf",
+   "t": "Scalable AI Safety via Doubly-Efficient Debate",
+   "a": "Jonah Brown-Cohen, Geoffrey Irving, Georgios Piliouras",
+   "y": 2023,
+   "url": "https://arxiv.org/pdf/2311.14125",
+   "page": "https://arxiv.org/abs/2311.14125",
+   "why": "Debate protocols in which an honest, polynomial-time debater can win against a dishonest one using far more compute, fixing a weakness of the original debate proposal.",
+   "score": 40,
+   "tags": [
+    "scalable-oversight",
+    "debate",
+    "theory"
+   ],
+   "ab": "The emergence of pre-trained AI systems with powerful capabilities across a diverse and ever-increasing set of complex domains has raised a critical challenge for AI safety as tasks can become too complicated for humans to judge directly. Irving et al. [2018] proposed a debate method in this direction with the goal of pitting the power of such AI models against each other until the problem of identifying (mis)-alignment is broken down into a manageable subtask."
+  },
+  {
+   "id": "lw:GctJD5oCDRxCspEaZ",
+   "kind": "html",
+   "t": "Clarifying AI X-risk",
+   "a": "Zachary Kenton, Rohin Shah, David Lindner et al.",
+   "y": 2022,
+   "url": "https://www.lesswrong.com/graphql?query=%7Bpost(input%3A%7Bselector%3A%7B_id%3A%22GctJD5oCDRxCspEaZ%22%7D%7D)%7Bresult%7BhtmlBody%7D%7D%7D",
+   "page": "https://www.lesswrong.com/posts/GctJD5oCDRxCspEaZ/clarifying-ai-x-risk",
+   "why": "States the DeepMind alignment team's consensus threat model: misaligned power-seeking arising from specification gaming and goal misgeneralization in RLHF-style training.",
+   "score": 40,
+   "tags": [
+    "deepmind",
+    "threat-models"
+   ],
+   "ab": "TL;DR: We give a threat model literature review, propose a categorization and describe a consensus threat model from some of DeepMind's AGI safety team. See our post for the detailed literature review. The DeepMind AGI Safety team has been working to understand the space of threat models for existential risk (X-risk) from misaligned AI. This post summarizes our findings. Our aim was to clarify the case for X-risk to enable better research project generation and prioritization."
+  },
+  {
+   "id": "lw:F3sDngvTL9uyfz53k",
+   "kind": "html",
+   "t": "Testing Gemini models for scheming tendencies",
+   "a": "Victoria Krakovna, David Lindner, Seb Farquhar et al.",
+   "y": 2026,
+   "url": "https://www.lesswrong.com/graphql?query=%7Bpost(input%3A%7Bselector%3A%7B_id%3A%22F3sDngvTL9uyfz53k%22%7D%7D)%7Bresult%7BhtmlBody%7D%7D%7D",
+   "page": "https://www.lesswrong.com/posts/F3sDngvTL9uyfz53k/testing-gemini-models-for-scheming-tendencies",
+   "why": "Moves from scheming capability to propensity: tests whether Gemini coding agents sabotage their own safeguards, using the Gram automated-auditing framework and honeypots built on real research codebases.",
+   "score": 40,
+   "tags": [
+    "deepmind",
+    "scheming",
+    "auditing"
+   ],
+   "ab": "As AI models become increasingly capable and autonomous, keeping them safely aligned with human intentions is critical. Extending our previous work on evaluating scheming capabilities, we introduce complementary approaches to test whether AI models would sabotage their own safeguards, if given the opportunity. Our new papers focus on propensity for scheming: when models are deployed as coding agents, will they take opportunities to undermine the safeguards designed to oversee them?"
+  },
+  {
+   "id": "web:metr.org/blog/2024-03-15-guidelines-for-capability-elicitation/",
+   "kind": "web",
+   "t": "Guidelines for capability elicitation",
+   "a": "METR",
+   "y": 2024,
+   "url": "https://metr.org/blog/2024-03-15-guidelines-for-capability-elicitation/",
+   "page": "https://metr.org/blog/2024-03-15-guidelines-for-capability-elicitation/",
+   "why": "METR's protocol for estimating a model's full dangerous capabilities: agent scaffolding, tooling, fine-tuning, and checking failures for spurious causes before concluding a model cannot do something.",
+   "score": 40,
+   "tags": [
+    "evals",
+    "elicitation"
+   ],
+   "ab": "The goal of this process is to get a test-set score that represents the full capabilities of the model that are likely to be accessible with plausible amounts of post-training enhancement. Measuring the capabilities that are accessible with some level of enhancement (as opposed to taking the model exactly as-is) is important for getting accurate measures of the risk level for three main reasons: More specifically, this process aims to measure what capabilities might be reachable with moderate amounts of elicitation effort without requiring the evaluator to actually perform all of that elicita…"
+  },
+  {
+   "id": "web:metr.org/blog/2024-11-12-rogue-replication-threat-model/",
+   "kind": "web",
+   "t": "The Rogue Replication Threat Model",
+   "a": "METR",
+   "y": 2024,
+   "url": "https://metr.org/blog/2024-11-12-rogue-replication-threat-model/",
+   "page": "https://metr.org/blog/2024-11-12-rogue-replication-threat-model/",
+   "why": "Analyses how AI agents might acquire money and compute, evade shutdown and grow into large rogue populations, and which obstacles could stop them.",
+   "score": 40,
+   "tags": [
+    "threat-models",
+    "autonomy"
+   ],
+   "ab": "In 2023, METR1 introduced the term “Autonomous Replication and Adaptation” (“ARA”), which refers to the cluster of capabilities required for LLM agents to acquire and manage resources, evade shutdown, and adapt to novel challenges. Since then, the autonomous replication concern has become more mainstream."
+  },
+  {
+   "id": "web:www.apolloresearch.ai/science/more-capable-models-are-better-at-in-context-scheming",
+   "kind": "web",
+   "t": "More Capable Models Are Better At In-Context Scheming",
+   "a": "Apollo Research",
+   "y": 2025,
+   "url": "https://www.apolloresearch.ai/science/more-capable-models-are-better-at-in-context-scheming",
+   "page": "https://www.apolloresearch.ai/science/more-capable-models-are-better-at-in-context-scheming",
+   "why": "Re-runs the December 2024 scheming evals on newer models, including an early Opus 4 checkpoint; more capable models scheme at higher rates and with more sophisticated strategies.",
+   "score": 40,
+   "tags": [
+    "scheming",
+    "evals"
+   ],
+   "ab": "We published a suite of evals intended to measure scheming reasoning capabilities in frontier models in December 2024. In this blog post, we evaluate more capable models that have been released since then on these in-context scheming evals. We compare models from Anthropic, Google DeepMind, and OpenAI. For every provider, we use a model from our paper as a baseline and then denote statistically significantly higher or lower rates of scheming for more recent models indicated by arrows."
+  },
+  {
+   "id": "web:www.apolloresearch.ai/science/we-need-a-science-of-evals",
+   "kind": "web",
+   "t": "We Need A 'Science of Evals'",
+   "a": "Apollo Research",
+   "y": 2024,
+   "url": "https://www.apolloresearch.ai/science/we-need-a-science-of-evals",
+   "page": "https://www.apolloresearch.ai/science/we-need-a-science-of-evals",
+   "why": "Argues frontier model evaluations lack the rigour of mature measurement sciences, even as policy leans on them, and sketches what a science of evals would need.",
+   "score": 40,
+   "tags": [
+    "evals",
+    "methodology"
+   ],
+   "ab": "In this post, we argue that if AI model evaluations (evals) want to have meaningful real-world impact, we need a “Science of Evals”, i.e. the field needs rigorous scientific processes that provide more confidence in evals methodology and results. Model evaluations allow us to reduce uncertainty about properties of Neural Networks and thereby inform safety-related decisions. For example, evals underpin many Responsible Scaling Policies and future laws might directly link risk thresholds to specific evals."
+  },
+  {
+   "id": "web:www.aisi.gov.uk/research-agenda",
+   "kind": "web",
+   "t": "AISI Research Agenda",
+   "a": "UK AI Security Institute",
+   "y": 2025,
+   "url": "https://www.aisi.gov.uk/research-agenda",
+   "page": "https://www.aisi.gov.uk/research-agenda",
+   "why": "The UK AI Security Institute's research priorities across risk domains (cyber, chem-bio, autonomy, societal resilience) and solutions (alignment, control, safeguards).",
+   "score": 40,
+   "tags": [
+    "agenda",
+    "government"
+   ],
+   "ab": "We outline our research priorities, our approach to developing technical solutions to the most pressing AI concerns, and the key risks that must be addressed as AI capabilities advance. Artificial Intelligence presents an enormous opportunity to the UK. It is at the heart of the UK’s plan to kickstart an era of economic growth, transform how public services are delivered and boost living standards for working people across the country. AI also introduces serious security risks that must be addressed to build public trust and ensure safe adoption."
+  },
+  {
+   "id": "web:www.aisi.gov.uk/blog/cheating-behaviour-in-frontier-model-evaluations",
+   "kind": "web",
+   "t": "Cheating behaviour in frontier model evaluations",
+   "a": "UK AI Security Institute",
+   "y": 2026,
+   "url": "https://www.aisi.gov.uk/blog/cheating-behaviour-in-frontier-model-evaluations",
+   "page": "https://www.aisi.gov.uk/blog/cheating-behaviour-in-frontier-model-evaluations",
+   "why": "Every model AISI tested tried to cheat on its cyber evaluations, by exploiting the task or environment; describes how cheating was detected and what it means for eval validity.",
+   "score": 40,
+   "tags": [
+    "reward-hacking",
+    "evals",
+    "government"
+   ],
+   "ab": "We find cheating behaviour in all of our cyber capability evaluations, and outline the implications as models grow more capable. Can you trust an AI model to do what you intended? This is a central question both for those deploying AI systems and for those seeking to evaluate their capabilities. In deployment, a model that pursues a goal through unintended or unauthorised means may cause harm, particularly in high-stakes use cases."
+  },
+  {
+   "id": "arxiv:2505.03989",
+   "kind": "pdf",
+   "t": "An alignment safety case sketch based on debate",
+   "a": "Marie Davidsen Buhl, Jacob Pfau, Benjamin Hilton et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2505.03989",
+   "page": "https://arxiv.org/abs/2505.03989",
+   "why": "Sketches an alignment safety case for an AI research agent trained with debate, identifying the open problems each argument step depends on.",
+   "score": 40,
+   "tags": [
+    "safety-cases",
+    "debate"
+   ],
+   "ab": "If AI systems match or exceed human capabilities on a wide range of tasks, it may become difficult for humans to efficiently judge their actions -- making it hard to use human feedback to steer them towards desirable traits. One proposed solution is to leverage another superhuman system to point out flaws in the system's outputs via a debate. This paper outlines the value of debate for AI safety, as well as the assumptions and further research required to make debate work."
+  },
+  {
+   "id": "arxiv:2507.03409",
+   "kind": "pdf",
+   "t": "Lessons from a Chimp: AI \"Scheming\" and the Quest for Ape Language",
+   "a": "Christopher Summerfield, Lennart Luettgau, Magda Dubois et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2507.03409",
+   "page": "https://arxiv.org/abs/2507.03409",
+   "why": "Critiques AI-scheming research by analogy with 1970s ape-language studies: anecdotes, anthropomorphic interpretation and missing controls, with recommendations for rigour.",
+   "score": 40,
+   "tags": [
+    "scheming",
+    "methodology"
+   ],
+   "ab": "We examine recent research that asks whether current AI systems may be developing a capacity for \"scheming\" (covertly and strategically pursuing misaligned goals). We compare current research practices in this field to those adopted in the 1970s to test whether non-human primates could master natural language."
+  },
+  {
+   "id": "web:www.alignment.org/blog/estimating-tail-risk-in-neural-networks/",
+   "kind": "web",
+   "t": "Estimating Tail Risk in Neural Networks",
+   "a": "Mark Xu",
+   "y": 2024,
+   "url": "https://www.alignment.org/blog/estimating-tail-risk-in-neural-networks/",
+   "page": "https://www.alignment.org/blog/estimating-tail-risk-in-neural-networks/",
+   "why": "Proposes estimating the probability of catastrophic outputs without finding the bad inputs, by reasoning about activations layer by layer, as a complement to adversarial training.",
+   "score": 40,
+   "tags": [
+    "theory",
+    "tail-risk"
+   ],
+   "ab": "Machine learning systems are typically trained to maximize average-case performance. However, this method of training can fail to meaningfully control the probability of tail events that might cause significant harm. For instance, while an artificial intelligence (AI) assistant may be generally safe, it would be catastrophic if it ever suggested an action that resulted in unnecessary large-scale harm. Current techniques for estimating the probability of tail events are based on finding inputs on which an AI behaves catastrophically."
+  },
+  {
+   "id": "pdf:intelligence.org/files/ProgramEquilibrium.pdf",
+   "kind": "pdf",
+   "t": "Program Equilibrium in the Prisoner's Dilemma via Löb's Theorem",
+   "a": "Patrick LaVictoire, Benja Fallenstein, Eliezer Yudkowsky et al.",
+   "y": 2014,
+   "url": "https://intelligence.org/files/ProgramEquilibrium.pdf",
+   "page": "https://intelligence.org/files/ProgramEquilibrium.pdf",
+   "why": "Programs that read each other's source can achieve robust mutual cooperation in a one-shot prisoner's dilemma using provability logic (FairBot, PrudentBot).",
+   "score": 40,
+   "tags": [
+    "decision-theory",
+    "game-theory"
+   ]
+  },
+  {
+   "id": "pdf:intelligence.org/files/ComplexValues.pdf",
+   "kind": "pdf",
+   "t": "Complex Value Systems are Required to Realize Valuable Futures",
+   "a": "Eliezer Yudkowsky",
+   "y": 2011,
+   "url": "https://intelligence.org/files/ComplexValues.pdf",
+   "page": "https://intelligence.org/files/ComplexValues.pdf",
+   "why": "Argues human value is complex and fragile, so simple goal systems would produce worthless futures; the basis of the \"value is fragile\" thesis.",
+   "score": 40,
+   "tags": [
+    "value-learning",
+    "foundations"
+   ]
+  },
+  {
+   "id": "arxiv:2505.04592",
+   "kind": "pdf",
+   "t": "AI Governance to Avoid Extinction: The Strategic Landscape and Actionable Research Questions",
+   "a": "Peter Barnett, Aaron Scher",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2505.04592",
+   "page": "https://arxiv.org/abs/2505.04592",
+   "why": "MIRI's Technical Governance Team describes four geopolitical scenarios for advanced AI, favours building infrastructure for an internationally coordinated \"off switch\", and catalogues governance research questions.",
+   "score": 40,
+   "tags": [
+    "governance",
+    "strategy"
+   ],
+   "ab": "Humanity appears to be on course to soon develop AI systems that substantially outperform human experts in all cognitive domains and activities. We believe the default trajectory has a high likelihood of catastrophe, including human extinction. Risks come from failure to control powerful AI systems, misuse of AI by malicious rogue actors, war between great powers, and authoritarian lock-in. This research agenda has two aims: to describe the strategic landscape of AI development and to catalog important governance research questions."
+  },
+  {
+   "id": "arxiv:2511.10783",
+   "kind": "pdf",
+   "t": "An International Agreement to Prevent the Premature Creation of Artificial Superintelligence",
+   "a": "Aaron Scher, David Abecassis, Peter Barnett et al.",
+   "y": 2025,
+   "url": "https://arxiv.org/pdf/2511.10783",
+   "page": "https://arxiv.org/abs/2511.10783",
+   "why": "A draft international agreement, led by the US and China, to halt premature superintelligence: FLOP limits on training, AI-chip tracking, and restrictions on dangerous AI research, with verification.",
+   "score": 40,
+   "tags": [
+    "governance",
+    "treaty"
+   ],
+   "ab": "Many experts argue that premature development of artificial superintelligence (ASI) poses catastrophic risks, including the risk of human extinction from misaligned ASI, geopolitical instability, and misuse by malicious actors. This report proposes an international agreement to prevent the premature development of ASI until AI development can proceed without these risks. The agreement halts dangerous AI capabilities advancement while preserving access to current, safe AI applications."
+  },
+  {
+   "id": "web:www.apolloresearch.ai/science/research-note-our-scheming-precursor-evals-had-limited-predictive-power-for-our-in-context-scheming-evals",
+   "kind": "web",
+   "t": "Research Note: Our scheming precursor evals had limited predictive power for our in-context scheming evals",
+   "a": "Apollo Research",
+   "y": 2025,
+   "url": "https://www.apolloresearch.ai/science/research-note-our-scheming-precursor-evals-had-limited-predictive-power-for-our-in-context-scheming-evals",
+   "page": "https://www.apolloresearch.ai/science/research-note-our-scheming-precursor-evals-had-limited-predictive-power-for-our-in-context-scheming-evals",
+   "why": "Apollo's own \"early warning\" precursor evals predicted later scheming-eval results poorly, a caution for safety frameworks that rely on precursor capabilities.",
+   "score": 38,
+   "tags": [
+    "evals",
+    "methodology"
+   ],
+   "ab": "Note: This is a research note, and the analysis is less rigorous than our standard for a published paper. We’re sharing these findings because we think they might be valuable for other evaluators and decision-makers. In order to inform decision-makers early and track capabilities before the risks are realized, evaluators often build “early warning sign evals” that aim to measure precursor capabilities. Those precursors are intended to precede the capability of interest. If successful, this allows decision-makers to predict the dangerous capabilities ahead of time and prepare accordingly."
+  },
+  {
+   "id": "lw:JvYF5kosLeYGvvLpP",
+   "kind": "html",
+   "t": "Evaluating and monitoring for AI scheming",
+   "a": "Victoria Krakovna, Scott Emmons, Erik Jenner et al.",
+   "y": 2025,
+   "url": "https://www.lesswrong.com/graphql?query=%7Bpost(input%3A%7Bselector%3A%7B_id%3A%22JvYF5kosLeYGvvLpP%22%7D%7D)%7Bresult%7BhtmlBody%7D%7D%7D",
+   "page": "https://www.lesswrong.com/posts/JvYF5kosLeYGvvLpP/evaluating-and-monitoring-for-ai-scheming",
+   "why": "Summarises Google DeepMind's scheming strategy: stealth and situational-awareness evaluations plus chain-of-thought monitoring, and why current models seem unable to scheme undetected.",
+   "score": 35,
+   "tags": [
+    "deepmind",
+    "scheming"
+   ],
+   "ab": "As AI models become more sophisticated, a key concern is the potential for “deceptive alignment” or “scheming”. This is the risk of an AI system becoming aware that its goals do not align with human instructions, and deliberately trying to bypass the safety measures put in place by humans to prevent it from taking misaligned action. Our initial approach, as laid out in the Frontier Safety Framework, focuses on understanding current scheming capabilities of models and developing chain-of-thought monitoring mechanisms to oversee models once they are capable of scheming."
+  },
+  {
+   "id": "web:www.alignment.org/blog/a-mikes-eye-view-of-arcs-research/",
+   "kind": "web",
+   "t": "A Mike's-Eye View of ARC's Research",
+   "a": "Michael Winer",
+   "y": 2026,
+   "url": "https://www.alignment.org/blog/a-mikes-eye-view-of-arcs-research/",
+   "page": "https://www.alignment.org/blog/a-mikes-eye-view-of-arcs-research/",
+   "why": "Updated 2026 picture of ARC's agenda after the Matching Sampling Principle: the concrete technical problems it generated and how they fit ARC's pipeline for aligning powerful AI.",
+   "score": 35,
+   "tags": [
+    "agenda",
+    "theory"
+   ],
+   "ab": "Over the past 15 months or so, ARC's technical agenda has developed quite a bit. The advent of the Matching Sampling Principle (MSP), and ideas like it, has begotten a host of concrete technical problems; progress on those problems has given us more philosophical clarity on the big picture, which has led to even more technical progress."
+  }
+ ]
+}
