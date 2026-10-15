@@ -158,8 +158,26 @@ function measure() {
   if (bottom === -Infinity) return null;
   const sr = stage.getBoundingClientRect(), pr = spread.getBoundingClientRect();
   const end = Math.min(pr.bottom, sr.bottom) - 2; // above the strip, the track and the read-aloud bar
+  geo = { top: pr.top + 3, ch: spread.clientHeight - 6, end }; // #spread's content box (padding 3px), for the 'spread:rendered' check below
   return { band: Math.floor(end - bottom - 8), end: end - sr.top, width: sr.width - 32 };
 }
+// A new spread taller than the last (a bigger page, zoom, a post) would cover the
+// strip until it measures again, which can be a second away while pages render
+// ahead. So when a spread goes up, its pages' heights (inline styles feed.js sets:
+// no layout is read) are checked against the place the strip has, and the strip
+// steps aside until the next paint. Pages are centred in #spread.
+let geo = null, stripH = 0;
+on('spread:rendered', () => {
+  if (root.hidden || !geo) return;
+  let ph = 0;
+  for (const el of $('#spread').children) {
+    if (!el.classList.contains('pg')) continue;
+    const x = parseFloat(el.style.height);
+    if (!(x > 0)) { ph = Infinity; break; } // a post's sheet fills the stage
+    if (x > ph) ph = x;
+  }
+  if (geo.top + (geo.ch + ph) / 2 + 4 > geo.end - stripH) root.classList.add('under');
+});
 
 let sig = '';
 function hide() { if (!root.hidden) root.hidden = true; sig = ''; }
@@ -180,6 +198,8 @@ function paint() {
   } else next = upNext(12);
   root.style.top = Math.round(m.end - H) + 'px';
   root.style.height = H + 'px';
+  stripH = H;
+  root.classList.remove('under');
   const s = [mode, H, tw, prev, next.join(), st.kind, st.id, st.pos, st.n, st.sort].join('|');
   if (root.hidden) root.hidden = false;
   if (s === sig) { budget = Math.max(budget, 2); moving = false; idle(pumpImages); return; }

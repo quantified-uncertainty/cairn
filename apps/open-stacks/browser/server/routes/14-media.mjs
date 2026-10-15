@@ -5,7 +5,9 @@
 //                               (HTTP error, a web page, a known placeholder) is looked for
 //                               elsewhere: the post's other copies (alt), mirrors, the Wayback
 //                               Machine. 200 with X-Stacks-Via / -From / -Archived when rescued;
-//                               302 to the original over 15 MB; 404 {why} when nothing works.
+//                               302 to the original over 15 MB; when there is nothing to show, a
+//                               1x1 GIF with X-Stacks-Status: unavailable | pending (still looking)
+//                               | refused, and X-Stacks-Why. This app's pages only (all routes here).
 //   POST /img/info {item, page, title, imgs: [{u, alt, w, h, alts}], warm}
 //                            -> {url: {st: ok|rescued|bad|big|pending, w, h, via, ts, why, sug}}
 //                               for what is known; warm fetches the rest in the background.
@@ -27,12 +29,36 @@ import { readFile } from 'fs/promises';
 import * as R from '../rescue.mjs';
 
 const EVERY = (Number(process.env.STACKS_RESCUE_EVERY) || 4) * 3600e3;
-const FG_WAIT = 25e3; // the longest the reader waits for a rescue; the chip then says it is still looking, and the image comes back when found
+// The browser keeps six connections to this server, shared by every image and
+// every other request of the app, so an image never holds one for long: the
+// reader waits at most FG_WAIT for the original address (a slow host), and
+// RESCUE_WAIT once the original has failed and mirrors and the archive are
+// being asked. The chip then says it is still looking, and the image comes
+// back when found.
+const FG_WAIT = 10e3;
+const RESCUE_WAIT = 1500;
+// "No image" is a 1x1 transparent GIF with status 200 (an error status would
+// put a red line in the console for every broken image); X-Stacks-Status says
+// which (unavailable, pending, refused), and the reader turns it into a chip.
+const NONE = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64');
 
 export default function (app) {
   const { cache } = app;
   // Dead documents (404, 410, 451, gone hosts, placeholder pages) fall back to the archive inside cache.ensure.
   cache.onDead?.(R.deadHook);
+
+  // Only this app's own pages: a web page elsewhere could otherwise use the
+  // reader's server to fetch, flag or replace images (cross-site requests carry
+  // an Origin or Sec-Fetch-Site header). A DNS-rebound name is not loopback.
+  function ownPage(req) {
+    if (req.headers['sec-fetch-site'] === 'cross-site') return false;
+    const o = req.headers.origin;
+    if (!o) return true;
+    try {
+      const x = new URL(o);
+      return x.host === req.headers.host && /^(localhost|127\.\d+\.\d+\.\d+|\[::1\]|\d+\.\d+\.\d+\.\d+)$/.test(x.hostname);
+    } catch { return false; }
+  }
 
   const ascii = (s) => String(s ?? '').replace(/[^\x20-\x7e]/g, '');
   async function serve(req, res, u, m) {
@@ -52,28 +78,39 @@ export default function (app) {
     res.end(buf);
     return true;
   }
-  const unavailable = (res, why, code = 404) => {
-    res.writeHead(code, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'Access-Control-Allow-Origin': '*', 'X-Stacks-Status': 'unavailable' });
-    res.end(JSON.stringify({ error: 'image unavailable', why }));
+  const unavailable = (res, why, st = 'unavailable') => {
+    res.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': NONE.length, 'Cache-Control': 'no-store', 'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'X-Stacks-Status, X-Stacks-Why', 'X-Content-Type-Options': 'nosniff', 'X-Stacks-Status': st, 'X-Stacks-Why': ascii(why).slice(0, 200) });
+    res.end(NONE);
   };
 
   app.route('GET', '/img', async (req, res, url) => {
     const u = url.searchParams.get('u') || '';
-    if (!R.okUrl(u)) return unavailable(res, 'not an http(s) address on the open web', 400);
+    if (!ownPage(req)) return unavailable(res, 'only for this app', 'refused');
+    if (!R.okUrl(u)) return unavailable(res, 'not an http(s) address on the open web', 'refused');
     const alt = url.searchParams.get('alt');
     if (alt && R.okUrl(alt)) R.noteCtx(u, { alts: [alt] });
     const hit = R.cachedImage(u);
     if (hit) { cache.stats.hits++; if (await serve(req, res, u, hit)) return; }
     else cache.stats.misses++;
-    const timer = new Promise((r) => setTimeout(() => r({ st: 'slow' }), FG_WAIT).unref());
-    const out = await Promise.race([R.resolveImage(u, { fg: true }), timer]);
+    const t0 = Date.now();
+    let iv = null, tr = 0;
+    const slow = new Promise((ok) => {
+      iv = setInterval(() => {
+        if (!tr && R.stageOf(u) === 'rescue') tr = Date.now();
+        if ((tr && Date.now() - tr > RESCUE_WAIT) || Date.now() - t0 > FG_WAIT) ok({ st: 'slow' });
+      }, 100);
+    });
+    const out = await Promise.race([R.resolveImage(u, { fg: true }), slow]).finally(() => clearInterval(iv));
     if (out.st === 'big') { res.writeHead(302, { Location: u, 'Cache-Control': 'no-store' }); return res.end(); }
     if ((out.st === 'ok' || out.st === 'rescued') && out.meta && await serve(req, res, u, out.meta)) return;
-    if (out.st === 'slow') return unavailable(res, 'still looking for a copy', 504);
+    if (out.st === 'slow') return unavailable(res, 'still looking for a copy', 'pending');
     unavailable(res, out.why || 'unavailable');
   });
 
-  app.route('POST', '/img/info', async (req, res) => {
+  // The POST routes below change state or start fetches: this app's pages only.
+  const guard = (fn) => async (req, res, ...rest) => (ownPage(req) ? fn(req, res, ...rest) : app.json(res, { error: 'only for this app' }, 403));
+
+  app.route('POST', '/img/info', guard(async (req, res) => {
     const b = await app.body(req);
     const out = {};
     let warmed = 0;
@@ -86,9 +123,9 @@ export default function (app) {
       else if (b.warm && warmed < 80) { warmed++; R.resolveImage(u, { fg: false, how: 'warm' }).catch(() => {}); }
     }
     app.json(res, out);
-  });
+  }));
 
-  app.route('POST', '/rescue/report', async (req, res) => {
+  app.route('POST', '/rescue/report', guard(async (req, res) => {
     const b = await app.body(req);
     const out = {};
     for (const x of (b.imgs || []).slice(0, 200)) {
@@ -101,25 +138,25 @@ export default function (app) {
       } else out[u] = R.imageInfo(u) || { st: 'unknown' };
     }
     app.json(res, out);
-  });
+  }));
 
-  app.route('POST', '/rescue/manual', async (req, res) => {
+  app.route('POST', '/rescue/manual', guard(async (req, res) => {
     const b = await app.body(req);
     if (!R.okUrl(b.u)) return app.json(res, { st: 'bad', why: 'bad image address' }, 400);
     const r = await R.manualCopy(b.u, String(b.from || '').trim());
     app.json(res, { st: r.st, why: r.why, via: r.meta?.via, w: r.meta?.w, h: r.meta?.h });
-  });
+  }));
 
   const ai = () => (R.AI_ON && (app.hasKey() || app.ai?.MOCK) ? () => R.agentic(app.ai) : null);
   let nextRun = 0;
   const run = (reason, extra = {}) => R.scavenge({ reason, ai: ai(), ...extra });
-  app.route('POST', '/rescue/run', async (req, res) => {
+  app.route('POST', '/rescue/run', guard(async (req, res) => {
     const b = await app.body(req).catch(() => ({}));
     const p = run('on demand', { force: !!b.force });
     if (b.wait) return app.json(res, await p);
     p.catch(() => {});
     app.json(res, { started: true });
-  });
+  }));
 
   app.route('GET', '/rescue/doc', (req, res, url) => {
     const u = url.searchParams.get('u') || '', kind = url.searchParams.get('kind');

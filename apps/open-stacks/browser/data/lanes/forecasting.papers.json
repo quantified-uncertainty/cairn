@@ -1,7 +1,7 @@
 {
  "lane": "forecasting",
  "label": "Forecasting",
- "notes": "Built 2026-10-15. Forecasting lane, technical papers and open PDFs: LLM and AI forecasting (Halawi et al., ForecastBench, the 2024-2026 benchmark, leakage and RL-training work), judgmental forecasting and the Good Judgment Project, aggregation and extremizing (Satopää, Baron et al., robust aggregation), proper scoring rules and elicitability, calibration (statistical, online and LLM), prediction markets (market makers, interpretation of prices, manipulation, recent Polymarket/Kalshi studies), Bayesian and probabilistic forecasting and forecast evaluation (weather, epidemics, time series), expert elicitation, base rates and reference-class forecasting, Fermi estimation, long-range and technology forecasting, AI-progress forecasting (Grace et al. surveys, Epoch, METR, FRI), and uncertainty quantification. Candidates came from domain knowledge of the canonical literature, the open-stacks arXiv candidate pool (public/prototypes/data/papers.json, themes forecasting, scoring-rules, uncertainty and decision-theory; most of the pool's LLM time-series papers were left out as off-topic), arXiv API title, abstract and author searches (e.g. Satopää, Gneiting, Ziegel, Frongillo, Pennock, Besiroglu, Tetlock), the Forecasting Research Institute's WordPress API listing, Raftery's and Wolfers' publication pages, and web searches for author-hosted copies of GJP papers. Every arXiv ID was verified with the arXiv API (export.arxiv.org/api/query?id_list=...); titles, authors, first-version dates and abstracts come from the API. Non-arXiv PDFs are open copies hosted by authors, universities, journals or organisations (Wharton faculty pages, journal.sjdm.org, AAAI, Dartmouth, NBER and Wolfers' NBER page, Hanson at GMU, Raftery at UW, Hyndman, PLOS ONE, Scientific Reports, Good Judgment, FRI, the CIA reading room copy of Heuer); each returned 200 application/pdf with %PDF magic and its title was checked against the first page. Web items (Epoch AI reports, the Forecasting: Principles and Practice chapter) returned 200 with the article text in the served HTML. Nothing duplicates forecasting.posts.json (checked by id and by title); the posts lane already holds Gneiting and Raftery (2007), Gneiting, Balabdaoui and Raftery (2007), Hanson's LMSR, futarchy and decision-market papers, Wolfers and Zitzewitz (2004), Mellers et al. (2015) on superforecasters, the XPT report and AI 2027, so those are not repeated here. Eleven items also appear in the ai-safety lanes under the same ids (e.g. Grace et al. surveys, METR time horizons, Kadavath et al., two Epoch reports). Left out because no open copy could be fetched with a plain request: AMS journal PDFs (Brier 1950, Murphy 1993), DTIC reports (Kahneman and Tversky 1977), Penn sas.upenn.edu pages (Diebold), peerj (Prophet), OAPEN (Street-Fighting Mathematics), and paywalled classics such as Satopää et al.'s logit aggregator and Atanasov et al. (2017). Score is a subjective importance estimate for forecasting research and practice (100 canonical, 50 solid); 2025-2026 papers are scored conservatively. Items scored 42 or below were cut, except one Fermi-estimation paper and the Bayesian truth serum field study kept for topic coverage. PDFs first (190 arXiv, 40 other PDFs), then 4 web articles, each group by score.",
+ "notes": "Built 2026-10-15. Forecasting lane, technical papers and open PDFs: LLM and AI forecasting (Halawi et al., ForecastBench, the 2024-2026 benchmark, leakage and RL-training work), judgmental forecasting and the Good Judgment Project, aggregation and extremizing (Satopää, Baron et al., robust aggregation), proper scoring rules and elicitability, calibration (statistical, online and LLM), prediction markets (market makers, interpretation of prices, manipulation, recent Polymarket/Kalshi studies), Bayesian and probabilistic forecasting and forecast evaluation (weather, epidemics, time series), expert elicitation, base rates and reference-class forecasting, Fermi estimation, long-range and technology forecasting, AI-progress forecasting (Grace et al. surveys, Epoch, METR, FRI), and uncertainty quantification. Candidates came from domain knowledge of the canonical literature, the open-stacks arXiv candidate pool (public/prototypes/data/papers.json, themes forecasting, scoring-rules, uncertainty and decision-theory; most of the pool's LLM time-series papers were left out as off-topic), arXiv API title, abstract and author searches (e.g. Satopää, Gneiting, Ziegel, Frongillo, Pennock, Besiroglu, Tetlock), the Forecasting Research Institute's WordPress API listing, Raftery's and Wolfers' publication pages, and web searches for author-hosted copies of GJP papers. Every arXiv ID was verified with the arXiv API (export.arxiv.org/api/query?id_list=...); titles, authors, first-version dates and abstracts come from the API. Non-arXiv PDFs are open copies hosted by authors, universities, journals or organisations (Wharton faculty pages, journal.sjdm.org, AAAI, Dartmouth, NBER and Wolfers' NBER page, Hanson at GMU, Raftery at UW, Hyndman, PLOS ONE, Scientific Reports, Good Judgment, FRI, the CIA reading room copy of Heuer); each returned 200 application/pdf with %PDF magic and its title was checked against the first page. Web items (Epoch AI reports, the Forecasting: Principles and Practice chapter) returned 200 with the article text in the served HTML. Nothing duplicates forecasting.posts.json (checked by id and by title); the posts lane already holds Gneiting and Raftery (2007), Gneiting, Balabdaoui and Raftery (2007), Hanson's LMSR, futarchy and decision-market papers, Wolfers and Zitzewitz (2004), Mellers et al. (2015) on superforecasters, the XPT report and AI 2027, so those are not repeated here. Ids are unique across the lane files (audit of 2026-10-15). The Grace et al. surveys, Compute Trends, Predictability and Surprise and the two Epoch reports live here and were removed from the ai-safety files. METR time horizons, Kadavath et al., Lin et al. (uncertainty in words), Kuhn et al. (semantic uncertainty) and Forecasting Rare Language Model Behaviors live in ai-safety.papers.json and were removed here. Left out because no open copy could be fetched with a plain request: AMS journal PDFs (Brier 1950, Murphy 1993), DTIC reports (Kahneman and Tversky 1977), Penn sas.upenn.edu pages (Diebold), peerj (Prophet), OAPEN (Street-Fighting Mathematics), and paywalled classics such as Satopää et al.'s logit aggregator and Atanasov et al. (2017). Score is a subjective importance estimate for forecasting research and practice (100 canonical, 50 solid); 2025-2026 papers are scored conservatively. Items scored 42 or below were cut, except one Fermi-estimation paper and the Bayesian truth serum field study kept for topic coverage. PDFs first (185 arXiv, 40 other PDFs), then 4 web articles, each group by score. Audit 2026-10-15: all arXiv ids re-checked against the arXiv API (titles, first authors, years and dates match). All other PDFs and the web articles were re-fetched (200 with a PDF body or the article text in plain HTML). A forecasting researcher would look for Mellers et al. 2014 (Psychological Science, training/teaming/tracking) and Atanasov et al. 2017 (Management Science, prediction polls vs. markets). We searched for author- or publisher-hosted copies of both again and found none, so they remain out. Crowd Prediction Systems (2024) covers the later work.",
  "items": [
   {
    "id": "arxiv:1705.08807",
@@ -74,24 +74,6 @@
    "ab": "Forecasts of future events are essential inputs into informed decision-making. Machine learning (ML) systems have the potential to deliver forecasts at scale, but there is no framework for evaluating the accuracy of ML systems on a standardized set of forecasting questions. To address this gap, we introduce ForecastBench: a dynamic benchmark that evaluates the accuracy of ML systems on an automatically generated and regularly updated set of 1,000 forecasting questions. To avoid any possibility of data leakage, ForecastBench is comprised solely of questions about future events that have no…"
   },
   {
-   "id": "arxiv:2503.14499",
-   "kind": "pdf",
-   "t": "Measuring AI Ability to Complete Long Software Tasks",
-   "a": "Thomas Kwa, Ben West, Joel Becker et al.",
-   "y": 2025,
-   "d": "2025-03-18",
-   "url": "https://arxiv.org/pdf/2503.14499",
-   "page": "https://arxiv.org/abs/2503.14499",
-   "why": "METR's time-horizon metric: the length of tasks frontier agents complete at 50 percent reliability has doubled about every 7 months since 2019.",
-   "score": 85,
-   "tags": [
-    "ai-forecasting",
-    "capabilities",
-    "trends"
-   ],
-   "ab": "Despite rapid progress on AI benchmarks, the real-world meaning of benchmark performance remains unclear. To quantify the capabilities of AI systems in terms of human capabilities, we propose a new metric: 50%-task-completion time horizon. This is the time humans typically take to complete tasks that AI models can complete with 50% success rate. We first timed humans with relevant domain expertise on a combination of RE-Bench, HCAST, and 66 novel shorter tasks. On these tasks, current frontier AI models such as Claude 3.7 Sonnet have a 50% time horizon of around 50 minutes. Furthermore…"
-  },
-  {
    "id": "arxiv:2202.05924",
    "kind": "pdf",
    "t": "Compute Trends Across Three Eras of Machine Learning",
@@ -162,24 +144,6 @@
     "practice"
    ],
    "ab": "Forecasting has always been at the forefront of decision making and planning. The uncertainty that surrounds the future is both exciting and challenging, with individuals and organisations seeking to minimise risks and maximise utilities. The large number of forecasting applications calls for a diverse set of forecasting methods to tackle real-life challenges. This article provides a non-systematic review of the theory and the practice of forecasting. We provide an overview of a wide range of theoretical, state-of-the-art models, methods, principles, and approaches to prepare, produce…"
-  },
-  {
-   "id": "arxiv:2207.05221",
-   "kind": "pdf",
-   "t": "Language Models (Mostly) Know What They Know",
-   "a": "Saurav Kadavath, Tom Conerly, Amanda Askell et al.",
-   "y": 2022,
-   "d": "2022-07-11",
-   "url": "https://arxiv.org/pdf/2207.05221",
-   "page": "https://arxiv.org/abs/2207.05221",
-   "why": "Large LMs are well calibrated on multiple-choice questions and can be trained to predict whether they know an answer (P(IK)).",
-   "score": 75,
-   "tags": [
-    "calibration",
-    "llm",
-    "self-knowledge"
-   ],
-   "ab": "We study whether language models can evaluate the validity of their own claims and predict which questions they will be able to answer correctly. We first show that larger models are well-calibrated on diverse multiple choice and true/false questions when they are provided in the right format. Thus we can approach self-evaluation on open-ended sampling tasks by asking models to first propose answers, and then to evaluate the probability \"P(True)\" that their answers are correct. We find encouraging performance, calibration, and scaling for P(True) on a diverse array of tasks. Performance at…"
   },
   {
    "id": "pdf:faculty.wharton.upenn.edu/wp-content/uploads/2015/07/2015---the-psychology-of-intelligence-analysis.pdf",
@@ -914,24 +878,6 @@
    "ab": "Some risks have extremely high stakes. For example, a worldwide pandemic or asteroid impact could potentially kill more than a billion people. Comfortingly, scientific calculations often put very low probabilities on the occurrence of such catastrophes. In this paper, we argue that there are important new methodological problems which arise when assessing global catastrophic risks and we focus on a problem regarding probability estimation. When an expert provides a calculation of the probability of an outcome, they are really providing the probability of the outcome occurring, given that…"
   },
   {
-   "id": "arxiv:2205.14334",
-   "kind": "pdf",
-   "t": "Teaching Models to Express Their Uncertainty in Words",
-   "a": "Stephanie Lin, Jacob Hilton, Owain Evans",
-   "y": 2022,
-   "d": "2022-05-28",
-   "url": "https://arxiv.org/pdf/2205.14334",
-   "page": "https://arxiv.org/abs/2205.14334",
-   "why": "GPT-3 can be fine-tuned to state calibrated verbal probabilities about its own answers, including under distribution shift.",
-   "score": 62,
-   "tags": [
-    "calibration",
-    "llm",
-    "verbalized-confidence"
-   ],
-   "ab": "We show that a GPT-3 model can learn to express uncertainty about its own answers in natural language -- without use of model logits. When given a question, the model generates both an answer and a level of confidence (e.g. \"90% confidence\" or \"high confidence\"). These levels map to probabilities that are well calibrated. The model also remains moderately calibrated under distribution shift, and is sensitive to uncertainty in its own answers, rather than imitating human examples. To our knowledge, this is the first time a model has been shown to express calibrated uncertainty about its own…"
-  },
-  {
    "id": "pdf:sites.dartmouth.edu/friedman/files/2017/06/Value-of-Precision-June-17.pdf",
    "kind": "pdf",
    "t": "The Value of Precision in Probability Assessment: Evidence from a Large-Scale Geopolitical Forecasting Tournament",
@@ -1358,24 +1304,6 @@
    "ab": "Most pollsters base their election projections off questions of voter intentions, which ask “If the election were held today, who would you vote for?” By contrast, we probe the value of questions probing voters’ expectations, which typically ask: “Regardless of who you plan to vote for, who do you think will win the upcoming election?” We demonstrate that polls of voter expectations consistently yield more accurate forecasts than polls of voter intentions. A small-scale structural model reveals that this is because we are polling from a broader information set, and voters respond as if they…"
   },
   {
-   "id": "arxiv:2502.16797",
-   "kind": "pdf",
-   "t": "Forecasting Rare Language Model Behaviors",
-   "a": "Erik Jones, Meg Tong, Jesse Mu et al.",
-   "y": 2025,
-   "d": "2025-02-24",
-   "url": "https://arxiv.org/pdf/2502.16797",
-   "page": "https://arxiv.org/abs/2502.16797",
-   "why": "Forecasts rare risky behaviours at deployment scale by extrapolating the tail of elicitation probabilities from small evaluation sets.",
-   "score": 58,
-   "tags": [
-    "ai-forecasting",
-    "risk",
-    "extreme-value"
-   ],
-   "ab": "Standard language model evaluations can fail to capture risks that emerge only at deployment scale. For example, a model may produce safe responses during a small-scale beta test, yet reveal dangerous information when processing billions of requests at deployment. To remedy this, we introduce a method to forecast potential risks across orders of magnitude more queries than we test during evaluation. We make forecasts by studying each query's elicitation probability -- the probability the query produces a target behavior -- and demonstrate that the largest observed elicitation probabilities…"
-  },
-  {
    "id": "arxiv:2305.14975",
    "kind": "pdf",
    "t": "Just Ask for Calibration: Strategies for Eliciting Calibrated Confidence Scores from Language Models Fine-Tuned with Human Feedback",
@@ -1463,23 +1391,6 @@
     "bayesian"
    ],
    "ab": "Most subjective probability aggregation procedures use a single probability judgment from each expert, even though it is common for experts studying real problems to update their probability estimates over time. This paper advances into unexplored areas of probability aggregation by considering a dynamic context in which experts can update their beliefs at random intervals. The updates occur very infrequently, resulting in a sparse data set that cannot be modeled by standard time-series procedures. In response to the lack of appropriate methodology, this paper presents a hierarchical model…"
-  },
-  {
-   "id": "arxiv:2302.09664",
-   "kind": "pdf",
-   "t": "Semantic Uncertainty: Linguistic Invariances for Uncertainty Estimation in Natural Language Generation",
-   "a": "Lorenz Kuhn, Yarin Gal, Sebastian Farquhar",
-   "y": 2023,
-   "d": "2023-02-19",
-   "url": "https://arxiv.org/pdf/2302.09664",
-   "page": "https://arxiv.org/abs/2302.09664",
-   "why": "Semantic entropy: uncertainty over meanings rather than token sequences, a better predictor of LLM answer correctness.",
-   "score": 58,
-   "tags": [
-    "uncertainty",
-    "llm"
-   ],
-   "ab": "We introduce a method to measure uncertainty in large language models. For tasks like question answering, it is essential to know when we can trust the natural language outputs of foundation models. We show that measuring uncertainty in natural language is challenging because of \"semantic equivalence\" -- different sentences can mean the same thing. To overcome these challenges we introduce semantic entropy -- an entropy which incorporates linguistic invariances created by shared meanings. Our method is unsupervised, uses only a single model, and requires no modifications to off-the-shelf…"
   },
   {
    "id": "pdf:forecastingresearch.org/pdf/longitudinal-expert-ai-panel-leap-working-paper.pdf",

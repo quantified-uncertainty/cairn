@@ -113,7 +113,8 @@ flowFilters.push((doc, it) => {
     let src = (img.getAttribute('src') || '').trim();
     if (src.startsWith('//')) src = 'https:' + src; // protocol-relative: not this local server's http
     if (!/^https?:\/\//i.test(src) || ours(src)) continue;
-    const aw = parseFloat(img.getAttribute('width')), ah = parseFloat(img.getAttribute('height'));
+    const pct = /%/.test(img.getAttribute('width') + img.getAttribute('height'));
+    const aw = pct ? NaN : parseFloat(img.getAttribute('width')), ah = pct ? NaN : parseFloat(img.getAttribute('height'));
     if ((aw > 0 && aw <= 2 && ah > 0 && ah <= 2) || TRACKER.test(src)) { img.remove(); continue; }
     const set = srcset(img.getAttribute('srcset'));
     const alts = set.filter((c) => c.u !== src && /^https?:\/\//i.test(c.u)).sort((a, b) => b.n - a.n).map((c) => c.u);
@@ -121,13 +122,14 @@ flowFilters.push((doc, it) => {
     img.setAttribute('src', viaImg(src, alts[0]));
     if (set.length) img.setAttribute('srcset', set.map((c) => (/^https?:\/\//i.test(c.u) ? viaImg(c.u, src) : c.u) + (c.d ? ' ' + c.d : '')).join(', '));
     const k = known.get(src);
+    // Asked again when the document opens: a copy may have been found since (the chip then becomes the image).
+    if (!k || k.st === 'pending' || k.st === 'bad') list.push({ u: src, alt: clip(altOf(img), 300) || undefined, w: aw > 8 ? Math.round(aw) : undefined, h: ah > 8 ? Math.round(ah) : undefined, alts: alts.slice(0, 2) });
     if (k?.st === 'bad') { slot(img).replaceWith(chip(doc, img, src, k)); continue; }
     if (!img.classList.contains('wv-sized')) {
       if (k?.w > 8 && k?.h > 8) sizeIt(img, k.w, k.h);
-      else if (aw > 8 && ah > 8 && !/%/.test(img.getAttribute('width') + img.getAttribute('height'))) sizeIt(img, aw, ah);
+      else if (aw > 8 && ah > 8) sizeIt(img, aw, ah);
       else img.classList.add('rs-wait');
     }
-    if (!k || k.st === 'pending') list.push({ u: src, alt: clip(altOf(img), 300) || undefined, w: aw > 8 ? Math.round(aw) : undefined, h: ah > 8 ? Math.round(ah) : undefined, alts: alts.slice(0, 2) });
   }
   for (const s of doc.querySelectorAll('picture source[srcset]')) {
     s.setAttribute('srcset', srcset(s.getAttribute('srcset')).map((c) => (/^https?:\/\//i.test(c.u) && !ours(c.u) ? viaImg(c.u) : c.u) + (c.d ? ' ' + c.d : '')).join(', '));
@@ -151,11 +153,16 @@ function applyKnown() {
   if (!flow?.isConnected) return;
   let changed = false;
   for (const img of flow.querySelectorAll('img[data-orig]')) {
-    if (img.complete && img.naturalWidth) continue;
+    if (img.complete && img.naturalWidth > 1) continue;
     const k = known.get(img.dataset.orig);
     if (!k) continue;
     if (k.st === 'bad') toChip(img, k);
     else if (k.w > 8 && k.h > 8 && img.classList.contains('rs-wait')) { sizeIt(img, k.w, k.h); changed = true; }
+  }
+  // Chips made from what was known when the document opened: a copy found since, or still looking.
+  for (const c of flow.querySelectorAll('.rs-chip')) {
+    const k = known.get(c.dataset.orig);
+    if (k) paintChip(c, c.dataset.orig, k);
   }
   if (changed) remeasure();
 }
@@ -174,33 +181,61 @@ function report(img, o) {
     fetch('/rescue/report', { method: 'POST', body: JSON.stringify({ item: first.item, page: first.page, title: first.title, imgs: batch }) }).catch(() => {});
   }, 400);
 }
-// Why it failed, and copies Claude suggested: shown on the chip.
-async function explain(c, o, tries = 0) {
+/** What the server knows about a chip's image, on the chip: the image back if a copy was found;
+ *  still looking or not; why it failed; copies Claude suggested. A tracking pixel just goes. */
+function paintChip(c, o, info, again = true) {
+  if (!c.isConnected) return;
+  if (info.st === 'ok' || info.st === 'rescued') { fromChip(c); return; }
+  if (info.st === 'bad' && /^tiny/.test(info.why || '')) { c.remove(); remeasure(); return; }
+  c.classList.toggle('rs-looking', info.st === 'pending');
+  c.title = `Image unavailable${info.why ? ` (${info.why})` : ''}\n${o}`;
+  for (const s of (info.sug || []).slice(0, 2)) if (!c.querySelector(`a.rs-s[href="${CSS.escape(s)}"]`)) c.append(link(document, 'rs-s', s, 'A possible copy found by Claude: not verified as the same image'));
+  if (info.st === 'pending' && again) watch(c, o);
+}
+// Chips whose image the server is still looking for: one request for all of them,
+// soon at first and then less often (4 s, 8 s, 16 s, 32 s, then every minute, for about 7 minutes).
+const watching = new Map(); // original URL -> {c, tries}
+let pollT = null;
+function watch(c, o) {
+  const w = watching.get(o);
+  if (w) w.c = c; else watching.set(o, { c, tries: 0 });
+  if (!pollT) pollT = setTimeout(poll, Math.min(60e3, 4e3 * 2 ** Math.min(...[...watching.values()].map((x) => x.tries))));
+}
+async function poll() {
+  pollT = null;
+  const list = [...watching.keys()].slice(0, 200);
+  let info = {};
+  try { info = await (await fetch('/img/info', { method: 'POST', body: JSON.stringify({ imgs: list.map((u) => ({ u })) }) })).json(); } catch { /* offline: next time */ }
+  for (const o of list) {
+    const w = watching.get(o);
+    w.tries++;
+    const x = info[o];
+    if (x) { remember(o, x); paintChip(w.c, o, x, false); }
+    if ((x && x.st !== 'pending') || !w.c.isConnected || w.tries >= 10) watching.delete(o);
+  }
+  if (watching.size && !pollT) pollT = setTimeout(poll, Math.min(60e3, 4e3 * 2 ** Math.min(...[...watching.values()].map((x) => x.tries))));
+}
+async function explain(c, o) {
   try {
     const info = (await (await fetch('/img/info', { method: 'POST', body: JSON.stringify({ imgs: [{ u: o }] }) })).json())[o];
-    if (!info) return;
-    remember(o, info);
-    if (info.st === 'ok' || info.st === 'rescued') { if (c.isConnected) fromChip(c); return; }
-    if (!c.isConnected) return;
-    c.classList.toggle('rs-looking', info.st === 'pending');
-    c.title = `Image unavailable${info.why ? ` (${info.why})` : ''}\n${o}`;
-    for (const s of (info.sug || []).slice(0, 2)) if (!c.querySelector(`a.rs-s[href="${CSS.escape(s)}"]`)) c.append(link(document, 'rs-s', s, 'A possible copy found by Claude: not verified as the same image'));
-    // The server is still looking (a slow archive): ask again a little later.
-    if (info.st === 'pending' && tries < 4) setTimeout(() => explain(c, o, tries + 1), 15e3 * (tries + 1));
+    if (info) { remember(o, info); paintChip(c, o, info); }
   } catch { /* offline */ }
 }
-document.addEventListener('error', (e) => {
-  const img = e.target;
-  if (!(img instanceof HTMLImageElement) || !img.dataset.orig || !img.isConnected || !img.closest('.flow, #fn-pop')) return;
+/** An image that could not be shown (a load error, or the server's 1x1 "no image"): its chip. */
+function broken(img) {
+  if (!img.dataset.orig || !img.isConnected || !img.closest('.flow, #fn-pop')) return;
   const o = img.dataset.orig;
   remember(o, { st: 'bad' });
   const c = toChip(img, known.get(o));
   report(img, o);
   explain(c, o);
-}, true);
+}
+document.addEventListener('error', (e) => { if (e.target instanceof HTMLImageElement) broken(e.target); }, true);
 document.addEventListener('load', (e) => {
   const img = e.target;
   if (!(img instanceof HTMLImageElement) || !img.dataset.orig || !img.isConnected) return;
+  // /img answers "no image" with a 1x1 GIF (an error status would log a console error per image).
+  if (img.naturalWidth === 1 && img.naturalHeight === 1 && ours(img.currentSrc || img.src)) { broken(img); return; }
   img.classList.remove('rs-wait');
   const o = img.dataset.orig, k = known.get(o);
   if (img.naturalWidth && (!k || k.st === 'pending' || !k.w)) remember(o, { st: k?.st === 'rescued' ? 'rescued' : 'ok', w: img.naturalWidth, h: img.naturalHeight });
@@ -279,7 +314,7 @@ async function flag(img) {
       img.classList.remove('rs-sized'); img.removeAttribute('srcset');
       img.src = viaImg(o) + '&r=' + Date.now();
       toast(r.via ? `Found it: via ${r.via}${r.ts ? ' (' + year(r.ts) + ')' : ''}` : 'Reloaded the image');
-    } else { toChip(img, known.get(o)); toast('No other copy found yet; it will keep looking', 2600); }
+    } else { const c = toChip(img, known.get(o)); if (r.st === 'pending') watch(c, o); toast('No other copy found yet; it will keep looking', 2600); }
   } catch { toast('The server did not answer', 2500); }
 }
 

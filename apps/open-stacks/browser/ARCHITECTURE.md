@@ -12,6 +12,8 @@ How the pieces fit, for anyone adding a feature. The README covers running and u
   - `onStart(fn)` to run after the server starts listening;
   - helpers `json(res, obj, code)`, `send(res, code, body, type)` and `body(req)` (parsed JSON);
   - `cache`, `CACHE`, `HERE`, `MODEL`, `UA` and `hasKey`.
+- `GET /ready?ids=` (`server/routes/13-ready.mjs`): per item, `[first, frac]`: whether the spread it opens at is on disk, and the share of it on disk (books: their pages, sampled). The Library dims items not fetched yet and shows a percentage for books partly fetched.
+- The warm-up (`server/routes/60-warm.mjs`) fetches the opening spread of every item, in the order you will see them: first the next 80 items of the stack you are walking (`ahead`, sent by `features/telemetry.js` when the stack changes or you move 15 items on), then every lane in its own sort. `STACKS_WARM_MB` (default 3000) caps it.
 - Static files come from `ui/`. `/corpus.json` and `/enrich.json` (optional) come from the browser folder. `/features.json` lists `ui/js/features/*.js` and `ui/features/*.css`.
 
 ## Client (`ui/js/`)

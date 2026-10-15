@@ -5,6 +5,9 @@
  *
  *   node build-corpus.mjs            # writes ./corpus.json
  *   node build-corpus.mjs --tree-only  # refreshes only the library tree (path, ord) in it
+ *   node build-corpus.mjs --merge      # no network: appends new lane-file items (agent jobs'
+ *                                      # data/lanes/<lane>.added.json), applies data/overrides.json
+ *   --root DIR                         # read and write under DIR instead of this folder
  *
  * Lanes (in key order):
  *   ai-safety           curated papers and reports (data/lanes/ai-safety.*.json,
@@ -26,12 +29,14 @@
  * laneWeights set each lane's share of the mixed "All" feed: technical papers first.
  */
 
-import { readFileSync, writeFileSync, existsSync, readdirSync } from 'fs';
-import { dirname, join } from 'path';
+import { readFileSync, writeFileSync, existsSync, readdirSync, renameSync } from 'fs';
+import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const UA = 'OpenStacksBrowser/0.2 (https://github.com/quantified-uncertainty/cairn)';
+// --root DIR: read and write corpus.json, data/ and seeds.json under DIR (tests, QA copies).
+const ROOT = process.argv.includes('--root') ? resolve(process.argv[process.argv.indexOf('--root') + 1]) : HERE;
+const UA ='OpenStacksBrowser/0.2 (https://github.com/quantified-uncertainty/cairn)';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const LANES = {
@@ -320,10 +325,93 @@ function buildTree(all) {
     placed.forEach((p, k) => { p.it.path = p.path; p.it.ord = k; });
   }
 }
+// ---- fixes from agent jobs (data/overrides.json, jobs/README.md) -------------
+/** Apply data/overrides.json to the items in place: fields, or drop. → {updated, dropped, lanes (Set of lanes touched), skipped} */
+function applyOverrides(list) {
+  const out = { updated: [], dropped: [], lanes: new Set(), skipped: [] };
+  const f = join(ROOT, 'data', 'overrides.json');
+  if (!existsSync(f)) return out;
+  let ov;
+  try { ov = JSON.parse(readFileSync(f, 'utf-8')).items || {}; } catch (e) { console.warn(`data/overrides.json: ${e.message}`); return out; }
+  const FIELDS = ['t', 'a', 'y', 'd', 'url', 'page', 'pdf', 'kind', 'n', 'ia', 'tags', 'lane'];
+  const at = new Map(list.map((it, k) => [it.id, k]));
+  const drop = new Set();
+  for (const [id, o] of Object.entries(ov)) {
+    const it = list[at.get(id)];
+    if (!it) { out.skipped.push(`${id}: not in the corpus`); continue; }
+    if (o.drop) { drop.add(id); out.lanes.add(it.lane); out.dropped.push(id); continue; }
+    if (o.lane !== undefined && !LANES[o.lane]) { out.skipped.push(`${id}: unknown lane ${o.lane}`); continue; }
+    let changed = false;
+    for (const k of FIELDS) {
+      if (o[k] === undefined || JSON.stringify(it[k]) === JSON.stringify(o[k])) continue;
+      if (k === 'lane') out.lanes.add(it.lane);
+      it[k] = o[k]; changed = true;
+    }
+    if (!changed) continue;
+    if (it.kind === 'html' && !/\/graphql\b/.test(it.url || '')) it.kind = 'web';
+    out.updated.push(id); out.lanes.add(it.lane);
+  }
+  if (drop.size) for (let k = list.length - 1; k >= 0; k--) if (drop.has(list[k].id)) list.splice(k, 1);
+  return out;
+}
+// `node build-corpus.mjs --merge [--root DIR]`: no network. Appends the lane-file items
+// not yet in corpus.json (agents add them in data/lanes/<lane>.added.json), applies
+// data/overrides.json, and places what changed in the library tree. Existing items
+// keep their positions in the array.
+if (process.argv.includes('--merge')) {
+  const t0 = Date.now();
+  const file = join(ROOT, 'corpus.json');
+  if (!existsSync(file)) { console.error('--merge needs an existing corpus.json: run the full build once'); process.exit(1); }
+  const c = JSON.parse(readFileSync(file, 'utf-8'));
+  const have = new Set(c.items.map((it) => it.id));
+  const changed = new Set(), appended = {}, skipped = [];
+  const fam = (it) => `${it.lane}|${it.kind === 'html' || it.kind === 'web' ? 'post' : 'doc'}`;
+  const scores = {};
+  for (const it of c.items) if (it.score > 0) (scores[fam(it)] ||= []).push(it.score);
+  const dir = join(ROOT, 'data', 'lanes');
+  const files = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json'))
+    .sort((a, b) => (a.startsWith('deepmind') ? -1 : 0) - (b.startsWith('deepmind') ? -1 : 0) || a.localeCompare(b)) : [];
+  for (const f of files) {
+    let d;
+    try { d = JSON.parse(readFileSync(join(dir, f), 'utf-8')); } catch (e) { skipped.push(`${f}: ${e.message}`); continue; }
+    for (const x of d.items || []) {
+      if (!x || have.has(x.id)) continue;
+      if (!x.id || !x.url || !x.t) { skipped.push(`${f}: ${x.id || '(no id)'}: needs id, url and t`); continue; }
+      const lane = x.lane || d.lane;
+      if (!LANES[lane]) { skipped.push(`${f}: ${x.id}: unknown lane ${lane}`); continue; }
+      const it = { ...x, lane, src: srcOf(x), score: x.score || 0 };
+      if (it.kind === 'html' && !/\/graphql\b/.test(it.url)) it.kind = 'web';
+      if (!it.d && /^arxiv:\d{4}\./.test(it.id)) it.d = `20${it.id.slice(6, 8)}-${it.id.slice(8, 10)}`;
+      const s = scores[fam(it)] || [];
+      it.q = it.score > 0 && s.length ? Math.round(Math.min(1, s.filter((v) => v < it.score).length / Math.max(1, s.length - 1)) * 100) / 100 : 0.5;
+      c.items.push(it); have.add(it.id); changed.add(lane);
+      appended[lane] = (appended[lane] || 0) + 1;
+    }
+  }
+  const ov = applyOverrides(c.items);
+  for (const l of ov.lanes) changed.add(l);
+  // The tree, for the lanes that changed. The wikis keep their sidebar order: new
+  // pages go to "Not in the sidebar" until --tree-only (network) places them.
+  buildTree(c.items.filter((it) => changed.has(it.lane) && it.lane !== 'quri'));
+  if (changed.has('quri')) {
+    let ord = Math.max(-1, ...c.items.filter((it) => it.lane === 'quri' && Number.isFinite(it.ord)).map((it) => it.ord));
+    for (const it of c.items) if (it.lane === 'quri' && !Number.isFinite(it.ord)) { it.path = [it.src || new URL(it.url).host, 'Not in the sidebar']; it.ord = ++ord; }
+  }
+  c.counts = c.items.reduce((m, x) => ((m[x.lane] = (m[x.lane] || 0) + 1), m), {});
+  for (const l of Object.keys(c.counts)) if (!c.lanes?.[l]) (c.lanes ||= {})[l] = LANES[l];
+  c.merged = new Date().toISOString().slice(0, 10);
+  writeFileSync(file + '.tmp', JSON.stringify(c));
+  renameSync(file + '.tmp', file);
+  const n = Object.values(appended).reduce((a, b) => a + b, 0);
+  console.log(`Merged in ${Date.now() - t0} ms: ${n} appended${n ? ' (' + Object.entries(appended).map(([l, k]) => `${l} ${k}`).join(', ') + ')' : ''}, ${ov.updated.length} updated, ${ov.dropped.length} dropped; ${c.items.length} items`);
+  for (const s of [...skipped, ...ov.skipped]) console.log(`  skipped ${s}`);
+  process.exit(0);
+}
+
 // `node build-corpus.mjs --tree-only` refreshes just the tree (paths, order and
 // the wikis' sidebars) in the existing corpus.json, without refetching the rest.
 if (process.argv.includes('--tree-only')) {
-  const c = JSON.parse(readFileSync(join(HERE, 'corpus.json'), 'utf-8'));
+  const c = JSON.parse(readFileSync(join(ROOT, 'corpus.json'), 'utf-8'));
   const wiki = c.items.filter((it) => it.lane === 'quri');
   await Promise.all([...new Set(wiki.map((it) => new URL(it.url).host))].map(async (host) => {
     SIDEBARS[host] = await fetchSidebar(`https://${host}`, wiki.filter((it) => it.url.includes(host)).map((it) => it.url));
@@ -331,14 +419,14 @@ if (process.argv.includes('--tree-only')) {
   }));
   buildTree(c.items);
   c.laneOrdered = LANE_ORDERED;
-  writeFileSync(join(HERE, 'corpus.json'), JSON.stringify(c));
+  writeFileSync(join(ROOT, 'corpus.json'), JSON.stringify(c));
   console.log(`Tree: ${c.items.length} items placed`);
   process.exit(0);
 }
 // ---- end library tree --------------------------------------------------------
 
 // 0. Curated lane files, most specific first.
-const LANE_DIR = join(HERE, 'data', 'lanes');
+const LANE_DIR = join(ROOT, 'data', 'lanes');
 if (existsSync(LANE_DIR)) {
   const files = readdirSync(LANE_DIR).filter((f) => f.endsWith('.json'))
     .sort((a, b) => (a.startsWith('deepmind') ? -1 : 0) - (b.startsWith('deepmind') ? -1 : 0) || a.localeCompare(b));
@@ -375,8 +463,8 @@ await forumLane('www.lesswrong.com', 'lesswrong', 'LessWrong', 300);
 await forumLane('www.alignmentforum.org', 'ai-safety', 'Alignment Forum', 150);
 
 // 2. Curated seeds.
-if (existsSync(join(HERE, 'seeds.json'))) {
-  const seeds = JSON.parse(readFileSync(join(HERE, 'seeds.json'), 'utf-8'));
+if (existsSync(join(ROOT, 'seeds.json'))) {
+  const seeds = JSON.parse(readFileSync(join(ROOT, 'seeds.json'), 'utf-8'));
   for (const s of seeds.items) {
     add({ ...s, src: srcOf(s), why: s.why, score: s.score || 0 });
   }
@@ -476,6 +564,9 @@ for (const host of ['www.lesswrong.com', 'forum.effectivealtruism.org']) {
   }
 }
 
+// Fixes from agent jobs (data/overrides.json).
+{ const ov = applyOverrides(items); if (ov.updated.length || ov.dropped.length) console.log(`overrides: ${ov.updated.length} updated, ${ov.dropped.length} dropped`); }
+
 // Only forum posts are fetched as GraphQL JSON; other HTML pages are web articles.
 for (const it of items) if (it.kind === 'html' && !/\/graphql\b/.test(it.url)) it.kind = 'web';
 
@@ -511,7 +602,7 @@ for (const g of Object.values(groups)) {
 // 6. The library tree: folders (path) and tree order (ord) for every item.
 buildTree(items);
 
-writeFileSync(join(HERE, 'corpus.json'), JSON.stringify({
+writeFileSync(join(ROOT, 'corpus.json'), JSON.stringify({
   built: new Date().toISOString().slice(0, 10),
   lanes: Object.fromEntries(Object.entries(LANES).filter(([k]) => items.some((it) => it.lane === k))),
   laneWeights: LANE_WEIGHTS,

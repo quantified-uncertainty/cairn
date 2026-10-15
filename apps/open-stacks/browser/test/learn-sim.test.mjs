@@ -158,7 +158,12 @@ for (const [variant, tags] of [['corpus tags', null], ['tags fixture', TAGS]]) {
 test('S9 cost: the corpus ×5, 5,000 exposures', () => {
   const big = [];
   for (let r = 0; r < 5; r++) for (const it of items) big.push({ ...it, id: it.id + '#' + r });
-  const best = (fn) => { let t = Infinity, out; for (let k = 0; k < 2; k++) { const t0 = performance.now(); out = fn(); t = Math.min(t, performance.now() - t0); } return [t, out]; };
+  // CPU time, not wall time: on a busy machine the wall clock also counts waiting for a core.
+  const best = (fn) => {
+    let t = Infinity, out;
+    for (let k = 0; k < 3; k++) { const c0 = process.cpuUsage(); out = fn(); const c = process.cpuUsage(c0); t = Math.min(t, (c.user + c.system) / 1000); }
+    return [t, out];
+  };
   const [tIndex, index] = best(() => L.buildIndex(big, { tags: TAGS, lanes: C.lanes }));
   const memory = new Map();
   for (let k = 0; k < 5000; k++) {
@@ -179,7 +184,9 @@ test('S10 new finds: +0.3 while new, then the read rules once seen', () => {
   for (const it of picks) Object.assign(it, { added: today, job: 'discover-0001' });
   const index = L.buildIndex(its, { lanes: C.lanes });
   const p = L.computeProfile({ items: its, index, memory: new Map(), now: NOW });
-  for (const it of picks) assert.equal(p.phi[it.id], 0.3, it.id);
+  const age = (NOW - L.dateAt(today)) / DAY;
+  for (const it of picks) assert.equal(p.phi[it.id], Math.round(30 * (1 - age / 14)) / 100, it.id);
+  assert.ok(p.phi[picks[0].id] >= 0.28);
   assert.equal(p.new.length, 10);
   const memory = recordsOf(readOps(picks[0].id, { mins: 0.5, frac: 0.2, at: NOW - 60e3, it: picks[0] }));
   const q = L.computeProfile({ items: its, index, memory, now: NOW });
@@ -188,5 +195,5 @@ test('S10 new finds: +0.3 while new, then the read rules once seen', () => {
   assert.ok((q.phi[picks[0].id] || 0) <= 0, `Φ ${q.phi[picks[0].id]}`);
   // Older finds fade: half the bonus at 7 days.
   const half = L.computeProfile({ items: its, index, memory: new Map(), now: NOW + 7 * DAY });
-  assert.ok(Math.abs(half.phi[picks[1].id] - 0.15) <= 0.011, String(half.phi[picks[1].id]));
+  assert.equal(half.phi[picks[1].id], Math.round(30 * (1 - (age + 7) / 14)) / 100);
 });

@@ -32,7 +32,11 @@
 import { $, h, on, store, registerKey, keyHelp, fmtDate } from '../util.js';
 import { items, byId, LANES, COUNTS, LANE_COLORS, LANE_ORDERED } from '../corpus.js';
 import { state, current, topicRank, SORTERS } from '../state.js';
-import { jumpTo } from '../nav.js';
+import { jumpTo, goPage } from '../nav.js';
+import { openDoc, pdfOutline, isFlow } from '../docs.js';
+import { flowRange } from '../flow.js';
+import { profileOf } from '../profile.js';
+import { registerTrackLayer, repaintTrack } from '../feed.js';
 import { setView, setLane, togglePanel } from '../chrome.js';
 import { SORTS, setSort, stayIn, leave, goTo } from '../stack.js';
 
@@ -108,7 +112,7 @@ let multiLane = false; // the flat list spans several lanes
 let rows = []; // tree: { node, d } | { i, d }; flat: { i, r } (r: the place in state.order)
 let sel = null; // the cursor: 'n' + key or 'i' + index
 const q = () => words.length > 0;
-const rowId = (r) => (r.node ? 'n' + r.node.key : 'i' + r.i);
+const rowId = (r) => (r.node ? 'n' + r.node.key : r.here ? 'h' + (r.here === 'pos' ? 'p' : r.j) : 'i' + r.i);
 const isOpen = (n) => (match ? !fClosed.has(n.key) : userOpen.has(n.key) || (autoOpen.has(n.key) && !userClosed.has(n.key)));
 const hit = (i) => words.every((w) => hay[i].includes(w));
 
@@ -148,7 +152,7 @@ function flatten() {
     for (let r = 0; r < o.length; r++) { lanes.add(items[o[r]].lane); if (!q() || hit(o[r])) out.push({ i: o[r], r }); }
     // A lane dot tells lanes apart when the stack spans several.
     multiLane = lanes.size > 1;
-    rows = out; return;
+    rows = withHere(out); return;
   }
   const out = [];
   const walk = (n) => {
@@ -158,7 +162,7 @@ function flatten() {
     }
   };
   for (const ln of T.lanes) { if (match && !ln.m) continue; out.push({ node: ln, d: 0 }); if (isOpen(ln)) walk(ln); }
-  rows = out;
+  rows = withHere(out);
 }
 const selIndex = () => { if (sel == null) return -1; for (let r = 0; r < rows.length; r++) if (rowId(rows[r]) === sel) return r; return -1; };
 /** The current item's row: in the flat list its place in the order, in the tree its item. */
@@ -215,6 +219,7 @@ const sortBar = h('div', { className: 'lib-sort', role: 'radiogroup', ariaLabel:
     const b = h('button', { type: 'button', role: 'radio', textContent: label, title: `${label}: ${SORT_SAY[k]} (S cycles)`, onclick: () => { b.blur(); setSort(k); paintTop(); } });
     b.dataset.sort = k; return b;
   }),
+  h('span', { className: 'ls-n', title: 'Where you are in this stack' }),
   h('span', { className: 'ls-c', hidden: true, textContent: 'own order', title: 'Search results or “more like this” made this order; the list shows it as it is. Pick a sort to put it back in order.' }));
 const pad = h('div', { className: 'lib-pad' });
 const slice = h('div', { className: 'lib-slice' });
@@ -304,6 +309,7 @@ function rowEl(row, r, { dots, dates }) {
   el.dataset.r = r;
   el.style.setProperty('--d', row.d ?? 0);
   if (!flat) el.setAttribute('aria-level', row.d + 1);
+  if (row.here) return hereEl(row, el);
   if (row.node) {
     const n = row.node, open = isOpen(n);
     el.classList.add(n.parent ? 'lr-f' : 'lr-l');
@@ -324,6 +330,13 @@ function rowEl(row, r, { dots, dates }) {
     el.append(icon(row.i));
     el.append(h('span', { className: 'lr-t', textContent: it.t }));
     if (dates) { const d = fmtDate(it); if (d) el.append(h('span', { className: 'lr-d', textContent: d })); }
+    // On disk or not: an item whose opening spread is not fetched yet is dimmed; a book
+    // partly fetched (5% or more) says how much.
+    const rd = readyOf(row.i);
+    if (rd) {
+      if (!rd[0] && rd[1] < 0.995) el.classList.add('lr-cold');
+      if (it.kind === 'scan' && rd[1] >= 0.05 && rd[1] < 0.995) el.append(h('span', { className: 'lr-ld', textContent: Math.max(1, Math.floor(rd[1] * 100)) + '%', title: `${Math.round(rd[1] * 100)}% of the pages are on disk` }));
+    }
     const p = progress(row.i);
     if (p) el.append(p.done ? h('span', { className: 'lr-p done', textContent: '✓', title: 'Read' })
       : h('span', { className: 'lr-p', title: p.n ? `${Math.round(p.frac * 100)}% seen` : 'Opened' }, h('i', { style: `width:${Math.max(12, Math.round(p.frac * 100))}%` })));
@@ -335,12 +348,123 @@ function rowEl(row, r, { dots, dates }) {
 let topKey = '';
 function paintTop() {
   // Where you are (lane, folder or tag, n / total, ✕) is in the item header (stack.js); here only the sort.
-  const key = [state.sort, custom].join('|');
+  const key = [state.sort, custom, state.pos, state.order.length].join('|');
   if (key === topKey) return;
   topKey = key;
+  sortBar.querySelector('.ls-n').textContent = `${state.pos + 1} / ${state.order.length}`;
   for (const b of sortBar.querySelectorAll('button')) { const on = b.dataset.sort === state.sort && !custom; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); }
   sortBar.querySelector('.ls-c').hidden = !custom;
 }
+
+// ---------- where you are in the current item ----------
+// Under the current item's row: a position row (the whole document as a bar, the pages on
+// screen lit, "5–6 / 40", section ticks; click to go there) and its main sections, the one
+// on screen lit (click or Enter goes there). Outlines load after the item settles, from the
+// PDF's own outline, the post's headings, or the compiled profile's contents.
+const outlines = new Map(); // item id → [{t, k, d}] (k: 0-based page; stable page for posts), or null while loading
+let here = { i: null, s: 0, c: 1, n: 1 }; // pages on screen: first, count, total (stable pages for posts)
+const SEC_MAX = 12;
+/** The sections to list: the shallowest level with 2 or more, at most SEC_MAX around the one on screen. */
+function sections(i) {
+  const ol = outlines.get(items[i]?.id) || [];
+  if (!ol.length) return [];
+  const depths = [...new Set(ol.map((o) => o.d))].sort((a, b) => a - b);
+  const d = depths.find((x) => ol.filter((o) => o.d === x).length >= 2) ?? depths[0];
+  const top = ol.filter((o) => o.d === d);
+  if (top.length <= SEC_MAX) return top;
+  const at = Math.max(0, top.findLastIndex((o) => o.k <= here.s));
+  const a = Math.max(0, Math.min(top.length - SEC_MAX, at - 4));
+  return top.slice(a, a + SEC_MAX);
+}
+let secKey = '';
+function withHere(out) {
+  const c = current(); if (c == null) return out;
+  const r = flat ? out.findIndex((x) => x.r === state.pos) : out.findIndex((x) => x.i === c);
+  if (r < 0) return out;
+  const d = (out[r].d ?? 0) + 1, secs = sections(c);
+  secKey = c + ':' + secs.map((o) => o.k).join(',');
+  out.splice(r + 1, 0, { here: 'pos', of: c, d }, ...secs.map((o, j) => ({ here: 'sec', o, j, of: c, d })));
+  return out;
+}
+const pagesText = () => (here.c > 1 ? `${here.s + 1}–${Math.min(here.n, here.s + here.c)}` : `${here.s + 1}`) + ` / ${here.n}`;
+function hereEl(row, el) {
+  el.classList.add(row.here === 'pos' ? 'lr-pos' : 'lr-sec');
+  const ok = here.i === row.of, n = Math.max(1, here.n);
+  if (row.here === 'pos') {
+    const bar = h('span', { className: 'lh-bar', title: 'Where you are in this item · click to go there' });
+    if (ok) {
+      for (const o of outlines.get(items[row.of].id) || []) if (o.k != null && o.d === (sections(row.of)[0]?.d ?? 0)) bar.append(h('b', { style: `left:${(100 * o.k) / n}%` }));
+      bar.append(h('i', { style: `left:${(100 * here.s) / n}%;width:${Math.max(2, (100 * here.c) / n)}%` }));
+    }
+    bar.onclick = (e) => { e.stopPropagation(); const b = bar.getBoundingClientRect(); goPage(Math.max(0, Math.min(n - 1, Math.floor(((e.clientX - b.left) / b.width) * n)))); };
+    el.append(bar, h('span', { className: 'lh-n', textContent: ok ? pagesText() : '…' }));
+    return el;
+  }
+  const o = row.o, secs = sections(row.of);
+  // The section on screen: the last one starting on or before the last page shown.
+  if (ok && row.j === secs.findLastIndex((x) => x.k != null && x.k <= here.s + here.c - 1)) el.classList.add('on');
+  el.append(h('span', { className: 'lr-t', textContent: o.t }), h('span', { className: 'lh-k', textContent: o.k != null ? String(o.k + 1) : '' }));
+  el.title = o.t + (o.k != null ? ` · p. ${o.k + 1}` : '');
+  return el;
+}
+async function loadOutline(i) {
+  const it = items[i];
+  if (!it || outlines.has(it.id)) return;
+  outlines.set(it.id, null);
+  let ol = [];
+  try {
+    if (it.kind !== 'scan') { const d = await openDoc(it); ol = (d.pdf ? await pdfOutline(d) : d.outline || []).map((o) => ({ t: o.title, k: o.page, d: o.depth || 0 })); }
+  } catch { /* none */ }
+  const toc = profileOf(it)?.toc;
+  if (!ol.length && Array.isArray(toc)) ol = toc.map((o) => ({ t: o.t, k: o.k, d: o.d || 0 }));
+  outlines.set(it.id, ol.filter((o) => o.t && o.k != null && o.k >= 0).slice(0, 80));
+  if (current() === i) { repaintTrack(); if (showing()) { flatten(); paint(); } }
+}
+on('item:settled', ({ i }) => { loadOutline(i); });
+on('spread:rendered', ({ i, it, s, flow }) => {
+  if (flow) { const [a, b] = flowRange(s); here = { i, s: a, c: Math.max(1, b - a + 1), n: Math.max(1, it.n || b + 1) }; }
+  else here = { i, s, c: Math.max(1, state.shown || 1), n: Math.max(1, it.n || s + 1) };
+  if (!showing()) return;
+  // The listed sections shift only for long outlines; otherwise a repaint of the rows in view.
+  const key = current() + ':' + sections(current()).map((o) => o.k).join(',');
+  if (key !== secKey) flatten();
+  paint();
+});
+// The same section ticks on the track under the pages.
+registerTrackLayer('sections', ({ it, n, el }) => {
+  const ol = outlines.get(it.id) || [];
+  const d = ol.length ? ([...new Set(ol.map((o) => o.d))].sort((a, b) => a - b).find((x) => ol.filter((o) => o.d === x).length >= 2) ?? 0) : 0;
+  const ks = ol.filter((o) => o.d === d && o.k > 0).map((o) => o.k);
+  const sig = it.id + ':' + n + ':' + ks.join(',');
+  if (el.dataset.sig === sig) return;
+  el.dataset.sig = sig;
+  el.replaceChildren(...ks.map((k) => h('b', { style: `left:${(100 * k) / Math.max(1, n)}%` })));
+});
+
+// ---------- what is on disk ----------
+// For the item rows in view: [first spread on disk, fraction of the item on disk], asked of
+// the server (GET /ready) a batch at a time and kept for 20 s (the current item's for 4 s).
+const ready = new Map(); // item index → { v: [first, frac], t }
+let readyT = 0, readyAsk = new Set();
+function readyOf(i) {
+  const r = ready.get(i), now = Date.now();
+  if (!r || now - r.t > (i === current() ? 4000 : 20000)) { readyAsk.add(i); if (!readyT) readyT = setTimeout(askReady, 250); }
+  return r?.v || null;
+}
+async function askReady() {
+  readyT = 0;
+  const want = [...readyAsk].slice(0, 120); readyAsk = new Set([...readyAsk].slice(120));
+  if (!want.length) return;
+  for (const i of want) { const r = ready.get(i); ready.set(i, { v: r?.v || null, t: Date.now() }); } // no repeat asks while this one is out
+  try {
+    const res = await fetch('/ready?ids=' + want.map((i) => encodeURIComponent(items[i].id)).join(','));
+    if (res.ok) { const o = await res.json(); for (const i of want) if (o[items[i].id]) ready.set(i, { v: o[items[i].id], t: Date.now() }); }
+  } catch { /* the server is older: no marks */ }
+  if (readyAsk.size && !readyT) readyT = setTimeout(askReady, 250);
+  if (showing()) paint();
+}
+// While the list shows, look again every few seconds: the background fills things in.
+setInterval(() => { if (showing() && !document.hidden) paint(); }, 5000);
 
 // ---------- following the current item ----------
 let mk = {}; // what the list was made for: the order (and its length), sort, scope and lane
@@ -416,6 +540,7 @@ function toggle(n, open = !isOpen(n)) {
 function activate(r) {
   const row = rows[r]; if (!row) return;
   sel = rowId(row);
+  if (row.here) { if (row.here === 'sec' && row.o.k != null) goPage(row.o.k); return paint(); }
   if (row.node) browse(row.node); else openItem(row.i, row.r);
   paint();
 }
@@ -424,7 +549,7 @@ function activate(r) {
 let previewT = 0;
 function preview(row) {
   clearTimeout(previewT);
-  if (!row || row.node) return;
+  if (!row || row.node || row.here) return;
   previewT = setTimeout(() => {
     if (sel !== rowId(row) || current() === row.i) return;
     keepKeys = true;

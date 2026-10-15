@@ -109,6 +109,7 @@ const D = {
   data: {}, err: {}, at: {}, cards: {}, painted: false,
   findsMode: 'unseen', findsMax: 100, open: new Set(), io: null, ranked: 0, q: '', qT: null, qRes: null,
 };
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const SKEL = () => h('div', { className: 'db-skel', textContent: 'Loading…' });
 function card(id, title, sub = '') {
   const ctl = h('div', { className: 'db-ctl' });
@@ -131,7 +132,7 @@ function build() {
 function fill(id, ...kids) {
   const c = D.cards[id]; if (!c) return;
   c.body.replaceChildren(...kids.flat().filter(Boolean));
-  c.el.classList.remove('fade'); void c.el.offsetWidth; c.el.classList.add('fade');
+  if (!REDUCED) c.body.animate?.([{ opacity: 0.35 }, { opacity: 1 }], { duration: 120, easing: 'ease-out' }); // no forced layout
 }
 const note = (text, cls = 'db-empty') => h('p', { className: cls, textContent: text });
 const offline = (what) => note(`Not available yet: the server has no ${what} routes (server/routes/${what === '/jobs' ? '96-jobs' : '47-learn'}.mjs).`);
@@ -160,13 +161,20 @@ function load(keys = Object.keys(SOURCES), force = false) {
   }
 }
 function show() {
+  // The cards stay in the DOM while hidden: showing again repaints only what is refetched
+  // (older than 30 s, or changed meanwhile: see the learn:* listeners at the end).
   if (!D.painted) build();
-  else for (const k of Object.keys(PAINT)) if (D.data[k] || D.err[k]) PAINT[k]();
   paintStrip();
   load();
-  // How ranking moved: computed when it first scrolls into view, in idle time.
+  // How ranking moved: computed when it first scrolls into view, in idle time (again only after the profile changed).
   D.io?.disconnect();
-  D.io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { D.io.disconnect(); idle(() => { D.ranked = Date.now(); paintRanking(); }); } }, { root, rootMargin: '200px' });
+  const at = Lm?.learnState?.().at ?? 0;
+  D.io = new IntersectionObserver((es) => {
+    if (!es.some((e) => e.isIntersecting)) return;
+    D.io.disconnect();
+    if (D.ranked && D.rankAt === at) return;
+    idle(() => { D.ranked = Date.now(); D.rankAt = at; paintRanking(); });
+  }, { root, rootMargin: '200px' });
   D.io.observe(D.cards['db-ranking'].el);
   if (!root.contains(document.activeElement)) root.focus({ preventScroll: true });
 }
@@ -267,7 +275,7 @@ function showJob(id) {
   const row = root.querySelector(`#db-done .db-row[data-id="${CSS.escape(id)}"], #db-jobs .db-row[data-id="${CSS.escape(id)}"]`);
   if (!row) { toast('Job not listed', { icon: 'info', kind: 'edge', sub: id }); return; }
   row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash');
+  if (!REDUCED) row.animate?.([{ background: 'var(--bg-3)', boxShadow: 'inset 2px 0 0 var(--accent)', offset: 0.3 }, { background: 'transparent', boxShadow: 'none' }], { duration: 1200, easing: 'ease-out' });
   row.focus({ preventScroll: true });
 }
 
@@ -602,4 +610,6 @@ document.addEventListener('keydown', (e) => {
 
 registerView('dashboard', { label: 'Dashboard', key: 'Y', order: 4, roots: () => [root], show, hide });
 keyHelp.push({ label: 'Y', text: 'dashboard: new items, reading, what it learned, ranking, agent jobs', order: 64.5 });
-on('learn:new', () => { if (state.view === 'dashboard') paintStrip(); });
+// While hidden nothing repaints: a change only marks what show() must fetch again.
+on('learn:new', () => { if (state.view === 'dashboard') paintStrip(); else D.at.finds = 0; });
+on('learn:updated', () => { if (state.view !== 'dashboard') { D.at.full = 0; D.at.reading = 0; } });

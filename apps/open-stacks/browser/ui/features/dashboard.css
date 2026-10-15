@@ -17,8 +17,6 @@
 /* ---- the grid of cards */
 .db-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 560px), 1fr)); gap: 16px; align-items: start; }
 .db-card { background: var(--bg-2); border: 1px solid var(--line); border-radius: 4px; padding: 10px 14px 12px; min-width: 0; scroll-margin-top: 56px; }
-.db-card.fade { animation: db-in .12s ease-out; }
-@keyframes db-in { from { opacity: .35; } to { opacity: 1; } }
 .db-h { display: flex; align-items: center; gap: 10px; min-height: 26px; margin-bottom: 6px; }
 .db-h h2 { margin: 0; font: 600 13px var(--sans); color: var(--ink); white-space: nowrap; }
 .db-sub { color: var(--ink-3); }
@@ -44,8 +42,6 @@
 .db-row:hover { background: var(--bg-3); }
 .db-row:focus, .db-row:focus-visible { background: var(--bg-3); box-shadow: inset 2px 0 0 var(--accent); }
 .db-row.gone { opacity: .5; }
-.db-row.flash { animation: db-flash 1.2s ease-out; }
-@keyframes db-flash { 0%, 30% { background: var(--bg-3); box-shadow: inset 2px 0 0 var(--accent); } 100% { background: transparent; } }
 .db-l1 { display: flex; align-items: center; gap: 7px; min-height: 22px; min-width: 0; }
 .db-l2 { display: flex; align-items: baseline; gap: 4px 10px; min-width: 0; padding-left: 18px; color: var(--ink-3); font-size: 11.5px; line-height: 16px; flex-wrap: wrap; }
 .db-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c); flex: none; display: inline-block; }
@@ -170,4 +166,3 @@
   .db-find .db-l2 { padding-left: 0; flex-wrap: wrap; }
   .db-acts .db-a[data-act="open"] { display: none; }
 }
-@media (prefers-reduced-motion: reduce) { .db-card.fade, .db-row.flash { animation: none; } }

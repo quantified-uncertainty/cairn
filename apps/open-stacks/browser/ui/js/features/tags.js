@@ -226,8 +226,9 @@ function textW(s, mono) {
 }
 // Sizes in px, as tags.css draws them.
 const GAP = 4, PADX = 7, ICONW = 11, INNER = 4, LMAX = 150, XW = 14, MOREW = 30, BORDER = 2;
-// Each row keeps SLACK px for the stack you are in (its place, "3/9", and ✕), so staying in or leaving moves no chip.
-const SLACK = 26;
+// The rows are packed as if no chip were active, so staying in or leaving moves no chip; when the active
+// chip ("3/9" and ✕) no longer fits its row, the last other chip of that row waits behind +n instead.
+const SLACK = 0;
 const chipW = (c) => BORDER + 2 * PADX + ICONW + INNER + Math.min(LMAX, textW(c.label, 0)) + INNER + textW(String(c.items.length), 1);
 let boxW = 0, tight = 0; // tight: px taken off the width after the idle check found a row too full
 let lay = null; // the packing, kept while the item, its chips and the width stay: { k, rows: [[keys], [keys]], hidden: [keys] }
@@ -270,6 +271,7 @@ function paint() {
   let p = { rows: lay.rows.map(get), hidden: get(lay.hidden) };
   // The stack you are in always shows: when it would wait behind +n, it goes first.
   if (p.hidden.some(isActive)) { const a = list.find(isActive); p = packed([a, ...list.filter((c) => c !== a)]); }
+  roomForActive(p);
   chips = [...p.rows[0], ...p.rows[1], ...p.hidden]; // ; cycles in this order: as they show, then the rest
   fit = p.hidden.length ? p.rows[0].length + p.rows[1].length : -1;
   const more = p.hidden.length ? h('button', { type: 'button', className: 'tg-more', textContent: `+${p.hidden.length}`, title: `${p.hidden.map((c) => `${c.label} (${c.items.length})`).join('\n')}\n\nClick to show them all` }) : null;
@@ -277,6 +279,20 @@ function paint() {
     h('div', { className: 'tg-r' }, label, ...p.rows[0].map(chipEl), p.rows[1].length ? null : more),
     p.rows[1].length ? h('div', { className: 'tg-r' }, ...p.rows[1].map(chipEl), more) : null);
   check();
+}
+/** The active chip is wider ("3/9" and ✕): if its row no longer fits, the row's last other chip waits behind +n. */
+function roomForActive(p) {
+  const r = p.rows.findIndex((row) => row.some(isActive)); if (r < 0) return;
+  const W = width() - 1 - tight, head = r === 0 ? textW('STAY IN', 2) + 0.08 * 9.5 * 7 + 2 + GAP : 0;
+  const a = p.rows[r].find(isActive), extra = textW(`${state.pos + 1}/${state.order.length}`, 1) - textW(String(a.items.length), 1) + XW;
+  const need = () => head + p.rows[r].reduce((s, c) => s + chipW(c) + GAP, 0) + extra + (r === 1 && p.hidden.length ? MOREW + GAP : 0);
+  while (need() > W) {
+    const k = p.rows[r].findLastIndex((c) => !isActive(c)); if (k < 0) break;
+    p.hidden.unshift(...p.rows[r].splice(k, 1));
+    if (r === 0 && p.rows[1].length) { // +n lives on the second row: make room for it there too
+      while (p.rows[1].length && p.rows[1].reduce((s, c) => s + chipW(c) + GAP, 0) + MOREW + GAP > W) p.hidden.unshift(p.rows[1].pop());
+    }
+  }
 }
 function chipEl(c) {
   const act = isActive(c);
@@ -305,7 +321,7 @@ const paintSoon = () => { raf ||= requestAnimationFrame(() => { raf = 0; paint()
 box.addEventListener('mousedown', (e) => { if (e.target.closest('button')) e.preventDefault(); }); // no focus: Space stays Advance
 box.addEventListener('click', (e) => {
   const b = e.target.closest('button'); if (!b) return;
-  hideCard(true);
+  hideCard(true); quiet = b.closest('.tg-c')?.dataset.key || null;
   if (b.classList.contains('tg-more')) { open = !b.classList.contains('tg-less'); store.set('tagsOpen', open); paint(); return; }
   const c = chips.find((x) => x.key === b.closest('.tg-c')?.dataset.key); if (!c) return;
   if (b.classList.contains('tg-x')) leave(); else toggle(c);
@@ -338,7 +354,7 @@ function fillCard(c) {
       const it = items[j], li = h('li', { className: j === i ? 'here' : a + r < k ? 'before' : '', title: j === i ? 'This item' : `Stay in “${c.label}” at this item` }, itemIcon(it, 11), h('span', { className: 't', textContent: it.t }), h('span', { className: 'y', textContent: j === i ? 'here' : fmtDate(it) || it.y || '' }));
       li.dataset.i = j; return li;
     })),
-    h('div', { className: 'tc-f', textContent: act ? `${state.pos + 1} of ${state.order.length} · click or ✕ leaves (u) · ; next tag` : arr.length > N ? `…and ${arr.length - win.length} more · click to stay in · ;` : 'Click to stay in: j/k walk these · ;' }));
+    h('div', { className: 'tc-f', textContent: act ? `${state.pos + 1} of ${state.order.length} · click again or ✕ to leave (u)` : `${arr.length > N ? `…and ${arr.length - win.length} more · ` : ''}click: stay in, and j/k walk ${arr.length > N ? 'them' : 'these'} · ; cycles tags` }));
 }
 function showCard(chip) {
   const c = chips.find((x) => x.key === chip.dataset.key); if (!c) return;
@@ -349,8 +365,12 @@ function showCard(chip) {
   card.style.top = (r.bottom + ch + 8 < innerHeight ? r.bottom + 4 : Math.max(8, r.top - ch - 4)) + 'px';
 }
 function hideCard(now) { clearTimeout(showT); clearTimeout(hideT); if (now) { card.hidden = true; cardFor = null; } else hideT = setTimeout(() => { card.hidden = true; cardFor = null; }, 220); }
+let quiet = null; // the chip just clicked: no card for it until the pointer goes elsewhere
+box.addEventListener('pointerleave', () => { quiet = null; });
 box.addEventListener('pointerover', (e) => {
   const chip = e.target.closest('.tg-c'); if (!chip) return;
+  if (quiet && chip.dataset.key === quiet) return;
+  quiet = null;
   clearTimeout(hideT);
   if (chip === cardFor && !card.hidden) return;
   clearTimeout(showT);

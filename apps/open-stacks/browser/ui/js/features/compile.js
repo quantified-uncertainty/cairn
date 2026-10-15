@@ -34,8 +34,8 @@ const opt = (k, d) => store.get(k, d);
 /** Diagnostics: {id, level, k, ms} per unit, the last 400. */
 export const compileTimes = [];
 /** Diagnostics: what the compiler is doing (jobs and their phases, failures). */
-export const compileState = () => ({ jobs: S.jobs.map((j) => ({ id: j.it.id, depth: j.depth, phase: j.phase, k: j.k, n: j.n, busy: j.busy })), failed: [...S.failed], paused: paused(), looping: S.looping, writeQ: writeQ.length });
-const note = (id, level, k, ms) => { compileTimes.push({ id, level, k, ms: Math.round(ms) }); if (compileTimes.length > 400) compileTimes.shift(); };
+export const compileState = () => ({ jobs: S.jobs.map((j) => ({ id: j.it.id, depth: j.depth, phase: j.phase, k: j.k, n: j.n, busy: j.busy })), failed: [...S.failed], paused: paused(), why: { off: !opt('compile', true), nav: S.pausedFor != null, hover: S.hover, hidden: document.hidden, view: state.view, wait: performance.now() < S.resumeAt }, looping: S.looping, writeQ: writeQ.length, idle: S.idleSeen });
+const note = (id, level, k, ms) => { compileTimes.push({ id, level, k, ms: Math.round(ms), at: Math.round(performance.now()) }); if (compileTimes.length > 400) compileTimes.shift(); };
 const enc = encodeURIComponent;
 
 // ------------------------------------------------------------- scheduling ----
@@ -55,12 +55,16 @@ document.getElementById('track')?.addEventListener('pointerleave', () => { S.hov
 document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(kick, 500); });
 function kick() { if (!S.looping && !paused()) { S.looping = true; ric(step); } }
 async function step(deadline) {
+  S.idleSeen = (S.idleSeen || 0) + 1;
   if (paused()) { S.looping = false; return; }
   if (deadline.timeRemaining() <= 8) { ric(step); return; }
   const unit = nextUnit();
   if (!unit) { S.looping = false; return; }
   const gen = S.gen;
-  try { await unit(); } catch (e) { if (gen === S.gen && !/cancel/i.test(e?.message || e?.name || '')) console.warn('compile:', e?.message || e); }
+  // A unit waiting on the network (a download, archive.org) does not hold up the
+  // others for long: after 15 s the loop goes on (that job stays busy until it ends).
+  const p = unit().catch((e) => { if (gen === S.gen && !/cancel/i.test(e?.message || e?.name || '')) console.warn('compile:', e?.message || e); });
+  await Promise.race([p, new Promise((r) => setTimeout(r, 15000))]);
   if (paused()) { S.looping = false; return; }
   ric(step);
 }
@@ -83,7 +87,7 @@ function plan() {
     list.push({ it, depth: d < 3 ? 'sprite' : 'core', far: d >= 10 });
   });
   const keep = new Map(S.jobs.map((j) => [j.it.id, j]));
-  S.jobs = list.map((x) => { const j = keep.get(x.it.id); if (j) { j.depth = x.depth; return j; } return new Job(x.it, x.depth, x.far); });
+  S.jobs = list.map((x) => { const j = keep.get(x.it.id); if (j) { j.depth = x.depth; j.far = x.far; if (j.phase === 'later') j.phase = 'check'; return j; } return new Job(x.it, x.depth, x.far); });
   for (const [id, j] of keep) if (!S.jobs.includes(j)) j.drop();
   loadProfiles(list.map((x) => x.it)).catch(() => {});
 }
@@ -128,9 +132,11 @@ class Job {
       this.phase = this.wants('sprite') && !Pst.assets?.sprite && Pst.n > 0 ? 'sprite' : this.wants('figures') && Pst.kind === 'pdf' && Pst.figures == null ? 'figures' : 'done';
       return;
     }
-    if (it.kind === 'pdf' && this.far) {
-      const bits = await (await fetch('/cached', { method: 'POST', body: JSON.stringify({ urls: [it.url] }) })).text().catch(() => '0');
-      if (bits !== '1') { this.phase = 'done'; return; }
+    // Items ahead: only PDFs already on the server's disk (the server fetches the
+    // next items' PDFs anyway); the rest are looked at again on the next move.
+    if (it.kind === 'pdf' && this.depth !== 'all') {
+      const bits = await fetch('/cached', { method: 'POST', body: JSON.stringify({ urls: [it.url] }) }).then((r) => r.text()).catch(() => '0');
+      if (bits !== '1') { this.phase = 'later'; return; }
     }
     this.phase = 'open';
   }

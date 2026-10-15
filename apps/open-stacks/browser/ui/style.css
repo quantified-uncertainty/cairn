@@ -81,10 +81,10 @@ a { color: var(--accent); }
 /* Track: the whole item as one bar; the bright part is what is on screen.
    Hover to look through the item (a page peek, or live columns for posts); click to go there. */
 #track { flex: none; position: relative; height: 16px; margin: 0 14px 2px; cursor: pointer; }
-#track .tr-bar { position: absolute; left: 0; right: 0; top: 7px; height: 3px; background: var(--line); border-radius: 2px; transition: top .12s, height .12s; }
-#track:hover .tr-bar { top: 4px; height: 8px; }
+#track .tr-bar { position: absolute; left: 0; right: 0; top: 6px; height: 5px; background: var(--line); border-radius: 2px; transition: top .12s, height .12s; }
+#track:hover .tr-bar { top: 3px; height: 10px; }
 #track .tr-load { position: absolute; inset: 0; border-radius: 2px; }
-#track .tr-fill { position: absolute; top: 0; bottom: 0; background: var(--accent); border-radius: 2px; min-width: 4px; }
+#track .tr-fill { position: absolute; top: -1px; bottom: -1px; background: var(--accent); border-radius: 2px; min-width: 6px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent); }
 #track .tr-marks i { position: absolute; top: 50%; width: 4px; height: 4px; margin: -2px 0 0 -2px; border-radius: 50%; background: var(--ink); opacity: .75; }
 #track .tr-hover { position: absolute; top: 1px; bottom: 1px; width: 2px; margin-left: -1px; background: var(--ink); display: none; pointer-events: none; }
 #track:hover .tr-hover { display: block; }

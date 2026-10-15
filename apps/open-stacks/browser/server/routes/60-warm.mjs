@@ -1,7 +1,8 @@
 // Warm-up: a few seconds after the server starts, quietly fetch the first
-// spreads of the top items in every lane at low priority, so whatever you are
-// likely to open first is already on disk. Capped by STACKS_WARM_MB (default
-// 600; 0 turns it off) and by the room left under STACKS_CACHE_MAX.
+// spreads of every item at low priority, so whatever you open is already on disk:
+// first the next 80 items of the stack you are walking ('ahead' in the hint),
+// then every lane in its own order. Capped by STACKS_WARM_MB (default 3000; 0
+// turns it off) and by the room left under STACKS_CACHE_MAX.
 //
 // The ranking follows the reader's own feed when the UI has sent a hint
 // (POST /warm/hint, from ui/js/features/telemetry.js: per lane, the first
@@ -35,7 +36,7 @@ export function loadCorpus() {
 }
 
 // Where an item opens, as ui/js/prefetch.js startOf() decides for a first visit.
-function startOf(it, per = PER) {
+export function startOf(it, per = PER) {
   if (Array.isArray(it.best) && it.best.length && (!it.n || it.best[0] < it.n)) return it.best[0];
   if (it.kind === 'scan') return Math.max(0, Math.min(Math.round(it.n * 0.08) + 3, it.n - per));
   if (it.kind === 'pdf' && it.n && (it.lane === 'ttrpg' || it.lane === 'textbooks' || it.n > 60)) return Math.min(Math.round(it.n * 0.05), it.n - 1);
@@ -49,7 +50,9 @@ function startOf(it, per = PER) {
  * pages the feed paints first, posts) for every item come before heavy ones
  * (sharp pages, PDFs), so a small budget still touches every item.
  */
-export function planWarm({ lanes = null, items: perLane = 20, pages = PER, widths = [400, 1000], thumbs = false, covers = true, hint = readHint() } = {}) {
+export function planWarm({ lanes = null, items: perLane = 20, pages = PER, widths = [200, 1000], thumbs = false, covers = true, hint = readHint() } = {}) {
+  // What the reader will see next ('ahead' in the hint), whole, before anything else.
+  const first = [];
   const all = loadCorpus();
   const byId = new Map(all.map((it) => [it.id, it]));
   const laneMax = {};
@@ -69,18 +72,25 @@ export function planWarm({ lanes = null, items: perLane = 20, pages = PER, width
     lists[lane] = lists[lane].slice(0, perLane);
   }
   const light = [], heavy = [];
+  const add = (it, L, H) => {
+    if (it.kind === 'scan' && it.ia && it.n) {
+      if (covers) L.push(coverUrl(it));
+      const s = Math.max(0, Math.min(it._s ?? startOf(it), it.n - 1));
+      const np = Math.max(pages, it._per || 0);
+      for (const w of widths) for (let k = s; k < Math.min(it.n, s + np); k++) (w <= 400 ? L : H).push(scanUrl(it, k, w));
+      if (thumbs) for (let k = 0; k < it.n; k++) L.push(scanUrl(it, k, 120));
+    } else if (it.url) (it.kind === 'pdf' ? H : L).push(it.url);
+  };
+  for (const [id, s, per] of Array.isArray(hint?.ahead) ? hint.ahead : []) {
+    const it = byId.get(id); if (!it || (lanes && !lanes.includes(it.lane))) continue;
+    add({ ...it, _s: s, _per: per }, first, first);
+  }
   const order = Object.keys(lists);
   for (let r = 0; r < perLane; r++) for (const lane of order) {
     const it = lists[lane][r]; if (!it) continue;
-    if (it.kind === 'scan' && it.ia && it.n) {
-      if (covers) light.push(coverUrl(it));
-      const s = Math.max(0, Math.min(it._s ?? startOf(it), it.n - 1));
-      const np = Math.max(pages, it._per || 0);
-      for (const w of widths) for (let k = s; k < Math.min(it.n, s + np); k++) (w <= 400 ? light : heavy).push(scanUrl(it, k, w));
-      if (thumbs) for (let k = 0; k < it.n; k++) light.push(scanUrl(it, k, 120));
-    } else if (it.url) (it.kind === 'pdf' ? heavy : light).push(it.url);
+    add(it, light, heavy);
   }
-  return [...new Set(light.concat(heavy))];
+  return [...new Set(first.concat(light, heavy))];
 }
 function readHint() { try { return JSON.parse(readFileSync(HINT, 'utf-8')); } catch { return null; } }
 
@@ -124,7 +134,7 @@ export async function fill(urls, { enqueue, check, budget = Infinity, window = 1
 
 export default function (app) {
   const { cache } = app;
-  const WARM = Number(process.env.STACKS_WARM_MB ?? 600) * MB;
+  const WARM = Number(process.env.STACKS_WARM_MB ?? 3000) * MB;
   const warm = { state: WARM > 0 ? 'waiting' : 'off', planned: 0, done: 0, fetched: 0, failed: 0, bytes: 0, budget: 0 };
   let runs = 0;
 
@@ -133,7 +143,7 @@ export default function (app) {
     const room = cache.MAX * 0.9 - cache.cacheState().cacheBytes;
     const left = WARM - warm.bytes;
     if (left <= 0 || room <= 0) { warm.state = 'done'; return; }
-    let urls; try { urls = planWarm(); } catch (e) { warm.state = 'error: ' + e.message; return; }
+    let urls; try { urls = planWarm({ items: 100000 }); } catch (e) { warm.state = 'error: ' + e.message; return; }
     Object.assign(warm, { state: 'running', planned: urls.length, done: 0, budget: warm.bytes + Math.min(left, room) });
     const base = { fetched: warm.fetched, failed: warm.failed, bytes: warm.bytes };
     const p = await fill(urls, {
@@ -155,8 +165,9 @@ export default function (app) {
   app.route('POST', '/warm/hint', async (req, res) => {
     const hint = await app.body(req);
     if (!hint || typeof hint.lanes !== 'object') return app.json(res, { ok: false }, 400);
+    const ahead = Array.isArray(hint.ahead) ? hint.ahead.slice(0, 200) : [];
     const before = existsSync(HINT) ? readFileSync(HINT, 'utf-8') : '';
-    const text = JSON.stringify({ at: new Date().toISOString(), lanes: hint.lanes });
+    const text = JSON.stringify({ at: new Date().toISOString(), lanes: hint.lanes, ahead });
     const changed = before.replace(/"at":"[^"]*",/, '') !== text.replace(/"at":"[^"]*",/, '');
     writeFileSync(HINT, text);
     if (changed && WARM > 0 && warm.state !== 'waiting') run();

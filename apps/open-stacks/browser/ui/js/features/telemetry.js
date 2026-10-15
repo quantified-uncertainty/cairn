@@ -5,7 +5,7 @@
 // per lane, so the next start warms what you will actually see first.
 import { on, h, $, keymap } from '../util.js';
 import { items } from '../corpus.js';
-import { state, score } from '../state.js';
+import { state, score, sortFor, SORTERS } from '../state.js';
 import { startOf } from '../prefetch.js';
 import { isFlow } from '../docs.js';
 
@@ -67,17 +67,28 @@ on('spread:rendered', ({ i, it }) => {
 on('view:changed', ({ view }) => push('view', { view }));
 on('summary:updated', ({ id }) => push('summary', { id }));
 
-// ---- warm-up hint: the first 20 items of each lane in your order, with the page each opens at
+// ---- warm-up hint: every item of each lane in the order you will see it (the lane's sort),
+// with the page it opens at; and 'ahead', the next 80 items of the stack you are walking,
+// which the server fetches first (server/routes/60-warm.mjs). Sent at start, when the stack
+// changes, and when you have moved 15 items on from the last hint.
+const entry = (i) => [items[i].id, isFlow(items[i]) ? 0 : startOf(i), state.per];
+let hintAt = -1, hintT = 0;
 function sendHint() {
   const byLane = {};
   items.forEach((it, i) => (byLane[it.lane] ||= []).push(i));
   const lanes = {};
   for (const [lane, list] of Object.entries(byLane)) {
-    lanes[lane] = list.map((i) => [i, score(i)]).sort((a, b) => b[1] - a[1]).slice(0, 20)
-      .map(([i]) => [items[i].id, isFlow(items[i]) ? 0 : startOf(i), state.per]);
+    const sort = sortFor(lane);
+    if (SORTERS[sort]) list.sort(SORTERS[sort]); else { const sc = new Map(list.map((i) => [i, score(i)])); list.sort((a, b) => sc.get(b) - sc.get(a)); }
+    lanes[lane] = list.map(entry);
   }
-  fetch('/warm/hint', { method: 'POST', body: JSON.stringify({ lanes }) }).catch(() => {});
+  const ahead = state.order.slice(state.pos, state.pos + 80).map(entry);
+  hintAt = state.pos;
+  fetch('/warm/hint', { method: 'POST', body: JSON.stringify({ lanes, ahead }) }).catch(() => {});
 }
+const hintSoon = (ms = 3000) => { clearTimeout(hintT); hintT = setTimeout(() => (window.requestIdleCallback || setTimeout)(sendHint), ms); };
+on('stack:changed', () => hintSoon());
+on('item:settled', () => { if (hintAt >= 0 && Math.abs(state.pos - hintAt) >= 15) hintSoon(1000); });
 on('boot', () => setTimeout(() => (window.requestIdleCallback || setTimeout)(sendHint), 8000));
 
 // ---- links to the stats page: Saved panel (b) and the keys overlay (?)

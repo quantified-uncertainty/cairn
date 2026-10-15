@@ -10,7 +10,7 @@ import { live, vpToCol, flowRange } from './flow.js';
 import { showFeed } from './feed.js';
 import { setView, setLane } from './chrome.js';
 
-let restoring = false;
+let restoring = false, booted = false;
 const pageOf = (i) => {
   const it = items[i]; const s = state.start.get(i) ?? 0;
   if (isFlow(it)) return live?.id === it.id ? flowRange(s)[0] : 0; // stable page, not column
@@ -37,7 +37,7 @@ on('spread:settled', ({ i }) => {
   history.replaceState(entry(i), '', urlFor(i));
 });
 on('view:changed', ({ view }) => {
-  if (restoring || history.state?.view === view) return;
+  if (restoring || !booted || history.state?.view === view) return; // boot's setView('feed') must not replace the URL routeBoot reads
   history.pushState({ ...entry(current()), view }, '', urlFor(current(), view));
 });
 
@@ -71,5 +71,6 @@ function fromUrl() {
 /** Called once at boot: open the item the URL names, if any. */
 export function routeBoot() {
   const st = fromUrl();
+  booted = true;
   if (st) { open(st); history.replaceState(st, '', location.href); }
 }

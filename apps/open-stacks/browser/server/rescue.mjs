@@ -20,6 +20,8 @@ import { inflateSync, constants as zlibConstants } from 'zlib';
 import { readFileSync, writeFileSync, renameSync } from 'fs';
 import { mkdir, writeFile, unlink } from 'fs/promises';
 import { join } from 'path';
+import { isIP } from 'net';
+import { lookup as dnsLookup } from 'dns/promises';
 import { CACHE, UA, HERE } from './config.mjs';
 import * as cache from './cache.mjs';
 
@@ -83,15 +85,30 @@ export function addDoc(u, { kind, t = '', a = '', id } = {}) {
 
 // ---------------------------------------------------------------- fetching ----
 /** Only http(s), and never this machine or the local network (a post could point anywhere). */
-const PRIVATE = /^(localhost|.*\.local|.*\.localhost|.*\.internal|0\.\d+\.\d+\.\d+|127\.\d+\.\d+\.\d+|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+|169\.254\.\d+\.\d+|\[?::1?\]?|\[?f[cd][0-9a-f]*:.*|\[?fe80:.*)$/i;
+// (100.64/10 is carrier-grade NAT and Tailscale; a trailing dot, "localhost.", is the same host.)
+const PRIVATE = /^(localhost|.*\.local|.*\.localhost|.*\.internal|0\.\d+\.\d+\.\d+|127\.\d+\.\d+\.\d+|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+|169\.254\.\d+\.\d+|100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\.\d+\.\d+|2(2[4-9]|[3-5]\d)\.\d+\.\d+\.\d+|\[?::1?\]?|\[?f[cd][0-9a-f]*:.*|\[?fe[89ab][0-9a-f]:.*|\[?::ffff:.*)$/i;
 const TRUSTED = [WAYBACK, WAYBACK_API.replace(/^(https?:\/\/[^/]+).*$/, '$1')];
 export function okUrl(u) {
   try {
     const x = new URL(u);
     if (!/^https?:$/.test(x.protocol)) return false;
     if (TRUSTED.some((t) => u.startsWith(t + '/'))) return true;
-    return !PRIVATE.test(x.hostname) && x.hostname.includes('.');
+    const host = x.hostname.replace(/\.+$/, '');
+    return !PRIVATE.test(host) && host.includes('.');
   } catch { return false; }
+}
+/** A host name that resolves to this machine or the local network (127.0.0.1.nip.io, a LAN name): refused too. Lookups that fail here (a proxy resolves names) are left to the fetch. */
+const dnsMemo = new Map();
+async function resolvesPrivate(u) {
+  let host; try { host = new URL(u).hostname.replace(/\.+$/, ''); } catch { return false; }
+  if (isIP(host.replace(/^\[|\]$/g, '')) || TRUSTED.some((t) => u.startsWith(t + '/'))) return false; // literals: okUrl checked them
+  const hit = dnsMemo.get(host);
+  if (hit && now() - hit.at < 600e3) return hit.priv;
+  let priv = false;
+  try { priv = (await dnsLookup(host, { all: true })).some((a) => PRIVATE.test(a.family === 6 ? `[${a.address}]` : a.address)); } catch { /* unresolvable here */ }
+  dnsMemo.set(host, { at: now(), priv });
+  if (dnsMemo.size > 2000) dnsMemo.delete(dnsMemo.keys().next().value);
+  return priv;
 }
 
 // Per-host politeness: a few requests at a time per host, foreground first;
@@ -137,7 +154,7 @@ const retryAfter = (v) => { if (!v) return 0; const s = Number(v); if (Number.is
 export async function grab(u, { max = MAX_IMG, job = { fg: true }, accept = '*/*', hops = 6, firstChunk = false } = {}) {
   let cur = u;
   for (let hop = 0; hop <= hops; hop++) {
-    if (!okUrl(cur)) throw Object.assign(new Error('URL not allowed'), { code: 'blocked' });
+    if (!okUrl(cur) || await resolvesPrivate(cur)) throw Object.assign(new Error('URL not allowed'), { code: 'blocked' });
     const L = limFor(cur);
     await L.acquire(job);
     try {
@@ -188,8 +205,9 @@ export function sniff(b) {
     if (b.toString('ascii', 4, 8) === 'ftyp' && /avif|avis|heic|mif1/.test(b.toString('ascii', 8, 12))) {
       const k = b.indexOf('ispe'); return k > 0 ? { f: 'avif', w: b.readUInt32BE(k + 8), h: b.readUInt32BE(k + 12) } : { f: 'avif' };
     }
-    if (b.toString('ascii', 0, 2) === 'BM') return { f: 'bmp', w: b.readInt32LE(18), h: Math.abs(b.readInt32LE(22)) };
-    if (b.readUInt32LE(0) === 0x00010000) return { f: 'ico', w: b[6] || 256, h: b[7] || 256 };
+    // A real BMP header (its info header is 12-124 bytes), not any text that starts with "BM".
+    if (b.toString('ascii', 0, 2) === 'BM' && b.length >= 26 && [12, 40, 52, 56, 64, 108, 124].includes(b.readUInt32LE(14))) return { f: 'bmp', w: b.readInt32LE(18), h: Math.abs(b.readInt32LE(22)) };
+    if (b.readUInt32LE(0) === 0x00010000 && b.readUInt16LE(4) > 0 && b.readUInt16LE(4) < 64) return { f: 'ico', w: b[6] || 256, h: b[7] || 256 };
     const head = b.toString('utf-8', 0, Math.min(b.length, 2000)).replace(/^﻿/, '').trimStart();
     if (/^(<\?xml[^>]*>\s*)?(<!--[\s\S]*?-->\s*)*(<!DOCTYPE svg[^>]*>\s*)?<svg\b/i.test(head)) {
       const tag = (head.match(/<svg\b[^>]*>/i) || [''])[0];
@@ -247,10 +265,11 @@ export function judgeImage(r, u) {
   if (!sn) return { bad: /html/i.test(r.type) || /^\s*</.test(r.buf.toString('utf-8', 0, 64)) ? 'a web page, not an image' : 'not an image' };
   if (r.status !== 200 && r.status !== 203) return { bad: 'HTTP ' + r.status };
   const hash = sha1(r.buf);
-  if (isPlaceholder(hash)) return { bad: 'placeholder (' + (KNOWN_PLACEHOLDERS.get(hash) || S.placeholders[hash]?.why || 'known') + ')', hash };
-  if (r.final && r.final !== u && PLACEHOLDER_URL.some((re) => re.test(r.final))) return { bad: 'placeholder (redirected to ' + r.final.slice(0, 80) + ')', hash };
+  const ph = { hash, w: sn.w, h: sn.h, ph: true }; // a placeholder: its size, to know the same picture in other forms
+  if (isPlaceholder(hash)) return { bad: 'placeholder (' + (KNOWN_PLACEHOLDERS.get(hash) || S.placeholders[hash]?.why || 'known') + ')', ...ph };
+  if (r.final && r.final !== u && PLACEHOLDER_URL.some((re) => re.test(r.final))) return { bad: 'placeholder (redirected to ' + r.final.slice(0, 80) + ')', ...ph };
   if (sn.w && sn.h && sn.w <= 2 && sn.h <= 2 && sn.f !== 'svg') return { bad: 'tiny (' + sn.w + 'x' + sn.h + ')', hash, tiny: true };
-  if (/imgur\.com$/.test(hostOf(r.final || u)) && sn.w === 161 && sn.h === 81) return { bad: 'placeholder (imgur removed)', hash };
+  if (/imgur\.com$/.test(hostOf(r.final || u)) && sn.w === 161 && sn.h === 81) return { bad: 'placeholder (imgur removed)', ...ph };
   return { ok: true, w: sn.w || 0, h: sn.h || 0, type: MIME[sn.f] || r.type, hash, f: sn.f };
 }
 
@@ -360,7 +379,10 @@ export async function waybackSnaps(u, { job = { fg: true }, kind = 'img', quick 
     incomplete = true;
     return null;
   };
-  const order = (kind === 'img' ? ['19960101', ''] : ['', '19960101']).slice(0, quick ? 1 : 2);
+  let order = (kind === 'img' ? ['19960101', ''] : ['', '19960101']).slice(0, quick ? 1 : 2);
+  // The quick answer (the first of these) is known already: ask only for the rest.
+  const qk = !quick && wbMemo.get(u + '|' + kind + '|q');
+  if (qk && now() - qk.at < 6 * 3600e3) { for (const s of qk.snaps) add(s.ts, s.orig); order = order.slice(1); }
   for (const t of order) {
     const c = (await ask(`${WAYBACK_API}?url=${encodeURIComponent(u)}${t ? '&timestamp=' + t : ''}`))?.archived_snapshots?.closest;
     if (c && c.available !== false && String(c.status) === '200') {
@@ -425,6 +447,8 @@ export function resolveImage(u, { fg = true, how = 'reader', force = false } = {
   inflight.set(u, { job, p });
   return p;
 }
+/** Where a resolution under way is: 'live' (the original address) or 'rescue' (mirrors, the archive); undefined when none is. */
+export const stageOf = (u) => inflight.get(u)?.job.stage;
 async function doResolve(u, job, how, force) {
   const m = cachedImage(u);
   if (m && !force) return { st: m.via ? 'rescued' : 'ok', meta: m };
@@ -448,6 +472,7 @@ async function doResolve(u, job, how, force) {
     if (got) return got;
   }
   let why = 'unknown';
+  job.stage = 'live';
   // imgur blocked from here (the canary): its originals only return the block's placeholder.
   const skipLive = !!S.blocked.imgur && /(^|\.)imgur\.com$/.test(hostOf(u));
   if (skipLive) why = 'imgur is blocked from here';
@@ -457,15 +482,16 @@ async function doResolve(u, job, how, force) {
       const v = judgeImage(r, u);
       if (v.big) { S.imgs[u] = { st: 'big', at: now() }; bump(); save(); return { st: 'big' }; }
       if (v.ok) {
-        if (noteSeen(r.final || u, v.hash)) why = 'placeholder (same image behind different ids)';
+        if (noteSeen(r.final || u, v.hash)) { why = 'placeholder (same image behind different ids)'; job.ph = { w: v.w, h: v.h }; }
         else {
           const meta = await store(u, r.buf, v.type, { w: v.w, h: v.h, sha1: v.hash, ...(r.final !== u ? { final: r.final } : {}) });
           if (prev) { delete S.imgs[u]; bump(); save(); }
           return { st: 'ok', meta };
         }
-      } else why = v.bad;
+      } else { why = v.bad; if (v.ph && v.w && v.h) job.ph = { w: v.w, h: v.h }; }
     } catch (e) { why = e.cause?.code || e.code || e.message; }
   }
+  job.stage = 'rescue'; // mirrors and the archive: slower (the /img route stops waiting soon)
   const got = await rescueImage(u, job, how, why);
   if (got) return got;
   const r = (S.imgs[u] ||= {});
@@ -482,9 +508,19 @@ const backoff = (tries) => Math.min(30, 2 ** tries) * DAY;
 async function tryCopy(u, from, job, extra, how) {
   try {
     const r = await grab(from, { job, accept: 'image/*,*/*;q=0.5' });
-    const v = judgeImage(r, from);
+    let v = judgeImage(r, from);
+    // Pasted by hand, with bytes the reader once flagged as a placeholder: the reader vouches for it now (a mistaken flag undone).
+    if (!v.ok && extra.via === 'you' && v.hash && S.placeholders[v.hash]?.why === 'flagged in the reader') { delete S.placeholders[v.hash]; bump(); save(); v = judgeImage(r, from); }
     if (!v.ok) return null;
     if (HOSTING.test(hostOf(from)) && !extra.via?.startsWith('Internet Archive') && noteSeen(from, v.hash)) return null;
+    // Another form of the same address (https, imgur's .jpg for a .png) that answers with a picture of
+    // exactly the placeholder's size is the placeholder again (a region block answers every format).
+    if (job.ph && (extra.via === 'mirror' || extra.via === 'https') && v.w === job.ph.w && v.h === job.ph.h) {
+      learnPlaceholder(v.hash, 'the same size as the placeholder at the original address', { w: v.w, h: v.h, u: from });
+      return null;
+    }
+    // An archived copy whose shape is far from the one the post gave the image is another picture.
+    if (extra.shape && v.w && v.h && Math.abs(v.w / v.h - extra.shape) / extra.shape > 0.25) return null;
     const meta = await store(u, r.buf, v.type, { w: v.w, h: v.h, sha1: v.hash, via: extra.via, from, ...(extra.ts ? { ts: extra.ts } : {}) });
     const rec = (S.imgs[u] ||= {});
     Object.assign(rec, { st: 'rescued', via: extra.via, from, ts: extra.ts, w: v.w, h: v.h, at: now() });
@@ -502,11 +538,17 @@ export async function rescueImage(u, job = { fg: false }, how = 'scavenger', why
     const got = await tryCopy(u, m, job, { via: viaOf(m) }, how);
     if (got) return got;
   }
+  const shape = c.w > 8 && c.h > 8 ? c.w / c.h : undefined;
   for (const [j, k] of waybackKeys(u).entries()) {
-    const snaps = await waybackSnaps(k, { job, kind: 'img', quick: j > 0 });
-    for (const s of snaps.slice(0, 3)) {
-      const got = await tryCopy(u, rawSnap(s), job, { via: 'Internet Archive', ts: s.ts }, how);
-      if (got) return got;
+    // The earliest capture first (one question to the archive); the latest and the CDX index only if that fails.
+    const tried = new Set();
+    for (const quick of j > 0 ? [true] : [true, false]) {
+      const snaps = await waybackSnaps(k, { job, kind: 'img', quick });
+      for (const s of snaps.filter((x) => !tried.has(x.ts)).slice(0, 3)) {
+        tried.add(s.ts);
+        const got = await tryCopy(u, rawSnap(s), job, { via: 'Internet Archive', ts: s.ts, shape }, how);
+        if (got) return got;
+      }
     }
   }
   return null;
@@ -532,21 +574,49 @@ export async function manualCopy(u, from) {
 // -------------------------------------------------------------- canaries ----
 // imgur blocks some regions (the UK, since September 2025) by serving a
 // "Content not viewable in your region" image in place of every image. Its
-// own removed.png has known bytes; anything else there is the block.
-const CANARIES = [{ host: 'imgur', url: 'https://i.imgur.com/removed.png', sha1: '20002faf28adfd94ca98cf6ced46f14334b53684' }];
+// own removed.png has known bytes, and two real images have known sizes; a
+// block answers them with something else (a block that spares removed.png is
+// caught by the real images). A probe image that was itself deleted, a rate
+// limit or a server error decides nothing; no answer at all is asked again soon.
+const CANARIES = [{
+  host: 'imgur', url: 'https://i.imgur.com/removed.png', sha1: '20002faf28adfd94ca98cf6ced46f14334b53684',
+  probes: [{ url: 'https://i.imgur.com/4tCTYmH.png', w: 1169, h: 611 }, { url: 'https://i.imgur.com/cnqxuNC.png', w: 366, h: 252 }],
+}];
+let canaryT = null;
+function canaryLater() {
+  if (canaryT) return;
+  canaryT = setTimeout(() => { canaryT = null; checkCanaries().catch(() => {}); }, 15 * 60e3);
+  canaryT.unref?.();
+}
 export async function checkCanaries() {
   for (const c of CANARIES) {
     try {
-      const r = await grab(c.url, { job: { fg: false } });
-      const sn = sniff(r.buf);
-      const h = r.buf?.length ? sha1(r.buf) : '';
-      if (r.status === 200 && h === c.sha1) { if (S.blocked[c.host]) { delete S.blocked[c.host]; save(); } continue; }
-      // Anything else: blocked here. An image that is not removed.png is the block's placeholder.
-      if (r.status === 200 && sn && h) learnPlaceholder(h, `${c.host} region block`, { w: sn.w, h: sn.h });
+      const look = async (url) => { const r = await grab(url, { job: { fg: false } }); return { r, sn: sniff(r.buf), h: r.buf?.length ? sha1(r.buf) : '' }; };
+      const busy = (x) => x.r.status === 429 || x.r.status >= 500;
+      const base = await look(c.url);
+      if (busy(base)) { canaryLater(); continue; }
+      const removedOk = base.r.status === 200 && base.h === c.sha1;
+      let real = false;
+      const odd = removedOk ? [] : [base];
+      for (const p of c.probes || []) {
+        const q = await look(p.url).catch(() => null);
+        if (!q || busy(q) || q.r.status === 404 || q.h === c.sha1 || PLACEHOLDER_URL.some((re) => re.test(q.r.final || ''))) continue;
+        if (q.r.status === 200 && q.sn?.w === p.w && q.sn?.h === p.h) { real = true; break; }
+        odd.push(q);
+      }
+      if (real || !odd.length) {
+        // Real images come through. (removed.png with new bytes is still imgur's "removed" picture.)
+        if (!removedOk && base.r.status === 200 && base.sn && base.h) learnPlaceholder(base.h, `${c.host} removed`, { w: base.sn.w, h: base.sn.h });
+        if (S.blocked[c.host]) { delete S.blocked[c.host]; bump(); save(); }
+        continue;
+      }
+      // Blocked here. The images it answered with are the block's placeholders.
+      for (const x of odd) if (x.r.status === 200 && x.sn && x.h) learnPlaceholder(x.h, `${c.host} region block`, { w: x.sn.w, h: x.sn.h });
+      const { r, sn } = odd[0];
       S.blocked[c.host] = { at: now(), status: r.status, final: r.final !== c.url ? r.final : undefined };
       console.log(`rescue: ${c.host} images look blocked from here (HTTP ${r.status}${sn ? ', a ' + sn.w + 'x' + sn.h + ' image' : ''}); going to the Internet Archive for them`);
       bump(); save();
-    } catch { /* offline: try again later */ }
+    } catch { canaryLater(); }
   }
 }
 

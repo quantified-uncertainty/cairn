@@ -220,9 +220,26 @@ export function indexBuilder(items, { tags = null, meta = null, lanes = {} } = {
       const ctx = { tagLabels, lanes, authors };
       const labels = new Map(), invA = new Map();
       for (const [f, a] of inv) { labels.set(f, labelOf(f, ctx)); invA.set(f, Int32Array.from(a)); }
-      return { feats, labels, inv: invA, df, byId, ctx, n: N };
+      // A packed copy of feats for the hot loops: feature k of item i is fid[j], m[j], grp[j] for j in off[i]..off[i+1].
+      const fnames = [...inv.keys()], fidOf = new Map(fnames.map((f, k) => [f, k]));
+      let total = 0; for (const F of feats) total += F.length;
+      const off = new Int32Array(N + 1), fid = new Int32Array(total), mm = new Float64Array(total), grp = new Uint8Array(total);
+      let j = 0;
+      for (let k = 0; k < N; k++) { off[k] = j; for (const [g, f, m] of feats[k]) { fid[j] = fidOf.get(f); mm[j] = m; grp[j] = GI[g]; j++; } }
+      off[N] = j;
+      return { feats, labels, inv: invA, df, byId, ctx, n: N, fnames, fidOf, packed: { off, fid, m: mm, g: grp } };
     },
   };
+}
+/** Pack an index that lacks the packed arrays (built by an older caller). */
+function packIndex(index) {
+  if (!index.fnames) { index.fnames = [...new Set(index.feats.flatMap((F) => F.map((x) => x[1])))]; index.fidOf = new Map(index.fnames.map((f, k) => [f, k])); }
+  let total = 0; for (const F of index.feats) total += F.length;
+  const N = index.feats.length, off = new Int32Array(N + 1), fid = new Int32Array(total), m = new Float64Array(total), g = new Uint8Array(total);
+  let j = 0;
+  for (let k = 0; k < N; k++) { off[k] = j; for (const [gg, f, mm] of index.feats[k]) { fid[j] = index.fidOf.get(f); m[j] = mm; g[j] = GI[gg]; j++; } }
+  off[N] = j;
+  return (index.packed = { off, fid, m, g });
 }
 /** The feature index in one go: {feats: [[g, f, m]] per item, labels: Map f → label, inv: Map f → Int32Array, df: Map word → n, byId}. */
 export function buildIndex(items, opts = {}) {
@@ -457,40 +474,51 @@ export function computeProfile({ items, index, memory, now = Date.now(), control
   for (const p of ps) { SW += p.wd; SY += p.wd * (p.y || 0); }
   const mu0 = Math.max(0.05, (SY + LEARN.kappa0 * LEARN.mu0prior) / (SW + LEARN.kappa0));
 
-  const acc = new Map();
-  const get = (f, g) => { let a = acc.get(f); if (!a) acc.set(f, (a = { g, W: 0, Y: 0, c: ZERO(), ex: [] })); return a; };
+  // Sums per feature, over the packed index (features the index lacks, from the import, go in `extra`).
+  const { off, fid, m: MM, g: GG } = index.packed || packIndex(index);
+  const F = index.fnames.length, WW = new Float64Array(F), YY = new Float64Array(F), info = new Array(F);
   const since = now - 180 * DAY;
   for (const x of ex) {
-    const recent = x.e.t >= since, s = x.wd * x.e.y;
-    for (const [g, f, m] of index.feats[x.i]) {
-      const a = get(f, g);
-      a.W += x.wd * m; a.Y += x.wd * m * x.e.y;
+    const recent = x.e.t >= since, s = x.wd * x.e.y, y = x.e.y;
+    for (let j = off[x.i], end = off[x.i + 1]; j < end; j++) {
+      const k = fid[j], m = MM[j];
+      WW[k] += x.wd * m; YY[k] += x.wd * m * y;
+      let a = info[k];
+      if (!a) info[k] = a = { c: ZERO(), ex: [] };
       if (recent) { a.c[x.e.label]++; if (x.e.S) a.c.save++; if (x.e.M) a.c.more++; if (x.e.L) a.c.less++; }
       if (a.ex.length < 3 || s > a.ex[2][1]) { a.ex.push([x.id, s]); a.ex.sort((u, v) => v[1] - u[1] || (u[0] < v[0] ? -1 : 1)); if (a.ex.length > 3) a.ex.pop(); }
     }
   }
-  for (const p of ps) { const a = get(p.f, p.g || groupOf(p.f)); a.W += p.wd; a.Y += p.wd * (p.y || 0); }
-
-  const lam0 = new Map(), lam = new Map();
-  for (const [f, a] of acc) {
-    const pf = (a.Y + LEARN.kappa * mu0) / (a.W + LEARN.kappa);
-    const l = clamp(Math.log2(pf / mu0), -LEARN.lamMax, LEARN.lamMax);
-    lam0.set(f, l); lam.set(f, l);
+  const extra = new Map();
+  for (const p of ps) {
+    const k = index.fidOf.get(p.f);
+    if (k != null) { WW[k] += p.wd; YY[k] += p.wd * (p.y || 0); if (!info[k]) info[k] = { c: ZERO(), ex: [] }; continue; }
+    let a = extra.get(p.f); if (!a) extra.set(p.f, (a = { g: p.g || groupOf(p.f), W: 0, Y: 0, c: ZERO(), ex: [] }));
+    a.W += p.wd; a.Y += p.wd * (p.y || 0);
   }
+  const lamOf = (W, Y) => clamp(Math.log2((Y + LEARN.kappa * mu0) / (W + LEARN.kappa) / mu0), -LEARN.lamMax, LEARN.lamMax);
+  const lam0 = new Map(), lam = new Map(), LA = new Float64Array(F);
+  for (let k = 0; k < F; k++) if (info[k]) { const l = lamOf(WW[k], YY[k]); lam0.set(index.fnames[k], l); lam.set(index.fnames[k], l); LA[k] = l; }
+  for (const [f, a] of extra) { const l = lamOf(a.W, a.Y); lam0.set(f, l); lam.set(f, l); }
   const ctl = controlMap(controls);
-  for (const [f, mode] of ctl) lam.set(f, applyControl(lam0.get(f) ?? 0, mode));
+  for (const [f, mode] of ctl) { const l = applyControl(lam0.get(f) ?? 0, mode); lam.set(f, l); const k = index.fidOf.get(f); if (k != null) LA[k] = l; }
 
   const feat = {};
-  for (const [f, a] of acc) {
-    if (!(a.W >= 0.05) && !ctl.has(f)) continue;
-    feat[f] = { l: r3(lam.get(f)), l0: r3(lam0.get(f)), W: r3(a.W), Y: r3(a.Y), g: a.g, label: index.labels.get(f) || labelOf(f, index.ctx), c: a.c, ex: a.ex.map((x) => x[0]), ctl: ctl.get(f) || null };
-  }
-  for (const [f, mode] of ctl) if (!feat[f]) feat[f] = { l: r3(lam.get(f)), l0: 0, W: 0, Y: 0, g: groupOf(f), label: index.labels.get(f) || labelOf(f, index.ctx), c: ZERO(), ex: [], ctl: mode };
+  const label = (f) => index.labels.get(f) || labelOf(f, index.ctx);
+  const put = (f, g, W, Y, a) => { if (W >= 0.05 || ctl.has(f)) feat[f] = { l: r3(lam.get(f) ?? 0), l0: r3(lam0.get(f) ?? 0), W: r3(W), Y: r3(Y), g, label: label(f), c: a ? a.c : ZERO(), ex: a ? a.ex.map((x) => x[0]) : [], ctl: ctl.get(f) || null }; };
+  for (let k = 0; k < F; k++) if (info[k]) put(index.fnames[k], groupOf(index.fnames[k]), WW[k], YY[k], info[k]);
+  for (const [f, a] of extra) put(f, a.g, a.W, a.Y, a);
+  for (const f of ctl.keys()) if (!feat[f]) put(f, groupOf(f), 0, 0, null);
 
-  // Predicted interest for every item, familiarity, finds.
+  // Predicted interest for every item (spec §2.7, as interestOf), familiarity, finds.
   const N = items.length, I = new Float64Array(N), pred = {}, phi = {}, finds = [], newIds = [];
+  const NG = GROUPS.length, gs = new Float64Array(NG), gm = new Float64Array(NG);
   for (let i = 0; i < N; i++) {
-    const v = interestOf(index.feats[i], lam).I;
+    gs.fill(0); gm.fill(0);
+    for (let j = off[i], end = off[i + 1]; j < end; j++) { const g = GG[j]; gs[g] += MM[j] * LA[fid[j]]; gm[g] += MM[j]; }
+    let num = 0, den = 0;
+    for (let g = 0; g < NG; g++) if (gm[g] > 0) { num += (BETA[g] * gs[g]) / Math.sqrt(gm[g]); den += BETA[g]; }
+    const v = Math.tanh((den ? num / den : 0) / LEARN.rho);
     I[i] = v;
     if (Math.abs(v) >= 0.01) pred[items[i].id] = r2(v);
   }

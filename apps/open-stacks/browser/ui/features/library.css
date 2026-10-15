@@ -26,7 +26,7 @@
 .lib-sort button { border: 0; border-radius: 3px; padding: 2px 7px; background: none; font: 10.5px var(--sans); color: var(--ink-3); cursor: pointer; }
 .lib-sort button:hover { color: var(--ink); }
 .lib-sort button.on { background: var(--bg-3); color: var(--ink); }
-.lib-sort .ls-c { margin-left: auto; align-self: center; font: 10px var(--mono); color: var(--ink-3); }
+.lib-sort .ls-c { align-self: center; font: 10px var(--mono); color: var(--ink-3); }
 
 /* The tree: a virtual list, only the rows in view exist. */
 .lib-list { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; position: relative; outline: none; scrollbar-width: thin; scrollbar-color: var(--line) transparent; padding-bottom: 12px; }
@@ -64,3 +64,26 @@
 .lr.before:hover, .lr.before.sel { opacity: .85; }
 .lr-i .lr-dot { width: 6px; height: 6px; }
 .lr-d { font: 10px var(--mono); color: var(--ink-3); flex: none; }
+
+/* Where you are in the current item: a position row and its sections, under its row. */
+.lr-pos, .lr-sec { cursor: default; font: 11px var(--sans); color: var(--ink-3); }
+.lr-pos { padding-right: 10px; gap: 8px; }
+.lh-bar { position: relative; flex: 1; height: 6px; border-radius: 3px; background: var(--line); cursor: pointer; }
+.lh-bar i { position: absolute; top: -1px; bottom: -1px; min-width: 3px; border-radius: 3px; background: var(--accent); }
+.lh-bar b { position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--ink-3); opacity: .55; }
+.lh-n { flex: none; font: 600 10.5px var(--mono); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.lr-sec { cursor: pointer; }
+.lr-sec .lr-t { font: 11.5px var(--sans); color: var(--ink-3); }
+.lr-sec.on .lr-t { color: var(--accent); }
+.lr-sec.on { box-shadow: inset 2px 0 0 var(--accent); }
+.lh-k { flex: none; font: 10px var(--mono); color: var(--ink-3); opacity: .8; }
+/* Not on disk yet: dimmed; a book partly on disk says how much. */
+.lr-i.lr-cold .lr-t, .lr-i.lr-cold .ticon { opacity: .5; }
+.lr-ld { flex: none; font: 9.5px var(--mono); color: var(--ink-3); }
+.lib-sort .ls-n { margin-left: auto; align-self: center; font: 10px var(--mono); color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.lib-sort .ls-n + .ls-c { margin-left: 8px; }
+/* The track's section ticks (registerTrackLayer 'sections'). */
+#track .tr-layer[data-layer="sections"] { position: absolute; inset: 0; pointer-events: none; }
+#track .tr-layer[data-layer="sections"] b { position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--ink); opacity: .35; }
+/* While the Library shows, the stack and page counts live there, not in the header's corner. */
+#main.lib-on:not(.nopanel) #item-head #pos { display: none; }

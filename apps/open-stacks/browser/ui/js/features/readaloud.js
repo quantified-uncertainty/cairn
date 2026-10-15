@@ -1032,7 +1032,7 @@ async function rasterJump(r, k, wi) {
     else await loadFrom(r, k);
   }
   if (R !== r) return;
-  const j = wordFor(r, k, wi);
+  const j = wordFor(r, k, wi) ?? wordFor(r, r.first, null);
   if (j != null) moveTo(j, { play: true });
 }
 
@@ -1307,7 +1307,8 @@ function prioritise() {
   [['tts-hover', 0], ['tts-sentence', 1], ['tts-word', 2]].forEach(([n, p]) => { const x = CSS.highlights.get(n); if (x) x.priority = p; });
 }
 let painted = ''; // the sentence lit last: repainted only when it, or what is drawn, changes
-function paint() {
+/** Light the voice's word and sentence; `turn` false: without bringing the pages to it. */
+function paint(turn = true) {
   const r = R; if (!r) return;
   const j = r.cur, w = r.words[j]; if (!w) return;
   // the word, or (not drawn: a page with no text layer, a mark) the last drawn one before it
@@ -1328,11 +1329,11 @@ function paint() {
     highlight('tts-sentence', marks);
   }
   prioritise();
-  follow(r, w);
+  if (turn) follow(r, w);
   paintNow(si);
 }
 on('spread:rendered', () => { drawGen++; });
-on('textlayer:ready', ({ it }) => { drawGen++; if (R && it?.id === R.it.id) paint(); }); // a page's spans just arrived
+on('textlayer:ready', ({ it }) => { drawGen++; if (R && it?.id === R.it.id) paint(false); }); // a page's spans just arrived
 
 /** Whether a word is on screen now. */
 function onScreen(r, w) {
@@ -1381,14 +1382,13 @@ function follow(r, w) {
 on('nav', ({ type, it }) => {
   const r = R;
   if (!r || it?.id !== r.it.id || type === 'item') return;
-  if ((type === 'page' || type === 'random') && mode && r.playing && state.view === 'feed') { holdUntil = 0; readHere(r); return; }
-  holdUntil = Date.now() + HOLD_MS;
+  holdUntil = Date.now() + HOLD_MS; // a jump: until the voice lands there (moveTo), the pages stay
+  if ((type === 'page' || type === 'random') && mode && r.playing && state.view === 'feed') readHere(r);
 });
 function readHere(r) {
   const s = state.start.get(r.i) ?? 0;
-  if (r.kind !== 'flow') { rasterJump(r, s, null); return; }
-  if (flowOn(r) && live.flow.contains(r.words[0]?.node)) moveTo(firstFrom(r.words, s), { play: true });
-  else holdUntil = Date.now() + HOLD_MS; // a relayout under way: the words are not where they will be
+  if (r.kind !== 'flow') { stopSpeech(); rasterJump(r, s, null); return; } // the page may need loading: silent meanwhile
+  if (flowOn(r) && live.flow.contains(r.words[0]?.node)) moveTo(firstFrom(r.words, s), { play: true }); // else a relayout is under way: only held
 }
 on('flow:jump', () => { if (R) holdUntil = Date.now() + HOLD_MS; });
 on('spread:rendered', ({ it, flow }) => {
@@ -1397,7 +1397,10 @@ on('spread:rendered', ({ it, flow }) => {
   const r = R;
   if (r && it.id === r.it.id) {
     if (flow && r.kind === 'flow' && r.words[0] && !flow.flow.contains(r.words[0].node) && !rebind(r, flow)) return;
-    paint();
+    // Relit on the new pages, not followed: a render comes inside showFeed(), before
+    // the 'nav' event of a turn or jump the reader made, so following here would
+    // undo it at once. The next word the voice says follows (tick).
+    paint(false);
   }
   if (mode && !R && contFor === it.id) { contFor = null; setTimeout(() => { if (mode && !R && items[current()]?.id === it.id) begin({ cont: true }); }, 0); }
 });

@@ -200,7 +200,10 @@ export default function (app) {
         if (!j.htmlBody) return { err: 'empty' };
         j.preview = (job.previewPath && readJson(job.previewPath)?.data?.post?.result?.socialPreviewImageUrl) || null;
       } else if (job.src === 'web') j.html = fs.readFileSync(job.htmlPath, 'utf-8');
-      else if (job.src === 'ocr') j.pages = (job.textPath ? readJson(job.textPath) : JSON.parse(job.textBody))?.pages || [];
+      else if (job.src === 'ocr') {
+        j.pages = (job.textPath ? readJson(job.textPath) : JSON.parse(job.textBody))?.pages || [];
+        if (job.labelsPath) j.labels = readJson(job.labelsPath)?.pages?.map((p) => (p.pageNumber ? String(p.pageNumber) : null)) || null;
+      }
       const r = X.run(j);
       if (job.src === 'latexml') {
         // The figure list in /figures' cache format (so the Figures view and Peek's strip find it
@@ -376,23 +379,25 @@ export default function (app) {
     // /ocr/text keeps each book's page texts in CACHE/ocr/<ia>/text.json (50-ocr.mjs); once
     // it is there the worker reads it directly.
     const textPath = join(CACHE, 'ocr', it.ia, 'text.json');
-    let textBody = null, labels = null, n = 0;
+    // Printed page labels (they only name the plates) are the book's _page_numbers.json, which
+    // /ocr keeps in the disk cache; the worker reads it there. Otherwise /ocr/labels, which can
+    // need archive.org (many scans have no such file): background builds wait for it, a build
+    // the reader is waiting on goes ahead without labels.
+    const pn = `https://archive.org/download/${it.ia}/${it.ia}_page_numbers.json`;
+    let textBody = null, labels = null, labelsPath = null;
     const ok = await books.run(job, async () => {
       await idle(job);
       const enc = encodeURIComponent(it.ia);
-      const lP = loop(`/ocr/labels?ia=${enc}`).then((l) => l.labels || null, () => null);
+      const lP = cache.cached(pn) ? null : loop(`/ocr/labels?ia=${enc}`).then((l) => l.labels || null, () => null);
       if (!existsSync(textPath)) {
         try { textBody = await loop(`/ocr/text?ia=${enc}`, true); } catch (e) { if (/no OCR|no such page|HTTP 40[34]\b|bad id/i.test(e.message || '')) return false; throw netErr(e); }
       }
-      n = it.n || 0;
-      // Printed page labels only name the plates; a book too short for plates does not wait
-      // for them, and a reader waits at most 1.5 s (the labels can need archive.org).
-      const lab = await Promise.race([lP, sleep(job.fg ? 1500 : 20000).then(() => null)]);
-      if (!n || n > 12) labels = lab;
+      if (cache.cached(pn)) labelsPath = bodyOf(pn);
+      else if (!job.fg) labels = await Promise.race([lP, sleep(20000).then(() => null)]);
       return true;
     });
     if (!ok) return failed('ocr', home, 'empty');
-    const r = await parseJob({ src: 'ocr', textPath: textBody == null ? textPath : null, textBody, labels, ia: it.ia, n: it.n, ...meta }, job);
+    const r = await parseJob({ src: 'ocr', textPath: textBody == null ? textPath : null, textBody, labels, labelsPath, ia: it.ia, n: it.n, ...meta }, job);
     return r.ex ? r : failed('ocr', home, r.err);
   }
 
@@ -421,7 +426,7 @@ export default function (app) {
     if (hit) { stats.hits++; return Promise.resolve(hit); }
     let job = building.get(it.id);
     if (job) { if (fg && !job.fg) promote(job); return job.p; }
-    job = { fg, id: it.id, urls: [] };
+    job = { fg, id: it.id };
     const run = async () => {
       let held = false;
       if (!job.fg) held = await bgSem.acquire(job);
@@ -606,10 +611,10 @@ export default function (app) {
 
   app.status(() => ({
     extract: {
-      cached: stats.files, hits: stats.hits, built: stats.built, failed: stats.failed,
+      cached: stats.files, hits: stats.hits, built: stats.built, failed: stats.failed, served: stats.served, feedRequests: stats.feedRequests,
       queue: bgQueue.length + bgSem.waiting, fg: [...building.values()].filter((j) => j.fg).length, bg: [...building.values()].filter((j) => !j.fg).length,
       gateWaits: gate.waits, loopMs: { p50: Math.round(lag.percentile(50) / 1e6), p99: Math.round(lag.percentile(99) / 1e6), max: Math.round(lag.max / 1e6) }, cpu: { jobs: wQueue.length + (wBusy ? 1 : 0), ms: Math.round(stats.cpuMs), maxMs: Math.round(stats.cpuMax) },
-      feeds: Object.fromEntries([...feeds.values()].map((st) => [st.per === FEEDS[st.type].per ? `${st.type}|${st.lane}` : st.key, { cards: st.cards.length, walked: st.pos, done: st.done }])),
+      feeds: Object.fromEntries([...feeds.values()].map((st) => [st.per === FEEDS[st.type].per ? `${st.type}|${st.lane}` : st.key, { cards: st.cards.length, walked: st.pos, done: st.done, ...(st.failedIds ? { failed: st.failedIds } : {}) }])),
     },
   }));
 }
