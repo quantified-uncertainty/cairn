@@ -240,7 +240,7 @@ The ladder holds for papers, with different numbers. The measured rates come fro
 | 1 | Unpaywall / OpenAlex | 48% / 35% (measured) | \$0 |
 | 1 | Google Scholar "All versions" alone | 67% / 48% (measured) | \$0 |
 | 1 | All free legal tools Walters tested (Scholar, OpenAlex, ResearchGate, Academia.edu, Dimensions, PubMed, ERIC) | 73% / 58% (recomputed) | \$0 |
-| 1 | + field servers he did not test (arXiv, SSRN, RePEc), author pages, CORE | Perhaps 74–77% [~50%]; much higher in arXiv fields | \$0 |
+| 1 | + field servers he did not test (arXiv, SSRN, RePEc), author pages, CORE | Perhaps 75–78% [~50%]; much higher in arXiv fields | \$0 |
 | 2 | JSTOR Early Journal Content (US articles more than 95 years old) | Old articles only | \$0 |
 | 4 | JSTOR free account (10 articles per 30 days, read online); library databases; interlibrary loan | About 80% without institutional access [~50%] | \$0 |
 | 5 / 7 | University subscriptions, walk-in or remote | 73% / 72% alone (measured); 88% / 85% with the free legal routes (recomputed) | \$0 walk-in; \$25 + course; \$750 |
@@ -279,14 +279,12 @@ Emailing the corresponding author is legal and common, but no study measures how
 | 22 | Pearl & Mackenzie, *The Book of Why* | 4 | SFPL Libby (lending not checked) |
 | 23 | Kuhn, *The Structure of Scientific Revolutions* | 3 | Lendable English edition; also on Perlego (US) |
 | 24 | Parfit, *Reasons and Persons* | 3 | Lendable English edition |
-| 25 | Popper, *The Logic of Scientific Discovery* | 4 | Lendable only in translation. R03 reported humanities Libby results only as totals, so this title's Bay Area status is unknown: [~75%] that some Bay Area Libby has it (reasoning below). LAPL's Libby certainly does. Without either, Perlego (US rights) |
+| 25 | Popper, *The Logic of Scientific Discovery* | 4 (LAPL) or 6 | Lendable only in translation. In no Bay Area Libby; LAPL's Libby has 1 ebook copy with 4 holds ([OverDrive catalog](https://thunder.api.overdrive.com/v2/libraries/lapl/media?query=logic%20of%20scientific%20discovery), 2026-10-15). Without LAPL, Perlego (US rights) |
 | 26 | MacAskill, Bykvist & Ord, *Moral Uncertainty* | 1 | [DOAB](https://directory.doabooks.org/handle/20.500.12854/30579), CC BY-NC-ND |
 | 27 | Hume, *A Treatise of Human Nature* | 2 | [Gutenberg](https://www.gutenberg.org/ebooks/4705) |
 | 28 | Ord, *The Precipice* | 4 | SFPL Libby |
 | 29 | Christian, *The Alignment Problem* | 4 | SFPL Libby, 7 copies / 8 holds. Perlego holds only UK rights |
 | 30 | Hofstadter, *Gödel, Escher, Bach* | 8 | No ebook in any Libby checked. Used \$8.23 |
-
-**Where the Popper estimate comes from.** Four of the 20 humanities titles were missing from every Bay Area Libby. One is Hacking. Perlego carries two of the other three and does not carry Hacking. Popper is one of Perlego's 8 US-rights titles in the set. If any of those 8 is equally likely to be among the missing, Popper is missing with probability 2/8. So the chance that a Bay Area Libby has it is about 75%. With LAPL added, every humanities title except Hacking was in some Libby, so Popper is covered.
 
 **Coverage and cost by rung.**
 
@@ -296,10 +294,10 @@ Emailing the corresponding author is legal and common, but no study measures how
 | 2. Public domain | 1 | 13 | 43% | \$0 | — |
 | 3. Open Library lending | 5 | 18 | 60% | \$0 | Account setup; an edition check per book |
 | 4. SFPL card | 8 | 26 | 87% | \$0 | One visit; Kahneman's holds queue |
-| 4. Bay Area stack | Popper [~75%] | 26–27 | 87–90% | \$0 | Two afternoons |
-| 4. LAPL | Popper (certain) | 27 | 90% | \$0 | A trip to LA |
+| 4. Bay Area stack | None (more copies and shorter holds only) | 26 | 87% | \$0 | Two afternoons |
+| 4. LAPL | Popper (1 copy, 4 holds) | 27 | 90% | \$0 | A trip to LA |
 | 5. Walk-in academic | Print stacks only (not checked) | 27 | 90% | \$0 | — |
-| 6. One Perlego month | Popper, if you have neither the Bay Area cards nor LAPL | 27 | 90% | \$15–\$27 (tier not checked) | Minutes |
+| 6. One Perlego month | Popper, if you have no LAPL card | 27 | 90% | \$15–\$27 (tier not checked) | Minutes |
 | 8. Buy used | Jaynes, AIMA, *Gödel, Escher, Bach* | 30 | 100% | \$111.37 | Days |
 
 **Total: \$111–\$138 for all 30 titles.** If Link+ holds the three print books, the total falls to \$0–\$27; I did not check. For comparison, buying the whole list: the 12 titles priced on AbeBooks average \$44 (\$526.90 in total), so all 30 would cost on the order of \$1,000–\$1,300 [inference].
@@ -314,7 +312,7 @@ Read this table as a chart. Rows run up the ladder in order of cash spent; each 
 |---|---|---|---|---|
 | Free routes (rungs 1–3) | \$0 | 11 (33%) | At least 2 (10%) via lending; free copies not checked | 18 (60%) |
 | + SFPL card | \$0, one visit | 28 (85%) | 10 (50%) | 26 (87%) |
-| + five more Bay Area cards | \$0, two afternoons | 28 (85%) | 16 (80%) | 26–27 |
+| + five more Bay Area cards | \$0, two afternoons | 28 (85%) | 16 (80%) | 26 (87%) |
 | + LAPL | \$0, a trip to LA | 29 (88%) | 19 (95%) | 27 (90%) |
 | + one Perlego month | \$15–\$27 | 29 (88%) | 19 (95%); 18 (90%) if you skipped LAPL | 27 (90%) |
 | + buy the residue | Technical \$143; example \$111 | 33 (100%) | 19; Hacking not priced | 30 (100%) |
