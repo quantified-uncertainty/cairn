@@ -3,6 +3,8 @@ title: Measuring an Evaluator
 description: How to tell whether an evaluator, human or LLM, is any good — chance-corrected agreement and its paradoxes, the human-panel baseline, reliability versus validity, calibration, error bars and sample sizes, prediction-powered inference for combining a few gold labels with many model labels, and the gaming tests a judge should pass before it is trusted.
 ---
 
+import KappaParadox from '../../../components/figures/KappaParadox.astro';
+
 *Status: draft, October 2026. This chapter collects the measurement methods the rest of the wiki leans on. [LLMs as Evaluators](/concepts/llm-evaluators/) argues for auditing a cheap judge against an expensive one; the [worked example](/concepts/worked-example/) applies the arithmetic to one case. Every number below that is not cited is computed in the text or in the snippet, and the simulated population in the snippet is illustrative.*
 
 An evaluator is a measuring instrument, and the questions are the ones metrology asks of any instrument: does it give the same answer twice (reliability), does it measure the intended thing (validity), are its stated confidences honest (calibration), and how much does a measurement of all this cost in labelled items (sample size)? For an evaluator facing people who benefit from its verdicts there is a fifth: does it still work when they try to fool it?
@@ -19,7 +21,11 @@ Raw agreement $p_o$ is the share of items on which two raters give the same labe
 
 $$\kappa = \frac{p_o - p_e}{1 - p_e}$$
 
-so that chance scores 0 and perfect agreement 1 ([Cohen 1960](https://doi.org/10.1177/001316446002000104)). The relatives:
+so that chance scores 0 and perfect agreement 1 ([Cohen 1960](https://doi.org/10.1177/001316446002000104)).
+
+<KappaParadox />
+
+The relatives:
 
 - **Fleiss' κ** extends the idea to many raters: each item gets the same number of ratings, possibly from different raters ([Fleiss 1971](https://doi.org/10.1037/h0031619)).
 - **Weighted κ** gives partial credit for near-misses on an ordinal scale. The quadratic-weighted version is the standard in automated essay scoring, whose acceptance test ([LLMs as Evaluators](/concepts/llm-evaluators/#what-the-judge-literature-measures)) compares machine–human against human–human weighted κ.

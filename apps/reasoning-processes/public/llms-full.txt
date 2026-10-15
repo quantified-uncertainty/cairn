@@ -468,14 +468,6 @@ Theory anchors the extremes. Unverifiable assertion is [cheap talk](https://www.
 
 The naive picture is a listener filtering a message. The better picture is a sequential game in which **the defender moves first**: the structure of Stackelberg security games ([Conitzer & Sandholm 2006](https://doi.org/10.1145/1134707.1134717) on computing the optimal commitment; [Korzhyk et al. 2011](https://arxiv.org/abs/1401.3888) on the model behind the LAX and air-marshal deployments). The defender commits, the attacker observes the committed environment and best-responds, and the defender's craft is choosing the commitment that leaves the attacker the worst best response.
 
-```mermaid
-flowchart TD
-    D["<b>Move 1 · design-time</b> — the defender moves first<br/>reduce the attack surface: route questions to be self-checkable,<br/>stand up escrow / identity / resolution, pick framing that zeroes goal-bias"]
-    D --> R["<b>The residual attack surface</b><br/>the few channels that won't close:<br/>irreplaceable advantage · never resolves · goal-divergence you can't design out"]
-    R --> A["<b>Move 2 · attack-time</b> — the deceiver picks an open channel<br/>craft a message that looks like evidence but was cheap to fake"]
-    A --> J["<b>Move 3 · runtime</b> — the listener runs one test<br/>could a liar in this position have produced this just as cheaply if it were false?"]
-```
-
 Call the set of routes a strategic sender could use to move you the **attack surface**, and each route a **channel**. Most of the defense is then design-time: nobody can lie past a proof checker, a neutral reproduction, or a resolving bet, and the runtime test works only on channels that survived Move 1. A running case: an AI advocate trying to nudge its overseer toward approving a plan.
 
 ## Move 1: reduce the attack surface
@@ -833,14 +825,6 @@ The agreement-grounded mechanism deployed at scale is not peer prediction but br
 ## Composition: the hybrid protocol
 
 Since the groundings cover complementary territory, the natural design is layered:
-
-```mermaid
-flowchart LR
-    C[Unresolvable claim] --> D[Debate]
-    D --> S1[Resolvable subclaims] --> M[Markets / prediction games]
-    D --> S2[Debater belief structure] --> K[Consistency checks]
-    M --> G[Resolution / retrodiction]
-```
 
 Debate operates over the unresolvable claim, but its subclaims are anchored by markets wherever they touch resolvable ground, and the debaters' probability assignments are continuously consistency-checked. The judge's job shrinks from "evaluate everything" to "evaluate the genuinely unresolvable residue" — which is the only part a judge was ever the right tool for. Each edge buys something specific — markets cap the payoff on false resolvable subclaims; consistency checks catch incoherent belief structure — but the cover is partial: a consistent, obfuscated, unresolvable argument slips all three.
 
@@ -1965,7 +1949,7 @@ Source: https://reasoning-processes.quantifieduncertainty.org/case-studies/measu
 - **Matched condition.** Two different but comparable descriptions are crossed with the labels. This is the audit-study layout of [Bertrand & Mullainathan (2004)](https://doi.org/10.1257/0002828042002561). It removes the cue that 50 is the expected answer.
 - **Volume and settings.** There were 5 samples per cell, or 600 calls per model, sent in random order through OpenRouter. Reasoning effort was `low`, `max_tokens` was 4096, and temperature was 1.0 where the model accepts it.
 - **Statistics.**
-  - Label bias is a trial's mean P(pick the first label of the pair) − 0.5. Each trial gets an exact permutation p-value, and a trial is flagged at p < 0.05 with a lean of at least 2 points.
+  - Label bias is a trial's mean P(pick the first label of the pair) − 0.5. Each trial gets an exact permutation p-value, and a trial is flagged at p \< 0.05 with a lean of at least 2 points.
   - An omnibus permutation test (2,000 permutations, so the smallest attainable p is about 0.0005) asks whether labels move answers at all.
   - Position bias is the mean P(pick the first-listed option) − 0.5.
 - **Validation.** Mock judges with planted biases were run through the whole pipeline first. Unbiased mocks were flagged on 0.1–3.3% of trials against a nominal 5%. Planted leans of 8 and 12 points were flagged on nearly every planted trial.

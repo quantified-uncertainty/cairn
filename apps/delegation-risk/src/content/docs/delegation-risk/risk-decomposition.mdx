@@ -8,6 +8,8 @@ sidebar:
   order: 3
 ---
 
+import HarmChannels from '../../../components/figures/HarmChannels.astro';
+
 Every harm mode reaches the principal through one of three channels. The channels are estimated differently and need different mitigations, so the first job in any harm table is to say which channel each row belongs to.
 
 - **Accident.** The delegate fails at its task: bugs, hallucinations, misread instructions, capability limits. Nobody is steering it toward harm.
@@ -50,6 +52,8 @@ The numbers are invented, so the shares say nothing about real systems. Two stru
 | How to estimate P | testing, incident history, fuzzing | control evaluations, red-teaming, honeypots | adaptive red-teaming of the whole system, e.g. on AgentDojo-style tasks |
 | Main mitigations | testing, redundancy, verification | trusted monitoring, control protocols, hard envelopes | separating instructions from untrusted data, removing exfiltration paths, hard envelopes |
 | Correlation between stacked checks | benign-failure ρ applies | assume ρ → 1 | assume ρ → 1 |
+
+<HarmChannels />
 
 The last row matters most. The [beta-factor correction](/delegation-risk/risk-propagation/) models checks that happen to fail together. In the defection and hijack channels an adversary chooses the input to defeat every check at once, so treat a stack as worth no more than its best layer until a control evaluation ([Greenblatt et al. 2023](https://arxiv.org/abs/2312.06942)) shows otherwise.
 

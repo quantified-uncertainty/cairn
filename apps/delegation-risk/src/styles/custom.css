@@ -1,0 +1,114 @@
+@import '@fontsource-variable/source-serif-4';
+
+/* =====================================================================
+   1. Tokens, in Starlight's own variable names. Neutrals are identical
+      to the CAIRN Handbook FINAL; only the three accent values differ
+      (Delegation Risk: ledger red). Starlight's convention: :root is
+      dark, [data-theme='light'] is light.
+   ===================================================================== */
+/* SPEC: tokens (dark) */
+:root {
+  --sl-color-white: #f4f1ea;   /* headings          16.2:1 */
+  --sl-color-gray-1: #ebe7df;
+  --sl-color-gray-2: #dcd7cd;  /* body text         12.7:1 */
+  --sl-color-gray-3: #a7a195;  /* secondary text     7.1:1 */
+  --sl-color-gray-4: #8f897e;
+  --sl-color-gray-5: #45423c;  /* borders, rules */
+  --sl-color-gray-6: #24231f;  /* nav bg, hairlines */
+  --sl-color-black: #161514;   /* page bg */
+  --sl-color-accent-low: #3d1f19;
+  --sl-color-accent: #c4523b;
+  --sl-color-accent-high: #f29a84; /* link underline in dark */
+  --sl-color-text: var(--sl-color-gray-2);
+  --sl-color-text-accent: var(--sl-color-accent-high);
+  --sl-color-bg-nav: var(--sl-color-gray-6);
+  --sl-color-hairline: var(--sl-color-gray-6);
+  --sl-color-hairline-shade: var(--sl-color-black);
+  color-scheme: dark;
+}
+/* SPEC: tokens (light) */
+:root[data-theme='light'] {
+  --sl-color-white: #1c1b19;   /* headings          17.2:1 */
+  --sl-color-gray-1: #24221f;
+  --sl-color-gray-2: #2e2c28;  /* body text         13.9:1 */
+  --sl-color-gray-3: #5f5b53;  /* secondary text     6.8:1 */
+  --sl-color-gray-4: #6f6a61;
+  --sl-color-gray-5: #d6d1c7;
+  --sl-color-gray-6: #ebe8e2;
+  --sl-color-gray-7: #f7f6f3;
+  --sl-color-black: #ffffff;
+  --sl-color-accent-low: #f6ddd6;
+  --sl-color-accent: #a8321f;  /* link underline in light, 6.7:1 */
+  --sl-color-accent-high: #6e2014;
+  --sl-color-text-accent: var(--sl-color-accent);
+  --sl-color-bg-nav: var(--sl-color-gray-7);
+  --sl-color-hairline: var(--sl-color-gray-6);
+  --sl-color-hairline-shade: var(--sl-color-gray-6);
+  color-scheme: light;
+}
+
+/* =====================================================================
+   3. SPEC: links (site-wide). Red link text reads as "missing page" to
+      wiki readers, so links keep the text colour and carry the accent
+      in the underline only.
+   ===================================================================== */
+.sl-markdown-content a:not(:where(.not-content *)) {
+  color: inherit;
+  text-decoration-color: var(--sl-color-text-accent);
+  text-underline-offset: .2em;
+}
+.sl-markdown-content a:not(:where(.not-content *)):hover { color: inherit; text-decoration-thickness: 2px; }
+
+/* =====================================================================
+   4. SPEC: home.css. Identical to the Handbook's, plus .formula.
+      Scoped to splash pages (no sidebar), so inner pages are untouched.
+   ===================================================================== */
+:root:not([data-has-sidebar]) {
+  --sl-content-width: 39rem;
+  --sl-line-height: 1.6;
+  --sl-text-h1: 2.25rem;
+  --sl-text-h2: 1.25rem;
+}
+:root:not([data-has-sidebar]) .content-panel + .content-panel { border-top: 0; padding-top: 0; }
+:root:not([data-has-sidebar]) .sl-markdown-content { font-size: 1.0625rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content h2 { margin-top: 2rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content dt { font-weight: 600; }
+:root:not([data-has-sidebar]) .sl-markdown-content dd { padding-inline-start: 0; }
+:root:not([data-has-sidebar]) .sl-markdown-content hr { margin-top: 2.5rem; border: 0; border-top: 1px solid var(--sl-color-gray-5); }
+:root:not([data-has-sidebar]) .sl-markdown-content hr ~ p { font-size: 1rem; color: var(--sl-color-gray-3); }
+:root:not([data-has-sidebar]) .sl-markdown-content hr + p a { white-space: nowrap; }
+:root:not([data-has-sidebar]) .sl-markdown-content .status { color: var(--sl-color-gray-3); }
+:root:not([data-has-sidebar]) .sl-markdown-content .status strong { color: inherit; }
+:root:not([data-has-sidebar]) .sl-markdown-content :is(p, dd) { text-wrap: pretty; }
+:root:not([data-has-sidebar]) .sl-markdown-content dd a { white-space: nowrap; }
+:root:not([data-has-sidebar]) .sl-markdown-content .formula { padding-inline-start: 1.5rem; color: var(--sl-color-white); }
+:root:not([data-has-sidebar]) .sl-markdown-content .formula span { white-space: nowrap; }
+:root:not([data-has-sidebar]) .copy-markdown-container { display: none; }
+/* Figure: one inline SVG per width, drawn 1:1 so labels stay at text size. */
+:root:not([data-has-sidebar]) .sl-markdown-content .fig { margin-block: 2rem; }
+:root:not([data-has-sidebar]) .fig svg { display: block; max-width: 100%; height: auto; overflow: visible; font-family: inherit; }
+:root:not([data-has-sidebar]) .fig .fig-wide { display: none; }
+@media (min-width: 40em) {
+  :root:not([data-has-sidebar]) .fig .fig-wide { display: block; }
+  :root:not([data-has-sidebar]) .fig .fig-narrow { display: none; }
+}
+:root:not([data-has-sidebar]) .fig .g { stroke: var(--sl-color-gray-6); stroke-width: 1; }
+:root:not([data-has-sidebar]) .fig .ax { stroke: var(--sl-color-gray-5); stroke-width: 1; }
+:root:not([data-has-sidebar]) .fig .c { fill: none; stroke: var(--sl-color-gray-3); stroke-width: 1.75; stroke-linejoin: round; }
+:root:not([data-has-sidebar]) .fig .c.hi { stroke: var(--sl-color-text-accent); stroke-width: 2.25; }
+:root:not([data-has-sidebar]) .fig .d { fill: var(--sl-color-gray-3); }
+:root:not([data-has-sidebar]) .fig .d.hi, :root:not([data-has-sidebar]) .fig .m { fill: var(--sl-color-text-accent); }
+:root:not([data-has-sidebar]) .fig .m { stroke: var(--sl-color-black); stroke-width: 2; }
+:root:not([data-has-sidebar]) .fig .r { fill: none; stroke: var(--sl-color-gray-3); stroke-width: 1.5; }
+:root:not([data-has-sidebar]) .fig .t { fill: var(--sl-color-gray-3); }
+:root:not([data-has-sidebar]) .fig .l { fill: var(--sl-color-gray-2); }
+:root:not([data-has-sidebar]) .fig figcaption { margin-top: 1rem; font-size: 1rem; color: var(--sl-color-gray-3); text-wrap: pretty; }
+
+/* =====================================================================
+   5. Flourish (round-3 placeholder: option 1, Source Serif 4 + warm paper).
+      Swappable as one block.
+   ===================================================================== */
+:root:not([data-has-sidebar]) h1, :root:not([data-has-sidebar]) .sl-markdown-content h2 { font-family: 'Source Serif 4 Variable', Georgia, serif; font-weight: 600; letter-spacing: -0.005em; }
+:root:not([data-has-sidebar]) .sl-markdown-content h2 { font-size: 1.375rem; }
+:root:not([data-has-sidebar]) { --sl-color-black: #181715; }
+:root:not([data-has-sidebar])[data-theme='light'] { --sl-color-black: #fbf9f4; }
