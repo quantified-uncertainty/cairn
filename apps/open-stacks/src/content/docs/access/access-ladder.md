@@ -3,7 +3,7 @@ title: The Access Ladder
 description: Every legal route to a book or paper, ordered from free to expensive (open and author copies, public domain, Open Library lending, public library cards, walk-in academic access, cheap subscriptions, UC Berkeley Extension or visiting-scholar status, buying), with each rung's cost, setup time, coverage on small spot-check samples, license limits and indexability as of October 2026. Includes a 30-book worked example, a cost-against-coverage table, and the minimal-cost bundle for a Bay Area researcher.
 ---
 
-*Status: draft, October 2026. Prices, eligibility rules and product statuses are as of 2026-10-15 unless another date is given; the main pricing, eligibility and license pages cited below were re-checked that day. Every book-coverage figure comes from one of two small, hand-picked spot-checks run that day: 55 canonical books (R01) and 33 technical plus 20 humanities books (R03). They are labeled as samples wherever they appear. The 30-book worked example reuses those per-title lookups plus one new Libby lookup (Popper, 2026-10-15); estimates in it are marked. Paper-coverage figures come from Walters (*PNAS*, 2025) as recomputed in [Open Papers and Preprints](/access/open-papers/). Unverified: whether SFPL's JSTOR link works from home, whether O'Reilly's library edition carries the full catalog, and whether a "Start Anytime" Extension course qualifies for the \$25 UC Berkeley card. Sources: the [R01](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R01-open-books.md), [R02](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R02-open-papers-and-shadow-libraries.md) and [R03](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R03-paid-and-institutional-access.md) dossiers, the other Part I chapters, and primary sources linked inline.*
+*Status: draft, October 2026. Prices, eligibility rules and product statuses are as of 2026-10-15 unless another date is given; the main pricing, eligibility and license pages were re-checked that day. Book-coverage figures come from two small, hand-picked spot-checks run that day (55 canonical books in R01; 33 technical and 20 humanities books in R03) and are labeled as samples. The 30-book worked example reuses those lookups plus one new Libby lookup (Popper). Paper-coverage figures are Walters (*PNAS*, 2025) as recomputed in [Open Papers and Preprints](/access/open-papers/). Unverified: whether SFPL's JSTOR link works from home, whether O'Reilly's library edition carries the full catalog, and whether a "Start Anytime" Extension course qualifies for the \$25 UC Berkeley card. Sources: the [R01](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R01-open-books.md), [R02](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R02-open-papers-and-shadow-libraries.md) and [R03](https://github.com/quantified-uncertainty/cairn/blob/main/apps/open-stacks/research/R03-paid-and-institutional-access.md) dossiers, the other Part I chapters, and primary sources linked inline.*
 
 The other Part I chapters each cover one kind of access. This one puts them in a single order: cash cost per title, then setup time. Check every free route before spending anything, and spend money on the residue, not on the whole list. For each rung the chapter gives the cost, the setup time, the share of a reading list it covered in the spot-checks, what its license forbids, and whether a tool you build can index it. A worked example then routes a 30-book list in probability, ML, forecasting and philosophy, and the chapter ends with the cheapest bundle for a Bay Area researcher.
 
@@ -103,11 +103,11 @@ Of the 55 books, lane A holds 7 (13%) and lanes A–C together hold 24 (44%). Fo
 
 ### 3. Open Library and Internet Archive lending
 
-**What it adds.** With a free account you get one-hour renewable loans in the BookReader. Some titles offer 14-day loans as LCP-encrypted EPUB or PDF. You can hold up to 10 books at a time ([Internet Archive help](https://help.archive.org/help/borrowing-from-the-lending-library/)). Lending shrank after *Hachette v. Internet Archive*: the Second Circuit affirmed on 2024-09-04, and the Archive did not seek Supreme Court review ([IA blog, 2024-12-04](https://blog.archive.org/2024/12/04/end-of-hachette-v-internet-archive/)). More than 500,000 books were reportedly removed from lending (secondary source).
+**What it adds.** With a free account you get one-hour renewable loans in the BookReader. Some titles offer 14-day loans as LCP-encrypted EPUB or PDF. You can borrow up to 10 books at a time ([Internet Archive help](https://help.archive.org/help/borrowing-from-the-lending-library/)). Lending shrank after *Hachette v. Internet Archive*: the Second Circuit affirmed on 2024-09-04, and the Archive did not seek Supreme Court review ([IA blog, 2024-12-04](https://blog.archive.org/2024/12/04/end-of-hachette-v-internet-archive/)). More than 500,000 books were reportedly removed from lending (secondary source).
 
 **Coverage (samples).** In R01, lending adds 6 of 55 books with a borrowable English edition: Bertsekas & Tsitsiklis, Feller, Géron (1st edition only), Savage, Parfit and Kuhn. That takes the free-to-read total from 24 to 30 (55%). Four of the six 1930–1989 classics are borrowable in English, so this is the rung that fills the 20th-century hole. In R03's technical set it adds no current edition.
 
-**Restrictions.** The search API's `ebook_access` flag overstates availability. It is a work-level maximum over all editions, translations included. Of 12 R01 books flagged "borrowable", six are lendable only as a translation or a study guide: Kahneman, Mankiw, Diamond, Harari, Acemoglu & Robinson, Brooks. (R03's table lists Kahneman as borrowable; R01's verification pass corrected that.) Lendable editions are often old: Géron's 1st edition, not the 3rd. Popular titles have waitlists.
+**Restrictions.** The search API's `ebook_access` flag overstates availability. It is a work-level maximum over all editions, translations included. Of 12 R01 books flagged "borrowable", six are lendable only as a translation or a study guide: Kahneman, Mankiw, Diamond, Harari, Acemoglu & Robinson, Brooks. Lendable editions are often old: Géron's 1st edition, not the 3rd. Popular titles have waitlists.
 
 **Can a tool index it?** Availability, yes. Query `https://openlibrary.org/search.json?q=<title>&fields=key,title,ebook_access`, then the work's `editions.json`, and check the language of the lendable edition ([Open Library search API](https://openlibrary.org/dev/docs/api/search)). The loaned text, no. R01 suggests a scheduler that prepares a study guide from the table of contents and public reviews, never from the loan.
 
@@ -133,7 +133,7 @@ The technical unions are computed from R03's title table; the humanities breakdo
 
 **Restrictions.**
 
-- **O'Reilly.** Its membership agreement bans "Web spiders" and AI training. It also bans using content "as input or a prompt to a machine learning or AI system", and caps quotes at 250 words ([O'Reilly](https://www.oreilly.com/membership-agreement/)). I put it at [~75%] that these terms bind library patrons.
+- **O'Reilly.** Its membership agreement bans "Web spiders" and AI training. It also bans using content "as input or a prompt to a machine learning or AI system", and caps quotes at 250 words ([O'Reilly](https://www.oreilly.com/membership-agreement/)). The agreement covers users reached through a "Sponsor" but does not mention libraries; I put it at [~75%] that these terms bind library patrons.
 - **JSTOR.** It says public-library access is walk-in only ([JSTOR](https://about.jstor.org/products/fees/public-libraries/)). Yet SFPL lists a remote proxy link; I put it at [~50%] that the link works from home.
 - **Remote e-cards are closing.** LAPL's instant e-card is now for Los Angeles City residents only, because "licensing agreements with our digital content vendors require" it ([LAPL](https://lapl.org/library-card/borrowing-policies-and-information)). Orlando's Orange County Library System stopped issuing fee cards on 2026-07-31 ([OCLS](https://ocls.org/using-library/types-cards/what-are-types-cards/)).
 
@@ -152,7 +152,7 @@ The technical unions are computed from R03's title table; the humanities breakdo
 | SF State public research stations | Free; "no account or login is required" | On site; downloads can be saved to your own USB drive | — | [SFSU accounts](https://library.sfsu.edu/accounts); [SFSU USB](https://library.sfsu.edu/community-borrowers) |
 | SF State Community Borrowers | \$50/yr | No off-campus access | Physical borrowing | [SFSU](https://library.sfsu.edu/community-borrowers) |
 | Stanford day pass | Free, 7 days a year (14 for alumni) | Designated public computers | No | [Stanford](https://library.stanford.edu/about-stanford-libraries/visitor-access) |
-| Stanford independent researcher | \$35 per 2 weeks; \$75/month; \$150 per 3 months; \$450/yr (\$1,000/yr with borrowing) | On site only | With the \$1,000 tier | same |
+| Stanford independent researcher | \$35 per 2 weeks; \$75/month; \$150 per 3 months; \$450/yr | On site only; off-campus use "requires a SUNet ID" | Only on access-and-borrowing cards: \$325 per 3 months to \$1,000/yr | same |
 
 **Coverage.** Neither sample measured this rung for books. For papers, one university library's subscriptions alone gave full text for 73% of 875 works cited in 2023 review articles (72% in the final version), against 67% (48%) for Google Scholar's free links ([Walters, *PNAS* 2025](https://pmc.ncbi.nlm.nih.gov/articles/PMC12260569/)). Combined with the free legal routes, the library reached 88% (85% final), recomputed in [Open Papers and Preprints](/access/open-papers/). It mattered most for final versions (58% free, 85% with the library), work published before 2001 (36% to 67%) and cited books (3% to 30%). The library was Manhattan University's, with subscriptions of "more than \$500,000 per year"; UC Berkeley's or Stanford's collections should do better [~80%].
 
@@ -173,7 +173,7 @@ The technical unions are computed from R03's title table; the humanities breakdo
 | [Springer+](https://link.springer.com/product/springer-plus) Basic / Standard | \$39.99/month for 10 units / \$299 per 6 months for 120 units | Springer Nature chapters and articles; a whole ebook costs at most 7 units | — | 12 hours to download after spending a unit; unused units expire; "not licensed for use by companies or organizations" |
 | [DeepDyve](https://www.deepdyve.com/pricing) | \$59/month or \$499/yr | 35M+ paywalled papers, streamed | Papers | Printing capped at 40 pages a month |
 
-Kindle Unlimited's price could not be verified in October 2026, and its catalog claim ("over 5 million digital titles") could not be re-checked in the verification pass. Kobo Plus blocked automated checks.
+Kindle Unlimited's price and Kobo Plus could not be checked in October 2026 (blocked pages).
 
 **Restrictions.** Every plan above is sold to individuals; O'Reilly's and Springer+'s terms say so explicitly, so none can be pooled into a team tool. JSTOR bans LLM training and automated downloading.
 
@@ -193,7 +193,7 @@ Prices and catalogs are in [Cheap Subscriptions](/access/subscriptions/).
 
 **What it adds.** Remote access to a research university's licensed journals, databases and ebooks.
 
-- **Extension.** UC Berkeley Extension students "enrolled in a semester-length (10+ week) course" can buy a six-month library card "for a fee of \$25". With it, "remote access to licensed electronic resources such as journals, databases, and e-books are available" ([UCB Library](https://www.lib.berkeley.edu/find/borrow-renew), checked 2026-10-15). The \$100 California-resident card does not include remote access. The real price is the course. In a sample of 76 open online Extension sections on 2026-10-15, courses of 2 or more units cost \$665–\$2,100 (median \$1,045). The cheapest course likely to qualify was a 3-unit "Start Anytime" course at \$810 ([ENGLISH X135A](https://extension.berkeley.edu/search/publicCourseSearchDetails.do?method=load&courseId=41071); sample and method in [University and Employer Access](/access/academic-and-employer/)). That puts the route at about \$835 per six months, or \$1,670 a year. A 3-unit Start Anytime course runs at least 90 days, but whether the library counts it as "semester-length" is unconfirmed [~60%]; ask the library's Privileges Desk before enrolling. Cal Alumni Association membership (\$75/yr, "open to all") gives "\$50 discount per eligible UC Berkeley Extension course" ([CAA](https://alumni.berkeley.edu/join/alumni-member-benefits/)); whether that applies to non-alumni members is unverified.
+- **Extension.** UC Berkeley Extension students "enrolled in a semester-length (10+ week) course" can buy a six-month library card "for a fee of \$25", with "remote access to licensed electronic resources such as journals, databases, and e-books" ([UCB Library](https://www.lib.berkeley.edu/find/borrow-renew), checked 2026-10-15). The \$100 California-resident card has no remote access. The real price is the course. In a sample of 76 open online sections on 2026-10-15, courses of 2 or more units cost \$665–\$2,100 (median \$1,045); the cheapest likely to qualify was a 3-unit "Start Anytime" course at \$810 ([ENGLISH X135A](https://extension.berkeley.edu/search/publicCourseSearchDetails.do?method=load&courseId=41071); method in [University and Employer Access](/access/academic-and-employer/)). That makes the route about \$835 per six months. A 3-unit Start Anytime course runs at least 90 days, but whether the library counts it as "semester-length" is unconfirmed [~60%]; ask the library's Privileges Desk before enrolling. Cal Alumni Association members (\$75/yr, "open to all") get a "\$50 discount per eligible UC Berkeley Extension course" ([CAA](https://alumni.berkeley.edu/join/alumni-member-benefits/)); whether non-alumni members qualify is unverified.
 - **Visiting scholar.** Requires a department appointment and a faculty sponsor. The University Services Fee is \$750 for the first year and \$1,500 for a consecutive second year, and the department may charge its own fee ([VSPA](https://vspa.berkeley.edu/about/university-services-fee)). It gives full remote access.
 - **Employer licenses** belong here too: O'Reilly Teams at \$499 per member per year, and JSTOR's corporate collection at \$9,000–\$65,000 a year. See [University and Employer Access](/access/academic-and-employer/).
 
@@ -201,7 +201,7 @@ Prices and catalogs are in [Cheap Subscriptions](/access/subscriptions/).
 
 **Restrictions and indexing.** Institutional license terms apply. An academic affiliation is also the usual gateway to publisher text-and-data-mining licenses. Springer Nature gives TDM rights "at no additional cost" to academic subscribers for non-commercial research ([Springer Nature](https://www.springernature.com/gp/researchers/text-and-data-mining)). Elsevier gives researchers at subscribing academic institutions a personal API key ([Elsevier](https://www.elsevier.com/about/policies-and-standards/text-and-data-mining)). Whether an Extension student or a visiting scholar qualifies is unverified.
 
-**Decision.** If you would take a 10+ week Extension course anyway, the card is a \$25 add-on for six months of remote access, about \$4 a month. If you would not, \$1,670 a year buys more than twice a first-year visiting-scholar appointment; pay it only for a bounded project such as a six-month literature review across many publishers. Take the visiting-scholar route if you have a real collaborator: at \$750 it costs less than DeepDyve, JPASS and Perlego Complete bought together (\$897 a year) and covers far more [inference].
+**Decision.** If you would take a 10+ week Extension course anyway, the card is a \$25 add-on for six months of remote access, about \$4 a month. If you would not, keeping the card all year costs about \$1,670, more than twice the first-year visiting-scholar fee; pay for one six-month window only for a bounded project, such as a literature review across many publishers. Take the visiting-scholar route if you have a real collaborator: at \$750 it costs less than DeepDyve, JPASS and Perlego Complete bought together (\$897 a year) and covers far more [inference].
 
 ### 8. Buying used or new
 
@@ -229,7 +229,7 @@ The technical residue after rung 4 (CLRS, AIMA, CS:APP, *Gödel, Escher, Bach*, 
 
 **Can a tool index it?** For print you own, a private scan-and-search index is rated green/yellow in [The Legal Map](/building/legal-map/). *Bartz v. Anthropic* held that scanning purchased print books was fair use, on facts where each print original was destroyed and the scans stayed in-house ([order, 2025-06-23](https://storage.courtlistener.com/recap/gov.uscourts.cand.434709/gov.uscourts.cand.434709.231.0.pdf)); keeping the print copy as well is outside those facts. *Hachette v. Internet Archive* held that digitizing and lending books is not transformative. Breaking ebook DRM to text-mine is rated red outside a narrow exemption for university researchers. **If you want a tool to index a book you buy, buy print or a DRM-free edition.**
 
-**Decision.** Buy the last few titles on a list, and any book you will annotate or reread for years. Buy early when the holds queue is longer than you will wait: *Superforecasting* at \$9.38 beats a months-long wait.
+**Decision.** Buy the last few titles on a list, and any book you will annotate or reread for years. Buy early when the holds queue is longer than you will wait and the book is cheap: *Superforecasting* cost \$9.38 and *Gödel, Escher, Bach* \$8.23.
 
 ## Papers on the same ladder
 
@@ -271,14 +271,14 @@ Emailing the corresponding author is legal and common, but no study measures how
 | 14 | Russell & Norvig, *Artificial Intelligence: A Modern Approach* 4e | 8 | No free text ([site](https://aima.cs.berkeley.edu/) has front matter only); no library or subscription copy. \$33.15 new (probably international), \$127.80 used |
 | 15 | Géron, *Hands-On Machine Learning* 3e | 4 | O'Reilly via SFPL; Libby at San José, Santa Clara County and LAPL. Lending has only the 1st edition |
 | 16 | Tetlock & Gardner, *Superforecasting* | 4 | SFPL Libby. Used \$9.38 |
-| 17 | Kahneman, *Thinking, Fast and Slow* | 4 | SFPL Libby, 13 copies / 51 holds (about 8–12 weeks). Lendable scans are translations only |
+| 17 | Kahneman, *Thinking, Fast and Slow* | 4 | SFPL Libby, 13 copies / 51 holds (an estimated 8–12 weeks). Lendable scans are translations only |
 | 18 | Hyndman & Athanasopoulos, *Forecasting: Principles and Practice* 3e | 1 | [Free online](https://otexts.com/fpp3/) |
 | 19 | Hubbard, *How to Measure Anything* 3e | 4 | O'Reilly via SFPL; also Santa Clara County Libby |
 | 20 | Osborne & Rubinstein, *A Course in Game Theory* | 1 | ["My 8 books are free"](https://arielrubinstein.tau.ac.il/books.html) |
 | 21 | Savage, *The Foundations of Statistics* | 3 | Lendable English edition |
 | 22 | Pearl & Mackenzie, *The Book of Why* | 4 | SFPL Libby (lending not checked) |
-| 23 | Kuhn, *The Structure of Scientific Revolutions* | 3 | Lendable English edition; also on Perlego (US) |
-| 24 | Parfit, *Reasons and Persons* | 3 | Lendable English edition |
+| 23 | Kuhn, *The Structure of Scientific Revolutions* | 3 | Lendable English edition; also Santa Clara County Libby and Perlego (US) |
+| 24 | Parfit, *Reasons and Persons* | 3 | Lendable English edition; also LAPL Libby |
 | 25 | Popper, *The Logic of Scientific Discovery* | 4 (LAPL) or 6 | Lendable only in translation. In no Bay Area Libby; LAPL's Libby has 1 ebook copy with 4 holds ([OverDrive catalog](https://thunder.api.overdrive.com/v2/libraries/lapl/media?query=logic%20of%20scientific%20discovery), 2026-10-15). Without LAPL, Perlego (US rights) |
 | 26 | MacAskill, Bykvist & Ord, *Moral Uncertainty* | 1 | [DOAB](https://directory.doabooks.org/handle/20.500.12854/30579), CC BY-NC-ND |
 | 27 | Hume, *A Treatise of Human Nature* | 2 | [Gutenberg](https://www.gutenberg.org/ebooks/4705) |
@@ -300,31 +300,29 @@ Emailing the corresponding author is legal and common, but no study measures how
 | 6. One Perlego month | Popper, if you have no LAPL card | 27 | 90% | \$15–\$27 (tier not checked) | Minutes |
 | 8. Buy used | Jaynes, AIMA, *Gödel, Escher, Bach* | 30 | 100% | \$111.37 | Days |
 
-**Total: \$111–\$138 for all 30 titles.** If Link+ holds the three print books, the total falls to \$0–\$27; I did not check. For comparison, buying the whole list: the 12 titles priced on AbeBooks average \$44 (\$526.90 in total), so all 30 would cost on the order of \$1,000–\$1,300 [inference].
+**Total: \$111–\$138 for all 30 titles**, or about \$206 if you want a used US edition of AIMA rather than the cheap "new" listing, which is probably an international edition. If Link+ holds the three print books, the total falls to \$0–\$27; I did not check. For comparison, buying the whole list: the 12 titles priced on AbeBooks average \$44 (\$526.90 in total), so all 30 would cost on the order of \$1,000–\$1,300 [inference].
 
-**The license view of the same list.** Only Hume is lane A, meaning redistributable. Two books are lane B (Murphy, *Moral Uncertainty*) and ten are lane C (gratis). So a personal tool can hold the full text of 13 of 30, or 16 if you scan the three print books you buy. The other 14 (lending, library, Perlego) can enter it only as metadata, a table of contents, your own notes and a deep link. For a Claude-powered reading tool, roughly half the list will be "ask the text" and half "ask the catalog and your notes".
+**The license view of the same list.** Only Hume is lane A, meaning redistributable. Two books are lane B (Murphy, *Moral Uncertainty*) and ten are lane C (gratis). So a personal tool can hold the full text of 13 of 30, or 16 if you scan the three print books you buy (see rung 8 for the legal caveat). The other 14 (lending, library, Perlego) can enter it only as metadata, a table of contents, your own notes and a deep link. For a Claude-powered reading tool, roughly half the list will be "ask the text" and half "ask the catalog and your notes".
 
 ## Cost against coverage
 
-Read this table as a chart. Rows run up the ladder in order of cash spent; each cell is cumulative coverage for one sample.
+Read this table as a chart. Rows run up the ladder in order of cash spent; each cell is cumulative coverage for one sample. The humanities column counts Libby and Perlego only; lending copies of Kuhn and Parfit would add a little at the SFPL row.
 
 | Step | Cumulative cash | Technical, R03 (n = 33) | Humanities, R03 (n = 20) | Worked example (n = 30) |
 |---|---|---|---|---|
-| Free routes (rungs 1–3) | \$0 | 11 (33%) | At least 2 (10%) via lending; free copies not checked | 18 (60%) |
+| Free routes (rungs 1–3) | \$0 | 11 (33%) | At least 2 (10%) via lending | 18 (60%) |
 | + SFPL card | \$0, one visit | 28 (85%) | 10 (50%) | 26 (87%) |
 | + five more Bay Area cards | \$0, two afternoons | 28 (85%) | 16 (80%) | 26 (87%) |
 | + LAPL | \$0, a trip to LA | 29 (88%) | 19 (95%) | 27 (90%) |
-| + one Perlego month | \$15–\$27 | 29 (88%) | 19 (95%); 18 (90%) if you skipped LAPL | 27 (90%) |
+| + one Perlego month | \$15–\$27 | 29 (88%) | 19 (95%); 18 (90%) without LAPL | 27 (90%) |
 | + buy the residue | Technical \$143; example \$111 | 33 (100%) | 19; Hacking not priced | 30 (100%) |
 
-From the SFPL row down, the humanities column counts Libby and Perlego only; lending copies of Kuhn and Parfit and any free copies would add a little.
-
-The shape is a step up at \$0, then a plateau. Almost all coverage arrives before any money is spent, most of it at the SFPL step. After that, money buys little:
+The shape is a step up at \$0, then a plateau: almost all coverage arrives before any money is spent, most of it at the SFPL step. After that, money buys little:
 
 | Purchase | Cost per additional title |
 |---|---|
-| One Perlego month, humanities, without LAPL | About \$13.50 |
-| The technical residue, bought used | About \$36 |
+| One Perlego month, humanities, without LAPL (2 titles) | \$7.50–\$13.50 (Essential or Complete; tier not checked) |
+| The technical residue, at the cheapest listings | About \$36 |
 | O'Reilly Individual, on top of an SFPL card | No new titles for \$499 |
 
 ## The minimal-cost bundle for a Bay Area researcher
@@ -339,7 +337,7 @@ The shape is a step up at \$0, then a plateau. Almost all coverage arrives befor
 
 **Tier 1: \$0, two afternoons and the occasional trip.**
 
-- **The library cards.** The South Bay loop (Peninsula, San José, Santa Clara County) and the East Bay loop (Oakland, Berkeley) are planned in [Public Libraries](/access/public-libraries/). Add LAPL on your next trip to Los Angeles.
+- **The library cards.** The Peninsula–South Bay loop (Peninsula Library System, San José, Santa Clara County) supplied nearly all the extra titles in the samples; the East Bay loop (Oakland, Berkeley) adds Berkeley's JSTOR link and in-library physics journals. Both are planned in [Public Libraries](/access/public-libraries/). Add LAPL on your next trip to Los Angeles.
 - **Print books.** Use Link+ before interlibrary loan.
 - **Paywalled papers.** Batch them into walk-in visits: SF State's stations, UC Berkeley's public computers, Stanford's seven day passes.
 
@@ -351,7 +349,7 @@ The shape is a step up at \$0, then a plateau. Almost all coverage arrives befor
 
 **Tier 3: institutional, when the papers backlog justifies it.**
 
-- **UC Berkeley Extension** (\$25 for six months, plus a course whose fee is unverified) if you would take a 10+ week course anyway.
+- **UC Berkeley Extension** (\$25 for six months plus the course; about \$835 per six months at the cheapest course likely to qualify) if you would take a 10+ week course anyway.
 - **Visiting-scholar status** (\$750 for the first year, plus a faculty sponsor) if you have a real collaborator.
 - **An employer license,** if you have one, subject to its AI and TDM limits.
 
@@ -366,16 +364,16 @@ The shape is a step up at \$0, then a plateau. Almost all coverage arrives befor
 
 | Step | Marginal cash | Marginal time | Technical (n = 33) | Humanities (n = 20) | Papers | Verdict |
 |---|---|---|---|---|---|---|
-| Free routine (author pages, DOAB, Gutenberg, Unpaywall, Scholar) | \$0 | About 1 minute per title | 0 → 11, +1 partial | Not measured | 67% any version, 48% final | Always first |
+| Free routine (author pages, DOAB, Gutenberg, Unpaywall, Scholar) | \$0 | About 1 minute per title [inference] | 0 → 11, +1 partial | Not measured | 69% any version, 51% final (Unpaywall + Scholar, recomputed) | Always first |
 | Open Library account | \$0 | 5 minutes, plus edition checks | +0 current editions | At least +2 | — | Essential for 1930–1989 classics (R01: 24 → 30 of 55) |
 | SFPL card | \$0 | One ID visit | **+17 → 28** | **+10 → 10** | JSTOR link [~50% remote]; EBSCO, Gale | The single largest gain |
-| South Bay and East Bay cards | \$0 | Two afternoons | +0 titles; more copies | +6 → 16 | Berkeley JSTOR link; walk-in physics journals | Worth it for humanities and holds |
+| Peninsula–South Bay and East Bay cards | \$0 | Two afternoons | +0 titles; more copies | +6 → 16 (5 from the Peninsula–South Bay loop) | Berkeley JSTOR link; in-library physics journals | Worth it for humanities and holds |
 | LAPL card | \$0 | A trip to LA | +1 (CLRS; \$16.25 used) | +3 → 19 | ProQuest Central, OECD, HeinOnline (remote use not checked) | Only when already in LA |
-| Walk-in academic | \$0 (cards \$50–\$450) | Half a day per visit [inference] | Not measured | Not measured | Final versions: 72% vs 48% free | Batch paywalled papers |
+| Walk-in academic | \$0 (cards \$50–\$1,000) | Half a day per visit [inference] | Not measured | Not measured | Final versions: 85% with the free routes vs 58% free alone (recomputed) | Batch paywalled papers |
 | Perlego month | \$15–\$27 | Minutes | +0 | +2 if you skipped LAPL | — | Humanities project bursts |
 | JPASS | \$199/yr | Minutes | — | — | 120 PDFs at \$1.66 | Only if JSTOR-heavy and SFPL's link fails |
-| Extension card | \$25 per 6 months + course | A 10+ week course | Not measured | Not measured | Full UC Berkeley e-collections | Best value if you would take the course anyway |
-| Visiting scholar | \$750/yr + sponsor | Weeks to months | Not measured | Not measured | Full remote access | Only with a real collaboration |
+| Extension card | \$25 per 6 months + course (\$810+) | A 10+ week course | Not measured | Not measured | Full UC Berkeley e-collections | Best value if you would take the course anyway; otherwise about \$1,670/yr |
+| Visiting scholar | \$750 first year (\$1,500 second) + sponsor | Weeks to months | Not measured | Not measured | Full remote access | Only with a real collaboration |
 | Buy the residue | \$8–\$70 per title | Days | +4 → 33 (\$143 with LAPL) | Hacking (unpriced) | Pay-per-view \$29.95–\$39.95 | For the last few titles |
 
 ## For tool builders: the ladder as a resolver
@@ -399,12 +397,13 @@ The rules behind the table are in [The Legal Map](/building/legal-map/). In shor
 
 - **Does SFPL's JSTOR link work from home?** Any cardholder can test it in five minutes. The current estimate is [~50%]. The answer decides whether JPASS ever makes sense for a Bay Area reader.
 - **Does O'Reilly for Public Libraries carry the full book catalog,** and do the membership agreement's AI clauses bind library patrons? Estimates: [~70%] and [~75%]. Sample 200 sitemap ISBNs through a library login, and find the library-edition terms.
-- **What does the cheapest qualifying UC Berkeley Extension course cost,** and do "Start Anytime" online courses count as 10+ week courses for the \$25 card? Ask Extension or the library, or price a course in the catalog by hand.
+- **Does a 3-unit "Start Anytime" Extension course (\$810 in the October 2026 sample) count as a 10+ week course for the \$25 card?** Current estimate [~60%]. Ask the UC Berkeley Library's Privileges Desk, naming the course, before enrolling. Classroom sections were not priced and may be cheaper.
 - **Do Extension cardholders or visiting scholars qualify for publisher TDM programs** (Springer Nature, Elsevier) as researchers at a subscribing academic institution?
 - **How much of the residue sits in rungs 4 (Link+), 5 and 7?** Check Jaynes, AIMA, CS:APP, *Gödel, Escher, Bach* and Hacking against the Link+ catalog and UC Berkeley's e-collections.
 - **Lending status for the R03-only titles.** Fourteen technical and fifteen humanities titles were never checked against Open Library at edition level.
 - **Replace the fame-biased samples.** Draw about 300 titles at random from public syllabi and run the whole ladder on them. That would give a coverage curve with honest error bars for each field.
-- **How fast is the ladder decaying?** LAPL's e-card restriction and Orlando's fee-card closure happened within a few years; neither could be dated precisely. Keep a registry of routes with last-verified dates and measure closures per year.
+- **What do the paper rungs give in this wiki's fields?** Walters' seven fields exclude ML, statistics and philosophy. Rerun his protocol on 100 works cited in recent ML or statistics reviews, adding arXiv as a separate tool.
+- **How fast is the ladder decaying?** OCLS ended its fee cards on 2026-07-31; LAPL's e-card restriction could not be dated. Keep a registry of routes with last-verified dates and measure closures per year.
 
 ## Related pages
 

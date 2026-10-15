@@ -377,7 +377,8 @@ tr.el.unv td{background-image:repeating-linear-gradient(135deg,var(--red-wash) 0
 .json .s{color:var(--blue-ink)}
 .json .n{color:var(--amber)}
 .json .b{color:var(--red)}
-.json .hit{background:var(--blue-wash);outline:1.5px solid var(--blue);border-radius:2px}
+.json .hit{background:var(--blue-wash-2);box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.json .hit .hit{background:transparent}
 .vt{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0 18px}
 .vt td,.vt th{padding:5px 6px;border-bottom:1px solid var(--rule-2);text-align:left;vertical-align:top}
 .vt th{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);border-bottom:1.5px solid var(--ink)}
@@ -569,7 +570,7 @@ tr.el.unv td{background-image:repeating-linear-gradient(135deg,var(--red-wash) 0
 </aside>
 
 <div class="sheet" id="compose" role="dialog" aria-modal="true" aria-labelledby="composeTitle" aria-hidden="true">
-  <div class="dhead"><div><h2 id="composeTitle">Compose a lens for any chapter</h2><p>Nine public-domain books, 182 chapters. Claude picks components from the kit; the page verifies every pointer before anything renders.</p></div><button class="btn x icon-btn" data-close aria-label="Close">✕</button></div>
+  <div class="dhead"><div><h2 id="composeTitle">Compose a lens for any chapter</h2><p id="composeSub">Nine public-domain books. Claude picks components from the kit; the page verifies every pointer before anything renders.</p></div><button class="btn x icon-btn" data-close aria-label="Close">✕</button></div>
   <div class="cbody"><div class="blist" id="blist" role="listbox" aria-label="Books"></div><div class="clist" id="clist" role="listbox" aria-label="Chapters"></div></div>
   <div class="cfoot">
     <div class="row"><div class="sel" id="csel"></div></div>
@@ -721,7 +722,11 @@ function fmtDec(v) {
 const groupInt = (b) => { const s0 = babs(b).toString(); return (b < 0n ? '−' : '') + (s0.length > 4 ? s0.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : s0); };
 function fracEl(x, opts = {}) {
   if (!x) return h('span', { class: 'stv' }, '—');
-  if (opts.like && x.d !== 1n && opts.like.d % x.d === 0n && opts.like.d !== x.d) { const k = opts.like.d / x.d; x = { n: x.n * k, d: opts.like.d }; }
+  if (opts.like && x.d !== 1n) {
+    const L = opts.like;
+    if (x.n * L.d === L.n * x.d) x = L;
+    else if (L.d % x.d === 0n && L.d !== x.d) { const k = L.d / x.d; x = { n: x.n * k, d: L.d }; }
+  }
   if (x.d !== 1n && Math.abs(toNum(x)) >= 1 && !opts.keep) return h('span', { class: 'stv num' }, fmtDec(toNum(x)));
   if (x.d === 1n) return h('span', { class: 'stv num' }, babs(x.n).toString().length > 24 ? fmtDec(toNum(x)) : groupInt(x.n));
   const ns = babs(x.n).toString(), ds = x.d.toString();
@@ -730,6 +735,7 @@ function fracEl(x, opts = {}) {
   if (opts.bare) return f;
   return h('span', { class: 'stv num' }, f, opts.dec === false ? null : h('span', { class: 'd' }, '≈ ' + fmtDec(toNum(x))));
 }
+function printedRat(str) { const m = String(str || '').match(/^\s*(\d+)\s*\/\s*(\d+)\s*$/); return m && BigInt(m[2]) > 0n ? { n: BigInt(m[1]), d: BigInt(m[2]) } : null; }
 function printedEl(str) {
   const m = String(str).match(/^\s*(\d[\d,]*)\s*\/\s*(\d[\d,]*)\s*$/);
   if (m) return h('span', { class: 'frac' }, h('span', {}, m[1]), h('span', {}, m[2]));
@@ -1138,7 +1144,7 @@ function renderLiveCalc(b, bi) {
   }
   function update() {
     const out = evalChain(b, vals);
-    for (const st of b.steps) { if (!st) continue; const c = cells[st.id]; if (!c) continue; c.textContent = ''; let like = null; try { if (st.stated) like = ev(st.stated, {}); } catch {} c.append(out[st.id] ? fracEl(out[st.id], { like }) : h('span', { class: 'stv' }, '—')); }
+    for (const st of b.steps) { if (!st) continue; const c = cells[st.id]; if (!c) continue; c.textContent = ''; const like = printedRat(st.stated); c.append(out[st.id] ? fracEl(out[st.id], { like }) : h('span', { class: 'stv' }, '—')); }
     chg.classList.toggle('on', params.some((p) => defs[p.id] && vals[p.id] && !eqR(defs[p.id], vals[p.id])));
     drawPlot();
   }
@@ -1197,7 +1203,7 @@ function renderWorked(b, bi) {
       if (r.n.mark === 'hit' && v) hit += toNum(v);
       if (r.n.mark === 'false' && v) fal += toNum(v);
     }
-    if (ans) { try { const a = ev(ans.expr, env); let like = null; try { if (ans.stated) like = ev(ans.stated, {}); } catch {} ansBig.textContent = ''; ansBig.append(fracEl(a, { bare: true, max: 22, like, keep: true })); ansDec.textContent = '≈ ' + fmtDec(toNum(a) * 100) + '%'; } catch { ansBig.textContent = '—'; } }
+    if (ans) { try { const a = ev(ans.expr, env); const like = printedRat(ans.stated); ansBig.textContent = ''; ansBig.append(fracEl(a, { bare: true, max: 22, like, keep: true })); ansDec.textContent = '≈ ' + fmtDec(toNum(a) * 100) + '%'; } catch { ansBig.textContent = '—'; } }
     chg.classList.toggle('on', params.some((p) => defs[p.id] && vals[p.id] && !eqR(defs[p.id], vals[p.id])));
     // icon array of the reports that matter: true ones vs false ones
     iconSvg.textContent = '';
@@ -1632,7 +1638,7 @@ function rejectionCard(sp, rep, compact) {
     h('p', {}, compact ? 'Failing elements are hatched; components outside the kit appear as placeholders.' : 'The page checks every generated spec before it renders anything: the components must come from the kit, formulas must parse in the safe arithmetic language, and at least 60% of elements must point to text that exists verbatim in the chapter.'),
     h('ul', { class: 'reasons' }, reasons.map((r) => h('li', { class: r.sev }, h('span', { class: 'm', 'aria-hidden': 'true' }, r.sev === 'error' ? '✕' : '!'), h('span', {}, h('code', {}, r.where), ' ', r.msg)))),
     failed.length ? h('div', {}, h('div', { class: 'sc', style: 'font-size:10px;color:var(--ink-3);margin-bottom:6px' }, 'Pointers that were not found in the chapter'),
-      h('ul', { class: 'reasons' }, failed.map((f) => h('li', {}, h('span', { class: 'm' }, '¶'), h('span', {}, h('span', { style: 'font-family:Libre Caslon Text,serif' }, f.q ? '“' + f.q.slice(0, 160) + (f.q.length > 160 ? '…' : '') + '”' : '(no pointer)'), h('br'), h('span', { style: 'font-size:12px;color:var(--ink-3)' }, `${f.label ? String(f.label).slice(0, 60) + ': ' : ''}${f.why}`)))))) : null,
+      h('ul', { class: 'reasons' }, failed.map((f) => h('li', {}, h('span', { class: 'm' }, '¶'), h('span', {}, h('span', { style: 'font-family:Libre Caslon Text,serif' }, f.q ? '“' + f.q.slice(0, 160) + (f.q.length > 160 ? '…' : '') + '”' : '(no pointer)'), h('br'), h('span', { style: 'font-size:12px;color:var(--ink-3)' }, `${f.label ? String(f.label).slice(0, 60).replace(/[.:;]+$/, '') + ': ' : ''}${f.why}`)))))) : null,
     h('div', { style: 'display:flex;gap:8px;flex-wrap:wrap;margin-top:6px' },
       compact ? h('button', { class: 'btn', onclick: () => showSpec(sp) }, 'Back to the rejection') : Array.isArray(sp.lenses) ? h('button', { class: 'btn', onclick: () => showSpec(sp, { inspect: true }) }, 'Inspect anyway, failures hatched') : null,
       h('button', { class: 'btn', onclick: () => openSpecDrawer('val') }, 'Full validation log'),
@@ -1744,7 +1750,8 @@ function scrollToLine(n) {
   const el = document.getElementById('ln-' + n), tx = $('#text');
   if (!el || !tx || !tx.offsetParent) return;
   const top = relTop(el) + 16 - tx.clientHeight * 0.3;
-  tx.scrollTo({ top: Math.max(0, top), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  const far = Math.abs(top - tx.scrollTop) > tx.clientHeight * 2.5;
+  tx.scrollTo({ top: Math.max(0, top), behavior: far || matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 }
 function rebuildLineIndex() {
   L2K = new Map();
@@ -1872,7 +1879,7 @@ function renderSpecDrawer() {
     body.append(h('div', { class: 'dsec' }, h('h4', {}, 'Rules applied'), h('ul', {},
       h('li', {}, 'Top level must be an object with a "lenses" array of at most 9 components, each a type from the kit.'),
       h('li', {}, 'Every element carries "src": text copied verbatim from the chapter. A pointer counts as found if it occurs after collapsing whitespace', sp.live || sp.constructed ? ' (generated specs may also fold curly quotes, dashes and italic underscores; such matches are flagged)' : '', '.'),
-      h('li', {}, 'Formulas are parsed by a 40-line arithmetic parser: numbers, + − × / ^, parentheses, names of parameters and earlier steps, and digits(). No code runs. Arithmetic is exact (rational numbers).'),
+      h('li', {}, 'Formulas are parsed by a small arithmetic parser: numbers, + − × / ^, parentheses, names of parameters and earlier steps, and digits(). No code runs. Arithmetic is exact (rational numbers).'),
       h('li', {}, 'At least 60% of elements must verify; failures are hatched, and below 60% the spec is rejected.'))));
     body.append(h('div', { class: 'dsec' }, h('h4', {}, 'Summary'), h('p', {}, `${a.ok} of ${a.total} pointers found${a.folded ? ` (${a.folded} after folding)` : ''}; ${rep.leaves.ok} of ${rep.leaves.total} elements verified. Printed numbers: ${c.ok} agree, ${c.approx} rounded, ${c.misprint} misprint, ${c.differs} differ, ${c.computed} computed only${c.error ? `, ${c.error} formula errors` : ''}.`)));
     if (rep.reasons.length) body.append(h('div', { class: 'dsec' }, h('h4', {}, 'Messages'), h('ul', { class: 'reasons' }, rep.reasons.map((r) => h('li', { class: r.sev }, h('span', { class: 'm' }, r.sev === 'error' ? '✕' : '!'), h('span', {}, h('code', {}, r.where), ' ', r.msg))))));
@@ -1920,6 +1927,8 @@ ${text}
 }
 function openCompose() {
   openPanel('#compose');
+  const nch = ST.chapters.books.reduce((a, b) => a + b.chapters.length, 0);
+  $('#composeSub').textContent = `Nine public-domain books, ${nch} chapters and essays. Claude picks components from the kit; the page verifies every pointer before anything renders.`;
   renderBookList();
   if (!ST.chSel) ST.chSel = chapterOf(65274, 2565).key;
   ST.bookSel = +ST.chSel.split(':')[0];
@@ -2092,6 +2101,7 @@ function closePanels(quiet) {
 }
 function renderAbout() {
   const a = $('#aboutBody'); a.textContent = '';
+  const nch = ST.chapters.books.reduce((x, b) => x + b.chapters.length, 0);
   const tot = ST.index.lenses.reduce((s0, l) => s0 + l.verification.anchors, 0), ok = ST.index.lenses.reduce((s0, l) => s0 + l.verification.verified, 0);
   a.append(
     h('p', { style: 'margin-top:0' }, 'Every reading app gives every book the same interface. Chapter Lenses lets the content choose: a probability chapter gets recomputable arithmetic, an essay gets an argument tree, natural history gets claims with their instances, a chapter that describes a missing figure gets the figure rebuilt. It is generative UI done safely: the model writes a ', h('b', {}, 'spec'), ', not code, using only a fixed, typed kit of ten components; every element carries a pointer to verbatim text; and the page checks the pointers and redoes the arithmetic before showing anything.'),
@@ -2101,11 +2111,11 @@ function renderAbout() {
       h('li', {}, 'Click any line with a blue tick in the text to see which elements cite it.'),
       h('li', {}, 'Venn XVII: the frequency trees, and his footnote "77 figures" (the denominator has 78 digits). In his cast list, Venn\'s quotation of Hume is compared word by word with this edition of Hume.'),
       h('li', {}, 'Darwin IV: the book\'s only diagram, rebuilt from the prose.'),
-      h('li', {}, '"+ Compose": any of 182 chapters. Live with Claude when available; otherwise a regex-only draft, or a constructed bad spec to watch the validator reject it.')),
+      h('li', {}, `"+ Compose": any of ${nch} chapters. Live with Claude when available; otherwise a regex-only draft, or a constructed bad spec to watch the validator reject it.`)),
     h('h4', {}, 'What is real'),
     h('ul', {},
       h('li', {}, 'Texts: nine Project Gutenberg plain-text files (public domain in the US), fetched 2026-10-15. Line numbers are lines of those files.'),
-      h('li', {}, `Chapter index: 182 chapters found by per-book heading patterns and checked against each table of contents (scripts/prototypes/chapter-lenses.mjs).`),
+      h('li', {}, `Chapter index: ${nch} chapters and essays found by per-book heading patterns and checked against each table of contents (scripts/prototypes/chapter-lenses.mjs).`),
       h('li', {}, `Pointers: ${ok} of ${tot} pointers in the four lenses occur verbatim in the text. The build script checks them and this page checks them again on load.`),
       h('li', {}, 'Arithmetic: recomputed in exact rational arithmetic. The two Laplace misprints, the transcriber\'s note, Venn\'s "77 figures" and his rounded "nearly 9 times" are findings of the recomputation, not of the model.'),
       h('li', {}, 'Coastlines: Natural Earth 1:110m (public domain) via world-atlas.')),

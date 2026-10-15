@@ -89,7 +89,17 @@ button { cursor: pointer; }
 .mini { background: none; border: 1px solid var(--line); color: var(--brass-hi); font-family: var(--f-sc); font-size: 12px; letter-spacing: .05em; border-radius: 2px; padding: 0 6px; display: none; }
 .status .tour { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; align-items: center; }
 .status .tour .meta { color: var(--muted); font-size: 13px; }
-.trail-list { margin: 8px 0 0; padding: 0; list-style: none; max-height: 34vh; overflow: auto; counter-reset: stop; }
+.trail-list { margin: 8px 0 0; padding: 0; list-style: none; max-height: 30vh; overflow: auto; counter-reset: stop; }
+.status:not(.open) .more:has(.trail-list) { display: none; }
+.pills { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px; }
+.pills button { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line-strong); background: rgba(12,10,6,.8); color: var(--lit); font-family: var(--f-display); font-size: 12.5px; padding: 0; }
+.pills button[aria-selected="true"] { background: var(--lit); color: var(--ink); }
+.stop { margin-top: 8px; border-left: 2px solid var(--lit); padding-left: 10px; }
+.stop .tt { font-size: 14.5px; }
+.stop .tt i { color: #f2ead7; }
+.stop .call { font-family: var(--f-mono); font-size: 11.5px; color: var(--brass); margin-right: 6px; }
+.stop .who { color: var(--muted); }
+.stop .cap { font-size: 13.5px; color: var(--muted); font-style: italic; margin-top: 2px; }
 .trail-list li { display: grid; grid-template-columns: 22px 1fr; gap: 2px 8px; padding: 6px 0; border-top: 1px solid rgba(201,168,98,.12); }
 .trail-list li button { all: unset; cursor: pointer; display: contents; }
 .trail-list .n { grid-row: span 2; font-family: var(--f-display); color: var(--lit); font-size: 15px; text-align: center; padding-top: 1px; }
@@ -250,8 +260,9 @@ button { cursor: pointer; }
   .legend { display: none; }
   .dock .row { width: 100%; justify-content: space-between; flex-wrap: nowrap; }
   .dock .row .btn { flex: 1; padding: 8px 6px; font-size: 13px; }
-  .card { top: auto; bottom: 0; left: 0; right: 0; width: auto; max-height: 56%; border-radius: 10px 10px 0 0; border-bottom: 0; padding-bottom: env(safe-area-inset-bottom, 0px); z-index: 7; }
-  .card.peek { max-height: 108px; overflow: hidden; }
+  .card { top: auto; bottom: 0; left: 0; right: 0; width: auto; max-height: 58%; border-radius: 10px 10px 0 0; border-bottom: 0; padding-bottom: env(safe-area-inset-bottom, 0px); z-index: 7; }
+  .card.peek { max-height: 104px; overflow: hidden; bottom: calc(var(--gut-b) + 48px); left: var(--gut-l); right: var(--gut-r); border-radius: 6px; border-bottom: 1px solid var(--line-strong); }
+  .hud.card-open .crumb, .hud.card-open .compass { display: none; }
   .card .grab { display: block; width: 44px; height: 4px; border-radius: 2px; background: var(--line-strong); margin: 8px auto 0; }
   .xr-note { bottom: 64px; left: var(--gut-l); right: var(--gut-r); width: auto; }
   .sheet .box { padding: 18px 18px 20px; }
@@ -1423,7 +1434,7 @@ function drawTrail(stops) {
   if (!stops.length) return;
   const pos = [], aW = [], aS = [], uv = [], idx = [];
   let sAcc = 0;
-  const pts = stops.map((i) => ({ th: thC[i], y: yB[i] + hgt[i] + 0.22 }));
+  const pts = stops.map((i) => ({ th: thC[i], y: yB[i] + hgt[i] + 0.33 }));
   for (let k = 0; k + 1 < pts.length; k++) {
     const A = pts[k], B = pts[k + 1];
     const steps = 80;
@@ -1437,7 +1448,7 @@ function drawTrail(stops) {
       // perpendicular
       const th2 = lerp(A.th, B.th, Math.min(1, s + 0.01)), y2 = lerp(A.y, B.y, Math.min(1, s + 0.01)) + Math.sin(Math.PI * Math.min(1, s + 0.01)) * Math.min(2.2, span * 0.12);
       let tx = (th2 - th) * R_FRONT, ty = y2 - y; const tl = Math.hypot(tx, ty) || 1; tx /= tl; ty /= tl;
-      const wdt = 0.16;
+      const wdt = 0.22;
       const base = aW.length / 3;
       aW.push(th - (ty * wdt / 2) / R_FRONT, y + tx * wdt / 2, 0.36, th + (ty * wdt / 2) / R_FRONT, y - tx * wdt / 2, 0.36);
       aS.push(sAcc, sAcc); uv.push(0, 0, 0, 1); pos.push(0, 0, 0, 0, 0, 0);
@@ -1456,7 +1467,7 @@ function drawTrail(stops) {
   trailGroup.add(ribbon);
   const verts = [];
   stops.forEach((i, k) => {
-    const sz = 0.42, th0 = thC[i] - (sz / 2) / R_FRONT, th1 = thC[i] + (sz / 2) / R_FRONT, y = yB[i] + hgt[i] + 0.04;
+    const sz = 0.62, th0 = thC[i] - (sz / 2) / R_FRONT, th1 = thC[i] + (sz / 2) / R_FRONT, y = yB[i] + hgt[i] + 0.02;
     const u0 = (k % 8) / 8, u1 = u0 + 1 / 8, v1 = 1 - Math.floor(k / 8) / 2, v0 = v1 - 0.5;
     verts.push([th0, y, 0.38, u0, v0, 1], [th1, y, 0.38, u1, v0, 1], [th1, y + sz, 0.38, u1, v1, 1], [th0, y + sz, 0.38, u0, v1, 1]);
   });
@@ -1692,7 +1703,7 @@ function endPointer(e) {
   if (drag && pointers.size === 0) {
     if (drag.moved < 6) {
       const i = pickAt(e.clientX, e.clientY, drag.type !== 'mouse');
-      if (i >= 0) pullBook(i, { fly: true });
+      if (i >= 0) { hideTip(); pullBook(i, { fly: true }); }
       vel.th = vel.h = 0;
     } else if (reduceMotion || performance.now() - drag.t > 90) { vel.th = vel.h = 0; }
     drag = null;
@@ -2168,6 +2179,7 @@ function renderCard(i, example = false) {
     <div class="prov">${W.src[i] === 0 ? `Record: Open Library work ${esc(W.id[i])} (CC0). Access status from Open Library's ebook field.${pgId(i) ? ' Matched to a Gutenberg copy by author and title.' : ''}` : `Record: Project Gutenberg catalog, ebook #${esc(W.id[i])}. Year and shelf position are estimates (see About).`}</div>
   </div><button type="button" class="peek-more" id="peek-more">Show the record</button>`;
   cardEl.hidden = false;
+  $('#hud').classList.add('card-open');
   if (matchMedia('(max-width: 860px)').matches && example) cardEl.classList.add('peek'); else cardEl.classList.remove('peek');
 }
 function pullBook(i, { fly: doFly = false, example = false } = {}) {
@@ -2180,7 +2192,7 @@ function pullBook(i, { fly: doFly = false, example = false } = {}) {
   }
   if (xrActive) showXRCard(i);
 }
-function closeCard() { cardEl.hidden = true; selIdx = -1; LIT.uSel.value = -1; LIT.uPull.value = 0; canvas.focus({ preventScroll: true }); }
+function closeCard() { cardEl.hidden = true; $('#hud').classList.remove('card-open'); selIdx = -1; LIT.uSel.value = -1; LIT.uPull.value = 0; canvas.focus({ preventScroll: true }); }
 cardEl.addEventListener('click', (e) => {
   if (e.target.closest('#card-close')) return closeCard();
   if (e.target.closest('#peek-more')) { cardEl.classList.remove('peek'); return; }
@@ -2228,17 +2240,23 @@ function showTrail(k, live = null) {
 function renderTrailStatus(extra = '') {
   const ts = trailState;
   statusEl.hidden = false;
-  statusEl.innerHTML = `<div class="head"><div><strong>${esc(ts.T.title || ts.T.q)}</strong></div><span class="ai" title="${esc(ts.live ? 'Generated live by Claude; every work was checked against the shelf list' : D.trails.provenance)}">AI · ${ts.live ? 'live' : 'precomputed'}</span></div>
-    <div class="badge-pre">${ts.live ? `Asked: “${esc(ts.T.q)}”. Captions written by Claude just now; every stop is a real record on this wall.` : (sampleFn ? 'Precomputed example (Claude, October 2026). Ask your own question above.' : 'Precomputed example (Claude, October 2026) · live trails available when opened in Claude')}</div>
+  const k = ts.cur < 0 ? 0 : ts.cur;
+  const cur = ts.stops[k];
+  statusEl.classList.toggle('open', !!ts.open);
+  statusEl.innerHTML = `<div class="head"><div class="sum"><strong>${esc(ts.T.title || ts.T.q)}</strong></div><div class="hb"><span class="ai" title="${esc(ts.live ? 'Generated live by Claude; every work was checked against the shelf list' : D.trails.provenance)}">AI · ${ts.live ? 'live' : 'precomputed'}</span></div></div>
+    <div class="badge-pre">${ts.live ? `Asked: “${esc(ts.T.q)}”. Captions by Claude just now; every stop is a real record on this wall.` : (sampleFn ? 'Precomputed example (Claude, October 2026). Ask your own question above.' : 'Precomputed example (Claude, October 2026) · live trails when opened in Claude')}</div>
     ${extra}
-    <ol class="trail-list">${ts.stops.map((s, k) => `<li class="${k === ts.cur ? 'cur' : ''}"><button type="button" data-k="${k}"><span class="n">${k + 1}</span><span class="tt"><span class="call">${esc(callShort(s.i))}</span><i>${esc(W.t[s.i].slice(0, 70))}</i> <span style="color:var(--muted)">${esc((W.a[s.i] || '').split(' & ')[0])}, ${esc(yearText(s.i))}</span></span><span class="cap">${esc(s.caption)}</span></button></li>`).join('')}</ol>
-    <div class="tour"><button type="button" class="btn" id="trail-walk">${ts.cur < 0 ? 'Walk the trail ›' : 'Next stop ›'}</button><button type="button" class="btn quiet" id="trail-clear" style="margin-left:auto">Clear</button></div>`;
+    <div class="pills" role="tablist" aria-label="Trail stops">${ts.stops.map((s_, j) => `<button type="button" role="tab" aria-selected="${j === ts.cur}" data-k="${j}" title="${esc(W.t[s_.i].slice(0, 80))}">${j + 1}</button>`).join('')}</div>
+    <div class="stop"><div class="tt"><span class="call">${esc(callShort(cur.i))}</span><i>${esc(W.t[cur.i].slice(0, 90))}</i> <span class="who">${esc((W.a[cur.i] || '').split(' & ')[0])}, ${esc(yearText(cur.i))}</span></div><div class="cap">${esc(cur.caption)}</div></div>
+    <div class="more"><ol class="trail-list">${ts.stops.map((s_, j) => `<li class="${j === ts.cur ? 'cur' : ''}"><button type="button" data-k="${j}"><span class="n">${j + 1}</span><span class="tt"><span class="call">${esc(callShort(s_.i))}</span><i>${esc(W.t[s_.i].slice(0, 70))}</i> <span style="color:var(--muted)">${esc((W.a[s_.i] || '').split(' & ')[0])}, ${esc(yearText(s_.i))}</span></span><span class="cap">${esc(s_.caption)}</span></button></li>`).join('')}</ol></div>
+    <div class="tour"><button type="button" class="btn" id="trail-walk">${ts.cur < 0 ? 'Walk the trail ›' : 'Next stop ›'}</button><button type="button" class="btn quiet" id="trail-list" aria-expanded="${!!ts.open}">${ts.open ? 'Hide list' : 'All stops'}</button><button type="button" class="btn quiet" id="trail-clear" style="margin-left:auto">Clear</button></div>`;
 }
 statusEl.addEventListener('click', (e) => {
   if (!trailState || lightState.mode !== 'trail') return;
   const li = e.target.closest('[data-k]');
   if (li) { goStop(Number(li.dataset.k)); return; }
   if (e.target.closest('#trail-walk')) { goStop((trailState.cur + 1) % trailState.stops.length); return; }
+  if (e.target.closest('#trail-list')) { trailState.open = !trailState.open; renderTrailStatus(); return; }
   if (e.target.closest('#trail-clear')) { trailState = null; clearLit(); statusEl.hidden = true; }
 });
 function goStop(k) {
@@ -2540,6 +2558,29 @@ function resize() {
 new ResizeObserver(resize).observe(rrEl);
 resize();
 
+// Shift the projection centre into the part of the screen the HUD leaves free.
+const viewShift = { x: 0, y: 0, tx: 0, ty: 0 };
+function measureFree() {
+  const Wd = rrEl.clientWidth, Hd = rrEl.clientHeight;
+  const rect = (el) => { if (!el || el.hidden) return null; const r = el.getBoundingClientRect(); return r.width && r.height ? r : null; };
+  let l = 0, r = Wd, t = 0, b = Hd;
+  const alt = rect($('#alt')); if (alt) l = alt.right + 8;
+  const ask = rect($('.ask')); if (ask) t = ask.bottom + 8;
+  const card = rect(cardEl);
+  const mobile = Wd <= 860;
+  if (card) { if (mobile) b = Math.min(b, card.top); else r = Math.min(r, card.left - 8); }
+  const dock = rect($('.dock')); if (dock) b = Math.min(b, mobile ? dock.top : Hd - 96);
+  if (b - t < Hd * 0.22) t = Math.max(0, b - Hd * 0.22);
+  viewShift.tx = clamp((l + r) / 2 - Wd / 2, -Wd * 0.22, Wd * 0.22);
+  viewShift.ty = clamp((t + b) / 2 - Hd / 2, -Hd * 0.26, Hd * 0.26);
+}
+function applyViewShift(dt) {
+  const k = reduceMotion ? 1 : 1 - Math.exp(-dt * 6);
+  viewShift.x = lerp(viewShift.x, viewShift.tx, k); viewShift.y = lerp(viewShift.y, viewShift.ty, k);
+  const Wd = rrEl.clientWidth, Hd = rrEl.clientHeight;
+  if (Math.abs(viewShift.x) < 0.5 && Math.abs(viewShift.y) < 0.5) { if (camera.view?.enabled) camera.clearViewOffset(); return; }
+  camera.setViewOffset(Wd, Hd, -viewShift.x, -viewShift.y, Wd, Hd);
+}
 let lastLabel = 0;
 function labelTick(now, view) {
   if (now - lastLabel < 160) return;
@@ -2557,6 +2598,7 @@ renderer.setAnimationLoop((tms, frame) => {
   LIT.uDim.value = dimNow;
   LIT.uPull.value = selIdx >= 0 ? (reduceMotion ? 1 : smooth(0, 450, now - pullT)) : 0;
   if (xrActive) {
+    if (camera.view?.enabled) camera.clearViewOffset();
     stepXR(dt, frame);
   } else {
     stepFly(now);
@@ -2568,7 +2610,7 @@ renderer.setAnimationLoop((tms, frame) => {
     clampState();
     applyCamera();
     U.uLamp.value.set(st.theta, st.h, Math.max(2.4, Math.min(st.d * 0.6, 12)) * (unrollState.u > 0.5 ? 3 : 1));
-    haloMat.uniforms.uCam.value = st.d;
+    haloMat.uniforms.uCam.value = st.d / (1 + 2.5 * unrollState.u);
     // semantic-zoom opacities
     const dd = unrollState.u > 0.5 ? st.d / 2.4 : st.d;
     plateOpacity.value = smooth(2.4, 4.4, dd) * (1 - smooth(15, 19, dd));
@@ -2578,7 +2620,8 @@ renderer.setAnimationLoop((tms, frame) => {
     const vf = (camera.fov * Math.PI) / 180;
     const halfH = st.d * Math.tan(vf / 2), halfW = halfH * camera.aspect;
     labelTick(now, { theta: wrapTau(st.theta), y: st.h, dist: st.d, pxPerRad: H / vf, halfW, halfH, minPx: 10 });
-    if (now - hudT > 120) { hudT = now; updateCrumb(); updateAltimeter(); updateZoomUi(); drawCompass(); }
+    if (now - hudT > 120) { hudT = now; updateCrumb(); updateAltimeter(); updateZoomUi(); drawCompass(); measureFree(); }
+    applyViewShift(dt);
   }
   renderer.render(scene, camera);
 });
@@ -2602,11 +2645,12 @@ renderer.setAnimationLoop((tms, frame) => {
 window.__rr = { st, flyTo, whisper, setUnroll, pullBook, closeCard, setTab, showTrail, rowById, thC, yB, hgt, clearLit: () => { whisperState = null; trailState = null; clearLit(); statusEl.hidden = true; }, get u() { return unrollState.u; },
   setU(u) { unrollState.u = unrollState.target = u; btnUnroll.setAttribute('aria-pressed', String(u > 0.5)); btnUnroll.textContent = u > 0.5 ? 'Roll the wall up' : 'Unroll the wall'; },
   frames: (n) => new Promise((res) => { let k = 0; const f = () => (++k >= n ? res() : requestAnimationFrame(f)); requestAnimationFrame(f); }),
-  ripple() { LIT.uLitT0.value = U.uTime.value - 30; ringUntil = 0; } };
+  ripple() { LIT.uLitT0.value = U.uTime.value - 30; ringUntil = 0; trailMat.uniforms.uT0.value = -1000; } };
 $('#btn-about').addEventListener('click', () => { $('#about').hidden = false; $('#about-close').focus(); });
 function closeAbout() { $('#about').hidden = true; $('#btn-about').focus(); }
 $('#about-close').addEventListener('click', closeAbout);
 $('#about').addEventListener('click', (e) => { if (e.target.id === 'about') closeAbout(); });
+measureFree(); viewShift.x = viewShift.tx; viewShift.y = viewShift.ty;
 requestAnimationFrame(() => { $('#loading').classList.add('done'); setTimeout(() => $('#loading').remove(), 700); });
 // idle: prefetch the full catalogue for first sentences on cards
 (window.requestIdleCallback || ((f) => setTimeout(f, 2500)))(() => loadCatalogFull());

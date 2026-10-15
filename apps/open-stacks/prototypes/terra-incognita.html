@@ -442,7 +442,7 @@ textarea { width: 100%; min-height: 150px; border: 1px solid var(--rule-strong);
   .legend { width: auto; max-width: calc(100% - 24px); right: auto; left: max(12px, env(safe-area-inset-left, 0px)); bottom: 10px; }
   .legend .lg { max-height: 150px; overflow: auto; grid-template-columns: 22px minmax(0, 1fr); }
   #card { top: auto; bottom: 8px; left: 8px; right: 8px; width: auto; max-height: 80%; }
-  #card .spines { height: 70px; }
+  #card .spines { height: 58px; padding-top: 6px; }
   .explorer .tools .btn { padding: 4px 8px; }
   .mobile-only { display: initial; }
 }
@@ -745,6 +745,24 @@ function buildModel(world, cat, guides) {
     hexPeak[i] = best;
   }
 
+  // relief: elevation = log of total editions in a hex, smoothed; hachures follow its gradient
+  let elev = new Float32Array(HN);
+  for (let i = 0; i < HN; i++) { let e = 0; for (const wi of hexWorks[i]) e += works[wi].ed || 0; elev[i] = Math.log1p(e); }
+  for (let it = 0; it < 2; it++) {
+    const nx = new Float32Array(HN);
+    for (let i = 0; i < HN; i++) { let sm = elev[i] * 2, n = 2; for (const j of nb[i]) { sm += elev[j]; n++; } nx[i] = sm / n; }
+    elev = nx;
+  }
+  const gradX = new Float32Array(HN), gradY = new Float32Array(HN), gradM = new Float32Array(HN);
+  for (let i = 0; i < HN; i++) {
+    let ax = 0, ay = 0;
+    for (const j of nb[i]) { const dx = hx[j] - hx[i], dy = hy[j] - hy[i], L = Math.hypot(dx, dy) || 1; const de = elev[j] - elev[i]; ax += (de * dx) / L; ay += (de * dy) / L; }
+    gradX[i] = ax; gradY[i] = ay; gradM[i] = Math.hypot(ax, ay);
+  }
+  const gSorted = Array.from(gradM).sort((a, b) => a - b);
+  const g95 = gSorted[Math.floor(gSorted.length * 0.95)] || 1;
+  for (let i = 0; i < HN; i++) gradM[i] = Math.min(1, gradM[i] / g95);
+
   // towns
   const towns = world.towns.map((t, ti) => ({ ...t, ti, sub: subByCode.get(t.c)?.si ?? -1 }));
   towns.forEach((t) => { if (t.sub >= 0) subs[t.sub].towns.push(t.ti); });
@@ -810,7 +828,7 @@ function buildModel(world, cat, guides) {
 
   return {
     world, N, HN, S, R, ROT, HC, HS, hx, hy, hsub, hcls, nb, subs, classes, subByCode, works, hexWorks, shelf, shelfPos,
-    hexGut, hexPeak, towns, isles, subjIndex, queryIndex, byId, land, landAll, classesAll, forest,
+    hexGut, hexPeak, gradX, gradY, gradM, towns, isles, subjIndex, queryIndex, byId, land, landAll, classesAll, forest,
     bounds: [X0, Y0, X1, Y1], mainBB, hexGrid, workGrid, gk, roses, guides: guides || { guides: [] },
   };
 }
@@ -1027,6 +1045,7 @@ function hash01(i, j = 0) { let h = Math.imul(i | 0, 374761393) ^ Math.imul((j |
 
 /* =============================== rendering =============================== */
 const z = () => T.k / K0;
+const pz = () => T.k / 1.45; // zoom relative to a desktop-sized world, for glyph sizes
 function worldTf(c) { c.setTransform(DPR * T.k, 0, 0, DPR * T.k, DPR * T.x, DPR * T.y); }
 function screenTf(c) { c.setTransform(DPR, 0, 0, DPR, 0, 0); }
 const toScreen = (x, y) => [T.x + x * T.k, T.y + y * T.k];
@@ -1101,6 +1120,8 @@ function drawBase() {
   c.globalAlpha = 1;
   // trees when close
   if (Z >= 4.2) drawTrees(c, v, p);
+  // hachured relief
+  drawHachures(c, v, p);
 
   // province borders (dashed)
   c.setLineDash([4 * p, 2.6 * p]); c.lineWidth = 0.9 * p; c.strokeStyle = C.sepia; c.globalAlpha = 0.55;
@@ -1133,6 +1154,27 @@ function drawBase() {
   if (D && st.fog !== 'off') drawFog(c, v, Z);
 }
 
+function drawHachures(c, v, p) {
+  const P = pz();
+  if (P < 0.8) return;
+  const L = M.R * 0.34;
+  c.beginPath();
+  for (let i = 0; i < M.HN; i++) {
+    const g = M.gradM[i]; if (g < 0.18) continue;
+    if (!ptVisible(M.hx[i], M.hy[i], v, M.S)) continue;
+    const n = Math.round(g * (P < 1.6 ? 4 : 7));
+    const gl = Math.hypot(M.gradX[i], M.gradY[i]) || 1;
+    const ux = M.gradX[i] / gl, uy = M.gradY[i] / gl; // uphill
+    for (let t = 0; t < n; t++) {
+      const a = hash01(i * 7 + t, 3) * Math.PI * 2, r = Math.sqrt(hash01(t * 13 + 1, i)) * M.R * 0.62;
+      const x = M.hx[i] + Math.cos(a) * r, y = M.hy[i] + Math.sin(a) * r;
+      const len = L * (0.55 + 0.45 * g);
+      c.moveTo(x + ux * len * 0.5, y + uy * len * 0.5); c.lineTo(x - ux * len * 0.5, y - uy * len * 0.5);
+    }
+  }
+  c.strokeStyle = C.sepia; c.lineWidth = 0.75 * p; c.globalAlpha = (C.dark ? 0.32 : 0.36) * clamp((P - 0.8) / 0.8, 0.35, 1);
+  c.stroke(); c.globalAlpha = 1;
+}
 function drawTrees(c, v, p) {
   const sz = clamp(M.R * T.k * 0.11, 2.2, 6.5) * p;
   c.strokeStyle = C.sepia; c.lineWidth = 0.8 * p; c.globalAlpha = 0.55;
@@ -1151,7 +1193,7 @@ function drawTrees(c, v, p) {
 }
 
 function drawMountains(c, v) {
-  const Z = z();
+  const Z = pz();
   const thr = Z < 1.6 ? 70 : Z < 3 ? 40 : Z < 6 ? 25 : 14;
   screenTf(c);
   c.lineJoin = 'round';
@@ -1183,7 +1225,8 @@ function drawMountains(c, v) {
 function drawSettlements(c, v, Z) {
   const D = st.derived;
   screenTf(c);
-  const scale = Z < 3 ? 0.72 : Z < 6 ? 0.95 : clamp(0.95 + (Z - 6) * 0.04, 0.95, 1.5);
+  const P = pz();
+  const scale = P < 3 ? 0.72 : P < 6 ? 0.95 : clamp(0.95 + (P - 6) * 0.04, 0.95, 1.5);
   const groups = { free: [], borrow: [], pd: [], none: [] };
   for (const w of M.works) {
     if (w.hex < 0) continue;
@@ -1210,7 +1253,8 @@ function drawSettlements(c, v, Z) {
 function drawFlags(c, v, Z) {
   const D = st.derived; if (!D) return;
   screenTf(c);
-  const s = Z < 1.6 ? 0.62 : Z < 3 ? 0.8 : Z < 7 ? 1 : 1.25;
+  const P = pz();
+  const s = P < 1.6 ? 0.62 : P < 3 ? 0.8 : P < 7 ? 1 : 1.25;
   c.fillStyle = C.accent; c.strokeStyle = C.ink; c.lineWidth = 1;
   for (const r of D.readNow) {
     const w = M.works[r.i];
@@ -1602,12 +1646,20 @@ function resize() {
   }
   requestRender();
 }
+function viewPads() {
+  // keep targets clear of the overlays on the map
+  const mr = mapwrap.getBoundingClientRect();
+  const cr = $('#cartouche').getBoundingClientRect();
+  if (W < 600) return { l: 16, r: 56, t: Math.max(24, cr.bottom - mr.top + 10), b: 56 };
+  return { l: 110, r: card.hidden ? 40 : 380, t: 40, b: 70 };
+}
 function flyTo(bb, maxZ = 18, dur = 900) {
   if (!bb) return;
   const [x0, y0, x1, y1] = bb;
-  const pad = W < 600 ? 28 : 70;
-  const k = Math.min(K0 * maxZ, (W - 2 * pad) / Math.max(1, x1 - x0), (H - 2 * pad) / Math.max(1, y1 - y0));
-  const t = d3.zoomIdentity.translate(W / 2 - (k * (x0 + x1)) / 2, H / 2 - (k * (y0 + y1)) / 2).scale(k);
+  const P = viewPads();
+  const aw = Math.max(80, W - P.l - P.r), ah = Math.max(80, H - P.t - P.b);
+  const k = Math.min(K0 * maxZ, aw / Math.max(1, x1 - x0), ah / Math.max(1, y1 - y0));
+  const t = d3.zoomIdentity.translate(P.l + aw / 2 - (k * (x0 + x1)) / 2, P.t + ah / 2 - (k * (y0 + y1)) / 2).scale(k);
   d3.select(cvTop).transition().duration(REDUCED ? 0 : dur).ease(d3.easeCubicInOut).call(zoomB.transform, t);
 }
 function zoomToLevel(zz) {

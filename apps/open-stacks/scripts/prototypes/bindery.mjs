@@ -33,9 +33,11 @@
  *    that is not resolved. Every check is written to the volume's bench log.
  * 4. Shelving. Each volume's call number is placed among its real
  *    call-number neighbours in catalog.json.
- * 5. Search index for live binding: the chapter index, OpenStax sections of the
- *    books used, the free-textbook list and Open Library tables of contents
- *    fetched here. (catalog.json and papers.json are searched in the page.)
+ * 5. Search index for live binding: the chapter index, OpenStax sections of
+ *    nine books, the free-textbook list, and Open Library tables of contents
+ *    for the volumes' works plus the 90 most-read catalogue works on the
+ *    reader's topics (probability, statistics, decisions, forecasting, AI...).
+ *    catalog.json and papers.json themselves are searched in the page.
  */
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
@@ -589,8 +591,20 @@ for (const slug of ['introductory-statistics-2e', 'psychology-2e', 'principles-d
     for (const s of b.sections) oxIndex.push({ id: s.id, t: s.title, ch: s.chapter, book: b.book.t, y: Number(b.book.d.slice(0, 4)) });
   } catch (e) { log(`openstax index: skipped ${slug} (${e.message})`); }
 }
+// Extra tables of contents so the live editor can choose chapters, not only whole books: the most-read
+// catalogue works on probability, statistics, decisions, forecasting, risk, AI and the philosophy of science.
+const TOPIC = /probab|statist|bayes|decision|forecast|predict|risk|uncertain|judg|rational|game theory|inference|induction|causal|information theory|machine learning|artificial intelligence|economics|philosophy of science|epistemolog|logic/i;
+const extra = catalog.works
+  .filter((w) => TOPIC.test(w.t + ' ' + (w.s || []).join(' ') + ' ' + (w.q || []).join(' ')) && (w.rl || 0) >= 8 && !tocCache.has(w.id))
+  .sort((a, b) => (b.rl || 0) - (a.rl || 0))
+  .slice(0, 90);
+let got = 0;
+for (const w of extra) {
+  try { if (await editionToc(w.id)) got++; } catch (e) { log(`toc: ${w.id} skipped (${e.message})`); }
+}
+log(`extra tables of contents: ${got} of ${extra.length} works have one`);
 const tocs = {};
-for (const [wid, t] of tocCache) if (t) tocs[wid] = { edition: t.edition, toc: t.toc.map((e) => [e.label, e.title, e.page]) };
+for (const [wid, t] of tocCache) if (t && t.toc.filter((e) => e.title).length >= 3) tocs[wid] = { edition: t.edition, toc: t.toc.map((e) => [e.label, e.title, e.page]) };
 const freeTexts = Object.entries(FREE_TEXTS).map(([k, f]) => ({ id: `ft:${k}`, work: f.work, piece: f.piece, by: f.by, year: f.year, url: f.url, terms: f.terms, words: f.words || null, pages: f.pages || (f.pageRange ? f.pageRange[1] - f.pageRange[0] + 1 : null), range: f.pageRange || null, catalog: f.catalog || null }));
 
 const out = {
