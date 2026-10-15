@@ -5,6 +5,8 @@ sidebar:
   order: 3
 ---
 
+import OversightRouter from '@/components/figures/OversightRouter.astro';
+
 *Scalable-oversight protocols are best organized by what their incentives ground out in: a judge's verdict, external resolution, internal coherence, or peer agreement. No grounding dominates — they cover different claim classes and fail differently — which is why the natural design is a composition, and why the field still lacks an economics of which claims to verify at what price.*
 
 ## The problem
@@ -73,13 +75,7 @@ The agreement-grounded mechanism deployed at scale is not peer prediction but br
 
 Since the groundings cover complementary territory, the natural design is layered:
 
-```mermaid
-flowchart LR
-    C[Unresolvable claim] --> D[Debate]
-    D --> S1[Resolvable subclaims] --> M[Markets / prediction games]
-    D --> S2[Debater belief structure] --> K[Consistency checks]
-    M --> G[Resolution / retrodiction]
-```
+<OversightRouter />
 
 Debate operates over the unresolvable claim, but its subclaims are anchored by markets wherever they touch resolvable ground, and the debaters' probability assignments are continuously consistency-checked. The judge's job shrinks from "evaluate everything" to "evaluate the genuinely unresolvable residue" — which is the only part a judge was ever the right tool for. Each edge buys something specific — markets cap the payoff on false resolvable subclaims; consistency checks catch incoherent belief structure — but the cover is partial: a consistent, obfuscated, unresolvable argument slips all three.
 

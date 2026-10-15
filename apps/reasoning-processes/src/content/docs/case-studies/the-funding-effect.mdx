@@ -5,6 +5,8 @@ sidebar:
   order: 2
 ---
 
+import FundingEffect from '@/components/figures/FundingEffect.astro';
+
 *Decades of meta-science measure how much an interested funder shifts a study's conclusions. Read through a likelihood ratio, the numbers say funding bias can weaken a favorable conclusion toward worthlessness; turning it into evidence against the claim takes a second mechanism, selection on the truth. The data measure distortion given funding, not what the distortion cost.*
 
 :::note
@@ -45,6 +47,8 @@ $$\text{LR}'(s) = \frac{\alpha + s(1-\alpha)}{\beta + s(1-\beta)},$$
 which falls toward 1 as $s \to 1$ and stays above 1 for every $s<1$ when $\alpha>\beta$. **[exact, given the model]** A multiplier that saturates, taking $\alpha$ and $\beta$ to $\min(1,k\alpha)$ and $\min(1,k\beta)$, behaves the same way once $k\alpha$ reaches 1.
 
 **A sign flip needs selection.** Under any bias applied regardless of the truth, a funded favorable conclusion stays (weak) evidence *for* $H$. It becomes evidence against $H$ only if the funder's behavior depends on $H$ itself. If funders whose product fails commission studies, or publish the favorable ones, at a rate $r_{\neg H}$ above the rate $r_H$ of funders whose product works, the observed ratio is $\text{LR}'(s)\cdot r_H/r_{\neg H}$, which drops below 1 once $r_{\neg H}/r_H > \text{LR}'(s)$. The manufactured-doubt histories ([Oreskes & Conway 2010](https://en.wikipedia.org/wiki/Merchants_of_Doubt); [Proctor 2011](https://www.ucpress.edu/book/9780520270169/golden-holocaust)) describe it used deliberately. Selection can also run the other way: a sponsor that funds trials of products it expects to work raises the favorable rate with no spin at all. The ratios in the table cannot separate these.
+
+<FundingEffect />
 
 **A worked number (illustrative).** Take $\alpha=0.8$, $\beta=0.2$ ($\text{LR}=4$), a prior of 0.5, and read Lundh's favorable-conclusions RR of 1.34 as pure spin. Then $s\approx0.34$ and $\text{LR}'\approx1.8$: a funded favorable conclusion keeps about 44% of an independent one's log-odds weight. The passive-smoking OR of 88, read the same way, gives $s\approx0.98$ and $\text{LR}'\approx1.01$: nearly worthless, not negative. At that level of spin any selection toward $\neg H$ flips the sign, which makes tobacco the plausible case for a reversal. If sponsors instead pick products likely to work, these conversions overstate $s$.
 

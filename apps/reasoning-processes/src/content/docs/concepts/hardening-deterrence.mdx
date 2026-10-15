@@ -5,6 +5,8 @@ sidebar:
   order: 11
 ---
 
+import Deterrence from '@/components/figures/Deterrence.astro';
+
 *Family 6 of the [Hardening overview](/concepts/hardening-techniques/). The other families mostly raise corruption cost by spending on verification, which costs information every run. Deterrence raises it off-equilibrium — bonds, clawbacks, tamper-evidence — at low honest-path cost, which makes it the most promising route into the cheap-and-incorruptible quadrant. The lever, its limit, the constructions with their cheapest attacks, and two worked bounds with numbers.*
 
 ## The lever
@@ -34,6 +36,8 @@ Deterrence needs two things that don't yet come for free: **enforceable identity
 $$S < S^\* = \frac{c + pB}{1-p}. \qquad \textbf{[standard shape]}$$
 
 Plug in a \$0.01 LLM-judge call, a 5% audit rate, and a \$1,000 bond: $S^\*=(0.01+0.05\cdot1000)/0.95\approx 53$, so about \$53 of safe stake bought by a one-in-twenty audit. Strip the bond ($B=0$) and the *same* \$53 safe stake would require an audit rate of $p\approx99.98\%$ — full verification. Robustness scales with the expected penalty $pB$, and every run still pays $p\,C_{\text{audit}}$ for the audits; what the bond buys is that a small $p$ suffices. That is the formal case for identity/escrow infrastructure, and the cheapest attack is to keep each stake below $S^\*$.
+
+<Deterrence />
 
 **Provenance bonds and the funding effect.** Make every cited source post a stake, slashed if spin is later demonstrated. In the [funding-effect](/case-studies/the-funding-effect/#from-odds-ratios-to-a-likelihood-ratio-discount) model, spin at rate $s$ is what attenuates a favorable conclusion's likelihood ratio; the bond deters it when detection probability times $B$ exceeds the gain from spinning. It is the deterrence-side counterpart to the [identity-masking gap](/concepts/hardening-invariance/), which *measures* the same bias. A per-study bond cannot reach selection (which studies get commissioned), and its cheapest defeat is the detection gap: a source biased but never *proven* corrupt keeps its bond.
 

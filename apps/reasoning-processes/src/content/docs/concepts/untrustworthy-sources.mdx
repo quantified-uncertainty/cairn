@@ -5,6 +5,8 @@ sidebar:
   order: 4
 ---
 
+import UntrustworthyGame from '@/components/figures/UntrustworthyGame.astro';
+
 *Most consequential information comes from someone who wants something. Asking how much to trust the source is the wrong question, because most of the defense against being lied to happens before the source speaks. This chapter models strategic information as a security game in which the defender moves first: reduce the attack surface by design, accept that a few channels never close, and on those apply one test — a message is worth only what it would have cost a liar to fake.*
 
 :::note
@@ -35,13 +37,7 @@ Theory anchors the extremes. Unverifiable assertion is [cheap talk](https://www.
 
 The naive picture is a listener filtering a message. The better picture is a sequential game in which **the defender moves first**: the structure of Stackelberg security games ([Conitzer & Sandholm 2006](https://doi.org/10.1145/1134707.1134717) on computing the optimal commitment; [Korzhyk et al. 2011](https://arxiv.org/abs/1401.3888) on the model behind the LAX and air-marshal deployments). The defender commits, the attacker observes the committed environment and best-responds, and the defender's craft is choosing the commitment that leaves the attacker the worst best response.
 
-```mermaid
-flowchart TD
-    D["<b>Move 1 · design-time</b> — the defender moves first<br/>reduce the attack surface: route questions to be self-checkable,<br/>stand up escrow / identity / resolution, pick framing that zeroes goal-bias"]
-    D --> R["<b>The residual attack surface</b><br/>the few channels that won't close:<br/>irreplaceable advantage · never resolves · goal-divergence you can't design out"]
-    R --> A["<b>Move 2 · attack-time</b> — the deceiver picks an open channel<br/>craft a message that looks like evidence but was cheap to fake"]
-    A --> J["<b>Move 3 · runtime</b> — the listener runs one test<br/>could a liar in this position have produced this just as cheaply if it were false?"]
-```
+<UntrustworthyGame />
 
 Call the set of routes a strategic sender could use to move you the **attack surface**, and each route a **channel**. Most of the defense is then design-time: nobody can lie past a proof checker, a neutral reproduction, or a resolving bet, and the runtime test works only on channels that survived Move 1. A running case: an AI advocate trying to nudge its overseer toward approving a plan.
 
