@@ -39,7 +39,24 @@ export function paintLanes() {
     className: state.lane === k ? 'on' : '', title: d < 10 ? `${label} · key ${d}` : label,
     onclick: () => setLane(k),
   }, label, h('span', { className: 'n', textContent: String(c) }))));
+  // The chips scroll sideways when they do not fit; keep the current lane in view.
+  requestAnimationFrame(showLane);
 }
+function showLane() {
+  const el = $('#lanes'), on = el?.querySelector('.on');
+  if (!on || el.scrollWidth <= el.clientWidth) return;
+  const l = on.offsetLeft - el.firstElementChild.offsetLeft, r = l + on.offsetWidth;
+  if (l < el.scrollLeft + 16 || r > el.scrollLeft + el.clientWidth - 24) el.scrollLeft = l - (el.clientWidth - on.offsetWidth) / 2;
+}
+document.fonts?.ready.then(() => requestAnimationFrame(showLane));
+addEventListener('resize', () => requestAnimationFrame(showLane));
+// A vertical wheel over the lane chips scrolls them sideways.
+$('#lanes')?.addEventListener('wheel', (e) => {
+  const el = e.currentTarget;
+  if (el.scrollWidth <= el.clientWidth || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+  e.preventDefault(); e.stopPropagation();
+  el.scrollLeft += e.deltaY * (e.deltaMode === 1 ? 16 : 1);
+}, { passive: false });
 export function setLane(k) { before('lane switch', { lane: state.lane, order: state.order.slice() }); state.lane = k; store.set('lane', k); buildOrder(false); paintLanes(); refresh(); }
 
 export function paintSaved() {
