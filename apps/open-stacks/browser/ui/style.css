@@ -167,8 +167,10 @@ a { color: var(--accent); }
 .flow > :first-child { margin-top: 0; }
 .flow p, .flow ul, .flow ol, .flow blockquote, .flow pre, .flow table, .flow figure { margin: 0 0 .65em; }
 .flow ul, .flow ol { padding-left: 1.3em; text-align: left; }
+.flow p, .flow li { text-wrap: pretty; }
+.flow .ts-gap { break-inside: avoid; margin: 0; padding: 0; }
 .flow li { margin: 0 0 .2em; }
-.flow h1, .flow h2, .flow h3, .flow h4, .flow h5 { font-family: var(--serif); line-height: 1.2; margin: .9em 0 .35em; color: #1a1611; text-align: left; break-after: avoid; }
+.flow h1, .flow h2, .flow h3, .flow h4, .flow h5 { font-family: var(--serif); line-height: 1.2; margin: .9em 0 .35em; color: #1a1611; text-align: left; break-after: avoid; break-inside: avoid; text-wrap: balance; }
 .flow h1 { font-size: 1.45em; } .flow h2 { font-size: 1.28em; } .flow h3 { font-size: 1.12em; } .flow h4, .flow h5 { font-size: 1em; }
 .flow blockquote { border-left: 3px solid #cfc4ad; padding-left: .8em; color: #4a4236; margin-left: 0; }
 .flow img, .flow svg, .flow video { display: block; max-width: 100%; max-height: 42vh; height: auto; margin: .4em auto; break-inside: avoid; }

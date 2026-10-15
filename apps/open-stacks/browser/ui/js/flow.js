@@ -70,10 +70,11 @@ export function showFlow(i, it, d) {
   }
   if (live !== L || !L.sheet.isConnected) {
     spread.replaceChildren(L.sheet);
+    typeset(L);
     measure(L);
     // Images and fonts arriving late reflow the columns; re-measure then.
     let t = null;
-    const again = () => { clearTimeout(t); t = setTimeout(() => { if (live === L && L.sheet.isConnected) { measure(L); place(i); } }, 120); };
+    const again = () => { clearTimeout(t); t = setTimeout(() => { if (live === L && L.sheet.isConnected) { typeset(L); measure(L); place(i); } }, 120); };
     L.flow.querySelectorAll('img').forEach((im) => { if (!im.complete) im.addEventListener('load', again, { once: true }); });
     document.fonts?.ready.then(again);
   }
@@ -90,6 +91,58 @@ function place(i) {
   paintPos(it, a, b - a + 1, L.d.n, true);
   paintScrub(i, a, b - a + 1);
   emit('spread:rendered', { i, it, s, els: [L.sheet], doc: L.d, flow: L });
+}
+
+// ---------- typesetting ----------
+// Browsers differ on keeping headings with their text and on widows and
+// orphans in columns (Firefox ignores break-after: avoid, orphans and widows
+// in multi-column layout), so after layout we fix the worst breaks
+// ourselves: an empty spacer fills the rest of a column so that the next
+// block starts the following one. A heading moves when fewer than three
+// lines of what follows would fit under it; a paragraph moves when it would
+// leave one line at the bottom of a column, or (if short) carry one line
+// over to the top of the next.
+const isHeading = (b) => /^H[1-6]$/.test(b.tagName)
+  || (b.tagName === 'P' && b.children.length === 1 && /^(STRONG|B)$/.test(b.firstElementChild.tagName)
+      && b.textContent.trim() === b.firstElementChild.textContent.trim() && b.textContent.length < 100);
+function typeset(L) {
+  const { flow, g } = L;
+  const t0 = performance.now();
+  flow.querySelectorAll('.ts-gap').forEach((x) => x.remove());
+  const prev = flow.style.transform; flow.style.transform = 'none';
+  const fr = flow.getBoundingClientRect();
+  const H = g.innerH;
+  const colOf = (r) => Math.floor((r.left - fr.left + g.gap / 2) / g.pitch);
+  const lh = parseFloat(getComputedStyle(flow).lineHeight) || g.font * 1.5;
+  const push = (el, r) => {
+    const gap = document.createElement('div');
+    gap.className = 'ts-gap';
+    gap.style.height = Math.max(0, Math.floor(H - (r.top - fr.top)) - 1) + 'px';
+    el.before(gap);
+  };
+  const blocks = [...flow.querySelectorAll('[data-vp]')];
+  let pushes = 0;
+  for (let j = 0; j < blocks.length && pushes < 600; j++) {
+    const b = blocks[j];
+    const rs = b.getClientRects();
+    if (!rs.length) continue;
+    const r0 = rs[0];
+    const top = r0.top - fr.top;
+    if (top < lh * 0.6) continue; // already at the top of a column
+    if (isHeading(b)) {
+      const nr = blocks[j + 1]?.getClientRects()[0];
+      const roomBelow = H - (rs[rs.length - 1].bottom - fr.top);
+      if (rs.length > 1 || (nr && colOf(nr) !== colOf(r0)) || roomBelow < lh * 3.2) { push(b, r0); pushes++; }
+      continue;
+    }
+    if (rs.length > 1 && !/^(IMG|FIGURE|TABLE|PRE|IFRAME)$/.test(b.tagName)) {
+      const orphan = r0.height < lh * 1.8;
+      const widow = rs.length === 2 && rs[1].height < lh * 1.8 && r0.height < lh * 5.5;
+      if (orphan || widow) { push(b, r0); pushes++; }
+    }
+  }
+  flow.style.transform = prev;
+  L.typeset = { pushes, ms: Math.round(performance.now() - t0) };
 }
 
 /** The stable pages visible when the strip starts at column s. */
