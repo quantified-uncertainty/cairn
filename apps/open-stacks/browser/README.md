@@ -37,7 +37,7 @@ The screen is mostly pages. A thin strip at the bottom shows where you are in th
 - `C` crop margins (on by default) · `c` split two-column pages into columns · `+`/`-` pages per spread
 - `n` write a note (exports to Markdown from Saved) · `o` open the original · `0`–`7` lanes · `/` search · `w` wall
 - `L` the Library in the side panel: every lane as a tree of folders (a wiki's own sections, topics, years); type to filter, arrows to move, Enter opens an item or browses a folder in the feed (wikis in their own order)
-- `⌘,` or `Ctrl+,` (or the gear in the top bar) Settings: background and paper colours, dark-mode page filters, fonts and spacing for posts, pages per spread and fit, the wheel and middle click, the side panel's sections, the summary model and daily AI budget, the reading voice, and the cache. Changes apply at once.
+- `,` (outside the wall), `Ctrl+,` or `⌘,` (or the gear in the top bar) Settings; Firefox on a Mac keeps `⌘,` for its own settings, so use `,` there. Settings covers: background and paper colours, dark-mode page filters, fonts and spacing for posts, pages per spread and fit, the wheel and middle click, the side panel's sections, the summary model and daily AI budget, the reading voice, and the cache. Changes apply at once.
 
 ## Why it is fast
 

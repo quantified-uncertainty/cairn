@@ -35,7 +35,7 @@ How the pieces fit, for anyone adding a feature. The README covers running and u
 | `notes.js` | the note section, `appendQuote(it, text, page)` |
 | `text.js` | words on screen: `registerTextSource`, `currentWords()`, `highlight(name, words)`, `reveal(word)` |
 | `wall.js`, `search.js`, `chrome.js` | the wall view, search, and the top bar, keys overlay, key dispatcher and status line |
-| `features/settings.js` | the Settings sheet (⌘, / Ctrl+,). Core options keep their own state fields and store keys; the rest live in store `settings` and act through CSS custom properties on `:root` (`--bg`… `--paper*`, `--flow-*`, `--page-gap`, `--panel-w`; `ui/features/settings.css` reads them), `data-st-*` attributes and `st-hide-*` classes on `<html>`, and `state.measure` (column width in em, `flow.js`), `state.cropPad` (`render.js`), `state.pageGap` and `state.fit` (`feed.js`). Emits `settings:changed {key, value}`. The daily AI budget is set through `server/routes/85-settings.mjs` |
+| `features/settings.js` | the Settings sheet (`,` where no view binds it, Ctrl+, or ⌘,; Esc closes; `wall.js` leaves keys inside `#st`, and Esc while it is open, to it). Core options keep their own state fields and store keys; the rest live in store `settings` and act through CSS custom properties on `:root` (`--bg`… `--paper*`, `--flow-*`, `--page-gap`, `--panel-w`; `ui/features/settings.css` reads them), `data-st-*` attributes and `st-hide-*` classes on `<html>`, and `state.measure` (column width in em, `flow.js`), `state.cropPad` (`render.js`), `state.pageGap` and `state.fit` (`feed.js`). Emits `settings:changed {key, value}`. The daily AI budget is set through `server/routes/85-settings.mjs` |
 
 ### Hooks (`util.js`)
 

@@ -127,7 +127,7 @@ export function makeAug(it, { force = false } = {}) {
   const run = (async () => {
     phase.set(k, 'text'); schedule(it);
     try {
-      const text = await textFor(it);
+      const text = await textFor(it).catch(() => null); // without it, the server looks for text itself
       phase.set(k, 'model'); schedule(it);
       const body = { id: it.id, title: it.t, authors: it.a, year: it.y, lane: LANES[it.lane], laneId: it.lane, kind: it.kind, n: it.n, model: S.model, force, ...(text && { text }) };
       const r = await fetch('/augment', { method: 'POST', body: JSON.stringify(body) });
