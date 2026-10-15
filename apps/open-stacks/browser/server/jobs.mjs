@@ -352,7 +352,10 @@ export function candidates(ctx) {
     cands.sort((a, b) => b.rank - a.rank);
     const kept = [];
     for (const c of cands) {
-      if (c.seedSet.length && kept.some((k) => c.seedSet.filter((s) => k.seedSet.includes(s)).length >= 0.8 * c.seedSet.length)) continue;
+      // Skip a topic whose seeds the jobs ranked above it already cover (80%), together, not only one by one:
+      // one cluster of reading otherwise fills the cap with its tag, its folders and its field.
+      const covered = new Set(kept.flatMap((k) => k.seedSet));
+      if (c.seedSet.length && c.seedSet.filter((s) => covered.has(s)).length >= 0.8 * c.seedSet.length) continue;
       kept.push(c);
       const ins = c.ins.map(itemOf).filter(Boolean).sort((a, b) => (c.ex.has(a.id) - c.ex.has(b.id)) || (dateKey(a) < dateKey(b) ? 1 : -1)).map((it) => (c.ex.has(it.id) ? { ...pub(it), ex: true } : pub(it)));
       const wants = { ...WANTS[c.priority] };
@@ -715,23 +718,34 @@ export function loadHosts(dir, root) {
 }
 
 /** Live checks (--live): one GET per URL with a Range header, polite per host. */
-export async function liveCheck(urls, { fetchImpl = globalThis.fetch, ia = [], ua = 'OpenStacksBrowser/0.3 jobs check (https://github.com/quantified-uncertainty/cairn)', timeout = 20e3, gap = (h) => (h === 'export.arxiv.org' ? 3000 : 1000) } = {}) {
+export async function liveCheck(urls, { fetchImpl = globalThis.fetch, ia = [], ua = 'OpenStacksBrowser/0.3 jobs check (https://github.com/quantified-uncertainty/cairn)', timeout = 20e3, gap = (h) => (h === 'export.arxiv.org' ? 3000 : 1000), deny = () => null, allowed = () => true } = {}) {
   const lines = [], last = new Map();
   const wait = async (h) => { const t = last.get(h) || 0, d = t + gap(h) - Date.now(); if (d > 0) await new Promise((r) => setTimeout(r, d)); last.set(h, Date.now()); };
-  for (const { url, kind } of urls) {
+  // The first n bytes only: a server that ignores Range must not make the check download a whole PDF.
+  const head = async (r, n = 2048) => {
+    if (!r.body?.getReader) return Buffer.from(await r.arrayBuffer()).subarray(0, n);
+    const rd = r.body.getReader(), parts = []; let len = 0;
+    try { while (len < n) { const { done, value } = await rd.read(); if (done) break; parts.push(Buffer.from(value)); len += value.length; } } finally { rd.cancel().catch(() => {}); }
+    return Buffer.concat(parts).subarray(0, n);
+  };
+  for (const { url, kind, role } of urls) {
     const h = hostOf(url) || '?';
     await wait(h);
     try {
       const graph = isGraphql(url);
       const r = await fetchImpl(url, { headers: { 'User-Agent': ua, ...(graph ? {} : { Range: 'bytes=0-2047' }) }, redirect: 'follow', signal: AbortSignal.timeout(timeout) });
-      if (!(r.status === 200 || r.status === 206)) { lines.push({ ok: false, text: `${url} answers HTTP ${r.status}` }); continue; }
+      if (!(r.status === 200 || r.status === 206)) { r.body?.cancel?.().catch(() => {}); lines.push({ ok: false, text: `${url} answers HTTP ${r.status}` }); continue; }
+      // Where the redirects ended: never a shadow library or a login page; what the reader opens stays on an open host.
+      const fin = r.redirected && r.url && r.url !== url ? r.url : null, fh = fin && hostOf(fin);
+      const bad = fin && (deny(fin) ? `redirects to a shadow library (${fh})` : /\/(log-?in|sign-?in|signin|auth|sso|shibboleth|idp|accounts\/login)\b/i.test(new URL(fin).pathname) ? `redirects to a login page (${fin.slice(0, 80)})` : role === 'url' && fh !== h && !allowed(fh) ? `redirects to ${fh}, not a known open host (link the open copy directly, or add ${fh} to jobs/hosts.json "allow" with a reason)` : null);
+      if (bad) { r.body?.cancel?.().catch(() => {}); lines.push({ ok: false, text: `${url} ${bad}` }); continue; }
       if (graph) {
         const j = await r.json().catch(() => null);
         const body = j?.data?.post?.result?.htmlBody;
         lines.push(body && body.length > 50 ? { ok: true, text: `${url.slice(0, 80)}… has a post body` } : { ok: false, text: `${url.slice(0, 80)}… returned no htmlBody` });
         continue;
       }
-      const buf = Buffer.from(await r.arrayBuffer()).subarray(0, 2048);
+      const buf = await head(r);
       const type = r.headers.get('content-type') || '';
       if (kind === 'pdf' && !(buf.subarray(0, 5).toString('latin1').startsWith('%PDF') || /application\/pdf/i.test(type))) lines.push({ ok: false, text: `${url} is not a PDF (${type || 'no type'})` });
       else if (kind === 'image' && !/^image\//i.test(type)) lines.push({ ok: false, text: `${url} is not an image (${type || 'no type'})` });
@@ -821,8 +835,8 @@ export async function checkJob(id, { root, dir, live = false, fetchImpl, now = D
     for (const it of mine) for (const u of [it.url, it.page, it.pdf]) {
       if (!u) continue;
       const h = hostOf(u); if (!h) continue;
-      const dn = denied(h, hosts);
-      if (dn) { hostBad++; say(false, `${it.id}: ${h} is a shadow library (deny list: ${dn}); never use it`); continue; }
+      const dn = deniedUrl(u, hosts);
+      if (dn) { hostBad++; say(false, `${it.id}: ${u.length > 90 ? u.slice(0, 90) + '…' : u} is on a shadow library (deny list: ${dn}); never use it`); continue; }
       if (!allowedHost(h, hosts, corpusHosts)) { hostBad++; say(false, `${it.id}: ${h} is not a known open host; if it is open, add it to jobs/hosts.json "allow" with a reason`); continue; }
       if (!parents(h).some((x) => corpusHosts.has(x) || BASE_HOSTS.includes(x))) added.add(h);
     }
@@ -838,7 +852,12 @@ export async function checkJob(id, { root, dir, live = false, fetchImpl, now = D
       if (h.length) { lint++; say(false, `${it.id}: why/via read like reading history ("${h[0].match}"); keep them neutral`); }
     }
     if (!lint) say(true, 'why and via are neutral');
-    for (const it of mine) { liveUrls.push({ url: it.url, kind: it.kind === 'pdf' ? 'pdf' : 'page' }); if (it.page && it.page !== it.url) liveUrls.push({ url: it.page, kind: 'page' }); if (it.kind === 'scan' && it.ia) liveIa.push(it.ia); }
+    for (const it of mine) {
+      liveUrls.push({ url: it.url, kind: it.kind === 'pdf' ? 'pdf' : 'page', role: 'url' }); if (it.page && it.page !== it.url) liveUrls.push({ url: it.page, kind: 'page', role: 'page' });
+      // Any Internet Archive item, whatever its kind, must not be a lending copy.
+      const ia = (it.kind === 'scan' && it.ia) || /^https:\/\/archive\.org\/(?:details|download)\/([^/?#]+)/.exec(it.url || '')?.[1];
+      if (ia) liveIa.push(ia);
+    }
     for (const it of mine) if (it.via) out.queries.push(`${it.via.source}: ${it.via.query}`);
     if (mine.length) files.add('corpus.json');
   } else if (['fix-item', 'metadata'].includes(job.type)) {
@@ -854,8 +873,8 @@ export async function checkJob(id, { root, dir, live = false, fetchImpl, now = D
       for (const k of ['url', 'page', 'pdf']) if (o[k]) {
         const h = hostOf(o[k]);
         if (!/^https:\/\//.test(o[k])) say(false, `${x.id}: ${k} must be https://`);
-        else if (h && denied(h, hosts)) say(false, `${x.id}: ${h} is a shadow library; never use it`);
-        else liveUrls.push({ url: o[k], kind: (o.kind || corpusById.get(x.id)?.kind) === 'pdf' && k !== 'page' ? 'pdf' : 'page' });
+        else if (h && deniedUrl(o[k], hosts)) say(false, `${x.id}: ${k} is on a shadow library (deny list: ${deniedUrl(o[k], hosts)}); never use it`);
+        else liveUrls.push({ url: o[k], kind: (o.kind || corpusById.get(x.id)?.kind) === 'pdf' && k !== 'page' ? 'pdf' : 'page', role: k === 'page' ? 'page' : 'url' });
       }
       const c = corpusById.get(x.id);
       if (o.drop ? !!c : c && fields.some((k) => JSON.stringify(c[k]) !== JSON.stringify(o[k]))) notMerged++;
@@ -874,7 +893,7 @@ export async function checkJob(id, { root, dir, live = false, fetchImpl, now = D
       if (e.from) {
         const h = hostOf(e.from);
         if (!h || !/^https:\/\//.test(e.from)) { missing++; say(false, `${x.url}: from must be an https:// URL`); }
-        else if (denied(h, hosts)) { missing++; say(false, `${x.url}: ${h} is a shadow library`); }
+        else if (deniedUrl(e.from, hosts)) { missing++; say(false, `${x.url}: from is on a shadow library (deny list: ${deniedUrl(e.from, hosts)})`); }
         else if (!(h === 'web.archive.org' || allowedHost(h, hosts, new Set()) || hostOf(x.url) === h)) { missing++; say(false, `${x.url}: ${h} is not an open host (add it to jobs/hosts.json with a reason, or use web.archive.org)`); }
         else liveUrls.push({ url: e.from, kind: 'image' });
       } else if (!(e.gone && String(e.why || '').trim())) { missing++; say(false, `${x.url}: needs from, or gone: true with why`); }
@@ -906,7 +925,8 @@ export async function checkJob(id, { root, dir, live = false, fetchImpl, now = D
   if (live && (liveUrls.length || liveIa.length)) {
     const seenU = new Set();
     const urls = liveUrls.filter((x) => x.url && !seenU.has(x.url) && seenU.add(x.url));
-    for (const l of await liveCheck(urls, { fetchImpl, ia: [...new Set(liveIa)] })) lines.push(l);
+    const known = new Set(); for (const it of corpusById.values()) for (const u of [it.url, it.page]) { const h = hostOf(u); if (h) known.add(h); }
+    for (const l of await liveCheck(urls, { fetchImpl, ia: [...new Set(liveIa)], deny: (u) => deniedUrl(u, hosts), allowed: (h) => allowedHost(h, hosts, known) })) lines.push(l);
   } else if (!live && (liveUrls.length || liveIa.length)) say(true, `${liveUrls.length + liveIa.length} URLs not checked live (add --live)`);
   out.files = [...files];
   out.ok = lines.every((l) => l.ok);

@@ -145,6 +145,10 @@ Some *emphasis*, **strong** text, \`code\`, and a [link](https://example.org/a?b
 \`\`\`js
 const x = 1 < 2;
 \`\`\`
+
+## Longer notes
+
+${Array.from({ length: 30 }, (_, k) => `Paragraph ${k + 1} of the longer notes. ` + Array.from({ length: 50 }, (_, j) => `note${k + 1}w${j}`).join(' ') + '.').join('\n\n')}
 `;
 
 const put = (f, data) => { mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, data); };
@@ -160,7 +164,7 @@ export function makeFolder(dir, { links = true } = {}) {
   put(join(dir, 'Papers', 'beta_notes.md'), MARKDOWN);
   put(join(dir, 'Papers', 'pics', 'dot.png'), PNG);
   put(join(dir, 'Papers', '.Later.pdf.icloud'), Buffer.from('bplist00 placeholder'));
-  put(join(dir, 'Books', 'Synthetic Book.epub'), makeEpub());
+  put(join(dir, 'Books', 'Synthetic Book.epub'), makeEpub({ words: 400 }));
   put(join(dir, 'Books', 'plain.txt'), 'Title: A Plain Text\nAuthor: Someone Plain\n\nFirst paragraph of plain text.\n\nSecond paragraph.\n');
   put(join(dir, 'Books', 'Deep', 'Deeper', 'inner.pdf'), makePdf({ pages: 1, title: 'Inner Paper' }));
   put(join(dir, 'Maps', 'a.png'), PNG);

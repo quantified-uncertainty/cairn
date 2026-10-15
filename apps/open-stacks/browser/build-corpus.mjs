@@ -36,6 +36,11 @@ import { fileURLToPath } from 'url';
 const HERE = dirname(fileURLToPath(import.meta.url));
 // --root DIR: read and write corpus.json, data/ and seeds.json under DIR (tests, QA copies).
 const ROOT = process.argv.includes('--root') ? resolve(process.argv[process.argv.indexOf('--root') + 1]) : HERE;
+// Shadow libraries (jobs/hosts.json "deny") never enter the corpus from a lane file or an
+// override, even when nobody ran `node jobs.mjs check`.
+const { deniedUrl } = await import('./server/jobs.mjs');
+const HOSTS = (() => { for (const f of [join(ROOT, 'jobs', 'hosts.json'), join(HERE, 'jobs', 'hosts.json')]) { try { return JSON.parse(readFileSync(f, 'utf-8')); } catch { /* next */ } } return { deny: [] }; })();
+const shadowOf = (x) => [x?.url, x?.page, x?.pdf].map((u) => u && deniedUrl(u, HOSTS)).find(Boolean) || null;
 const UA ='OpenStacksBrowser/0.2 (https://github.com/quantified-uncertainty/cairn)';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -341,6 +346,7 @@ function applyOverrides(list) {
     if (!it) { out.skipped.push(`${id}: not in the corpus`); continue; }
     if (o.drop) { drop.add(id); out.lanes.add(it.lane); out.dropped.push(id); continue; }
     if (o.lane !== undefined && !LANES[o.lane]) { out.skipped.push(`${id}: unknown lane ${o.lane}`); continue; }
+    if (shadowOf(o)) { out.skipped.push(`${id}: a link on a shadow library (${shadowOf(o)}), never applied`); continue; }
     let changed = false;
     for (const k of FIELDS) {
       if (o[k] === undefined || JSON.stringify(it[k]) === JSON.stringify(o[k])) continue;
@@ -379,6 +385,7 @@ if (process.argv.includes('--merge')) {
       if (!x.id || !x.url || !x.t) { skipped.push(`${f}: ${x.id || '(no id)'}: needs id, url and t`); continue; }
       const lane = x.lane || d.lane;
       if (!LANES[lane]) { skipped.push(`${f}: ${x.id}: unknown lane ${lane}`); continue; }
+      if (shadowOf(x)) { skipped.push(`${f}: ${x.id}: on a shadow library (${shadowOf(x)}), never added`); continue; }
       const it = { ...x, lane, src: lane === 'quri' && x.src ? x.src : srcOf(x), score: x.score || 0 };
       if (it.kind === 'html' && !/\/graphql\b/.test(it.url)) it.kind = 'web';
       if (!it.d && /^arxiv:\d{4}\./.test(it.id)) it.d = `20${it.id.slice(6, 8)}-${it.id.slice(8, 10)}`;

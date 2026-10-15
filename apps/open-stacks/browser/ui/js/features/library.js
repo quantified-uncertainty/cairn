@@ -31,13 +31,13 @@
 // only while it is showing.
 import { $, h, on, store, registerKey, keyHelp, fmtDate } from '../util.js';
 import { items, byId, LANES, COUNTS, LANE_COLORS, LANE_ORDERED } from '../corpus.js';
-import { state, current, topicRank, SORTERS } from '../state.js';
-import { jumpTo, goPage } from '../nav.js';
+import { state, current, topicRank, SORTERS, buildOrder } from '../state.js';
+import { jumpTo, goPage, before } from '../nav.js';
 import { openDoc, pdfOutline, isFlow } from '../docs.js';
 import { flowRange } from '../flow.js';
 import { profileOf } from '../profile.js';
 import { registerTrackLayer, repaintTrack } from '../feed.js';
-import { setView, setLane, togglePanel } from '../chrome.js';
+import { setView, setLane, togglePanel, paintLanes } from '../chrome.js';
 import { SORTS, setSort, stayIn, leave, goTo } from '../stack.js';
 
 const RH = 24; // row height, px (matches library.css)
@@ -212,10 +212,17 @@ function openItem(i, r) {
   const it = items[i];
   if (r != null && state.order[r] === i) { if (r !== state.pos || state.view !== 'feed') goTo(i, 'open from library'); }
   else if (state.order.includes(i)) goTo(i, 'open from library');
-  else if (LANE_ORDERED[it.lane] && parentOf.get(i)) {
-    const site = ancestors(i).at(-2) || ancestors(i).at(-1); // the folder just below the lane
-    browse(site, i); return;
-  } else jumpTo(i);
+  else {
+    // Outside what you are walking (another folder, tag or lane): stop staying in it and
+    // walk this item's own lane from its place, so the next item is the next row here.
+    if (state.scope) leave();
+    if (state.lane !== 'all' && it.lane !== state.lane) {
+      before('lane switch', { lane: state.lane, order: state.order.slice() });
+      state.lane = it.lane; store.set('lane', it.lane);
+      buildOrder(false, i); paintLanes();
+    }
+    if (state.order.includes(i)) goTo(i, 'open from library'); else jumpTo(i);
+  }
   done();
 }
 /** After acting from the list, keys go back to the page; the filter stays for arrowing on, but typing starts a new one. */
@@ -474,11 +481,13 @@ async function askReady() {
   const want = [...readyAsk].slice(0, 120); readyAsk = new Set([...readyAsk].slice(120));
   if (!want.length) return;
   for (const i of want) { const r = ready.get(i); ready.set(i, { v: r?.v || null, t: Date.now() }); } // no repeat asks while this one is out
+  let fresh = false;
   try {
     const res = await fetch('/ready?ids=' + want.map((i) => encodeURIComponent(items[i].id)).join(','));
-    if (res.ok) { const o = await res.json(); for (const i of want) if (o[items[i].id]) ready.set(i, { v: o[items[i].id], t: Date.now() }); }
+    if (res.ok) { const o = await res.json(); for (const i of want) if (o[items[i].id]) { if (String(ready.get(i)?.v) !== String(o[items[i].id])) fresh = true; ready.set(i, { v: o[items[i].id], t: Date.now() }); } }
   } catch { /* the server is older: no marks */ }
   if (readyAsk.size && !readyT) readyT = setTimeout(askReady, 250);
+  if (fresh) elVer++; // rows drawn before the answer are drawn again, with their marks
   if (showing()) paint();
 }
 // While the list shows, look again every few seconds: the background fills things in.

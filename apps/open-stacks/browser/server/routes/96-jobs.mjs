@@ -111,7 +111,7 @@ export default function (app) {
     const done = l.done.filter((x) => x.job).sort((a, b) => String(b.job.done).localeCompare(String(a.job.done)) || b.mtime - a.mtime).slice(0, 50)
       .map((x) => ({ id: x.job.id, type: x.job.type, title: x.job.title, status: x.job.status, done: x.job.done, created: x.job.created, priority: x.job.priority, key: x.job.key, target: x.job.target, inputs: x.job.inputs, file: rel(x.file), result: resultOf(x) }));
     const broken = [...l.open, ...l.done].filter((x) => x.errors.length).map((x) => ({ file: rel(x.file), errors: x.errors }));
-    app.json(res, { dir: DIR_REL, repoPath: REPO, every: EVERY, running: !!running, lastRefresh: state.lastRefresh || 0, nextRefresh: state.nextRefresh || 0, prompt: J.allPrompt(REPO), caps, open, done, broken });
+    app.json(res, { dir: DIR_REL, repoPath: REPO, every: EVERY, running: !!running, lastRefresh: state.lastRefresh || 0, nextRefresh: EVERY > 0 && state.lastRefresh ? state.lastRefresh + EVERY * 3600e3 : 0, prompt: J.allPrompt(REPO), caps, open, done, broken });
   });
   app.route('POST', '/jobs/refresh', async (req, res) => {
     try { app.json(res, await refresh('request')); } catch (e) { app.json(res, { error: e.message }, 500); }
@@ -181,7 +181,11 @@ export default function (app) {
 
   // ---- when the corpus changes: new items' hosts are open hosts; their documents get the archive fallback
   const allow = (items) => {
+    // Never proxy a shadow library (jobs/hosts.json "deny"), even if an item on one got into corpus.json.
+    const hosts = J.loadHosts(ROOT, app.HERE);
+    for (const h of [...app.cache.ALLOW]) if (J.denied(h, hosts)) app.cache.ALLOW.delete(h);
     for (const it of items) {
+      if ([it.url, it.page, it.pdf].some((u) => u && J.deniedUrl(u, hosts))) continue;
       for (const u of [it.url, it.page, it.pdf]) { try { if (u) app.cache.ALLOW.add(new URL(u).hostname.replace(/^www\./, '')); } catch { /* not a URL */ } }
       if (it.added && rescue?.addDoc && (it.kind === 'web' || it.kind === 'pdf') && it.url) rescue.addDoc(it.url, { kind: it.kind, t: it.t, a: it.a, id: it.id });
     }

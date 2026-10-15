@@ -676,17 +676,20 @@ export class LocalIndex {
   async settled(ms = 20000) {
     const t = Date.now();
     while (Date.now() - t < ms && (this.scanning || this.queue.length || this.working)) await new Promise((r) => setTimeout(r, 20));
-    clearTimeout(this.metaT); this.build();
+    clearTimeout(this.metaT); this.build(); this.saveMeta(true);
   }
   close() { clearTimeout(this.metaT); clearTimeout(this.saveT); this.queue.length = 0; }
-  saveMeta() {
+  /** meta.json, a second after the last change (now: at once); only entries for files still there. */
+  saveMeta(now = false) {
     if (!this.metaFile) return;
     clearTimeout(this.saveT);
-    this.saveT = setTimeout(() => {
+    const save = () => {
       const live = new Set((this.entries || []).map((e) => this.metaKey(e)));
       const o = {}; for (const [k, v] of this.meta) if (live.has(k)) o[k] = v;
       try { mkdirSync(dirname(this.metaFile), { recursive: true }); writeFileSync(this.metaFile + '.tmp', JSON.stringify(o)); renameSync(this.metaFile + '.tmp', this.metaFile); } catch (e) { console.warn('local: meta.json:', e.message); }
-    }, 1000);
+    };
+    if (now) return save();
+    this.saveT = setTimeout(save, 1000);
     this.saveT.unref?.();
   }
   async readMeta(e) {
