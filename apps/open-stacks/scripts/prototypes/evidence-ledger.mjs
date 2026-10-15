@@ -210,7 +210,7 @@ const LEDGER = [
   {
     id: '2607.18269', short: 'Wisdom of LLM Crowds', type: 'Benchmark result', system: 'ensemble', group: 'market',
     lr: 0.67, lo: 0.5, hi: 0.9,
-    rationale: 'Even with the market frozen at each model’s training cutoff, 15 LLMs and learned aggregates stay well behind it, and contamination had inflated apparent gains about fourfold.',
+    rationale: 'Even with the market frozen at each model’s training cutoff, the 15 LLMs stay substantially less accurate than it. Contamination had also inflated the frontier-over-local gap about fourfold (35.8% to 8.9% on clean questions).',
     claims: [
       { metric: 'Accuracy vs market at model cutoff', value: 'Substantially less accurate', baseline: 'Prediction-market prices', dataset: '254 binary market questions, 15 LLMs', year: 2026, standing: 'below_crowd',
         quotes: ['We elicited probability estimates from 15 LLMs on 254 binary prediction market questions', 'Even when the prediction market is evaluated at each model\'s training cutoff, LLMs remained substantially less accurate'] },
@@ -328,16 +328,16 @@ const LIVE_EXAMPLES = [
     id: '2606.29661',
     result: {
       relevant: true,
-      reason: 'States where top AI forecasting systems stand relative to superforecasters, on Metaculus AI Benchmark questions.',
+      reason: 'Its opening sentence states where top AI forecasting systems stand relative to superforecasters; its own experiments are on the Metaculus AI Benchmark.',
       evidence_type: 'Background statement in a benchmark study',
       self_reported: false,
       claims: [
-        { metric: 'Accuracy on future world events', value: '“approaching” superforecaster level', baseline: 'Superforecasters', dataset: 'Field-level statement (Metaculus AI Benchmark context)', year: 2026, standing: 'below_elite', system: 'ensemble',
+        { metric: 'Accuracy on future world events', value: '“approaching” superforecaster level', baseline: 'Superforecasters', dataset: 'Field-level statement in the opening sentence', year: 2026, standing: 'below_elite', system: 'agentic',
           quote: 'Top AI forecasting systems are approaching superforecaster-level accuracy on future world events' },
       ],
       lr: 0.8,
       lr_quote: 'Top AI forecasting systems are approaching superforecaster-level accuracy on future world events',
-      rationale: 'Builders of top systems describe them as “approaching” superforecaster level in mid-2026: an admitted gap, though background framing rather than a measurement.',
+      rationale: 'A mid-2026 paper on forecasting ensembles describes top systems as only “approaching” superforecaster level: an admitted gap, though background framing rather than a measurement.',
     },
   },
   {

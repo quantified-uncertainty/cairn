@@ -303,11 +303,11 @@ main { grid-column: 2; min-width: 0; }
 .tray:has(.tray-toggle:focus-visible) .tray-rim { background: var(--focus); padding: 3px; }
 .pnum { font: 900 40px/.8 var(--f-stencil); color: var(--rim-2); width: 22px; text-align: center; padding-top: 2px; transition: color .2s; }
 .tray.on .pnum { color: var(--signal); }
-.ptag { min-width: 0; }
+.ptag { min-width: 0; min-height: calc(2 * 15.5px * 1.2 + 3px + 3 * 12.5px * 1.35); }
 .pname { margin: 0; font: 600 15.5px/1.2 var(--f-serif); color: var(--ink); overflow-wrap: anywhere; }
 .pname.kw { font: 600 12.5px/1.3 var(--f-mono); font-stretch: semi-condensed; letter-spacing: .01em; text-transform: uppercase; color: var(--ink-2); padding-top: 2px; }
 .pname .caret { display: inline-block; width: .5em; height: 1em; vertical-align: -2px; background: var(--signal); margin-left: 2px; animation: blink .8s steps(2) infinite; }
-.pline { margin: 3px 0 0; font: italic 400 12.5px/1.35 var(--f-serif); color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.7em; }
+.pline { margin: 3px 0 0; font: italic 400 12.5px/1.35 var(--f-serif); color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .pline.data { font-style: normal; font-size: 11.5px; color: var(--ink-3); }
 .pcount { text-align: right; line-height: 1; }
 .pcount b { display: block; font: 600 19px/1 var(--f-mono); font-stretch: semi-condensed; font-variant-numeric: tabular-nums; letter-spacing: -.02em; color: var(--ink); }
@@ -444,6 +444,7 @@ a.chip:hover { box-shadow: 0 0 0 1px var(--ink-2) inset; }
   .hop-lbl { display: none; }
   #listBtn { display: none; }
   .trays { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .ptag { min-height: 0; }
   .stephead { margin-top: 26px; }
   .sh-title { font-size: 22px; }
   .legend { margin-left: 0; }
@@ -1131,8 +1132,9 @@ if (typeof self !== 'undefined' && typeof self.postMessage === 'function' && typ
     if (!Wc || !Hc) return false;
     var dpr = Math.min(2, window.devicePixelRatio || 1);
     var mMax = Math.max.apply(null, st.piles.map(function (p) { return p.m; }).concat([1]));
-    var ch = Math.min(9, Hc / (Math.sqrt(mMax) * 1.12));
-    var cw = Math.min(15, ch / 0.6);
+    // chits grow as the sieve gets finer: tiles of up to 22 x 13 px for the last few works
+    var ch = Math.min(mMax < 30 ? 13 : mMax < 120 ? 11 : 9, Hc / (Math.sqrt(mMax) * 1.12));
+    var cw = Math.min(mMax < 30 ? 22 : 16, ch / 0.6);
     var need = 2 * Math.sqrt(mMax) * 1.12 * cw;
     if (need > Wc - 4) cw = (Wc - 4) / (2 * Math.sqrt(mMax) * 1.12);
     var C = Math.max(3, Math.floor((Wc - 4) / cw));
@@ -1151,12 +1153,14 @@ if (typeof self !== 'undefined' && typeof self.postMessage === 'function' && typ
     });
     return true;
   }
+  function chitGap(g) { return g.cw > 14 ? 2 : g.cw > 7 ? 1.2 : g.cw > 3.4 ? 0.7 : 0.4; }
+  function chitGapY(g) { return g.ch > 10 ? 1.5 : g.ch > 4 ? 0.8 : 0.35; }
   function drawHeap(st, i, from, to, clear) {
     var p = st.piles[i], g = st.geom, hp = p.heap; if (!g || !hp) return;
     var ctx = hp.cv.getContext('2d');
     ctx.setTransform(g.dpr, 0, 0, g.dpr, 0, 0);
     if (clear) ctx.clearRect(0, 0, g.Wc, g.Hc);
-    var gap = g.cw > 7 ? 1.2 : g.cw > 3.4 ? 0.7 : 0.4, gy = g.ch > 4 ? 0.8 : 0.35;
+    var gap = chitGap(g), gy = chitGapY(g);
     for (var k = from; k < to; k++) {
       ctx.fillStyle = PAL[hp.color[k]][hp.shade[k]];
       ctx.fillRect(hp.x0 + hp.col[k] * g.cw, g.Hc - (hp.row[k] + 1) * g.ch, g.cw - gap, g.ch - gy);
@@ -1200,7 +1204,7 @@ if (typeof self !== 'undefined' && typeof self.postMessage === 'function' && typ
       });
       var jx = piles.map(function (p) { var a = new Float32Array(p.m); for (var k = 0; k < p.m; k++) a[k] = rand() - 0.5; return a; });
       var landed = new Int32Array(piles.length);
-      var gap = g.cw > 7 ? 1.2 : g.cw > 3.4 ? 0.7 : 0.4, gy = g.ch > 4 ? 0.8 : 0.35;
+      var gap = chitGap(g), gy = chitGapY(g);
       var hopN = $('hopN'), t0 = performance.now();
       function launchAt(i, k) { return T * (k / piles[i].m); }
       function frame(now) {
@@ -1243,7 +1247,7 @@ if (typeof self !== 'undefined' && typeof self.postMessage === 'function' && typ
       S.anim = true; sizeFx();
       var T = 560, D = 440, chuteEl = $('chute'), hopN = $('hopN');
       var total = sel.reduce(function (s, i) { return s + st.piles[i].m; }, 0);
-      var gap = g.cw > 7 ? 1.2 : g.cw > 3.4 ? 0.7 : 0.4, gy = g.ch > 4 ? 0.8 : 0.35;
+      var gap = chitGap(g), gy = chitGapY(g);
       var rects = {}, t0 = performance.now();
       sel.forEach(function (i) { rects[i] = st.piles[i].heap.cv.getBoundingClientRect(); });
       function frame(now) {

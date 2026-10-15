@@ -364,6 +364,51 @@ const TRAILS = [
       ['OL20743446W', 'A teaching-first course in Bayesian modelling with code, where many practitioners now begin.'],
     ],
   },
+  {
+    q: 'What should I read to get better at forecasting?',
+    title: 'Forecasting, from tournaments to the psychology of judgment',
+    stops: [
+      ['OL18233878W', 'Start here: what years of forecasting tournaments showed about the most accurate forecasters, who think in fine-grained probabilities, start from base rates and update often.'],
+      ['OL15992072W', 'The psychology underneath: fast intuitive judgment, slow deliberate reasoning, and the biases a forecaster has to catch in themselves.'],
+      ['OL12970183W', 'The 1982 collection, edited by Kahneman, Slovic and Tversky, that holds the original papers on representativeness, availability and anchoring behind the popular books.'],
+      ['OL16700318W', 'Forecasting in practice across weather, elections, earthquakes and poker, with a plain case for updating beliefs the Bayesian way.'],
+      ['OL17877260W', 'Base rates for the world: long-run trends in global data, and why people are systematically too gloomy about them.'],
+      ['OL3295030W', 'The limits: rare, high-impact events that models fitted to the past miss, and how to stay robust when you cannot predict them.'],
+      ['OL17962180W', 'The other kind of error: unwanted scatter between judgments of the same case, and how to audit and reduce it.'],
+      ['OL2181533W', 'The statistical side: Box and Jenkins on modelling a series from its own past, the basis of classical time-series forecasting.'],
+    ],
+  },
+  {
+    q: 'Where do I start on AI risk and alignment?',
+    title: 'AI alignment, from the present problem to the long view',
+    stops: [
+      ['OL20781447W', 'Start with the present: how machine-learning systems pick up objectives nobody intended, told through the researchers working on the problem.'],
+      ['OL20492448W', 'Russell\'s proposal: build machines that are uncertain about what we want and learn it from how we behave, instead of optimising a fixed objective.'],
+      ['OL17319280W', 'The long-run argument: why a system much more capable than us could be hard to control, and why its goals need not resemble ours.'],
+      ['OL19717530W', 'A broader tour of possible futures with advanced AI, written for general readers.'],
+      ['OL4307531W', 'The roots: Wiener\'s 1948 founding text on feedback, control and goal-directed machines. He later warned about machines pursuing purposes we specify imperfectly.'],
+      ['OL2896994W', 'The field\'s standard textbook, co-written by Russell, for the technical ground the other books assume.'],
+      ['OL17801809W', 'The methods behind today\'s systems: a graduate-level textbook on deep neural networks.'],
+      ['OL17840708W', 'Present-day harms of opaque, large-scale models in lending, hiring and policing: alignment failures that are already here.'],
+      ['OL27138977W', 'Why the long-term future matters morally, the argument that motivates much work on AI risk.'],
+    ],
+  },
+  {
+    q: 'How did evolutionary thinking develop, before and after Darwin?',
+    title: 'Evolution, from Malthus to the selfish gene',
+    stops: [
+      [4239, 'Malthus argues that population outruns food. Darwin and Wallace both credited this argument with suggesting natural selection. First published 1798; its year here is estimated from Malthus\'s life dates.'],
+      [33224, 'Lyell\'s deep time and slow, uniform change. Darwin read it on the Beagle voyage.'],
+      [944, 'Darwin\'s own account of the voyage, with the observations from South America and the Galapagos that he later built on.'],
+      [7116, 'The anonymous 1844 bestseller (by Robert Chambers) that made transmutation a public scandal fifteen years before the Origin.'],
+      ['OL515051W', 'The argument itself: descent with modification by natural selection.'],
+      [2931, 'Huxley\'s anatomical case that humans are close kin of the great apes, published a few years after the Origin.'],
+      ['OL515361W', 'Darwin turns to humans and adds sexual selection.'],
+      ['OL1169737W', 'Julian Huxley names the modern synthesis: Darwinian selection combined with Mendelian and population genetics.'],
+      ['OL1966488W', 'The gene\'s-eye view of evolution, which made kin selection and evolutionary game theory famous outside biology.'],
+      ['OL3341351W', 'A compact modern summary from Ernst Mayr, one of the architects of the synthesis.'],
+    ],
+  },
 ];
 const rowOf = new Map(W.id.map((id, i) => [String(id), i]));
 const trails = TRAILS.map((t) => ({
