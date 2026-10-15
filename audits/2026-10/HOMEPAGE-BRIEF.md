@@ -46,3 +46,14 @@
 ## Reference points
 
 Think a well-set personal research site or a plain, excellent README, not a magazine and not a product page. Examples: Gwern-style restraint without the density, Distill without the flash, a Tufte-ish preference for content over chrome.
+
+## Revision 2: owner feedback on the minimal finals (2026-10-15)
+
+"Decent, but you went a little too far." The target is now about **90% the minimal finals, 10% flourish**:
+
+- **Small design flourishes are welcome.** For example, a very light background treatment, or one basic, interesting typeface that stays easy to read.
+- **Diagrams should be more sophisticated than the round-2 ones.** They should still be clean and correct, but they should carry more real information and insight.
+- Everything in rules 1–8 above still applies, except as relaxed here:
+  - One distinctive but readable face is allowed, for headings or the title.
+  - A subtle background treatment is allowed.
+  - Each site may have one diagram.
