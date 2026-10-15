@@ -29,7 +29,7 @@ How the pieces fit, for anyone adding a feature. The README covers running and u
 | `feed.js` | `showFeed()`, `paintHead`, `paintPos`, `paintScrub`, `layoutPanels` |
 | `nav.js` | `go`, `jumpTo`, `goPage(k)`, `turn(dir)` (true if it moved), `advance(e)` and `back(e)` (the Advance and Back verbs), `forward(e)` (page forward, then the next item on a fresh press; nothing while the item is still opening), `before(label, extra)` (emits `nav:before`), `randomSpot`, `toggleZoom(on, k)`, the wheel map, and most keys |
 | `gesture.js` | wheel and trackpad gestures: `attachWheel(el, {steps, pinch})` turns each notch or stroke into one `gesture:step`, and each pinch into one `gesture:pinch`; tells a notched mouse from a trackpad per gesture; `tune` (thresholds; `?wheel=debug` plots the events) |
-| `prefetch.js` | `planAround`, `startOf(i)` (uses `it.best`), `serverPrefetch`, `velocity` |
+| `prefetch.js` | `planAround`, `startOf(i)` (uses `it.best`), `serverPrefetch`, `velocity`, `reopeners` (hooks `fn(i, it)` → where an item not yet placed this session reopens, in `state.start` units; `features/memory.js` uses it) |
 | `panel.js` | the side panel and the built-in sections (why, outline, related, today) |
 | `summary.js` | the summary section, `summarizeItem`, `extractText` |
 | `notes.js` | the note section, `appendQuote(it, text, page)` |
@@ -47,7 +47,8 @@ How the pieces fit, for anyone adding a feature. The README covers running and u
   - `nav:before {label, i, pos, s, hist, zoom, order?, aff?, saved?, lane?}`, where you were just before a move or judgment (`features/back.js` keeps them for Back);
   - `gesture:step {axis, dir, device, fresh}` and `gesture:pinch {dir, x, y}` (`gesture.js`); a step listener sets `stop` to end the gesture;
   - `view:changed {view}`;
-  - `panel:painted`, `status`, `boot` and `flow:jump`.
+  - `panel:painted`, `status`, `boot` and `flow:jump`;
+  - `memory:updated {id}` (`features/memory.js`, which also exports `progressOf(id)` → `{seen, n, frac, far, at, done, ms, visits, …}` or null).
 - `registerKey(keys, fn, {help: [label, text], view: 'feed' | null, order, repeat})`. The keys overlay is generated from these help entries. Key auto-repeat is ignored unless `repeat: true`.
 - `registerStepper(fn, order)`: `fn(dir, e)` returns true when it handled an Advance (`dir` 1) or Back (`dir` -1) step. `features/back.js` answers Back from its undo stack; otherwise Advance turns the page and then moves to the next item, and Back turns back.
 - `registerSection({id, title, order, render(it, i) → Node | null})` adds a side-panel section, rendered as `#sec-<id>`. Built-in orders: why 10, summary 20, outline 30, note 40, related 50, today 60.

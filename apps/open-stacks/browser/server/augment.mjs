@@ -567,6 +567,7 @@ export function createAugmenter(app) {
     if (onPartial) { job.listeners.add(onPartial); if (job.last) onPartial(job.last); }
     return job.promise.finally(() => job.listeners.delete(onPartial));
   }
+  const running = (id, model) => jobs.has(augPath(id, ai.pickModel(model)));
   /** Join a job in flight: { promise } with partials to onPartial, or null. */
   function attach(id, model, onPartial) {
     const job = jobs.get(augPath(id, ai.pickModel(model)));
@@ -754,5 +755,5 @@ export function createAugmenter(app) {
     const open = listBatches().filter((r) => !r.done);
     return { made, cached: cachedN, batches: { active: open.length, items: open.reduce((a, r) => a + (r.n || 0), 0) }, mockAI: !!ai.MOCK, prompt: PROMPT };
   }
-  return { augment, attach, read, forget, prepare, submitBatch, pollBatch, listBatches, brief, resume, status, itemOf };
+  return { augment, attach, running, read, forget, prepare, submitBatch, pollBatch, listBatches, brief, resume, status, itemOf };
 }

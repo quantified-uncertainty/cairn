@@ -2,6 +2,7 @@
 // The work is in server/augment.mjs; this file is the HTTP surface.
 //
 //   GET  /augment?id=&model=          the cached guide (with `stale`) or null; never calls the model
+//                                     (header X-Augment-Running: 1 while one is being written)
 //   POST /augment {id, model?, force?, text?, n?, title, authors, year, lane, laneId, kind}
 //        -> NDJSON: {type:'partial', aug} … then {type:'final', aug, spend} or {type:'error', error, code, spend}
 //   GET  /augment/stream?id=&model=   join a job in flight (or get the cached final); 404 {"error":"none"}
@@ -26,7 +27,11 @@ export default function (app) {
   app.route('GET', '/augment', async (req, res, url) => {
     const id = url.searchParams.get('id');
     if (!A.itemOf(id)) return bad(res);
-    app.json(res, await A.read(id, url.searchParams.get('model')));
+    const model = url.searchParams.get('model');
+    const aug = await A.read(id, model);
+    // A guide being written right now: the client can join it with GET /augment/stream.
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', ...(!aug && A.running(id, model) && { 'X-Augment-Running': '1' }) });
+    res.end(JSON.stringify(aug));
   });
 
   app.route('POST', '/augment', async (req, res) => {

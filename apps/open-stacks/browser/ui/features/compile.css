@@ -1,0 +1,9 @@
+/* features/compile.js: the profile's ranges as faint bands on the track (front
+   matter, references, appendix, index), under the bright part that shows the spread. */
+#track .tr-layer[data-layer="profile"] { position: absolute; inset: 0; pointer-events: none; border-radius: 2px; overflow: hidden; }
+#track .tr-layer[data-layer="profile"] > i { position: absolute; top: 0; bottom: 0; }
+#track .tr-layer .pr-front, #track .tr-layer .pr-index { background: color-mix(in srgb, var(--ink-3) 45%, transparent); }
+#track .tr-layer .pr-refs { background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--ink-3) 70%, transparent) 0 1px, transparent 1px 3px); }
+#track .tr-layer .pr-appendix { background: color-mix(in srgb, var(--ink-3) 25%, transparent); }
+/* Scrubbing on a sprite: the cell is a background, letterboxed on paper. */
+#spread .pg.scrubbing.sprite { background-color: var(--paper); }

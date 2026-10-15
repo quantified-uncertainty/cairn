@@ -2,8 +2,10 @@
 // now, and have the server fetch further ahead into its disk cache.
 import { items } from './corpus.js';
 import { state } from './state.js';
-import { openDoc, isFlow, scanUrl } from './docs.js';
+import { openDoc, peekDoc, isFlow, scanUrl } from './docs.js';
 import { renderPage } from './render.js';
+import { on } from './util.js';
+import { profileOf, loadProfiles, snapStart, spreadAt, preloadSprite, cropKey } from './profile.js';
 
 // A small client-side scheduler: tasks run 4 at a time, highest priority
 // first, and every navigation replaces the plan with one centred on where
@@ -49,6 +51,9 @@ export function startOf(i) {
   if (isFlow(it)) return 0;
   const back = reopenAt(i, it); if (back != null) return back;
   if (Array.isArray(it.best) && it.best.length && (!it.n || it.best[0] < it.n)) return it.best[0];
+  // A profile knows where the front matter ends (feed.js snaps this to a spread).
+  const pf = profileOf(it);
+  if (pf?.ranges?.front && pf.ranges.body) return pf.ranges.body[0];
   if (it.kind === 'scan') return Math.max(0, Math.min(Math.round(it.n * 0.08) + 3, it.n - state.per));
   if (it.kind === 'pdf' && it.n && (it.lane === 'ttrpg' || it.lane === 'textbooks' || it.n > 60)) return Math.min(Math.round(it.n * 0.05), it.n - 1);
   return 0;
@@ -61,7 +66,18 @@ export function planAround(i, s) {
   const tasks = [];
   const render = (ii, k, pri) => tasks.push({ key: `r|${items[ii].id}|${k}|${state.crop}|${state.cols}`, pri, fn: () => renderPage(items[ii], k) });
   const n = it.n || null;
-  if (!isFlow(it)) {
+  const pf = profileOf(it);
+  if (!isFlow(it) && pf) {
+    // With a profile, the spreads ahead are known exactly (blank pages and pages
+    // shown alone included), so exactly their pages are prepared.
+    const sp = state.zoom ? 1 : state.per;
+    const ahead = 2 + 2 * Math.min(v, 3);
+    const step = (a, d) => (d > 0 ? spreadAt(pf, a, sp).at(-1) + 1 : a > 0 ? snapStart(pf, a - 1, sp) : -1);
+    let a = s;
+    for (let d = 1; d <= ahead; d++) { a = step(a, dir); if (a < 0 || a >= pf.n) break; spreadAt(pf, a, sp).forEach((k, j) => render(i, k, 90 - d * 4 - j * 0.1)); }
+    const b = step(s, -dir);
+    if (b >= 0 && b < pf.n) spreadAt(pf, b, sp).forEach((k, j) => render(i, k, 78 - j * 0.1));
+  } else if (!isFlow(it)) {
     // Ahead in the direction you are paging; further the faster you go.
     const ahead = 2 + 2 * Math.min(v, 3);
     for (let d = 1; d <= ahead; d++) for (let j = 0; j < per; j++) {
@@ -70,6 +86,8 @@ export function planAround(i, s) {
     }
     // One spread the other way, for a reversal.
     for (let j = 0; j < per; j++) { const k = s - dir * per + j; if (k >= 0 && (!n || k < n)) render(i, k, 78 - j * 0.1); }
+  }
+  if (!isFlow(it)) {
     // The best pages and the random jump you have not made yet.
     if (n) {
       for (const b of (it.best || []).slice(0, 3)) for (let j = 0; j < per; j++) if (b + j < n) render(i, b + j, 72);
@@ -80,8 +98,13 @@ export function planAround(i, s) {
   // The next items' first spreads.
   state.order.slice(state.pos + 1, state.pos + 4).forEach((ii, d) => {
     const x = items[ii];
+    // A profile knows the page count: no need to open (parse) a PDF before
+    // preparing its first spread, and with display images it is never opened.
+    const px = profileOf(x);
+    if (px && !x.n) x.n = px.n;
     const s0 = startOf(ii);
     if (isFlow(x)) tasks.push({ key: `o|${x.id}`, pri: 66 - d * 5, fn: () => openDoc(x) });
+    else if (px) spreadAt(px, snapStart(px, Math.min(s0, px.n - 1), state.per), state.per).forEach((k, j) => render(ii, k, 65 - d * 5 - j * 0.1));
     else if (x.kind === 'scan' || x.n) for (let j = 0; j < state.per; j++) render(ii, s0 + j, 65 - d * 5 - j * 0.1);
     // Not opened yet: open it, then render its first spread, so moving to it
     // shows decoded pages rather than a spinner.
@@ -92,6 +115,11 @@ export function planAround(i, s) {
     } });
   });
   plan(tasks);
+  // The next items' profiles, in one request; when some arrive, plan again so
+  // their first spreads are prepared the profile's way.
+  const pos0 = state.pos;
+  loadProfiles(state.order.slice(state.pos + 1, state.pos + 11).map((ii) => items[ii]).filter((x) => x && !isFlow(x)))
+    .then((got) => { if (got && state.pos === pos0 && state.order[state.pos] === i) planAround(i, state.start.get(i) ?? s); }, () => {});
   // The server works further ahead, into its disk cache, in priority bands:
   // sharp pages near you, then the next items' first spreads, then legible
   // mid-res pages a little further out, then thumbnails for the page strip.
@@ -112,3 +140,23 @@ export function planAround(i, s) {
   serverPrefetch(mid, 40, 'mid');
   serverPrefetch(thumbs, 30, 'thumbs');
 }
+
+// The current item's profile arrived or changed how it crops: prepare the pages
+// around the reader again (renders are keyed by the crop, so they redo once).
+let planned = new Map(); // id -> cropKey last planned with
+on('profile:updated', ({ id, profile }) => {
+  const i = state.order[state.pos]; const it = items[i];
+  if (!it || it.id !== id || state.view !== 'feed') return;
+  const ck = cropKey(profile);
+  if (planned.get(id) === ck) return;
+  planned.set(id, ck); if (planned.size > 50) planned = new Map([...planned].slice(-25));
+  planAround(i, state.start.get(i) ?? 0);
+});
+// Settled on an item with a profile: its sprite comes in (one small image), and
+// a PDF shown from display images is opened in idle time, so the first turn past
+// them does not wait for a parse.
+on('item:settled', ({ it }) => {
+  const pf = profileOf(it); if (!pf) return;
+  preloadSprite(pf);
+  if (it.kind === 'pdf' && !peekDoc(it)) (window.requestIdleCallback || setTimeout)(() => { if (state.order[state.pos] != null && items[state.order[state.pos]] === it) openDoc(it).catch(() => {}); }, { timeout: 3000 });
+});

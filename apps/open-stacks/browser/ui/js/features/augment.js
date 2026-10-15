@@ -67,11 +67,14 @@ async function load(it) {
   clearTimeout(dwellT); countdown = null;
   const k = K(it.id);
   if (augs.has(k) || inflight.has(k)) { refresh(it); return; }
-  let a = null;
-  try { const r = await fetch(`/augment?id=${enc(it.id)}&model=${enc(S.model)}`); a = r.ok ? await r.json() : null; } catch { /* offline */ }
+  let a = null, running = false;
+  try {
+    const r = await fetch(`/augment?id=${enc(it.id)}&model=${enc(S.model)}`);
+    if (r.ok) { a = await r.json(); running = r.headers.get('X-Augment-Running') === '1'; }
+  } catch { /* offline */ }
   if (!here(it) || augs.has(k) || inflight.has(k)) return;
   if (a) return setAug(it, a);
-  if (await joinRunning(it)) return; // made elsewhere (another tab, a reload mid-stream)
+  if (running && await joinRunning(it)) return; // being written elsewhere (another tab, a reload mid-stream)
   if (!here(it) || augs.has(k) || inflight.has(k)) return;
   if (state.status.summariesEnabled === false || !S.auto || (spend && spend.today >= spend.budget)) return paintGuide(it);
   countdown = { id: it.id, at: Date.now(), ms: S.delay };

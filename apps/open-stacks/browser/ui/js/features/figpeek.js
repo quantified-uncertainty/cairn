@@ -507,7 +507,7 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
     // A plate's legend: the short centred line or two right under it, numbered or not.
     if (scan && (R.x1 - R.x0) * (R.y1 - R.y0) > 0.3 * W * H) {
       const cx = (R.x0 + R.x1) / 2;
-      const leg = hz.filter((s) => !s.prose && !s.margin && s.y0 >= R.y1 - 0.5 * body && s.y0 - R.y1 < 3 * body && Math.abs((s.x0 + s.x1) / 2 - cx) < 0.12 * (R.x1 - R.x0)).sort((a, b) => a.y0 - b.y0).slice(0, 2);
+      const leg = hz.filter((s) => !s.margin && s.y0 >= R.y1 - 0.5 * body && s.y0 - R.y1 < 3 * body && Math.abs((s.x0 + s.x1) / 2 - cx) < 0.12 * (R.x1 - R.x0)).sort((a, b) => a.y0 - b.y0).slice(0, 2);
       if (leg.length) R.cap = { label: '', text: leg.map((s) => s.str).join(' ').replace(/\s+/g, ' ').trim() };
     }
   }
@@ -723,7 +723,7 @@ function footH(reg, w) {
   return meta + 14 + lines * 19;
 }
 /** Choose the enlargement's place and size: over the page(s) beside the figure. */
-function layout(reg, el) {
+function layout(reg, el, force = false) {
   const pgs = [...spread.children].filter((e) => e.classList.contains('pg') && e._pnl?.canvas);
   if (!pgs.length) return null;
   // The stage's width (zoomed pages leave room at the sides), the pages' height.
@@ -767,7 +767,8 @@ function layout(reg, el) {
   const byName = (n) => cands.find((c) => c.name === n);
   const nb = byName(side) || byName(side === 'left' ? 'right' : 'left');
   const c = nb && (nb.s >= 2 || nb.s >= 0.6 * best.s) ? nb : [byName(side + '-in')].find((x) => x && x.s >= 0.8 * best.s) || best;
-  if (c.s < 1.08) return null; // already about as large as it can be
+  // Already about as large as it can be: hovering leaves it; a click still opens it, to zoom into.
+  if (c.s < (force ? 0.5 : 1.08)) return null;
   const vw = Math.round(fw * c.s), vh = Math.round(fh * c.s), fH = footH(reg, vw);
   const w = vw + 2, hgt = vh + fH + 2;
   const cy = (F.t + F.b) / 2, cx = (F.l + F.r) / 2;
@@ -783,7 +784,7 @@ const bigImg = (it, k) => lru(bigs, it.ia + '|' + k, () => new Promise((res, rej
   const im = new Image(); im.decoding = 'async';
   im.onload = () => im.decode().then(() => res(im), () => res(im)); im.onerror = () => rej(new Error('image unavailable'));
   im.src = P(scanUrl(it, k, 2000));
-}), 3);
+}), 2);
 /** Render the part `win` (page fractions) of page k at cw x ch pixels. */
 function renderWin(it, k, res, win, cw, ch) {
   let task = null, dead = false;
@@ -826,9 +827,9 @@ function drawQuick(c, it, reg) {
 }
 const dprOf = (vw, vh) => { const d = Math.min(3, devicePixelRatio || 1); return Math.min(d, Math.sqrt(16e6 / Math.max(1, vw * vh))); };
 /** Work out the place and start the sharp render as soon as the pointer arrives. */
-function prepare(reg, el, it) {
+function prepare(reg, el, it, force = false) {
   const k = Number(el.dataset.k); reg.k = k;
-  const lay = layout(reg, el);
+  const lay = layout(reg, el, force);
   const res = ready.get(keyOf(it, k));
   if (!lay || !res) return { reg, lay };
   const d = dprOf(lay.vw, lay.vh);
@@ -908,8 +909,8 @@ function paintMeta() {
 }
 function open(reg, el, it, pinIt) {
   const k = Number(el.dataset.k); reg.k = k;
-  let prep = pending?.reg === reg ? pending : prepare(reg, el, it);
-  if (!prep.lay) { if (pinIt) toast('Already full size', { icon: 'maximize', sub: 'This figure is shown about as large as it can be' }); return; }
+  let prep = pending?.reg === reg && pending.lay ? pending : prepare(reg, el, it, pinIt);
+  if (!prep.lay) { if (pinIt) toast('No room to enlarge', { icon: 'maximize', sub: 'There is no space beside this figure to show it larger' }); return; }
   if (!ov) buildOv();
   if (S.prep && S.prep !== prep) S.prep.job?.cancel();
   const t0 = enterAt || performance.now();
@@ -953,7 +954,7 @@ export function closeOv() {
   clearTimeout(showT); clearTimeout(closeT); clearTimeout(detailT); closeT = 0;
   detailJob?.cancel(); detailJob = null; dropPending();
   if (S.prep) S.prep.job?.cancel();
-  if (ov && !ov.hidden) { ov.hidden = true; ov.classList.remove('on'); }
+  if (ov && !ov.hidden) { ov.hidden = true; ov.classList.remove('on', 'pinned'); }
   Object.assign(S, { reg: null, el: null, prep: null, pinned: false, lay: null, z: 1, ox: 0, oy: 0 });
   markRegion(null, 'src'); markRegion(null, 'hot');
 }

@@ -1004,18 +1004,29 @@ function buildBar() {
   if (hasSynth) speechSynthesis.addEventListener?.('voiceschanged', fillVoices);
 }
 const shortName = (v) => v.name.replace(/^(Microsoft|Google|Apple)\s+/, '').replace(/\s+Online.*$/, '').replace(/\s*\(.*\)$/, '').replace(/\s+-\s+.*$/, '');
+// macOS voice quality: Premium > Enhanced > the rest. Firefox may drop the
+// "(Premium)" suffix from names, but the voice URI keeps it
+// (com.apple.voice.premium.en-US.Ava). Old MacinTalk and novelty voices go last.
+const quality = (v) => { const t = (v.voiceURI + ' ' + v.name).toLowerCase(); return /premium/.test(t) ? 2 : /enhanced/.test(t) ? 1 : 0; };
+const NOVELTY = /^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Junior|Ralph|Kathy|Grandma|Grandpa|Eddy|Flo|Reed|Rocko|Sandy|Shelley)\b/i;
+const voiceLabel = (v) => shortName(v) + (quality(v) === 2 ? ' · Premium' : quality(v) === 1 ? ' · Enhanced' : '') + (v.localService ? '' : ' ☁');
 function fillVoices() {
   if (!bar) return;
   const all = hasSynth ? speechSynthesis.getVoices() : [];
   const base = (navigator.language || 'en').slice(0, 2).toLowerCase();
-  const mine = all.filter((v) => v.lang.toLowerCase().startsWith(base) || v.voiceURI === prefs.browserVoice);
+  const mine = all.filter((v) => v.lang.toLowerCase().startsWith(base) || v.voiceURI === prefs.browserVoice)
+    .sort((a, b) => quality(b) - quality(a) || (NOVELTY.test(a.name) - NOVELTY.test(b.name)) || a.name.localeCompare(b.name));
+  const good = mine.filter((v) => !NOVELTY.test(shortName(v)) || quality(v) > 0), older = mine.filter((v) => !good.includes(v));
+  // With no choice made yet, use the best voice installed.
+  if (!prefs.browserVoice && good[0] && quality(good[0]) > 0) prefs.browserVoice = good[0].voiceURI;
   const names = gem.voices?.length ? gem.voices : ['Kore', 'Puck', 'Charon', 'Aoede', 'Gacrux', 'Achird', 'Autonoe', 'Erinome'];
-  bar.voice.replaceChildren(
+  bar.voice.replaceChildren(...[
     h('optgroup', { label: all.length ? 'This browser' : 'This browser (no voices found)' },
       h('option', { value: 'b:', textContent: 'Browser voice' }),
-      ...mine.map((v) => h('option', { value: 'b:' + v.voiceURI, textContent: shortName(v) + (v.localService ? '' : ' ☁') }))),
+      ...good.map((v) => h('option', { value: 'b:' + v.voiceURI, textContent: voiceLabel(v) }))),
+    older.length ? h('optgroup', { label: 'Older voices' }, ...older.map((v) => h('option', { value: 'b:' + v.voiceURI, textContent: voiceLabel(v) }))) : null,
     h('optgroup', { label: gem.enabled ? 'Gemini' : 'Gemini (needs GEMINI_API_KEY)' },
-      ...names.map((n) => h('option', { value: 'g:' + n, textContent: 'Gemini ' + n, disabled: !gem.enabled }))));
+      ...names.map((n) => h('option', { value: 'g:' + n, textContent: 'Gemini ' + n, disabled: !gem.enabled })))].filter(Boolean));
   const eng = R ? R.engine : (prefs.engine === 'gemini' && gem.enabled ? 'gemini' : 'browser');
   bar.voice.value = eng === 'gemini' ? 'g:' + prefs.geminiVoice : 'b:' + (mine.some((v) => v.voiceURI === prefs.browserVoice) ? prefs.browserVoice : '');
   bar.voice.title = gem.enabled ? 'Voice' : 'Voice · Gemini voices need GEMINI_API_KEY (or GOOGLE_API_KEY) set where the server runs';

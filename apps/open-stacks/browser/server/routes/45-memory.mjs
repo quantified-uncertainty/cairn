@@ -135,7 +135,7 @@ export default function (app) {
   // ---- compaction: write the index as one snapshot, a few hundred items per
   // tick so a big index never holds up the proxy; ops that arrive meanwhile are
   // logged, then applied once the snapshot is down.
-  let compacting = null, held = [];
+  let compacting = null, compactT = null, held = [];
   async function compact() {
     if (compacting) return compacting;
     compacting = (async () => {
@@ -170,7 +170,7 @@ export default function (app) {
     if (lines.length) {
       try { appendFileSync(LOG, lines.join('\n') + '\n'); logLines += lines.length; } catch (e) { console.warn('memory: log write failed:', e.message); }
     }
-    if (logLines > COMPACT_AT && !compacting) setTimeout(compact, 2000);
+    if (logLines > COMPACT_AT && !compacting && !compactT) compactT = setTimeout(() => { compactT = null; if (logLines > COMPACT_AT) compact(); }, 2000);
     return lines.length;
   }
 
