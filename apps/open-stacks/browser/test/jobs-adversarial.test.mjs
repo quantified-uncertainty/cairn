@@ -95,4 +95,35 @@ test('--live reads the first bytes only and checks where redirects end', async (
   assert.match((await J.liveCheck([{ url: 'https://openreview.net/pdf?id=x', kind: 'pdf', role: 'url' }], opts('https://paywalled.example/x.pdf')))[0].text, /redirects to paywalled\.example, not a known open host/);
   // A landing page may redirect anywhere open (a DOI resolves to the publisher).
   assert.ok((await J.liveCheck([{ url: 'https://doi.org/10.1/x', kind: 'page', role: 'page' }], opts('https://publisher.example/x')))[0].ok);
+  // A post page behind Cloudflare's bot challenge is fine as a landing page, not as what the app opens.
+  const challenge = async () => new Response('<html>Just a moment…</html>', { status: 403, headers: { 'content-type': 'text/html', 'cf-mitigated': 'challenge' } });
+  const [pg, op] = await J.liveCheck([{ url: 'https://forum.effectivealtruism.org/posts/AbCdEfGhIjKlMnOpQ/x', kind: 'page', role: 'page' }, { url: 'https://blog.example/post', kind: 'page', role: 'url' }], { fetchImpl: challenge, gap: () => 0 });
+  assert.ok(pg.ok && /bot challenge/.test(pg.text), pg.text);
+  assert.ok(!op.ok && /HTTP 403/.test(op.text), op.text);
+});
+
+test('a new item that failed to open stays new however long it sat on screen', async () => {
+  const L = await import('../server/learn.mjs');
+  const it = { id: 'arxiv:2610.99801', added: today };
+  const sat = { a: 40e3, sc: 0, pos: { c: 2 }, jl: [] };
+  assert.equal(L.findState(it, sat, null, Date.now()), 'seen', 'without an open error, 40 s on it is reading');
+  assert.equal(L.findState(it, sat, null, Date.now(), true), 'new', 'with one and no page seen, it is not');
+  assert.equal(L.findState(it, { ...sat, sc: 3 }, null, Date.now(), true), 'seen', 'pages seen after the error count');
+});
+
+test('a server on a fresh cache writes no job files until a day after its first start', async () => {
+  const { startServer, until } = await import('./stacks-root.mjs');
+  const { readdirSync } = await import('fs');
+  const jobsDir = mkdtempSync(join(tmpdir(), 'stacks-jobsdir-'));
+  const srv = await startServer(root, { STACKS_JOBS_DIR: jobsDir, STACKS_JOBS_EVERY: '24', STACKS_JOBS_DELAY: '200' });
+  try {
+    await new Promise((r) => setTimeout(r, 1500));
+    const j = await srv.get('/jobs');
+    assert.deepEqual(readdirSync(join(jobsDir, 'open')).filter((f) => f.endsWith('.md')), [], 'nothing written on its own');
+    assert.equal(j.lastRefresh, 0);
+    assert.ok(j.nextRefresh > Date.now() + 23 * 3600e3, `the first automatic refresh is a day away (${new Date(j.nextRefresh).toISOString()})`);
+    const r = await (await srv.post('/jobs/refresh', {})).json();
+    assert.ok(Array.isArray(r.created), 'Refresh jobs still runs at once');
+    await until(async () => (await srv.get('/jobs')).lastRefresh > 0, 3000);
+  } finally { srv.stop(); rmSync(jobsDir, { recursive: true, force: true }); }
 });

@@ -14,6 +14,7 @@ import './search.js';
 import './riffle.js';
 import './route.js';
 import './stack.js';
+import './header.js';
 import { boot } from './chrome.js';
 
 // One feature failing (or waiting on something that never comes) must not keep the

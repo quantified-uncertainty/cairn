@@ -54,10 +54,14 @@ export function openDoc(it) {
   if (it.kind === 'scan') return Promise.resolve({ n: it.n, outline: [] });
   return lru(docs, docKey(it), async () => {
     if (it.kind === 'pdf') {
-      const [lib, buf] = await Promise.all([pdfjs(), fetch(P(it.url)).then((r) => { if (!r.ok) throw new Error('PDF ' + r.status); return r.arrayBuffer(); })]);
+      // Your own files (features/local.js) can be books of hundreds of MB: past 8 MB pdf.js
+      // reads them in ranges, only the parts the pages shown need (the server answers Range).
+      const ranged = /^\/local\/file\//.test(it.url) && it.size > 8e6;
+      const [lib, buf] = await Promise.all([pdfjs(), ranged ? null : fetch(P(it.url)).then((r) => { if (!r.ok) throw new Error('PDF ' + r.status); return r.arrayBuffer(); })]);
       // Standard fonts and character maps let pdf.js draw PDFs that do not embed
       // their fonts (many reports and older papers) with the right glyphs.
-      const pdf = await lib.getDocument({ data: buf, isEvalSupported: false, ...PDF_ASSETS }).promise;
+      const src = ranged ? { url: it.url, rangeChunkSize: 256 * 1024, disableAutoFetch: true, disableStream: true } : { data: buf };
+      const pdf = await lib.getDocument({ ...src, isEvalSupported: false, ...PDF_ASSETS }).promise;
       return { n: pdf.numPages, pdf, outline: null };
     }
     const r = await fetch(P(it.url));

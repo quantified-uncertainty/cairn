@@ -7,6 +7,7 @@
  *   node build-corpus.mjs --tree-only  # refreshes only the library tree (path, ord) in it
  *   node build-corpus.mjs --merge      # no network: appends new lane-file items (agent jobs'
  *                                      # data/lanes/<lane>.added.json), applies data/overrides.json
+ *   --merge --all-lanes                # also the curated lane files' items the corpus lacks
  *   --root DIR                         # read and write under DIR instead of this folder
  *
  * Lanes (in key order):
@@ -375,8 +376,17 @@ if (process.argv.includes('--merge')) {
   const scores = {};
   for (const it of c.items) if (it.score > 0) (scores[fam(it)] ||= []).push(it.score);
   const dir = join(ROOT, 'data', 'lanes');
-  const files = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json'))
+  // Agents' files only (<lane>.added.json): the curated lane files are the full build's, and a corpus
+  // older than them would otherwise sweep hundreds of unrelated items into one job's commit.
+  // --all-lanes folds in the curated files too.
+  const all = process.argv.includes('--all-lanes');
+  const files = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(all ? '.json' : '.added.json'))
     .sort((a, b) => (a.startsWith('deepmind') ? -1 : 0) - (b.startsWith('deepmind') ? -1 : 0) || a.localeCompare(b)) : [];
+  if (!all) {
+    let n = 0;
+    for (const f of existsSync(dir) ? readdirSync(dir).filter((x) => x.endsWith('.json') && !x.endsWith('.added.json')) : []) { try { n += (JSON.parse(readFileSync(join(dir, f), 'utf-8')).items || []).filter((x) => x?.id && !have.has(x.id)).length; } catch { /* the full build reports it */ } }
+    if (n) skipped.push(`${n} items of the curated lane files, not in corpus.json yet: the full build adds them (or --merge --all-lanes)`);
+  }
   for (const f of files) {
     let d;
     try { d = JSON.parse(readFileSync(join(dir, f), 'utf-8')); } catch (e) { skipped.push(`${f}: ${e.message}`); continue; }

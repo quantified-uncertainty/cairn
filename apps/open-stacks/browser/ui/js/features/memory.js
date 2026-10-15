@@ -234,6 +234,7 @@ function judge(i, j) {
   if (j === 'save') r.saved = 1; else if (j === 'unsave') delete r.saved;
   else if (j === 'unless') delete r.less; else if (j === 'unmore') delete r.more; else r[j] = Date.now();
   emit('memory:updated', { id });
+  idle(() => flush()); // a judgment re-ranks For you (the server recomputes 250 ms after it arrives): send it now, not in the 5 s batch
 }
 on('nav:before', ({ label, i }) => {
   if (!burst) { lastBefore = { label, t: Date.now() }; burst = true; queueMicrotask(() => { burst = false; }); }

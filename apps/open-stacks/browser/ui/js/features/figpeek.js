@@ -46,7 +46,7 @@
 // The enlargement is sharp: PDFs re-render just the region from the PDF at
 // the size shown (an offset viewport), again for each zoom; scans crop the
 // full-size page image. The panel's own canvas, scaled, shows until then.
-import { $, h, P, on, store, toast, lru, registerKey } from '../util.js';
+import { $, h, P, PI, on, store, toast, lru, registerKey } from '../util.js';
 import { items } from '../corpus.js';
 import { state, current } from '../state.js';
 import { openDoc, pdfjs, scanUrl } from '../docs.js';
@@ -192,7 +192,7 @@ function panelsOf(it, k) {
 }
 /** A page that is not on screen (tests, or a turn under way): render or load it small. */
 async function pageSource(it, k) {
-  if (it.kind === 'scan') { const im = await loadImg(P(scanUrl(it, k, 1000))); return [{ src: im, box: FULL }]; }
+  if (it.kind === 'scan') { const im = await loadImg(PI(scanUrl(it, k, 1000))); return [{ src: im, box: FULL }]; }
   const page = await (await openDoc(it)).pdf.getPage(k + 1);
   const vp1 = page.getViewport({ scale: 1 }), vp = page.getViewport({ scale: 960 / vp1.width });
   const c = h('canvas', { width: Math.round(vp.width), height: Math.round(vp.height) });

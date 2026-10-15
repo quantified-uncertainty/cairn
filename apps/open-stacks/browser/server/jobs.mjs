@@ -593,7 +593,9 @@ export function dedupeKeys(it) {
   if (ia) { k.add('ia:' + ia.toLowerCase()); }
   const nt = normTitle(it.t);
   if (ia || it.kind === 'scan') k.add(`work:${nt}|${sur}|${it.y || ''}`);
-  for (const u of [it.url, it.page, it.pdf]) { const x = u && urlKey(u); if (x) k.add('url:' + x); }
+  // What the item opens, not its landing page: several reports share one (deepmind.google/frontier-safety,
+  // anthropic.com/system-cards), and a shared page made every new one a "duplicate".
+  for (const u of [it.url, it.pdf]) { const x = u && urlKey(u); if (x) k.add('url:' + x); }
   if (nt) { const n = nt.split(' ').length; if (n >= 4) k.add('t:' + nt); else if (sur) k.add(`ts:${nt}|${sur}`); }
   return k;
 }
@@ -734,6 +736,9 @@ export async function liveCheck(urls, { fetchImpl = globalThis.fetch, ia = [], u
     try {
       const graph = isGraphql(url);
       const r = await fetchImpl(url, { headers: { 'User-Agent': ua, ...(graph ? {} : { Range: 'bytes=0-2047' }) }, redirect: 'follow', signal: AbortSignal.timeout(timeout) });
+      // A landing page behind a bot challenge (the EA Forum's post pages answer scripts with Cloudflare's
+      // 403 challenge) is there for the reader's browser; what the app opens (role 'url') must answer.
+      if (r.status === 403 && role === 'page' && /challenge/i.test(r.headers.get('cf-mitigated') || '')) { r.body?.cancel?.().catch(() => {}); lines.push({ ok: true, text: `${url} answers with a bot challenge (HTTP 403, cf-mitigated); a browser gets through` }); continue; }
       if (!(r.status === 200 || r.status === 206)) { r.body?.cancel?.().catch(() => {}); lines.push({ ok: false, text: `${url} answers HTTP ${r.status}` }); continue; }
       // Where the redirects ended: never a shadow library or a login page; what the reader opens stays on an open host.
       const fin = r.redirected && r.url && r.url !== url ? r.url : null, fh = fin && hostOf(fin);
@@ -918,6 +923,10 @@ export async function checkJob(id, { root, dir, live = false, fetchImpl, now = D
     for (const [u, e] of Object.entries(im)) if (e.job === id) { out.changed.push(u); files.add('data/media-fixes.json'); if (e.from) liveUrls.push({ url: e.from, kind: 'image' }); }
     for (const lf of data.lanes) for (const x of lf.data.items) if (x.job === id) { out.added.push(x); files.add(lf.file); files.add('corpus.json'); }
     say(true, out.changed.length || out.added.length ? `touches ${out.changed.length + out.added.length} entries` : 'touches no data file (a code fix or a note only)');
+    // Overrides and added items must be in corpus.json, as for fix-item (the merge ran).
+    const F = ['t', 'a', 'y', 'd', 'url', 'page', 'pdf', 'kind', 'n', 'ia', 'tags', 'lane'];
+    const stale = Object.entries(ov).filter(([k, o]) => o.job === id && (o.drop ? corpusById.has(k) : corpusById.has(k) && F.some((f) => o[f] !== undefined && JSON.stringify(corpusById.get(k)[f]) !== JSON.stringify(o[f])))).length + out.added.filter((x) => !corpusById.has(x.id)).length;
+    if (Object.values(ov).some((o) => o.job === id) || out.added.length) say(!stale, stale ? `corpus.json does not reflect ${stale} change(s) yet: run node build-corpus.mjs --merge` : 'corpus.json reflects the changes');
   }
   // The job file itself.
   const hits = lintJob(job, text);

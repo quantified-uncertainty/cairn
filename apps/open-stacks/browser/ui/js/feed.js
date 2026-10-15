@@ -1,5 +1,5 @@
 // The feed: one item at a time, a few real pages of it filling the stage.
-import { $, h, P, on, emit, emitQuiet, fmtDate, lru } from './util.js';
+import { $, h, P, PI, on, emit, emitQuiet, fmtDate, lru } from './util.js';
 import { items, LANES } from './corpus.js';
 import { state, current } from './state.js';
 import { openDoc, isFlow, scanUrl } from './docs.js';
@@ -285,7 +285,8 @@ export function paintPos(it, s, c, n, flow = false) {
   const last = flow ? !!live && (state.start.get(current()) ?? 0) + live.g.cols >= live.n : s + c >= n;
   const nx = last ? items[state.order[state.pos + 1]] : null;
   const next = !last ? '' : nx ? ` · ▸ next: ${nx.t.length > 48 ? nx.t.slice(0, 46) + '…' : nx.t}` : ' · end of lane';
-  el.textContent = `${state.pos + 1}/${state.order.length} · ${unit} ${s + 1}–${Math.min(n, s + c)} of ${n}${state.zoom ? ' · zoom' : ''}${next}`;
+  el.textContent = `${state.pos + 1}/${state.order.length} · ${unit} ${s + 1}–${Math.min(n, s + c)} of ${n}${state.zoom ? ' · zoom' : ''}`;
+  if (next) el.append(h('span', { className: 'pos-next', textContent: next })); // its own span: a narrow header drops it (style.css)
   el.title = nx ? `Space goes on to: ${nx.t}` : '';
 }
 
@@ -301,7 +302,7 @@ async function fillThumb(it, t) {
     Object.assign(d.style, cell, { position: 'absolute', top: '0', left: '50%', height: '74px', width: `${(74 * spriteAspect(profileOf(it))).toFixed(1)}px`, transform: 'translateX(-50%)' });
     t.prepend(d); return;
   }
-  if (it.kind === 'scan') { t.prepend(h('img', { loading: 'lazy', src: P(scanUrl(it, k, 120)), alt: '' })); return; }
+  if (it.kind === 'scan') { t.prepend(h('img', { loading: 'lazy', crossOrigin: 'anonymous', src: PI(scanUrl(it, k, 120)), alt: '' })); return; }
   const d = await openDoc(it).catch(() => null);
   if (!d) return;
   if (d.pdf) {
@@ -540,7 +541,7 @@ async function fillScrub(it, k, el) {
     const swap = (node) => { if (!el.isConnected) return; node.style.objectFit = 'contain'; el.style.backgroundImage = 'none'; el.replaceChildren(node); };
     const sharpen = () => {
       if (!el.isConnected) return;
-      if (it.kind === 'scan') { loadThumb(it, k, () => swap(h('img', { src: P(scanUrl(it, k, 200)), alt: '' }))); return; }
+      if (it.kind === 'scan') { loadThumb(it, k, () => swap(h('img', { crossOrigin: 'anonymous', src: PI(scanUrl(it, k, 200)), alt: '' }))); return; }
       const u = pf.assets?.display?.[k] ? assetUrl(pf, 'display', k) : null;
       if (u) { const im = h('img', { alt: '', decoding: 'async' }); im.src = u; im.decode().then(() => swap(im), () => {}); return; }
       quickPdf(it, k, 700).then((c) => c && swap(cloneCanvas(c)), () => {});
@@ -554,8 +555,8 @@ async function fillScrub(it, k, el) {
     const key = (kk) => `${it.id}|${kk}`;
     let near = null;
     for (let d = 0; d <= 40 && near == null; d++) { if (thumbOk.has(key(k - d))) near = k - d; else if (thumbOk.has(key(k + d))) near = k + d; }
-    if (near != null) { el.replaceChildren(h('img', { src: P(scanUrl(it, near, 200)), alt: '' })); el.classList.toggle('approx', near !== k); }
-    if (near !== k) loadThumb(it, k, () => { if (el.isConnected) { el.replaceChildren(h('img', { src: P(scanUrl(it, k, 200)), alt: '' })); el.classList.remove('approx'); } });
+    if (near != null) { el.replaceChildren(h('img', { crossOrigin: 'anonymous', src: PI(scanUrl(it, near, 200)), alt: '' })); el.classList.toggle('approx', near !== k); }
+    if (near !== k) loadThumb(it, k, () => { if (el.isConnected) { el.replaceChildren(h('img', { crossOrigin: 'anonymous', src: PI(scanUrl(it, k, 200)), alt: '' })); el.classList.remove('approx'); } });
     return;
   }
   const c = await quickPdf(it, k, 700).catch(() => null);
@@ -564,9 +565,9 @@ async function fillScrub(it, k, el) {
 // Small scan page images the browser already holds, by `${id}|${k}`.
 const thumbOk = new Set();
 function loadThumb(it, k, done) {
-  const im = new Image();
+  const im = new Image(); im.crossOrigin = 'anonymous';
   im.onload = () => { thumbOk.add(`${it.id}|${k}`); done?.(); };
-  im.src = P(scanUrl(it, k, 200));
+  im.src = PI(scanUrl(it, k, 200));
 }
 const cloneCanvas = (c) => { const x = h('canvas', { width: c.width, height: c.height }); x.getContext('2d').drawImage(c, 0, 0); return x; };
 function scrubSpread(k) {
@@ -590,7 +591,8 @@ function scrubSpread(k) {
 function placeLabel(x) {
   const r = track.getBoundingClientRect();
   peek.style.left = Math.min(innerWidth - 140, Math.max(8, x - 60)) + 'px';
-  peek.style.top = r.top - 30 + 'px';
+  // Under the track when it sits at the top (header.js; the default), above it at the bottom.
+  peek.style.top = (r.top < innerHeight / 2 ? r.bottom + 6 : r.top - 30) + 'px';
 }
 // ---------- riffle: hold a page key to thumb through the item ----------
 // Called by riffle.js. Uses the same quick pages as track scrubbing.

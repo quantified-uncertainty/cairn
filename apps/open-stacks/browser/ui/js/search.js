@@ -13,7 +13,8 @@ let results = []; let sel = 0;
 function runSearch() {
   const q = $('#s-input').value.toLowerCase().split(/\s+/).filter(Boolean);
   results = q.length ? hay.map((x, i) => [x, i]).filter(([x]) => q.every((w) => x.includes(w))).map(([, i]) => i) : [];
-  results.sort((a, b) => (items[b].score || 0) - (items[a].score || 0)); sel = 0; paintResults();
+  // The lane you are in first (your own files have no score, and would come after every corpus match).
+  results.sort((a, b) => (items[b].lane === state.lane) - (items[a].lane === state.lane) || (items[b].score || 0) - (items[a].score || 0)); sel = 0; paintResults();
 }
 function paintResults() {
   $('#s-results').replaceChildren(...results.slice(0, 40).map((i, r) => h('li', { className: r === sel ? 'sel' : '', onclick: () => pick(i) },

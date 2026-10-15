@@ -16,7 +16,7 @@
 // currentWords() again to continue. Find: F or Cmd/Ctrl+F. Quote: select
 // text, then q (or the floating button). Emits 'textlayer:ready' {i, it, k, el}
 // when a page's layer is attached.
-import { $, h, P, on, emit, registerKey, toast, lru } from '../util.js';
+import { $, h, P, PI, on, emit, registerKey, toast, lru } from '../util.js';
 import { items } from '../corpus.js';
 import { state, current } from '../state.js';
 import { openDoc, isFlow, pdfjs, scanUrl } from '../docs.js';
@@ -151,7 +151,7 @@ async function trimBoxes(it, k, o) {
   let pairs = 0, touching = 0;
   for (let j = 1; j < o.words.length; j++) if (o.words[j].l === o.words[j - 1].l) { pairs++; if (o.words[j].x0 - o.words[j - 1].x1 <= 2) touching++; }
   if (!pairs || touching < pairs * 0.6) return;
-  let im; try { im = await loadImg(P(scanUrl(it, k, 1000))); } catch { return; }
+  let im; try { im = await loadImg(PI(scanUrl(it, k, 1000))); } catch { return; }
   const W = im.naturalWidth, H = im.naturalHeight;
   const c = document.createElement('canvas'); c.width = W; c.height = H;
   const g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(im, 0, 0);

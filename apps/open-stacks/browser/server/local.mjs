@@ -13,7 +13,7 @@
 // (an '.X.icloud' placeholder has the id of X).
 import { createHash } from 'crypto';
 import { openSync, readSync, closeSync, fstatSync, readFileSync, writeFileSync, mkdirSync, existsSync, renameSync, statSync } from 'fs';
-import { readdir, lstat, readFile } from 'fs/promises';
+import { readdir, lstat } from 'fs/promises';
 import { join, dirname, basename, extname, resolve, posix } from 'path';
 import { homedir } from 'os';
 import { inflateRawSync } from 'zlib';
@@ -60,6 +60,22 @@ function readFully(fd, len, pos) {
   return got === len ? b : b.subarray(0, got);
 }
 const utf8ok = (b) => { try { new TextDecoder('utf-8', { fatal: true }).decode(b); return true; } catch { return false; } };
+/** Text from bytes: the encoding a BOM gives (UTF-8, UTF-16), else UTF-8 when it is valid (a last
+ *  character cut off is fine), else the one an XML or HTML declaration names, else Windows-1252. */
+export function decodeText(b) {
+  const u = Buffer.isBuffer(b) ? b : Buffer.from(b);
+  const dec = (label, x = u) => new TextDecoder(label).decode(x);
+  if (u[0] === 0xef && u[1] === 0xbb && u[2] === 0xbf) return dec('utf-8', u.subarray(3));
+  if (u[0] === 0xff && u[1] === 0xfe) return dec('utf-16le', u.subarray(2));
+  if (u[0] === 0xfe && u[1] === 0xff) return dec('utf-16be', u.subarray(2));
+  if (u[0] === 0x3c && u[1] === 0 && u[2] === 0x3f && u[3] === 0) return dec('utf-16le'); // '<?xml' in UTF-16, no BOM
+  if (u[0] === 0 && u[1] === 0x3c && u[2] === 0 && u[3] === 0x3f) return dec('utf-16be');
+  try { return new TextDecoder('utf-8', { fatal: true }).decode(u, { stream: true }); } catch { /* not UTF-8 */ }
+  const head = u.subarray(0, 1024).toString('latin1');
+  const named = /^\s*<\?xml[^>]*encoding\s*=\s*["']([\w.:-]+)/i.exec(head)?.[1] || /<meta[^>]+charset\s*=\s*["']?([\w.:-]+)/i.exec(head)?.[1];
+  for (const label of [named, 'windows-1252']) { if (label) try { return dec(label); } catch { /* not a label TextDecoder knows */ } }
+  return u.toString('latin1');
+}
 
 /** openZip(file) → { entries: Map name → {name, method, csize, size, off, flags}, read(name, max), text(name), close() } */
 export function openZip(file) {
@@ -116,7 +132,7 @@ export function openZip(file) {
         if (en.method === 8) return inflateRawSync(data, { maxOutputLength: Math.max(1, Math.min(max, en.size || max)) });
         throw new Error('unsupported compression method ' + en.method);
       },
-      text(name, max) { return z.read(name, max).toString('utf-8').replace(/^﻿/, ''); },
+      text(name, max) { return decodeText(z.read(name, max)); }, // UTF-16 chapters, Latin-1 ones that say so
       close() { if (!closed) { closed = true; closeSync(fd); } },
     };
     return z;
@@ -133,12 +149,18 @@ const FILE_LIKE = /\.(pdf|docx?|indd|idml|qxp|qxd|pages|rtf|txt|ai|psd|tex|dvi|p
 export function cleanTitle(name) {
   let t = String(name).replace(/\.[A-Za-z0-9]{1,5}$/, '');
   const spaced = /\s/.test(t);
+  t = t.replace(/^[a-z0-9-]+\.(com|net|org|io|info)[\s_-]+/i, ''); // a download site's name in front
   t = t.replace(/_+/g, ' ');
-  if (!spaced) t = t.replace(/-+/g, ' ');
+  if (!spaced) t = t.replace(/-+/g, ' ').replace(/(?<=[A-Za-z])\.(?=[A-Za-z])/g, ' ');
+  t = t.replace(/(\w{4,})pdf\b/gi, '$1').replace(/(\s+pdf)?(\s+free)?$/i, '').replace(/\s+pdf$/i, ''); // download artefacts: "…rulebookpdf pdf free"
+  t = t.replace(/\b([A-Za-z]{2,}) s\b(?=\s|$)/g, "$1's"); // "Player s Book": an apostrophe lost to an underscore
   t = t.replace(/\s+/g, ' ').trim();
   if (t && t === t.toLowerCase()) t = t[0].toUpperCase() + t.slice(1);
   return t || String(name);
 }
+const baseName = (n) => String(n).replace(/\.[A-Za-z0-9]{1,5}$/, '');
+// A folder name that says little on its own ("maps", "assets", "audio") is shown after the folder it is in.
+const GENERIC = /^(maps?|assets?|images?|img|pics?|pictures?|art|artwork|tokens?|handouts?|audio|sounds?|music|ost|mp3s?|extras?|files?|scans?|media|misc|other|resources?|downloads?)$/i;
 /** A metadata title worth showing, or null: not a placeholder, a file name or an export artefact. */
 export function goodTitle(t) {
   if (t == null) return null;
@@ -204,7 +226,7 @@ export function mdToHtml(src, opts = {}) {
   }
   const html = mdBlocks(lines, ctx);
   const h1 = ctx.heads.find((x) => x[0] === 1) || ctx.heads[0];
-  return { html, title: meta.title || (h1 ? h1[1].replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').trim() : null), meta };
+  return { html, title: meta.title || (h1 ? decodeEnt(h1[1].replace(/<[^>]+>/g, '')).trim() : null), meta };
 }
 function heading(n, raw, ctx) {
   const inner = mdInline(raw.trim(), ctx);
@@ -324,7 +346,7 @@ function mdInline(s, ctx) {
   const DEST = String.raw`(?:<([^>\n]*)>|([^\s()]*(?:\([^\s()]*\)[^\s()]*)*))(?:\s+(?:"([^"]*)"|'([^']*)'))?\s*\)`;
   s = s.replace(new RegExp(String.raw`!\[([^\]]*)\]\(\s*` + DEST, 'g'), (_, alt, d1, d2, t1, t2) => keep(img(d1 ?? d2, alt, t1 ?? t2)));
   s = s.replace(/!\[([^\]]*)\]\[([^\]]*)\]/g, (all, alt, k) => { const r = ref(k || alt); return r ? keep(img(r.u, alt, r.t)) : all; });
-  const rest = (t) => emph(esc(t));
+  const rest = (t) => emph(esc(t).replace(/&amp;(#\d{1,7}|#x[0-9a-f]{1,6}|[a-z][a-z0-9]{1,31});/gi, '&$1;')); // &copy; &#169; stay entities
   s = s.replace(new RegExp(String.raw`\[((?:[^\]\\]|\\.)+)\]\(\s*` + DEST, 'g'), (_, txt, d1, d2, t1, t2) => keep(link(d1 ?? d2, t1 ?? t2, rest(txt))));
   s = s.replace(/\[((?:[^\]\\]|\\.)+)\](?:\[([^\]]*)\])?/g, (all, txt, k) => { const r = ref(k || txt); return r ? keep(link(r.u, r.t, rest(txt))) : all; });
   s = rest(s);
@@ -353,7 +375,7 @@ export function cleanHtml(html, url = (u) => u) {
   let s = String(html);
   s = s.replace(/<!--[\s\S]*?-->/g, '');
   s = s.replace(/<(script|style|noscript|iframe|frame|frameset|object|embed|form|template|head|title|button|select|textarea)\b[\s\S]*?<\/\1\s*>/gi, '');
-  s = s.replace(/<\/?(script|style|link|meta|base|iframe|frame|object|embed|form|input|button|select|textarea|html|body|head)\b[^>]*>/gi, (t) => (/^<input\b[^>]*type\s*=\s*["']?checkbox/i.test(t) ? t : ''));
+  s = s.replace(/<\/?(script|style|link|meta|base|iframe|frame|object|embed|form|input|button|select|textarea|html|body|head|animate|animateMotion|animateTransform|set|discard)\b[^>]*>/gi, (t) => (/^<input\b[^>]*type\s*=\s*["']?checkbox/i.test(t) ? t : '')); // SVG animation could set an href to javascript:
   s = s.replace(new RegExp(`<((?!(?:${VOID})\\b)[a-zA-Z][\\w:-]*)(\\s[^<>]*?)?\\s*/>`, 'g'), '<$1$2></$1>');
   s = s.replace(/\s(on[a-z]+|formaction|srcdoc)\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '');
   s = s.replace(/\s(srcset)\s*=\s*("[^"]*"|'[^']*')/gi, '');
@@ -377,7 +399,7 @@ const textOf = (html) => decodeEnt(String(html).replace(/<[^>]+>/g, ' ')).replac
 export function htmlDoc(buf, url) {
   let raw = Buffer.isBuffer(buf) ? buf.toString('latin1') : String(buf);
   const cs = /<meta[^>]+charset\s*=\s*["']?([\w-]+)/i.exec(raw.slice(0, 4096))?.[1]?.toLowerCase();
-  if (Buffer.isBuffer(buf) && !/^(iso-8859-1|latin-?1|windows-1252|us-ascii|ascii)$/.test(cs || '')) raw = buf.toString('utf-8');
+  if (Buffer.isBuffer(buf) && !/^(iso-8859-1|latin-?1|windows-1252|us-ascii|ascii)$/.test(cs || '')) raw = decodeText(buf);
   const title = textOf(/<title\b[^>]*>([\s\S]*?)<\/title>/i.exec(raw)?.[1] || '') || textOf(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i.exec(raw)?.[1] || '') || null;
   return { html: cleanHtml(bodyOf(raw), url), title };
 }
@@ -431,7 +453,8 @@ export function epubBook(file, { asset = (p) => p, max = 60 * 1024 * 1024 } = {}
       x = bodyOf(x);
       x = x.replace(/(\s(?:id|name))\s*=\s*("([^"]*)"|'([^']*)')/gi, (all, a, _q, v1, v2) => (/name/i.test(a) && !/\sid=/i.test(all) ? all : ` id="c${n}-${esc(v1 ?? v2)}"`));
       x = cleanHtml(x, (v, isImg) => {
-        if (!v || /^[a-z][a-z0-9+.-]*:/i.test(v)) return v; // http:, mailto:, data: (cleanHtml has vetted it)
+        if (!v || /^(https?|mailto|ftp|data):/i.test(v)) return v; // data: (cleanHtml has vetted it)
+        if (/^[a-z][a-z0-9+.-]*:/i.test(v)) return '#'; // file:, an app's own scheme…
         const [p, frag] = v.split('#');
         const target = p ? resolveIn(dir, p) : d.path;
         if (chapterOf.has(target)) { const m = chapterOf.get(target); return frag ? `#c${m}-${frag}` : `#c${m}`; }
@@ -598,11 +621,12 @@ export class LocalIndex {
     const entries = [];
     let files = 0;
     for (const root of roots) {
-      try { const st = statSync(root.dir); if (!st.isDirectory()) throw new Error('not a folder'); root.ok = true; } catch (e) { root.error = e.code === 'ENOENT' ? 'not found' : e.code === 'EACCES' || e.code === 'EPERM' ? 'no permission (on a Mac: System Settings › Privacy & Security › Files and Folders, or Full Disk Access, for the app that runs node)' : e.message; continue; }
+      const why = (e) => (e.code === 'ENOENT' ? 'not found' : e.code === 'EACCES' || e.code === 'EPERM' ? 'no permission (on a Mac: System Settings › Privacy & Security › Files and Folders, or Full Disk Access, for the app that runs node)' : e.message);
+      try { const st = statSync(root.dir); if (!st.isDirectory()) throw new Error('not a folder'); root.ok = true; } catch (e) { root.error = why(e); continue; }
       const skip = (why, n = 1) => { root.skipped[why] = (root.skipped[why] || 0) + n; };
       const walk = async (abs, rel, depth) => {
         let list;
-        try { list = await readdir(abs, { withFileTypes: true }); } catch (e) { if (!rel) root.error = e.message; skip('unreadable folder'); return { n: 0, newest: 0 }; }
+        try { list = await readdir(abs, { withFileTypes: true }); } catch (e) { if (!rel) { root.ok = false; root.error = why(e); } else skip('unreadable folder'); return { n: 0, newest: 0, here: [], subs: [] }; }
         const fileRows = [], dirs = [];
         for (const d of list) {
           const name = d.name;
@@ -626,7 +650,9 @@ export class LocalIndex {
         const subs = [];
         if (depth < this.maxDepth) for (const dn of dirs.sort(natural)) subs.push({ name: dn, ...(await walk(join(abs, dn), rel ? rel + '/' + dn : dn, depth + 1)) });
         else if (dirs.length) skip('too deep', dirs.length);
-        const plan = planFolder(fileRows, dirs);
+        // An '.X.icloud' placeholder beside X itself (a download under way): X only, or both would have X's id.
+        const here0 = new Set(fileRows.filter((f) => !f.stub).map((f) => f.name));
+        const plan = planFolder(fileRows.filter((f) => !f.stub || !here0.has(f.real)), dirs);
         const here = [];
         for (const p of plan) {
           const f = p.files[0];
@@ -656,7 +682,8 @@ export class LocalIndex {
     for (const e of entries) if (this.needsMeta(e) && !this.meta.has(this.metaKey(e))) this.queue.push(e);
     this.pump();
   }
-  metaKey(e) { return `${e.abs}|${e.size}|${Math.round(e.mtimeMs)}`; }
+  // |2: titles read again after the reader learned UTF-16 and Latin-1 text (bump when readMeta changes).
+  metaKey(e) { return `${e.abs}|${e.size}|${Math.round(e.mtimeMs)}|2`; }
   needsMeta(e) { return e.kind === 'file' && !e.stubAbs && ['pdf', 'epub', 'md', 'html', 'txt', 'word'].includes(e.type); }
   pump() {
     while (this.working < 3 && this.queue.length) {
@@ -705,7 +732,8 @@ export class LocalIndex {
     if (e.cloud) return {};
     if (e.type === 'epub') { const m = epubMeta(f); return { title: m.title, author: m.authors.join(', ') || null, year: yearOf(m.date), lang: m.lang }; }
     if (e.type === 'word') { if (e.ext !== 'docx') return {}; const m = docxMeta(f); return { title: m.title, author: m.authors?.join(', ') || null, year: yearOf(m.date) }; }
-    const head = (await readFile(f)).subarray(0, 64 * 1024).toString('utf-8');
+    const fd = openSync(f, 'r'); let raw; try { raw = readFully(fd, 64 * 1024, 0); } finally { closeSync(fd); } // not the whole file
+    const head = decodeText(raw);
     if (e.type === 'md') { const m = mdToHtml(head.length < 64 * 1024 ? head : head.slice(0, head.lastIndexOf('\n'))); return { title: m.title, author: m.meta.author || null, year: yearOf(m.meta.date) }; }
     if (e.type === 'html') return { title: htmlDoc(head).title };
     if (e.type === 'txt') {
@@ -729,7 +757,8 @@ export class LocalIndex {
       byFolder.get(k).push(e);
     }
     const newestFirst = this.order === 'newest';
-    const cmp = (a, b) => (newestFirst ? b.mtimeMs - a.mtimeMs : 0) || natural(a.up ? basename(a.dirRel) : a.name, b.up ? basename(b.dirRel) : b.name);
+    // Names without their extensions, so "Guide.pdf" comes before "Guide_Spreads.pdf".
+    const cmp = (a, b) => (newestFirst ? b.mtimeMs - a.mtimeMs : 0) || natural(a.up ? basename(a.dirRel) : baseName(a.name), b.up ? basename(b.dirRel) : baseName(b.name));
     const items = [], byId = new Map();
     let ord = 0;
     const emit = (root, dir, node) => {
@@ -758,9 +787,12 @@ export class LocalIndex {
     let t;
     if (e.kind === 'gallery' || e.kind === 'playlist') {
       const what = e.kind === 'gallery' ? 'images' : 'audio';
-      t = e.up ? cleanTitle(basename(e.dirRel)) : `${cleanTitle(basename(e.dirRel) || root.name)}: ${what}`;
+      const own = basename(e.dirRel) || root.name, above = basename(posix.dirname(e.dirRel));
+      const named = GENERIC.test(own.trim()) && e.dirRel.includes('/') ? `${cleanTitle(above)}: ${cleanTitle(own).toLowerCase()}` : cleanTitle(own);
+      t = e.up ? named : `${named}: ${what}`;
     } else {
       t = goodTitle(m.title) || cleanTitle(e.name);
+      if (!/\p{L}/u.test(t)) t = `${cleanTitle(basename(e.dirRel) || root.name)} (${t})`; // "1638415655271.pdf": the folder says more
       if (!e.stubAbs && e.type === 'pdf') { kind = 'pdf'; url = fileUrl; }
       else if (!e.stubAbs && e.type === 'txt') { kind = 'text'; url = fileUrl; }
     }
@@ -770,13 +802,13 @@ export class LocalIndex {
     else if (e.cloud === 'evicted') why += ` · in iCloud, not on this Mac yet: it downloads when you open it (or run brctl download ${shq(e.abs)})`;
     const d = e.mtimeMs >= Date.UTC(1995, 0, 1) ? e.mtimeMs : e.birthtimeMs >= Date.UTC(1995, 0, 1) ? e.birthtimeMs : null;
     const it = {
-      id, lane: 'local', kind, t, url, ...(page ? { page } : {}),
+      id, lane: 'local', kind, t: t.normalize('NFC'), url, ...(page ? { page } : {}), // NFC: a Mac file name may spell é as e + ́, and search types é
       ...(goodAuthor(m.author) ? { a: goodAuthor(m.author) } : {}),
       ...(m.year ? { y: m.year } : {}),
       ...(d ? { d: isoDay(d) } : {}),
       ...(kind === 'pdf' && m.n ? { n: m.n } : {}),
       path: [root.name, ...sub], ord, why, src: 'local', q: 0.5,
-      private: !this.autoAI, size: e.size, ext: e.kind === 'file' ? e.ext : e.kind,
+      private: !this.autoAI, ...(e.stubAbs ? {} : { size: e.size }), ext: e.kind === 'file' ? e.ext : e.kind,
       ...(e.files.length > 1 ? { count: e.files.length } : {}),
       ...(e.cloud ? { cloud: e.cloud } : {}),
     };

@@ -15,7 +15,7 @@
 // guides of your own files are made only when you ask (items carry private: true),
 // unless Settings says otherwise: they send the text to Claude.
 import { $, h, on, emit, toast, registerWhyLine } from '../util.js';
-import { items, byId, LANES, LOCAL, mergeItems } from '../corpus.js';
+import { items, byId, LANES, COUNTS, LOCAL, mergeItems } from '../corpus.js';
 import { state, current, buildOrder } from '../state.js';
 import { extractors } from '../docs.js';
 import { showFeed } from '../feed.js';
@@ -23,17 +23,24 @@ import { paintLanes } from '../chrome.js';
 import { stack } from '../stack.js';
 
 const isLocal = (it) => it?.src === 'local' && String(it.id).startsWith('local:');
+// The Local lane kept from last time, but no files now (the folder is gone, or iCloud is not
+// mounted yet): start in All, without forgetting the choice; the lane comes back with its files.
+if (state.lane === 'local' && !COUNTS.local) state.lane = 'all';
 
 // ---------------------------------------------------------------- reading
 /** A /local/doc page → article HTML for prepareFlow: no scripts, frames, forms or handlers. */
+// SVG animation can set an href to javascript: after this has looked (<animate attributeName="href" values="javascript:…">).
+const ANIM = new Set(['animate', 'set', 'animatemotion', 'animatetransform', 'discard']);
 export function localHtml(src, it = null) {
   const doc = new DOMParser().parseFromString(src, 'text/html');
   doc.querySelectorAll('script, style, link, meta, base, iframe, frame, object, embed, form, noscript, template').forEach((x) => x.remove());
-  for (const el of doc.body.querySelectorAll('*')) {
+  for (const el of [...doc.body.querySelectorAll('*')]) {
+    if (ANIM.has(el.localName.toLowerCase())) { el.remove(); continue; }
     for (const a of [...el.attributes]) {
       const n = a.name.toLowerCase();
       if (n.startsWith('on') || n === 'srcdoc' || n === 'formaction') el.removeAttribute(a.name);
-      else if (/^(href|src|xlink:href|poster|action)$/.test(n) && /^\s*(javascript|vbscript|data:(?!image\/))/i.test(a.value)) el.removeAttribute(a.name);
+      // URLs lose tabs and line breaks anywhere ("java\tscript:" is javascript:).
+      else if (/^(href|src|xlink:href|poster|action|data|background|values|to|from|by)$/.test(n) && /^(javascript|vbscript|data:(?!image\/))/i.test(a.value.replace(/[\u0000- ]/g, ''))) el.removeAttribute(a.name);
     }
   }
   // A document's own first heading that repeats its title (shown above it already) goes.
@@ -43,6 +50,14 @@ export function localHtml(src, it = null) {
 }
 const coreHtml = extractors.html;
 extractors.html = async (it, r) => (isLocal(it) ? localHtml(await r.text(), it) : coreHtml(it, r));
+// Your own .txt files may be UTF-16 or Latin-1 (fetch's text() reads only UTF-8).
+const decodeText = (u) => {
+  const bom = u[0] === 0xff && u[1] === 0xfe ? 'utf-16le' : u[0] === 0xfe && u[1] === 0xff ? 'utf-16be' : null;
+  if (bom) return new TextDecoder(bom).decode(u);
+  try { return new TextDecoder('utf-8', { fatal: true }).decode(u); } catch { return new TextDecoder('windows-1252').decode(u); }
+};
+const coreText = extractors.text;
+extractors.text = async (it, r) => coreText(it, isLocal(it) ? new Response(decodeText(new Uint8Array(await r.arrayBuffer()))) : r);
 
 // ---------------------------------------------------------------- keeping up
 let checking = false, lastCheck = 0;
@@ -120,7 +135,7 @@ async function post(path, body) {
 }
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 function section(ui) {
-  const { row, seg, tog, upd, sync, flash } = ui;
+  const { row, seg, upd, sync } = ui;
   let S = info || { dirs: [], roots: [], order: 'name', autoAI: false };
   const box = h('textarea', { className: 'lc-dirs', rows: 3, spellcheck: false, placeholder: '~/Library/Mobile Documents/com~apple~CloudDocs/Recent Things to Read', ariaLabel: 'Folders, one per line' });
   const msg = h('span', { className: 'st-msg' });
@@ -163,8 +178,8 @@ function section(ui) {
         h('div', { className: 'lc-set' }, box, h('div', { className: 'lc-acts' }, save, dflt, rescan, msg), list)),
       row('Order in a folder', 'By name keeps series, chapters and sheets together (2 before 10). Newest first puts the latest files on top; S (Newest) sorts the whole lane by date either way.',
         seg([['name', 'By name'], ['newest', 'Newest first']], () => S.order || 'name', (v) => apply({ order: v }))),
-      row('AI on your files', ['Summaries and reading guides send the text to Claude. On request: only when you press ', ui.kb('a'), ' or “make one”.'],
-        ...tog(() => !S.autoAI, (v) => apply({ autoAI: !v }), ['On request', 'Automatic'])),
+      row('AI on your files', ['Summaries and reading guides send the text to Claude. On request: only when you press ', ui.kb('a'), ' or “make one”; automatic: like every other item.'],
+        seg([[false, 'On request'], [true, 'Automatic']], () => !!S.autoAI, (v) => apply({ autoAI: v }))),
     ],
   };
 }

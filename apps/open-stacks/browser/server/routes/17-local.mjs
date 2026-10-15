@@ -49,7 +49,8 @@ export default async function (app) {
   function start() {
     const c = conf();
     index?.close();
-    index = new L.LocalIndex({ dirs: c.dirs, cacheDir: DIR, order: c.order, autoAI: c.autoAI });
+    // A folder that went away and came back (renamed back, a drive plugged in again) is watched again.
+    index = new L.LocalIndex({ dirs: c.dirs, cacheDir: DIR, order: c.order, autoAI: c.autoAI, onChange: () => { if (watched !== okDirs()) rewatch(); } });
     index.scan().then(rewatch);
     return index;
   }
@@ -61,7 +62,10 @@ export default async function (app) {
     clearTimeout(soon);
     soon = setTimeout(() => { soon = null; index.scan(); }, now - first > 2000 ? 0 : 400);
   };
+  let watched = '';
+  const okDirs = () => index.roots.filter((r) => r.ok).map((r) => r.dir).join('\n');
   function rewatch() {
+    watched = okDirs();
     for (const w of watchers) try { w.close(); } catch { /* closed */ }
     watchers = [];
     let ok = 0;
@@ -78,7 +82,7 @@ export default async function (app) {
   }
   function resetTick() {
     clearInterval(tick);
-    tick = setInterval(() => index.scan(), watching ? 120e3 : 15e3);
+    tick = setInterval(() => index.scan(), watching && index.roots.every((r) => r.ok) ? 120e3 : 15e3); // a folder not there (yet): look every 15 s
     tick.unref?.();
   }
   start();
@@ -163,7 +167,9 @@ export default async function (app) {
     if (req.method !== 'GET' && req.method !== 'HEAD') return fail(res, 405, 'GET only');
     const x = itemFrom(m);
     if (!x || x.gone || x.e.kind !== 'file' || x.e.stubAbs) return fail(res, 404, 'not found');
-    sendFile(req, res, x.e.abs, L.mimeOf(x.e.abs), { 'Content-Disposition': `inline; filename*=UTF-8''${encodeURIComponent(basename(x.e.abs))}` });
+    const real = within(x.e.abs); // not a link put in its place since the folder was read
+    if (!real) return fail(res, 404, 'not found');
+    sendFile(req, res, real, L.mimeOf(x.e.abs), { 'Content-Disposition': `inline; filename*=UTF-8''${encodeURIComponent(basename(x.e.abs))}` });
   });
 
   // ---- a file beside a document, or a member of a gallery: inside the configured folders only ----
@@ -190,7 +196,7 @@ export default async function (app) {
   app.route('GET', /^\/local\/epub\/(local(?::|%3A)[0-9a-f]{20})\/(.+)$/i, (req, res, url, m) => {
     if (!guard(req, res)) return;
     const x = itemFrom(m);
-    if (!x || x.gone || x.e.type !== 'epub' || x.e.stubAbs) return fail(res, 404, 'not found');
+    if (!x || x.gone || x.e.type !== 'epub' || x.e.stubAbs || !within(x.e.abs)) return fail(res, 404, 'not found');
     let name; try { name = decodeURIComponent(m[2]); } catch { return fail(res, 400, 'bad path'); }
     let z = null;
     try {
@@ -223,7 +229,8 @@ export default async function (app) {
     const fromBase = relative(base, target);
     return fromBase.startsWith('..') ? `/local/rel/${x.it.id}/~/${enc(inRoot)}` : `/local/rel/${x.it.id}/${enc(fromBase)}`;
   }
-  function cachePath(x) { return join(DOCS, `${x.it.id.slice(6)}-${Math.round(x.e.mtimeMs).toString(36)}-${x.e.size.toString(36)}.html`); }
+  const CONV = 2; // converted documents made before a converter change are made again (2: UTF-16 and Latin-1 chapters, SVG animation)
+  function cachePath(x) { return join(DOCS, `${x.it.id.slice(6)}-${Math.round(x.e.mtimeMs).toString(36)}-${x.e.size.toString(36)}-${CONV}.html`); }
   function keep(x, html) {
     const f = cachePath(x), pre = x.it.id.slice(6) + '-';
     try { for (const old of readdirSync(DOCS)) if (old.startsWith(pre) && join(DOCS, old) !== f) unlinkSync(join(DOCS, old)); writeFileSync(f + '.tmp', html); renameSync(f + '.tmp', f); } catch (e) { console.warn('local: doc cache:', e.message); }
@@ -257,7 +264,7 @@ export default async function (app) {
       case 'md': {
         const buf = await readFile(e.abs);
         if (buf.length > DOC_MAX) throw new Error('too large to show');
-        const r = L.mdToHtml(buf.toString('utf-8'), { url: (v, img) => relUrl(x, v, img) });
+        const r = L.mdToHtml(L.decodeText(buf), { url: (v, img) => relUrl(x, v, img) });
         return page(it.t, `<article class="lc-md">${r.html}</article>`);
       }
       case 'html': {
@@ -267,7 +274,7 @@ export default async function (app) {
         return page(it.t, `<article class="lc-html">${r.html}</article>`);
       }
       case 'txt': {
-        const t = (await readFile(e.abs)).subarray(0, DOC_MAX).toString('utf-8');
+        const t = L.decodeText((await readFile(e.abs)).subarray(0, DOC_MAX));
         return page(it.t, t.split(/\n\s*\n/).map((p) => `<p>${L.esc(p.trim())}</p>`).join('\n'));
       }
       case 'epub': {
@@ -298,7 +305,7 @@ export default async function (app) {
   app.route('GET', /^\/local\/doc\/(local(?::|%3A)[0-9a-f]{20})$/i, async (req, res, url, m) => {
     if (!guard(req, res)) return;
     const x = itemFrom(m);
-    if (!x) return fail(res, 404, 'not found');
+    if (!x || (!x.gone && x.e.kind === 'file' && !x.e.stubAbs && !within(x.e.abs))) return fail(res, 404, 'not found');
     let html;
     try { html = await docOf(x); } catch (e) { html = page(x.it.t, note([`This file could not be read: ${L.esc(e.message)}`])); }
     const buf = Buffer.from(html, 'utf-8');

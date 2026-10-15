@@ -318,7 +318,8 @@ export function isDone(e, r, it) {
   if (!e) return false;
   if (e.y >= 0.75 || e.D >= 0.8) return true;
   const n = r?.n || it?.n || 0;
-  return n > 0 && !e.unopened && ((r.far ?? -1) >= n - 1 || (r.sc || 0) >= 0.9 * n);
+  // Reaching the end counts only for a read (y0 ≥ 0.3): a short page fits one spread, so a 2 s flick past it reaches its end.
+  return n > 0 && !e.unopened && e.y0 >= 0.3 && ((r.far ?? -1) >= n - 1 || (r.sc || 0) >= 0.9 * n);
 }
 
 /** Familiarity Φ (spec §2.7). e: engagement or null; added: epoch ms of a find's `added`; state: its find state. */
@@ -340,7 +341,7 @@ export function phiOf(e, r, it, { now = Date.now(), state = null, added = null }
 }
 
 /** A find's state (spec §2.9): 'new' | 'seen' | 'kept' | 'dismissed', or null when the item is not a find. */
-export function findState(it, r, mark, now = Date.now()) {
+export function findState(it, r, mark, now = Date.now(), err = false) {
   const at = dateAt(it?.added);
   if (at == null || now - at > LEARN.findDays * DAY) return null;
   const J = r ? replay(r.jl) : { S: null, M: null, L: null };
@@ -348,7 +349,9 @@ export function findState(it, r, mark, now = Date.now()) {
   if (J.S) return 'kept';
   const st = typeof mark === 'string' ? mark : mark?.st;
   if (st === 'seen' || st === 'new') return st;
-  if (r && ((r.a || 0) >= LEARN.seen.a || (r.sc || 0) >= LEARN.seen.sc || J.M)) return 'seen';
+  // Pages count once more were seen than the spread on screen holds (r.pos.c): one 2-up spread on screen for 1.2 s is a flick.
+  // Time on an item whose document failed to open, with no page seen (err), is not reading (as in engagement()).
+  if (r && (((r.a || 0) >= LEARN.seen.a && !(err && !(r.sc > 0))) || ((r.sc || 0) >= LEARN.seen.sc && (r.sc || 0) > (r.pos?.c || 0)) || J.M)) return 'seen';
   return 'new';
 }
 
@@ -526,7 +529,7 @@ export function computeProfile({ items, index, memory, now = Date.now(), control
   for (let i = 0; i < N; i++) {
     const it = items[i];
     if (!it.added) continue;
-    const st = findState(it, memory instanceof Map ? memory.get(it.id) : memory?.[it.id], markOf(it.id), now);
+    const st = findState(it, memory instanceof Map ? memory.get(it.id) : memory?.[it.id], markOf(it.id), now, !!errOf(it.id));
     if (!st) continue;
     finds.push({ i, id: it.id, st, at: dateAt(it.added) });
     if (st === 'new') newIds.push(it.id);

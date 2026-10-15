@@ -76,6 +76,12 @@ test('quick exits weigh by exit and route; failures and glimpses are not exposur
   assert.equal(kept.y, 0.9); assert.equal(kept.w, 1);
   const tossed = L.engagement(it, { nv: 0, v: [], seq: [], sc: 0, far: -1, jl: [['less', at]], last: at });
   assert.equal(tossed.y, 0); assert.equal(tossed.w, 1);
+  // A 2 s flick past a short page (it fits one spread, so its end is on screen) is a skip, not finished.
+  const short = { id: 'web:short', kind: 'web' };
+  const fr = { nv: 1, v: [[at, at + 2000, 2000, 'next', 'feed']], a: 2000, sc: 3, far: 2, seq: [[0, 3, at / 1000, 2000]], jl: [], last: at + 2000, n: 3 };
+  const fe = L.engagement(short, fr);
+  assert.equal(L.isDone(fe, fr, short), false);
+  assert.ok(Math.abs(L.phiOf(fe, fr, short, { now: at + 2000 }) - L.LEARN.phi.quick) < 1e-9, 'Φ of a flick is the quick-exit one');
 });
 
 test('judgments replay in order, with every retraction', () => {
@@ -249,6 +255,8 @@ test('find states: dismissed, kept, marks, seen, new', () => {
   assert.equal(L.findState(it, { a: 5000, sc: 1, jl: [] }, null, NOW), 'new', 'a flick past');
   assert.equal(L.findState(it, { a: 21000, sc: 0, jl: [] }, null, NOW), 'seen');
   assert.equal(L.findState(it, { a: 0, sc: 2, jl: [] }, null, NOW), 'seen');
+  assert.equal(L.findState(it, { a: 3000, sc: 2, pos: { k: 0, c: 2 }, jl: [] }, null, NOW), 'new', 'a flick past a 2-up spread (its 2 pages seen)');
+  assert.equal(L.findState(it, { a: 9000, sc: 4, pos: { k: 2, c: 2 }, jl: [] }, null, NOW), 'seen', 'turned a page');
   assert.equal(L.findState(it, { a: 0, sc: 0, jl: [['more', 1]] }, null, NOW), 'seen');
   assert.equal(L.findState(it, { a: 99e3, sc: 9, jl: [] }, { st: 'new' }, NOW), 'new', 'an explicit mark');
   assert.equal(L.findState(it, null, { st: 'seen' }, NOW), 'seen');

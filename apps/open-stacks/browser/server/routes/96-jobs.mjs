@@ -39,6 +39,11 @@ export default function (app) {
   const state = { lastRefresh: 0, nextRefresh: 0, written: {}, runs: [], media: {}, ...readJson(STATE, {}) };
   const errors = { items: {}, ...readJson(ERRORS, {}) };
   const saveState = () => { try { writeJson(STATE, state); } catch (e) { console.warn('jobs: state:', e.message); } };
+  // A new cache counts from its first start: a dev or test server on a fresh cache, run in the
+  // browser folder without STACKS_JOBS_DIR, would otherwise write job files into the repository
+  // 2 minutes after it starts. Refresh jobs (POST /jobs/refresh) still runs at once.
+  if (!state.since) { state.since = state.lastRefresh || Date.now(); saveState(); }
+  const due = () => EVERY > 0 && Date.now() - (state.lastRefresh || state.since) > EVERY * 3600e3;
   let errT = null;
   const saveErrors = () => { clearTimeout(errT); errT = setTimeout(() => { try { writeJson(ERRORS, errors); } catch (e) { console.warn('jobs: errors:', e.message); } }, 500); errT.unref?.(); };
 
@@ -111,7 +116,7 @@ export default function (app) {
     const done = l.done.filter((x) => x.job).sort((a, b) => String(b.job.done).localeCompare(String(a.job.done)) || b.mtime - a.mtime).slice(0, 50)
       .map((x) => ({ id: x.job.id, type: x.job.type, title: x.job.title, status: x.job.status, done: x.job.done, created: x.job.created, priority: x.job.priority, key: x.job.key, target: x.job.target, inputs: x.job.inputs, file: rel(x.file), result: resultOf(x) }));
     const broken = [...l.open, ...l.done].filter((x) => x.errors.length).map((x) => ({ file: rel(x.file), errors: x.errors }));
-    app.json(res, { dir: DIR_REL, repoPath: REPO, every: EVERY, running: !!running, lastRefresh: state.lastRefresh || 0, nextRefresh: EVERY > 0 && state.lastRefresh ? state.lastRefresh + EVERY * 3600e3 : 0, prompt: J.allPrompt(REPO), caps, open, done, broken });
+    app.json(res, { dir: DIR_REL, repoPath: REPO, every: EVERY, running: !!running, lastRefresh: state.lastRefresh || 0, nextRefresh: EVERY > 0 ? (state.lastRefresh || state.since) + EVERY * 3600e3 : 0, prompt: J.allPrompt(REPO), caps, open, done, broken });
   });
   app.route('POST', '/jobs/refresh', async (req, res) => {
     try { app.json(res, await refresh('request')); } catch (e) { app.json(res, { error: e.message }, 500); }
@@ -208,12 +213,12 @@ export default function (app) {
   app.onStart(() => {
     const first = setTimeout(() => {
       media().catch((e) => console.warn('jobs: media fixes:', e.message));
-      if (EVERY > 0 && Date.now() - (state.lastRefresh || 0) > EVERY * 3600e3) refresh('daily').catch((e) => console.warn('jobs: refresh:', e.message));
+      if (due()) refresh('daily').catch((e) => console.warn('jobs: refresh:', e.message));
     }, Number(process.env.STACKS_JOBS_DELAY) || 120e3);
     first.unref?.();
     const hourly = setInterval(() => {
       media().catch(() => {});
-      if (EVERY > 0 && Date.now() - (state.lastRefresh || 0) > EVERY * 3600e3) refresh('daily').catch((e) => console.warn('jobs: refresh:', e.message));
+      if (due()) refresh('daily').catch((e) => console.warn('jobs: refresh:', e.message));
     }, 3600e3);
     hourly.unref?.();
     const watch = setInterval(() => media().catch(() => {}), 60e3);

@@ -5,6 +5,15 @@ import { hudIcon } from './hud-icons.js';
 export const PDFJS = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/';
 // Your own files (/local/…, server/routes/17-local.mjs) come straight from this server, not through the proxy.
 export const P = (u) => (/^\/local\//.test(u) ? u : '/proxy?u=' + encodeURIComponent(u));
+// Page images come from a second origin. A browser opens at most 6 connections to a host,
+// and slow Internet Archive pages would otherwise queue the app's own calls behind them;
+// localhost and 127.0.0.1 are the same server and two hosts to the browser. Images loaded
+// this way set crossOrigin 'anonymous' (the proxy answers with Access-Control-Allow-Origin),
+// so canvases they are drawn on can still be read. stacks2:shard = false turns it off.
+const ALT = { localhost: '127.0.0.1', '127.0.0.1': 'localhost' }[location.hostname];
+const SHARD = ALT && (() => { try { return localStorage.getItem('stacks2:shard') !== 'false'; } catch { return true; } })() ? `${location.protocol}//${ALT}:${location.port}` : '';
+/** A proxied image (or a background fetch of one) from the second origin; P() for everything else. */
+export const PI = (u) => { const p = P(u); return SHARD && p.startsWith('/proxy') ? SHARD + p : p; };
 export const $ = (s, root = document) => root.querySelector(s);
 export const h = (tag, props = {}, ...kids) => {
   const el = Object.assign(document.createElement(tag), props);

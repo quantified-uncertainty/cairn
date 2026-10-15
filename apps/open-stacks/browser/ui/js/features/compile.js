@@ -20,7 +20,7 @@
 // Also: window.__stacksCompile(id, {assets}) for compile.mjs (?compile=batch),
 // the benchmark (?bench=profile, profile-bench.js), the 'profile' track layer
 // (front matter, references and appendix as faint bands) and compileTimes.
-import { on, store, P } from '../util.js';
+import { on, store, P, PI } from '../util.js';
 import { items } from '../corpus.js';
 import { state } from '../state.js';
 import { pdfjs, PDF_ASSETS, peekDoc, openDoc, isFlow, scanUrl, pdfOutline } from '../docs.js';
@@ -292,7 +292,7 @@ async function pdfPage(pdf, k, keep) {
   return { w: +vp1.width.toFixed(2), h: +vp1.height.toFixed(2), rot: page.rotate || 0, ...a, words, lines, text: lines.map((l) => l.t).join(' '), keep: keep ? small : null };
 }
 async function scanPage(it, k, text) {
-  const r = await fetch(P(scanUrl(it, k, 200)));
+  const r = await fetch(PI(scanUrl(it, k, 200)));
   if (!r.ok) throw new Error('page image ' + r.status);
   const bm = await createImageBitmap(await r.blob());
   const { lum, W, H } = lumOf(bm, bm.width, bm.height);
@@ -353,7 +353,7 @@ async function drawSprite(it, Pf, job) {
 /** A page about 240 px wide for the sprite when the analysis did not keep one. */
 async function smallPage(it, Pf, k, job) {
   if (it.kind === 'scan') {
-    const r = await fetch(P(scanUrl(it, k, 200))).catch(() => null);
+    const r = await fetch(PI(scanUrl(it, k, 200))).catch(() => null);
     return r?.ok ? createImageBitmap(await r.blob()).catch(() => null) : null;
   }
   if (!job.pdf) { const lib = await pdfjs(); const buf = await (await fetch(P(it.url))).arrayBuffer(); worker ||= new lib.PDFWorker({ name: 'compile' }); job.pdf = await lib.getDocument({ data: buf, isEvalSupported: false, disableFontFace: true, worker, ...PDF_ASSETS }).promise; }

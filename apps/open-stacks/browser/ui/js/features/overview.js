@@ -94,7 +94,8 @@ const winEl = h('div', { className: 'tr-ovwin' });
 /** Cover the pages (and the pinned strip) between the item head and the track. */
 function place() {
   const sp = $('#spread'), tr = $('#track');
-  const top = sp.offsetTop, bottom = tr ? tr.offsetTop : sp.offsetTop + sp.offsetHeight;
+  // The track may sit above the pages (header.js, the default): then down to the stage's foot.
+  const top = sp.offsetTop, bottom = tr && tr.offsetTop > top ? tr.offsetTop : stage.clientHeight;
   Object.assign(root.style, { top: top + 'px', height: Math.max(80, bottom - top) + 'px' });
 }
 
@@ -863,7 +864,7 @@ function trackEvt(e) {
     pk.classList.add('textonly'); pk.hidden = false; pkOurs = true;
     pk.querySelector('.pk-label').textContent = `p. ${k + 1} / ${S.n}`;
     pk.style.left = Math.min(innerWidth - 140, Math.max(8, e.clientX - 60)) + 'px';
-    pk.style.top = r.top - 30 + 'px';
+    pk.style.top = (r.top < innerHeight / 2 ? r.bottom + 6 : r.top - 30) + 'px'; // under a track at the top
   }
   if (k !== S.hot) {
     setHot(k);

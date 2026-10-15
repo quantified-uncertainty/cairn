@@ -15,6 +15,7 @@ node jobs.mjs done <id> --note "…"              # writes the Result, moves the
 #   commit with the exact git add / git commit lines that `done` prints
 ```
 
+- **Check without `--live` while you work** (it sends nothing); run `--live` once, at the end: it fetches every new URL again.
 - **One commit per job**, with exactly the files `done` lists. Never `git add -A`.
 - **Never push** unless the person who sent you asked you to.
 - **Do at most 5 jobs or 60 minutes per session** unless told otherwise, then summarise what you did (jobs done, items added, anything dropped and why).
@@ -47,9 +48,9 @@ Each item:
 | `kind` | `pdf`, `html` (forum posts), `web` (other web pages), `scan` (Internet Archive page images), `text` |
 | `t`, `a` | Title and authors as on the work (`"First Author, Second Author et al."` for more than three). Use the organisation when there is no person |
 | `y` and/or `d` | At least one. `y` a number; `d` is `YYYY-MM` or `YYYY-MM-DD` |
-| `url`, `page` | `https://` only. `url` is what the reader opens; `page` the landing page. Both are required |
+| `url`, `page` | `https://` only. `url` is what the reader opens: the open copy itself, never a `doi.org` link (a DOI resolves to the publisher, often a paywall; put it in `doi` or `page`). `page` is the landing page. Both are required. A LessWrong, Alignment Forum or EA Forum post always takes its `lw:`/`eaf:` id and the GraphQL `url`, never a `web:` id |
 | `why` | 20-200 characters, one line, neutral: what the work is and why it belongs ("A critic-free RL recipe for long reasoning chains; follows DeepSeekMath's GRPO.") |
-| `tags` | 1-4 tags. When `data/tags.json` exists, use its ids |
+| `tags` | 1-4 tags. When `data/tags.json` exists, use its ids; otherwise reuse the tags the seeds carry in `corpus.json` (`"aggregation"`, `"theory"`…) rather than new words |
 | `added` | Today's date, `YYYY-MM-DD` |
 | `job` | The job id, e.g. `"discover-0007"` |
 | `via` | `{"source": …, "query": "the query or call that found it", "seeds": ["ids it was found from"]}`; `source` is one of `arxiv`, `semantic-scholar`, `openalex`, `lesswrong`, `alignment-forum`, `eaforum`, `internet-archive`, `quri`, `publisher`, `author-site`, `wayback`, `manual`, `other` |
@@ -108,14 +109,14 @@ Before adding anything, look it up: `node jobs.mjs lookup "<title, arXiv id, DOI
 
 ## 6. Sources
 
-Send a `User-Agent` that names the tool, e.g. `OpenStacksBrowser/0.3 jobs (https://github.com/quantified-uncertainty/cairn)`. Record each query you run in the item's `via.query`.
+Send a `User-Agent` that names the tool, e.g. `OpenStacksBrowser/0.3 jobs (https://github.com/quantified-uncertainty/cairn)`. Record each query you run in the item's `via.query`, and name the ones that added nothing in `done --note`, so the job's Result (shown in the reader's Dashboard) lists every query sent for it.
 
 ### 6.1 arXiv API
 
 - `https://export.arxiv.org/api/query?search_query=…&start=0&max_results=50&sortBy=submittedDate&sortOrder=descending` returns Atom XML. Fields in `search_query`: `ti:`, `au:`, `abs:`, `cat:`, `all:`; `AND`, `OR`, `ANDNOT`, parentheses, quoted phrases, and `submittedDate:[YYYYMMDDHHMM TO YYYYMMDDHHMM]`. Also `id_list=2402.03300,2501.12948` for lookups.
 - **At most one request every 3 seconds**, one connection.
 - Shapes that work: `(cat:cs.AI OR cat:cs.LG OR cat:cs.CL) AND abs:"scalable oversight"`; `au:"Rohin Shah"`; `(au:"A" OR au:"B") AND submittedDate:[202606010000 TO 202610152359]`.
-- Single words explode ("strategy" matched 1,072 papers in a month); even phrases catch homonyms ("AI control" was on topic for 3 of 8). Read every abstract before adding.
+- Single words explode ("strategy" matched 1,072 papers in a month); even phrases catch homonyms ("AI control" was on topic for 3 of 8). Read every abstract before adding. An `OR` of five `abs:` phrases ("forecast aggregation" and variants, cs/stat/econ categories, 36 months) matched 54 papers, and 10 of the first 40 were on topic: time-series forecasting papers match too.
 - For a topic, `sortBy=relevance` surfaces the papers people cite; `sortBy=submittedDate` is for "what is new". In a test run, `(cat:cs.LG OR cat:cs.CL) AND abs:"GRPO" AND ti:"reasoning"` over 24 months matched 443 papers, and relevance order put well-known analyses in the first 25.
 - Entry ids carry a version (`2402.03300v3`): strip it. A malformed query returns HTTP 400; an unknown id returns zero results.
 
@@ -168,7 +169,7 @@ Send a `User-Agent` that names the tool, e.g. `OpenStacksBrowser/0.3 jobs (https
 | `media` | Every listed image has an entry in `data/media-fixes.json`: `{"from": "<working URL>", "why", "added", "job"}` or `{"from": null, "gone": true, "why", "added", "job"}` | Other sizes in the post's source, the author's site, the Wayback Machine (`id_` form) | `data/media-fixes.json` (no merge needed; the app applies it) | Never: mark images gone instead |
 | `tag` | Every listed item is in at least one tag | The items' titles and abstracts | `data/tags.json`: add ids to tags' `items`; a new tag needs `id`, `label`, `kind`, `desc` | `data/tags.json` does not exist |
 | `metadata` | Every listed item has its missing `a`/`y`/`d` in `data/overrides.json`, or `"unknown": ["a"]` with `why` | The title page, arXiv, the publisher, IA metadata | `data/overrides.json`, then `--merge` | Never |
-| `flag` | The cause is found; the data is fixed, or an app bug is described in the Result (fix code only when small and clearly in scope, with a test) | The flagged item and page; the picture in `jobs/assets/` if any | whatever the cause needs | The flag is not a problem (say why in `--note`) |
+| `flag` | The cause is found; the data is fixed (a duplicate: keep the best copy, `"drop": true` with `why` on the others), or an app bug is described in the Result (fix code only when small and clearly in scope, with a test) | The flagged item and page; the picture in `jobs/assets/` if any | whatever the cause needs | The flag is not a problem (say why in `--note`) |
 
 `data/overrides.json` holds fixes to any item:
 
@@ -184,7 +185,7 @@ Fields it may set: `t`, `a`, `y`, `d`, `url`, `page`, `pdf`, `kind`, `n`, `ia`, 
 
 ## 8. Rebuild cheaply
 
-`node build-corpus.mjs --merge` appends every lane-file item not yet in `corpus.json`, applies `data/overrides.json`, and places what changed in the library tree. It makes no network requests and takes about a second. It may also pick up items other people added to lane files; that is expected.
+`node build-corpus.mjs --merge` appends every lane-file item not yet in `corpus.json`, applies `data/overrides.json`, and places what changed in the library tree. It makes no network requests and takes about a second. It folds in every `*.added.json`, other agents' too; that is expected. Items in the curated lane files (`data/lanes/*.json` without `.added`) wait for the full build: when `--merge` reports some "not in corpus.json yet", leave them out of your job.
 
 **Never run the full build** (`node build-corpus.mjs` with no option): it refetches every lane (about 15 minutes, hundreds of requests). Run it only if a job says so.
 
@@ -215,6 +216,8 @@ Run exactly that. A flag job needs `--note`.
 - **429s**: back off as section 6 says; switch sources rather than hammering one. Semantic Scholar is the usual culprit; arXiv and the forums rarely throttle at the given spacing.
 - **A check that will not pass**: read the ✗ line; it names the item and the rule. If the job itself is wrong (a bad target, nothing open exists), drop it with a reason.
 - **A host that is open but not yet known**: add it to `jobs/hosts.json` `allow`, `"host.example": "why it is open"`. `check` lists it for review, and `done` adds `jobs/hosts.json` to the files to commit.
+- **A post page answers 403 to scripts**: the EA Forum (and other sites behind Cloudflare) answer `curl` and `check --live` with a bot challenge (`cf-mitigated: challenge`). `check` accepts that for `page`, which the reader opens in a browser; the post's GraphQL `url` must still return a body.
+- **A redirect fails `--live`**: `url` must end on an open host, never a shadow library or a login page. Link the final open copy directly.
 - **Merge conflicts in `corpus.json`**: it is generated. Take either side, then rerun `node build-corpus.mjs --merge`.
 - **The lookup finds a near miss** (same title, different work): if the authors and year differ, it is a different work; the check's title key also compares the first author for short titles.
 - **Nothing in `jobs/open/`**: the app writes jobs when it runs (once a day, or Refresh jobs in its Dashboard, key `Y`). If you work in a clone without the app, the reader must commit and push `jobs/open/` first.

@@ -70,7 +70,7 @@ switch (cmd) {
     if (!j) { out('No open jobs.'); break; }
     if (json) { out(JSON.stringify(j, null, 1)); break; }
     printJob(join(DIR, 'open', j.id + '.md'));
-    out(`\n# Files to edit: ${(j.output || []).join(', ')}`);
+    out(`\n# Files to edit: ${(j.output || []).join(', ')}${(j.output || []).includes('corpus.json') ? ' (corpus.json only through node build-corpus.mjs --merge, never by hand)' : ''}`);
     out(`# Then: node jobs.mjs check ${j.id} --live  ·  node jobs.mjs done ${j.id} --note "…"`);
     break;
   }

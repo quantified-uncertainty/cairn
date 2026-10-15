@@ -207,7 +207,7 @@ term = B·I + Φ,   B = 0.8
 | Item | Φ |
 |---|---|
 | Marked less (L set) | −0.8 |
-| Done: `y ≥ 0.75`, or `D ≥ 0.8`, or `n` known with `far ≥ n − 1` or `sc ≥ 0.9·n` | −0.8 |
+| Done: `y ≥ 0.75`, or `D ≥ 0.8`, or `n` known with `far ≥ n − 1` or `sc ≥ 0.9·n` and `y0 ≥ 0.3` (QA fix: a short page fits one spread, so a 2 s flick reached its end and sank as "finished") | −0.8 |
 | Quick exit | −0.4·2^(−age/30) |
 | Glanced (`y < 0.3`) | −0.25·2^(−age/30) |
 | In progress (0.3 ≤ y < 0.75, `D < 0.8`, age under 21 days) | +0.15 |
@@ -229,7 +229,7 @@ c_f = β_g·m_f·λ_f / (√M_g · Σ_{g present} β_g)      where M_g = Σ_{f�
 Δ_f = B·c_f·tanh(r/0.75)/r                           (B·c_f/0.75 when |r| < 1e-9)
 ```
 
-- **Chips:** features with `|Δ_f| ≥ 0.05`, at most two positive and one negative, largest first. All `w:` features merge into one chip, "title words: reasoning, math", with the summed Δ.
+- **Chips:** features with `|Δ_f| ≥ 0.05`, at most two positive and one negative, largest first. All `w:` features merge into one chip, "title words: reasoning, math", with the summed Δ. The panel adds `rest` (below) as a "smaller matches" chip when `|rest| ≥ 0.05` (QA: the metadata facets often carry most of `B·I`, each under 0.05, and an item could rise 255 places with no chip).
 - **Text** from the feature's counters: "+0.25 · Reasoning models: you read 3 deeply, saved 1". Use at most two phrases, from: read N deeply, skimmed N, saved N, marked N more like this, skipped N, marked N less like this. This wording is only ever shown locally.
 - **Read items** get one more line: "You read this deeply · ★" (the label and the judgments).
 
@@ -243,7 +243,7 @@ c_f = β_g·m_f·λ_f / (√M_g · Σ_{g present} β_g)      where M_g = Σ_{f�
   | `dismissed` | L is set |
   | `kept` | S is set |
   | (explicit mark) | `CACHE/learn/finds.json` `marks[id].st`: `seen` or `new` |
-  | `seen` | `r.a ≥ 20 s`, or `r.sc ≥ 2`, or M is set |
+  | `seen` | `r.a ≥ 20 s`, or `r.sc ≥ 2` with more pages seen than the spread on screen holds (`r.sc > r.pos.c`: a turn; QA fix, since one 2-up spread on screen for 1.2 s is 2 pages), or M is set |
   | `new` | Anything else |
 
   The client applies the same rule to `memoryOf(id)` (`a`, `sc`, `saved`, `less`, `more`) to clear a badge at once (§8.4).
@@ -633,7 +633,7 @@ Reading-based types need a profile with at least 10 exposures. Maintenance types
 
 | Type | Fires when | Key | Inputs | Wants | Priority | Open cap | Cool-down after close |
 |---|---|---|---|---|---|---|---|
-| `discover` | A feature `f` in groups tag, field (depth ≥ 2) or path has `l ≥ 0.5` and `W ≥ 2`, and at least 2 seeds carry it; or `f` is boosted (seeds optional, otherwise up to 3 corpus items with `f`, best `q` first). Not muted, not ignored. Candidates are ranked by `l·√W`; one whose seed set overlaps a higher-ranked candidate's by 80% or more is skipped | `discover:<f>` | 2-5 seeds carrying `f`, newest first: `{id, t}`. Only a boosted `f` with fewer than 2 seeds is filled up to 3 with corpus items carrying it (best `q` first), marked `ex: true` and listed under "Examples already in the library": padding a read topic with unread items mixed topics (built: an RL-for-reasoning job got an AI-safety paper as a third seed) | high 10 (6-15); normal 8 (5-12); low 6 (3-10) | high: `l ≥ 1` and `W ≥ 4`, or boosted; normal: `l ≥ 0.75`; else low | 4 | 14 days, and at least one seed not in the last job with the key |
+| `discover` | A feature `f` in groups tag, field (depth ≥ 2) or path has `l ≥ 0.5` and `W ≥ 2`, and at least 2 seeds carry it; or `f` is boosted (seeds optional, otherwise up to 3 corpus items with `f`, best `q` first). Not muted, not ignored. Candidates are ranked by `l·√W`; one whose seed set overlaps a higher-ranked candidate's by 80% or more is skipped (QA: by the higher-ranked candidates' seeds together; seven forecasting reads otherwise wrote four jobs, the fourth's seeds all in the first three) | `discover:<f>` | 2-5 seeds carrying `f`, newest first: `{id, t}`. Only a boosted `f` with fewer than 2 seeds is filled up to 3 with corpus items carrying it (best `q` first), marked `ex: true` and listed under "Examples already in the library": padding a read topic with unread items mixed topics (built: an RL-for-reasoning job got an AI-safety paper as a third seed) | high 10 (6-15); normal 8 (5-12); low 6 (3-10) | high: `l ≥ 1` and `W ≥ 4`, or boosted; normal: `l ≥ 0.75`; else low | 4 | 14 days, and at least one seed not in the last job with the key |
 | `follow-author` | `au:x` has `l ≥ 0.7` and `W ≥ 2`, with at least 2 seeds whose first author is x | `follow-author:<x>` | `{name}` (the commonest full name in the seeds' `a`) and 2-3 seeds | 5 (1-10) | normal | 3 | 30 days |
 | `grow-lane` | `lane:l` has `l ≥ 0.5` (or is boosted), and the lane has fewer than 20 unread items with I ≥ 0.3 | `grow-lane:<lane>` | Up to 5 anchors: the lane's seeds, else its top items by `q` | 15 (8-25) | normal | 2 | 21 days |
 | `fix-item` | A corpus item fails to open: `rescue.S.docs[url].st === 'bad'` for its `url`, `page` or `pdf`; or `errors.json` has it with `n ≥ 2` on 2 or more days, or with status 404, 410 or 451 | `fix-item:<lane>` | Up to 10 `{id, t, url, problem}` (e.g. "HTTP 404", "dead page", "fails to open: <msg, ≤ 80 chars>") | Every input fixed or dropped | high with ≥ 5 inputs, else normal | 3 | An item in a closed fix-item job is not listed again for 14 days |
@@ -651,7 +651,7 @@ Reading-based types need a profile with at least 10 exposures. Maintenance types
 
 ### 7.3 Refresh, dedupe, updates
 
-- **When.** `onStart`: 2 minutes after start, run a refresh if `lastRefresh` is more than `STACKS_JOBS_EVERY` hours old (default 24; 0 disables automatic refreshes, but flags still work). Then check hourly. `POST /jobs/refresh` runs one now.
+- **When.** `onStart`: 2 minutes after start, run a refresh if `lastRefresh` is more than `STACKS_JOBS_EVERY` hours old (default 24; 0 disables automatic refreshes, but flags still work). Then check hourly. `POST /jobs/refresh` runs one now. QA: a cache with no refresh yet counts from its first start (`state.since`), not from 1970: test and dev servers on fresh caches in the browser folder wrote job files into the repository two minutes after starting, twice on 15 October.
 - **Dedupe.** Skip a candidate when an open job has its key, or when a closed job with its key is inside the cool-down. Cool-downs run from that job's `done` date; dismissed jobs count as closed.
 - **Updates.** An open `fix-item`, `media`, `tag` or `metadata` job may be rewritten to add new inputs (up to the batch size), but only if its text still has the sha1 recorded in `state.json` `written` (nobody has touched it). Discover-like jobs are never rewritten. The generator never deletes or closes jobs.
 - **Cost.** A refresh reads the profile in memory, the corpus index, rescue state, `errors.json` and the job folders. Target: ≤ 1 s.
@@ -704,7 +704,7 @@ The item rules, enforced by `check`:
 node build-corpus.mjs --merge [--root DIR]
 ```
 
-1. Read `corpus.json` (it must exist) and every `data/lanes/*.json`.
+1. Read `corpus.json` (it must exist) and every `data/lanes/*.json`. QA: only the `*.added.json` files by default (`--all-lanes` for all): on 15 October corpus.json lagged the curated lane files by 680 items, and a 6-item job's merge folded all 686 into its commit. Items on a deny-listed host, and overrides pointing at one, are skipped with a message.
 2. **Append** each lane-file item whose id is not in the corpus. Apply the full build's filters (`id`, `url` and `t` present; a known lane) and its normalisation:
    - `lane`;
    - `src` via `srcOf`;
@@ -752,15 +752,15 @@ Global options: --dir <jobs dir> (default $STACKS_JOBS_DIR or ./jobs) and --root
 | All | The job file parses (§7.1). Every data file it touches parses and has the right shape |
 | discover, follow-author, grow-lane | Items with `job: <id>` in `data/lanes/*.json` number between `wants.min` and `wants.max` |
 | Same | Each such item follows the item rules (§7.5) |
-| Same | **No duplicates**, against `corpus.json` and every lane file (excluding this job's items) and within the job, by: id; arXiv id from any URL or DOI `10.48550/arXiv.<id>`; DOI (from `doi` or a `doi.org` page); `lw:` and `eaf:` ids including `xpost`; IA identifier and the work key (normalised title + creator surname + year); URL key (lowercase host without `www.`, path without trailing slash, no query or fragment; not for GraphQL URLs); normalised title (NFKD, lowercase, letters and digits) when it has at least 4 words, or fewer words plus the same first-author surname |
-| Same | **Open hosts**: every `url` and `page` host is in `jobs/hosts.json` `allow` or already in the corpus, and matches no `deny` pattern (a hard failure). Hosts the job added to `allow` are listed for review |
+| Same | **No duplicates**, against `corpus.json` and every lane file (excluding this job's items) and within the job, by: id; arXiv id from any URL or DOI `10.48550/arXiv.<id>`; DOI (from `doi` or a `doi.org` page); `lw:` and `eaf:` ids including `xpost`; IA identifier and the work key (normalised title + creator surname + year); URL key (lowercase host without `www.`, path without trailing slash, no query or fragment; not for GraphQL URLs); normalised title (NFKD, lowercase, letters and digits) when it has at least 4 words, or fewer words plus the same first-author surname. QA: an item under an id the corpus already has is a duplicate (only this job's own merged items, which carry `job`, are left out; it used to pass as "merged"); the URL key comes from `url` and `pdf`, not the landing `page` (reports sharing deepmind.google/frontier-safety were false duplicates); post ids also come from forum post pages and GraphQL URLs; arXiv ids also from `/html/`; a `doi:` prefix is stripped; `twin` relaxes only the title keys |
+| Same | **Open hosts**: every `url` and `page` host is in `jobs/hosts.json` `allow` or already in the corpus, and matches no `deny` pattern (a hard failure). Hosts the job added to `allow` are listed for review. QA: the deny list also applies to the page a Wayback Machine URL archives; `url` may not be a `doi.org` link; a forum post may not take a `web:`/`pdf:` id |
 | Same | Scans: `y ≤ 1930`, or a `license` that names an open licence |
 | Same | `corpus.json` contains each item, with `path` and `ord` (the merge ran) |
 | fix-item, metadata | Every input id has an override with this job's id: changed fields, `drop: true` with `why`, or `unknown` (metadata) |
 | media | Every input URL has a `media-fixes.json` entry with this job's id: `from` on an open host (or `web.archive.org`), or `gone: true` with `why` |
 | tag | Every input id is in at least one tag's `items`; new tags have `id`, `label`, `kind` and `desc` |
 | flag | `done` requires `--note`. Data files it touched validate |
-| All, with `--live` | Each new or changed URL answers: a GET with `Range: bytes=0-2047`, at most 1 request per host per second (1 per 3 s for `export.arxiv.org`), 20 s timeout. PDFs must start with `%PDF` or be `application/pdf`. GraphQL post URLs must return a non-empty `htmlBody`. IA identifiers: the metadata has `imagecount > 0` and no `access-restricted-item`, and the collections exclude `inlibrary`, `printdisabled` and `lendinglibrary` |
+| All, with `--live` | Each new or changed URL answers: a GET with `Range: bytes=0-2047`, at most 1 request per host per second (1 per 3 s for `export.arxiv.org`), 20 s timeout. PDFs must start with `%PDF` or be `application/pdf`. GraphQL post URLs must return a non-empty `htmlBody`. IA identifiers: the metadata has `imagecount > 0` and no `access-restricted-item`, and the collections exclude `inlibrary`, `printdisabled` and `lendinglibrary`. QA: only the first 2 KB is read (a server that ignores Range no longer sends a whole PDF); after redirects `url` must end on an open host, and no URL on a shadow library or a login page; a `page` answering Cloudflare's bot challenge (403, `cf-mitigated`, as the EA Forum's post pages do) passes; any archive.org item, whatever its kind, gets the IA metadata check |
 | All | The privacy lint (§7.9) passes on the job file and on the `why` and `via` of every item |
 
 `jobs/hosts.json` `deny` (seed list; matched against the host and its parents):
@@ -954,7 +954,7 @@ There is no core hook. All of this happens in `learn.js` and `learn.css`:
   It is rebuilt when the set changes. A few hundred selectors cost nothing, and the library's virtual list picks the badge up as rows are created.
 - **Up Next tiles** (another workflow; their markup is unknown). When an element matching `[id*="upnext" i], [class*="upnext" i], [id*="up-next" i], [class*="up-next" i]` exists, observe it with a MutationObserver. Append `<span class="new-pill">NEW</span>` to each child carrying a `data-i` or `data-id` of a new item, if absent. If the tiles carry neither attribute, the badge is skipped there; note it in the final report.
 - **Pill style.** `font: 600 9px var(--mono)`, `letter-spacing: .08em`, `padding: 0 4px`, `border-radius: 2px`, `background: var(--accent)`, `color: var(--bg)`. Readable on light themes, since `settings.js` sets both tokens.
-- **Clearing.** For the current item while it is new, check every 5 s and on `memory:updated {id}`: `r = memoryOf(id)` and `(r.a ≥ 20000 || r.sc ≥ 2 || r.saved || r.more || r.less)`. When true, remove the id from the set, regenerate the style, update the header, and update the chip count. The server applies the same rule on its next recompute. A flick past an item (under 20 s, fewer than 2 pages) leaves it new.
+- **Clearing.** For the current item while it is new, check every 5 s and on `memory:updated {id}`: `r = memoryOf(id)` and `(r.a ≥ 20000 || (r.sc ≥ 2 && r.sc > r.c) || r.saved || r.more || r.less)`. When true, remove the id from the set, regenerate the style, update the header, and update the chip count. The server applies the same rule on its next recompute. A flick past an item (under 20 s, fewer than 2 pages) leaves it new.
 
 ### 8.5 The New walk, the chip, the toast, the reload pill
 
@@ -1030,7 +1030,7 @@ There is no core hook. All of this happens in `learn.js` and `learn.css`:
 
 **What it learned** (`/learn/profile.json` full and `/learn/history.json?days=8`):
 
-- Two lists: **Interests**, the top 12 features by λ·√W with λ > 0 and not ignored; and **Less of**, the 6 most negative.
+- Two lists: **Interests**, the top 12 features by β·λ·√W (β the group weight, §2.4) with λ > 0 and not ignored; and **Less of**, the 6 most negative. (QA change: by λ·√W alone, facets every paper shares, such as "Empirical: central" and "For researchers", topped the list.)
 - Each row:
   - the label, with a group tag (tag, folder, field, author, lane, word, form);
   - a diverging λ bar from −2 to +2 around a centre line;

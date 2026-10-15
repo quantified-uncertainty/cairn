@@ -51,7 +51,8 @@ const fmtDay = (d) => Lm?.fmtDay?.(d) ?? d;
 const plural = (n, w, ws = w + 's') => `${n} ${n === 1 ? w : ws}`;
 const GROUP = { tag: 'tag', field: 'field', path: 'folder', author: 'author', lane: 'lane', tok: 'word', style: 'style', level: 'level', form: 'form', era: 'era' };
 const groupOf = (f, g) => GROUP[g] || GROUP[{ 'tag:': 'tag', 'field': 'field', 'path:': 'path', 'au:': 'author', 'lane:': 'lane', 'w:': 'tok' }[f.slice(0, f.indexOf(':') + 1)]] || 'feature';
-function evidence(c = {}) {
+function evidence(c) {
+  c ||= {}; // /learn/features sends c: null for a feature never read (the search box lists those too)
   const parts = [[c.deep, 'deep'], [c.skim, 'skimmed'], [c.glance, 'glanced'], [c.skip, 'skipped'], [c.save, '★'], [c.more, 'more'], [c.less, 'less']]
     .filter(([n]) => n > 0).map(([n, w]) => (w === '★' ? `${Math.round(n)} ★` : `${Math.round(n)} ${w}`));
   return parts.join(' · ');
@@ -362,7 +363,10 @@ const weekAgo = () => {
   const lines = D.data.hist?.days || [];
   if (!lines.length) return null;
   const target = Date.now() - 7 * 864e5;
-  return lines.reduce((b, x) => (Math.abs((x.at || Date.parse(x.d)) - target) < Math.abs((b.at || Date.parse(b.d)) - target) ? x : b));
+  const wk = lines.reduce((b, x) => (Math.abs((x.at || Date.parse(x.d)) - target) < Math.abs((b.at || Date.parse(b.d)) - target) ? x : b));
+  // With no line at least 4 days old there is no "last week" yet: comparing with this morning's line
+  // would mark every interest "new" and title the section "Since last week (today)".
+  return Date.now() - (wk.at || Date.parse(wk.d)) >= 4 * 864e5 ? wk : null;
 };
 function lamBar(l) {
   const v = Math.max(-2, Math.min(2, l || 0));
@@ -422,7 +426,10 @@ function paintLearned() {
   if (p.on === false) { fill('db-learned', note('Learning is switched off on the server (STACKS_LEARN=0).')); return; }
   const wk = weekAgo();
   const feats = Object.entries(p.feat || {}).map(([f, v]) => ({ f, ...v }));
-  const strength = (x) => (x.l || 0) * Math.sqrt(x.W || 0);
+  // λ·√W weighted by the group's weight in the ranking (β, server/learn.mjs LEARN.beta): topics, fields and folders
+  // lead; facets every paper you read shares ("Empirical: central", "For researchers") follow instead of topping the list.
+  const BETA = { tag: 1, field: 1, path: 0.8, author: 0.6, lane: 0.6, tok: 0.4, style: 0.4, level: 0.4, form: 0.3, era: 0.3 };
+  const strength = (x) => (x.l || 0) * Math.sqrt(x.W || 0) * (BETA[x.g] ?? 0.5);
   const pos = feats.filter((x) => (x.l || 0) > 0 && modeOf(x) !== 'ignore').sort((a, b) => strength(b) - strength(a)).slice(0, 12);
   const neg = feats.filter((x) => (x.l || 0) < 0 && modeOf(x) !== 'ignore').sort((a, b) => strength(a) - strength(b)).slice(0, 6);
   const ctlOnly = feats.filter((x) => modeOf(x) && !pos.includes(x) && !neg.includes(x));
@@ -517,8 +524,8 @@ function jobRow(j, done = false) {
   const detail = h('div', { className: 'db-jd', hidden: !open });
   const fillDetail = () => {
     const pic = (/jobs\/assets\/([a-z-]+-\d{4}\.(?:webp|png))/.exec(j.body || '') || [])[1] || (j.asset && String(j.asset).split('/').pop());
-    detail.replaceChildren(
-      done ? md(j.result?.text || '(no Result section)') : md(j.body || ''),
+    detail.replaceChildren(...[ // a null child would print "null"
+      done ? md((j.result?.text || '(no Result section)').replace(/\n(?=\S)/g, '\n\n')) : md(j.body || ''), // one Result line a paragraph
       pic ? h('img', { className: 'db-pic', src: '/jobs/asset?name=' + encodeURIComponent(pic), alt: 'The page the reader flagged', loading: 'lazy', onerror: (e) => e.target.replaceWith(h('p', { className: 'db-empty sm', textContent: `The picture (${pic}) is not on disk.` })) }) : null,
       !done ? h('div', { className: 'db-jacts' },
         j.prompt ? act('copy', 'Copy instructions for this job', () => copy(j.prompt), 'A prompt that tells an agent to do just this job') : null,
@@ -526,7 +533,7 @@ function jobRow(j, done = false) {
           if (!confirm(`Dismiss ${j.id}? It moves to jobs/done/ and its topic cools down.`)) return;
           try { await post('/jobs/dismiss', { id: j.id }); toast('Dismissed', { icon: 'circle-check', kind: 'ok', sub: j.id }); load(['jobs'], true); }
           catch { toast('Could not dismiss', { icon: 'circle-alert', kind: 'bad', sub: j.id }); }
-        }, 'Close it without doing it (moves to jobs/done/)')) : null);
+        }, 'Close it without doing it (moves to jobs/done/)')) : null].filter(Boolean));
   };
   if (open) fillDetail();
   const toggle = () => { const o = !D.open.has(j.id); if (o) { D.open.add(j.id); fillDetail(); } else D.open.delete(j.id); detail.hidden = !o; el.classList.toggle('open', o); };

@@ -32,11 +32,12 @@ const DEF = {
   cropPad: 1.2, pageGap: 10, fit: 'page', lowres: true,
   middle: 'wheel', repeat: 'off',
   panelW: 330, secHidden: [], secOrder: [], showSpend: true,
+  trackPos: 'top', focusFull: false, // the position bar's place (html[data-st-track]); Focus also goes full screen (header.js)
 };
 // Core options: state field and store key of the same name. The defaults must
 // match state.js (and STORE summary.js, RA_DEF readaloud.js, TUNE_DEF gesture.js):
 // Reset puts these values back.
-const CORE = { font: 15, per: 3, perAuto: true, crop: true, cols: false, flowCols: 0, pin: false, panel: true, panelSide: 'left', presum: true, wheelMouse: 'continue', wheelPad: 'continue', wheelDevice: 'auto' };
+const CORE = { font: 15, per: 3, perAuto: true, crop: true, cols: false, flowCols: 0, pin: false, panel: true, panelSide: 'left', presum: true, wheelMouse: 'continue', wheelPad: 'continue', wheelDevice: 'auto', head: 'auto' };
 // Read straight from the store by summary.js (upnext: by features/upnext.js).
 const STORE = { autoSum: true, sumDelay: 5000, summodel: 'claude-haiku-5-5', upnext: true };
 const RA_DEF = { rate: 1.5, engine: 'browser', browserVoice: '', geminiVoice: 'Kore' };
@@ -76,7 +77,7 @@ const FONTS = {
   sans: ['Sans', '-apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Arial, sans-serif'],
   mono: ['Mono', 'ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace'],
 };
-const BAR = [['brand', 'Stacks'], ['views', 'Feed · Wall'], ['lanes', 'Lanes'], ['wheel', 'Wheel mode'], ['search', 'Search'], ['saved', 'Saved'], ['keys', '?'], ['net', 'Status']];
+const BAR = [['views', 'Views'], ['lanes', 'Lanes'], ['wheel', 'Wheel mode'], ['search', 'Search'], ['saved', 'Saved'], ['keys', '?'], ['focus', 'Focus'], ['net', 'Status']];
 
 // ---------------------------------------------------------------- colour
 const rgb = (x) => { const n = parseInt(x.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
@@ -133,6 +134,7 @@ function applyAll() {
   PAPER_VARS.forEach((v, j) => cssVar('--' + v, pp ? pp.v[j] : null));
   R.dataset.stPaper = S.paper; R.dataset.stFilter = S.filter; R.dataset.stDensity = S.density;
   R.dataset.stFit = S.fit; R.dataset.stLowres = S.lowres ? 'on' : 'off';
+  R.dataset.stTrack = S.trackPos === 'bottom' ? 'bottom' : 'top'; // style.css places #track
   for (const [id] of BAR) R.classList.toggle('st-hide-' + id, S.hide.includes(id));
   R.classList.toggle('st-hide-spend', !S.showSpend);
   const d = (k, v) => (S[k] === DEF[k] ? null : v);
@@ -169,7 +171,7 @@ function relayout(now = false) {
 let ppT = 0;
 const repaintPanel = () => { clearTimeout(ppT); ppT = setTimeout(() => { const i = current(); if (i != null && state.view === 'feed' && state.panel) paintPanel(i); }, 60); };
 
-const LAYOUT = new Set(['fontFamily', 'lineHeight', 'paraSpace', 'justify', 'hyphens', 'measureCh', 'imgMax', 'cropPad', 'pageGap', 'fit', 'panelW', 'density']);
+const LAYOUT = new Set(['fontFamily', 'lineHeight', 'paraSpace', 'justify', 'hyphens', 'measureCh', 'imgMax', 'cropPad', 'pageGap', 'fit', 'panelW', 'density', 'trackPos']);
 function setS(k, v) {
   S[k] = v; save(); applyAll();
   if (LAYOUT.has(k)) relayout();
@@ -327,7 +329,7 @@ function secAppearance() {
   });
   return {
     id: 'appearance', title: 'Appearance',
-    keys: ['theme', 'bgCustom', 'accent', 'paper', 'filter', 'density', 'hide'],
+    keys: ['theme', 'bgCustom', 'accent', 'paper', 'filter', 'density', 'hide', 'trackPos', 'focusFull'], core: ['head'],
     rows: [
       row('Background', 'The room around the pages.', ...themes, cb),
       row('Accent', 'Highlights, the current page, links. Deepened as needed to stay readable on the background.', ...accents, accL),
@@ -336,6 +338,13 @@ function secAppearance() {
         seg([['none', 'As they are'], ['dim', 'Dimmed'], ['invert', 'Inverted']], () => S.filter, (v) => setS('filter', v)),
         h('div', { className: 'st-pages' }, h('i'), h('i'))),
       row('Density', 'Spacing of the top bar and the side panel.', seg([['compact', 'Compact'], ['comfortable', 'Comfortable'], ['roomy', 'Roomy']], () => S.density, (v) => setS('density', v))),
+      // header.js: the layout of the bars, per screen; Focus; where the position bar sits.
+      row('Header', 'For this screen. Auto is one bar in a window under 1500 × 900 px (a laptop), two above. One bar puts the item’s title and place in the top bar.',
+        seg([['auto', 'Auto'], ['two', 'Two bars'], ['one', 'One bar']], () => state.head || 'auto', (v) => setCore('head', v))),
+      row('Position bar', 'The line showing where you are in the item (hover it to look through, click to go there).',
+        seg([['top', 'Top'], ['bottom', 'Bottom']], () => S.trackPos, (v) => setS('trackPos', v))),
+      row('Focus', [kb('d'), ' or the corners button: only the pages, no bars or side panel. ', kb('d'), ' again or the top edge shows the bars over the pages; ', kb('Esc'), ' leaves.'],
+        ...tog(() => S.focusFull, (v) => setS('focusFull', v), ['Also full screen', 'In the window'])),
       row('Top bar', 'Click to show or hide. The gear always stays.', ...chips),
     ],
   };

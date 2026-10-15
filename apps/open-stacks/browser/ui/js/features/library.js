@@ -305,7 +305,9 @@ function paintNow() {
   // Rows already drawn are kept (walking the list redraws only the marks on them).
   const pre = `${elVer}|${+flat}${+ctx.dots}${+dates}|`, next = new Map(), els = [];
   for (let r = a; r < b; r++) {
-    const row = rows[r], key = pre + rowId(row) + '|' + r + (row.node ? `|${+isOpen(row.node)}|${match ? row.node.m : ''}` : '');
+    // A position or section row is drawn anew when its item, the pages on screen or the outline change.
+    const row = rows[r], key = pre + rowId(row) + '|' + r + (row.node ? `|${+isOpen(row.node)}|${match ? row.node.m : ''}`
+      : row.here ? `|${row.of}|${here.i}|${here.s}|${here.c}|${here.n}|${outlines.get(items[row.of]?.id)?.length ?? -1}` : '');
     const el = drawn.get(key) || rowEl(row, r, ctx);
     marks(el, row, r, ctx);
     next.set(key, el); els.push(el);
@@ -525,6 +527,9 @@ function follow(i, force = false) {
     for (const a of anc) { keep.add(a.key); if (userClosed.delete(a.key) | fClosed.delete(a.key)) reopened = true; }
     if (reopened || keep.size !== autoOpen.size || [...keep].some((k) => !autoOpen.has(k))) { autoOpen = keep; flatten(); }
   }
+  // The position row moves under the new current item now, not when its pages arrive
+  // (until then j would jump the highlight over it, and it would show the last item's pages).
+  { const r0 = curIndex(); if (r0 >= 0 && rows[r0 + 1]?.of !== i) flatten(); }
   if (!browsing() || force) sel = 'i' + i;
   const r = curIndex();
   if (anchored() && anchor.id === 'i' + i && !force) { paint(); return; } // you clicked it: it stays under the pointer

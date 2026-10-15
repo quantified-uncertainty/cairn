@@ -75,9 +75,10 @@ async function newPage({ lane = 'local', withLocal = true, lib = false } = {}) {
     return r.fulfill({ status: 200, contentType: 'text/html', body: '<html><body><article><h1>Stand-in</h1><p>A stand-in page.</p></article></body></html>' });
   });
   await page.route(/\/img\?u=/, (r) => r.fulfill({ status: 404, body: '' }));
+  await page.route('**/prefetch', (r) => r.fulfill({ json: { queued: 0 } })); // the server would fetch the corpus PDFs ahead
   if (!withLocal) await page.route('**/features.json', async (r) => { const res = await r.fetch(); const f = await res.json(); f.js = f.js.filter((x) => !/\/local\.js$/.test(x)); f.css = f.css.filter((x) => !/\/local\.css$/.test(x)); r.fulfill({ response: res, json: f }); });
   await page.goto(BASE + '/');
-  await page.waitForSelector('#lanes button', { timeout: 30000 });
+  await page.waitForSelector('#lanes button', { state: 'attached', timeout: 30000 });
   await page.evaluate(async () => {
     const u = await import('/js/util.js');
     window.__lc = { n: 0, last: null };
@@ -224,6 +225,7 @@ try {
   }
 } catch (e) {
   check('ran to the end', false, e.stack || e.message);
+  for (const c of browser.contexts()) for (const p of c.pages()) await p.screenshot({ path: join(SHOTS, 'failed.png') }).catch(() => {});
 } finally {
   await browser.close();
   cleanup();

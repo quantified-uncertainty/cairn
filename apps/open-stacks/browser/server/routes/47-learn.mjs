@@ -210,7 +210,7 @@ export default function (app) {
   const ctlOf = (p) => p._ctl || new Map(Object.entries(controls.feat || {}).map(([f, x]) => [f, x.mode]));
   function findOf(it) {
     if (!it?.added) return null;
-    const st = L.findState(it, memory().get(it.id), finds.marks?.[it.id], Date.now());
+    const st = L.findState(it, memory().get(it.id), finds.marks?.[it.id], Date.now(), !!app.jobs?.errorOf?.(it.id));
     return st ? { added: it.added, job: it.job || null, via: it.via || null, st } : null;
   }
   function why(id) {
@@ -274,7 +274,7 @@ export default function (app) {
     const now = Date.now(), mem = memory(), out = [], counts = { new: 0, seen: 0, kept: 0, dismissed: 0 }, byJob = {};
     for (const it of items) {
       if (!it.added) continue;
-      const st = L.findState(it, mem.get(it.id), finds.marks?.[it.id], now);
+      const st = L.findState(it, mem.get(it.id), finds.marks?.[it.id], now, !!app.jobs?.errorOf?.(it.id));
       if (!st) continue;
       counts[st]++;
       const j = it.job || 'manual';

@@ -2,7 +2,7 @@
 // With a profile (profile.js), the crop, blank pages and gutters come from it,
 // and a stored display image stands in for a pdf.js render when it is sharp
 // enough: decoded and cropped off the main thread (createImageBitmap).
-import { P, lru } from './util.js';
+import { P, PI, lru } from './util.js';
 import { state } from './state.js';
 import { openDoc, scanUrl } from './docs.js';
 import { analyzeLum } from './profile-core.js';
@@ -12,6 +12,7 @@ const imgs = new Map();
 export function loadImg(src) {
   return lru(imgs, src, () => new Promise((res, rej) => {
     const im = new Image(); im.decoding = 'async';
+    if (/^https?:/.test(src)) im.crossOrigin = 'anonymous'; // a page image from the second origin (util.js PI)
     im.onload = () => im.decode().then(() => res(im), () => res(im));
     im.onerror = () => rej(new Error('image unavailable'));
     im.src = src;
@@ -171,9 +172,9 @@ function renderPage1(it, k, key) {
           return await panelsFromImage(im, k, d.box, cropOf(pf, k), pg.gut, { pdfScale: d.w / (d.box[2] - d.box[0]) / pg.w, src: 'asset' });
         } catch { assetMissing(pf, 'display', k); /* gone (evicted): render instead */ }
       }
-      if (it.kind === 'scan') return panelsFromImage(await loadImg(P(scanUrl(it, k, SCAN_W))), k, [0, 0, 1, 1], state.crop ? cropOf(pf, k) : FULL, pg.gut, { src: 'scan' });
+      if (it.kind === 'scan') return panelsFromImage(await loadImg(PI(scanUrl(it, k, SCAN_W))), k, [0, 0, 1, 1], state.crop ? cropOf(pf, k) : FULL, pg.gut, { src: 'scan' });
     }
-    if (it.kind === 'scan') return scanPanels(it, k, await loadImg(P(scanUrl(it, k, SCAN_W))), { src: 'scan' });
+    if (it.kind === 'scan') return scanPanels(it, k, await loadImg(PI(scanUrl(it, k, SCAN_W))), { src: 'scan' });
     const d = await openDoc(it);
     if (k >= d.n) return [];
     const page = await d.pdf.getPage(k + 1);

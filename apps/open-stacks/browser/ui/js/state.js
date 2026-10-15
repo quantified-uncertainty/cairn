@@ -28,7 +28,8 @@ export const state = {
 // different counts, and a count chosen on one should not carry over to the other. A screen
 // with no choice yet fits automatically (store keys 'per@1512x982' and so on).
 export const screenKey = () => { try { return `${screen.width}x${screen.height}`; } catch { return 'default'; } };
-const SCREEN_PREFS = { per: 3, perAuto: true, flowCols: 0 };
+// The header layout ('auto' | 'two' | 'one') and Focus (header.js) are kept per screen too.
+const SCREEN_PREFS = { per: 3, perAuto: true, flowCols: 0, head: 'auto', focus: false };
 export function loadScreenPrefs() {
   const k = state.screen = screenKey();
   for (const [f, d] of Object.entries(SCREEN_PREFS)) state[f] = store.get(`${f}@${k}`, d);

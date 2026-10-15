@@ -6,7 +6,7 @@
 // from across each item. Heavy work (page images, pdf.js renders, post text)
 // happens only for tiles near the viewport, nearest first, and is dropped as
 // soon as it is no longer wanted.
-import { $, h, P, on, store, lru, fmtDate, registerView, registerKey, keyHelp } from './util.js';
+import { $, h, P, PI, on, store, lru, fmtDate, registerView, registerKey, keyHelp } from './util.js';
 import { items, LANES, LANE_COLORS, laneMax } from './corpus.js';
 import { state } from './state.js';
 import { openDoc, peekDoc, isFlow, scanUrl, pdfjs, extractors, prepareFlow } from './docs.js';
@@ -308,7 +308,7 @@ function coverPaper(T) {
 }
 function coverBook(T) {
   const { it } = T; const ia = iaOf(it);
-  const im = h('img', { className: 'cov', alt: '', decoding: 'async', loading: 'lazy', src: P(`https://archive.org/services/img/${ia}`) });
+  const im = h('img', { className: 'cov', alt: '', decoding: 'async', loading: 'lazy', crossOrigin: 'anonymous', src: PI(`https://archive.org/services/img/${ia}`) });
   const cv = h('div', { className: 'cv book' }, im,
     h('div', { className: 'lbl' }, subject(it) ? div('sj', subject(it)) : null, div('tt', it.t.replace(/\s*\.\.+\s*$/, '')), div('yr', [it.y, nOf(it) ? nOf(it) + ' pp' : ''].filter(Boolean).join(' · '))));
   im.onerror = () => { const c = coverCloth(T); cv.replaceWith(c); T.cv = c; };
@@ -357,13 +357,13 @@ function showPages(T, L, ks, n, cols) {
     const sw = scanW(w);
     ks.forEach((k, j) => {
       if (k >= n) return done(j, 'x', div('end'));
-      const url = P(scanUrl(it, k, sw));
+      const url = PI(scanUrl(it, k, sw));
       if (L.keys[j] === url) return done(j);
       L.cells[j].classList.add('wait');
       const prev = L.loads[j];
       if (prev?.url === url) { prev.gen = gen; return; }
       if (prev) prev.im.src = '';
-      const im = new Image(); im.decoding = 'async'; im.alt = '';
+      const im = new Image(); im.decoding = 'async'; im.alt = ''; im.crossOrigin = 'anonymous';
       const ld = L.loads[j] = { im, url, gen };
       // ld.gen, not gen: a newer request for the same page adopts this load.
       im.onload = () => { if (L.loads[j] === ld) L.loads[j] = null; im.decode().catch(() => {}).then(() => fill(T, L, ld.gen, j, url, im)); };

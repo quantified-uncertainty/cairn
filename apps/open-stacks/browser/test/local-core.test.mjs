@@ -158,6 +158,11 @@ test('titles: metadata titles worth showing, file names cleaned, authors', () =>
   assert.equal(L.cleanTitle('Some_Book_v1.3.pdf'), 'Some Book v1.3');
   assert.equal(L.cleanTitle('Already Fine - Part 2.epub'), 'Already Fine - Part 2');
   assert.equal(L.cleanTitle('a-b-c'), 'A b c');
+  assert.equal(L.cleanTitle('some-core-rulebookpdf-pdf-free.pdf'), 'Some core rulebook', 'download artefacts go');
+  assert.equal(L.cleanTitle('example.com_the-big-guide.pdf'), 'The big guide', 'a download site in front goes');
+  assert.equal(L.cleanTitle('The_Warden_s_Guide.pdf'), "The Warden's Guide", 'an apostrophe lost to an underscore');
+  assert.equal(L.cleanTitle('cassette-x.interactive.html'), 'Cassette x interactive');
+  assert.equal(L.cleanTitle('Rules_v1.2.pdf'), 'Rules v1.2', 'version numbers keep their dots');
   for (const bad of ['Untitled', 'untitled-3', 'Microsoft Word - Document1.docx', 'layout 1', 'x', '12345', 'final.indd', 'C:\\Users\\x\\a.doc', 'Document2', 'some_file_name']) assert.equal(L.goodTitle(bad), null, bad);
   assert.equal(L.goodTitle('Microsoft Word - An Essay on Things'), 'An Essay on Things');
   assert.equal(L.goodTitle('  A  Real\tTitle '), 'A Real Title');

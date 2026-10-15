@@ -77,6 +77,7 @@ function reorder() {
 
 // ---------------------------------------------------------------- loading
 let inflight = null;
+let forceMove = false; // the next profile re-ranks For you whatever it changed (after a control: boost, mute, ignore)
 /** Fetch the rank part (since the last one); resolves true when it changed. */
 function refresh({ force = false } = {}) {
   if (inflight) return inflight;
@@ -108,7 +109,8 @@ function apply(p) {
   if (newChanged) paintNew();
   if (registered()) {
     // Re-rank when the change would be seen: the next 50 items, or a big move anywhere.
-    let moved = newChanged || (nowOn && !wasOn);
+    let moved = newChanged || (nowOn && !wasOn) || forceMove;
+    forceMove = false;
     const d = (id) => Math.abs(L.B * ((L.pred.get(id) || 0) - (prevPred.get(id) || 0)) + (L.phi.get(id) || 0) - (prevPhi.get(id) || 0));
     if (!moved) for (const i of state.order.slice(state.pos + 1, state.pos + 51)) if (d(items[i].id) > 0.08) { moved = true; break; }
     if (!moved) for (const id of new Set([...L.pred.keys(), ...prevPred.keys(), ...L.phi.keys()])) if (d(id) > 0.25) { moved = true; break; }
@@ -161,7 +163,10 @@ function headBadge(i = current()) {
 function checkClear(id) {
   if (!L.newIds.has(id)) return false;
   const r = memoryOf(id);
-  if (!r || !((r.a || 0) >= SEEN.a || (r.sc || 0) >= SEEN.sc || r.saved || r.more || r.less)) return false;
+  // Pages: 2 seen, and more than the spread on screen holds (a 2-up spread looked at for 1.2 s is a flick, not a read).
+  // Time on an item that could not open, with no page seen, is not reading (the server's rule too).
+  const failed = !!items[byId.get(id)]?.err && !((r?.sc || 0) > 0);
+  if (!r || !(((r.a || 0) >= SEEN.a && !failed) || ((r.sc || 0) >= SEEN.sc && (r.sc || 0) > (r.c || 0)) || r.saved || r.more || r.less)) return false;
   L.newIds.delete(id); L.cleared.add(id);
   paintNew();
   return true;
@@ -349,7 +354,8 @@ export function setLearnOn(on) {
 export async function setControl(f, mode) {
   const r = await post('/learn/control', { f, mode: mode || null });
   fullP = null;
-  setTimeout(() => refresh(), 400);
+  // A boost moves its items by about +0.1, under apply()'s thresholds: re-rank anyway, the reader asked for it.
+  forceMove = true; soon(450);
   return r;
 }
 
@@ -465,6 +471,8 @@ function showUndo(box, undo, paint, done, until, id) {
 function fillWhy(box, it, i, v) {
   const kids = [];
   const chips = (v.chips || []).filter((c) => Math.abs(c.d) >= 0.005).map(chipEl);
+  // The share of features too small for a chip (field, style, level, year…): often most of the move, so say so.
+  if (Math.abs(v.rest || 0) >= 0.05) chips.push(h('span', { className: 'lw-c rest' + (v.rest < 0 ? ' neg' : ''), title: 'Many smaller matches with what you read (field, style, level, year, title words…), each under 0.05' }, h('b', { textContent: fmtD(v.rest) }), (v.chips || []).length ? 'smaller matches' : 'many small matches'));
   const fam = phiChip(v);
   if (fam) chips.push(fam);
   if (chips.length) kids.push(h('div', { className: 'lw-chips' }, ...chips));

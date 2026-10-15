@@ -30,13 +30,36 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, .tile:focus-v
 kbd { font: 11px var(--mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 3px; padding: 0 4px; color: var(--ink-2); }
 a { color: var(--accent); }
 
-#bar { display: flex; align-items: center; gap: 10px; padding: 5px 14px; border-bottom: 1px solid var(--line); flex: none; }
+/* The top bar. header.js lays it out (two bars, one bar, Focus) and fits it to the
+   window (data-lanes, data-views, .no-net, .compact, .narrow, the ⋯ menu). Its
+   children are placed by `order`, so a feature may add a button anywhere: one
+   this list does not know lands just before the tools on the right. */
+#bar { position: relative; display: flex; align-items: center; gap: 8px; padding: 5px 14px; min-height: 37px; border-bottom: 1px solid var(--line); background: var(--bg); flex: none; }
+#bar > * { order: 45; flex: none; }
+#bar::before { content: ""; order: 35; flex: 1 1 0; min-width: 0; } /* the spring: the tools sit on the right */
+#bar > #panel-btn { order: 0; }
+#bar > #views, #bar > #view-pick { order: 10; }
+#bar > #new-chip { order: 15; }
+#bar > #lanes, #bar > #lane-pick { order: 20; }
+#bar > #item-head { order: 30; }
+#bar > #wheel-btn { order: 40; }
+#bar > #ra-pill { order: 50; }
+#bar > #search-btn { order: 51; }
+#bar > #saved-btn { order: 52; }
+#bar > #xp-btn { order: 53; }
+#bar > #keys-btn { order: 54; }
+#bar > #focus-btn { order: 55; }
+#bar > #st-btn { order: 56; }
+#bar > #more-btn { order: 57; }
+#bar > #net { order: 60; flex: 0 1 auto; min-width: 0; }
 .brand { font: 600 15px var(--serif); display: flex; align-items: center; gap: 8px; }
 .mark { width: 14px; height: 16px; background: linear-gradient(90deg, var(--accent) 0 3px, transparent 3px 5px, var(--ink-2) 5px 8px, transparent 8px 10px, var(--ink-3) 10px 14px); }
 .views { display: flex; gap: 4px; }
-.chips { display: flex; gap: 4px; flex: 1; min-width: 0; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; scroll-padding-inline: 24px;
-  /* faded edges say there is more to scroll to */
-  mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 22px), transparent 100%); }
+/* Lane chips: shown only while every chip fits (header.js), else the lane picker. */
+#bar > #lanes { flex: 0 1 auto; min-width: 0; }
+.chips { display: flex; gap: 4px; min-width: 0; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; scroll-padding-inline: 24px; }
+/* faded edges say there is more to scroll to (header.js sets .scrolls if they ever overflow) */
+.chips.scrolls { mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 22px), transparent 100%); }
 .chips::-webkit-scrollbar { display: none; }
 .chips button { flex: none; }
 .chips button { border-radius: 99px; padding: 2px 10px; color: var(--ink-2); white-space: nowrap; }
@@ -60,12 +83,28 @@ a { color: var(--accent); }
 #main.panel-right ~ * #panel-btn .pi, body:has(#main.panel-right) #panel-btn .pi { background: linear-gradient(270deg, currentColor 0 5px, transparent 5px); }
 #wheel-btn { font: 11px var(--mono); }
 
-#item-head { padding: 6px 16px 2px; display: flex; align-items: baseline; gap: 14px; flex: none; min-width: 0; }
-#item-head h1 { font: 500 16px/1.2 var(--serif); margin: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-#item-head .meta { color: var(--ink-2); display: flex; gap: 10px; align-items: baseline; white-space: nowrap; min-width: 0; font-size: 12px; }
-#item-head .au { overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+/* The item header (feed.js paintHead; features add to .meta and before #pos): over
+   the pages with two bars, inside #bar with one (header.js moves it). The title
+   gives way first, down to 12em, then the authors (ellipsis); narrower, the header
+   drops details in this order: the next item's title; the authors (the side panel
+   shows them), the PDF link, the resume chip's age and the printed page numbers;
+   the lane; the source links (container queries below). */
+#item-head { order: -2; padding: 6px 16px 2px; display: flex; align-items: baseline; gap: 12px; flex: none; min-width: 0; container: ihead / inline-size; }
+/* At least 12em of the title, or all of a shorter one: the automatic minimum is min(width, content), and overflow: clip (not hidden) keeps it. */
+#item-head h1 { flex: 0 4 content; width: 12em; min-width: auto; font: 500 16px/1.2 var(--serif); margin: 0; overflow: clip; text-overflow: ellipsis; white-space: nowrap; }
+#item-head .meta { flex: 0 1 auto; color: var(--ink-2); display: flex; gap: 10px; align-items: baseline; white-space: nowrap; min-width: 0; font-size: 12px; overflow: clip; overflow-clip-margin: 4px; }
+#item-head .meta > * { flex: none; }
+#item-head .meta > :is(.au, .rs-arch) { flex: 0 1 auto; min-width: 2.5em; overflow: hidden; text-overflow: ellipsis; }
+#item-head .meta > .stk-crumb { flex: 0 1 auto; }
+#item-head .meta > .au { flex-shrink: 6; }
+#item-head .au { max-width: 260px; }
 #item-head .lane { font: 10px var(--mono); text-transform: uppercase; letter-spacing: .07em; color: var(--accent); }
-#item-head .pos { margin-left: auto; color: var(--ink-3); font: 11px var(--mono); white-space: nowrap; }
+#item-head .pos { margin-left: auto; flex: none; color: var(--ink-3); font: 11px var(--mono); white-space: nowrap; }
+@container ihead (max-width: 1180px) { #item-head .meta > .au { max-width: 160px; } }
+@container ihead (max-width: 1080px) { #item-head .pos-next { display: none; } }
+@container ihead (max-width: 960px) { #item-head .meta > :is(.au, .src ~ .src), #item-head .mem-chip .mem-dim, #item-head .pos .plabel { display: none; } }
+@container ihead (max-width: 680px) { #item-head .meta > .lane { display: none; } }
+@container ihead (max-width: 560px) { #item-head .meta > :is(.src, .rs-arch, .wv-chip) { display: none; } }
 #item-head .star { color: var(--accent); }
 #item-head h1 a.ttl { color: inherit; text-decoration: none; }
 #item-head h1 a.ttl:hover { text-decoration: underline; text-decoration-color: var(--ink-3); text-underline-offset: 3px; }
@@ -96,6 +135,10 @@ a { color: var(--accent); }
 #track .tr-marks i { position: absolute; top: 50%; width: 4px; height: 4px; margin: -2px 0 0 -2px; border-radius: 50%; background: var(--ink); opacity: .75; }
 #track .tr-hover { position: absolute; top: 1px; bottom: 1px; width: 2px; margin-left: -1px; background: var(--ink); display: none; pointer-events: none; }
 #track:hover .tr-hover { display: block; }
+/* At the top (the default; Settings › Appearance › Position bar): under the item
+   header with two bars, under the top bar with one. The peek label opens downward
+   (feed.js placeLabel). The Up next strip stays in the band under the pages. */
+html:not([data-st-track="bottom"]) #track { order: -1; margin: 1px 14px 0; }
 #spread .pg.scrubbing.approx > img { opacity: .45; filter: blur(1px); }
 #spread .pg.scrubbing::before { content: attr(data-k); position: absolute; inset: 0; display: grid; place-items: center; font: 600 15px var(--mono); color: #0003; }
 #peek { position: fixed; z-index: 45; pointer-events: none; }
@@ -264,3 +307,73 @@ a { color: var(--accent); }
 .flow p.wv-widget b { font-weight: 600; }
 .flow .flow-title .t a { color: inherit; text-decoration: none; }
 .flow .flow-title .t a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+
+/* ---------- Header layouts (header.js): pickers, the ⋯ menu, one bar, Focus ---------- */
+#bar .ic { width: 15px; height: 15px; flex: none; display: none; }
+#bar > :is(#search-btn, #saved-btn, #focus-btn, #more-btn, #keys-btn) { display: inline-flex; align-items: center; gap: 6px; }
+#bar > :is(#focus-btn, #more-btn) { padding: 3px 6px; }
+#bar > :is(#focus-btn, #more-btn) .ic { display: block; }
+#bar > #keys-btn .lbl { display: none; }
+#focus-btn.on { color: var(--accent); border-color: var(--accent); background: none; }
+#bar .open { border-color: var(--ink-3); background: var(--bg-3); color: var(--ink); }
+/* Pickers: the current view or lane, and a menu of the others. */
+#bar .pick { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); }
+#bar .pick .caret { width: 12px; height: 12px; flex: none; color: var(--ink-3); }
+#bar .pick .n { color: var(--ink-3); font: 10px var(--mono); }
+#lane-pick { border-radius: 99px; padding: 2px 8px 2px 9px; }
+#bar[data-lanes="pick"] > #lanes, #bar:not([data-lanes="pick"]) > #lane-pick,
+#bar[data-views="pick"] > #views, #bar:not([data-views="pick"]) > #view-pick, #bar.no-net > #net { display: none; }
+.hd-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--c, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 30%, transparent); }
+.hd-menu, #more { z-index: 44; min-width: 200px; padding: 4px; display: flex; flex-direction: column; gap: 1px; background: var(--bg-3); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 12px 32px #0009; }
+.hd-menu { position: fixed; max-height: calc(100vh - 60px); overflow-y: auto; }
+#more { position: absolute; top: calc(100% + 4px); right: 10px; }
+#more[hidden] { display: none; }
+.hd-menu button, #bar #more > button { display: flex; align-items: center; gap: 9px; width: 100%; border: 0; border-radius: 4px; padding: 5px 10px 5px 8px; text-align: left; white-space: nowrap; color: var(--ink-2); background: none; font: 13px var(--sans); }
+.hd-menu button:hover, .hd-menu button:focus, #bar #more > button:hover, #bar #more > button:focus { background: color-mix(in srgb, var(--ink) 9%, transparent); color: var(--ink); outline: none; }
+.hd-menu button:focus-visible, #bar #more > button:focus-visible { box-shadow: inset 0 0 0 1px var(--accent); }
+.hd-menu button.on { color: var(--ink); box-shadow: inset 2px 0 0 var(--accent); }
+.hd-menu .mt { flex: 1; }
+.hd-menu .n { color: var(--ink-3); font: 10px var(--mono); }
+.hd-menu kbd { margin-left: 6px; }
+/* The ⋯ menu holds the bar's own buttons (header.js moves them): labels shown. */
+#more .ic { display: block; color: var(--ink-3); }
+#more .lbl { display: inline; flex: 1; }
+#more #keys-btn { justify-content: space-between; }
+#more #wheel-btn { font: 11px var(--mono); }
+#more #wheel-btn::before { content: "Mouse wheel"; flex: 1; font: 13px var(--sans); }
+#more #xp-btn { justify-content: space-between; }
+#bar #more > #new-chip { width: auto; align-self: flex-start; margin: 2px 6px; padding: 2px 8px 2px 4px; }
+#more > #net { display: block; padding: 6px 10px 3px; margin-top: 3px; border-top: 1px solid var(--line); max-width: 300px; white-space: normal; }
+/* Settings › Appearance › Top bar hides these wherever they sit (the bar or ⋯). */
+html.st-hide-search #search-btn, html.st-hide-saved #saved-btn, html.st-hide-keys #keys-btn, html.st-hide-wheel #wheel-btn, html.st-hide-net #net,
+html.st-hide-focus #focus-btn, html.st-hide-views #view-pick, html.st-hide-lanes #lane-pick, html:not(.hd-feed) #focus-btn { display: none !important; }
+/* Labels give way to icons when the bar is short of room (and in one bar: Search). */
+#bar.compact > :is(#search-btn, #saved-btn) .ic, html[data-head="one"] #bar > #search-btn .ic { display: block; }
+#bar.compact > :is(#search-btn, #saved-btn) .lbl, html[data-head="one"] #bar > #search-btn .lbl, #bar.compact > #search-btn kbd, #bar.compact > #ra-pill span { display: none; }
+#bar.compact > :is(#search-btn, #saved-btn) { padding: 3px 7px; }
+
+/* One bar: the item header sits in the top bar and takes what the tools leave. */
+html[data-head="one"] #bar::before { display: none; }
+#bar > #item-head { flex: 1 1 0; min-width: 340px; align-self: center; gap: 10px; padding: 1px 2px 1px 12px; margin-left: 2px; border-left: 1px solid var(--line); overflow: clip; overflow-clip-margin: 4px; }
+#bar.narrow > #item-head { min-width: 220px; }
+#bar > #item-head h1 { font-size: 15px; }
+#bar > #item-head .meta { font-size: 11.5px; gap: 8px; }
+
+/* Panels that open under the bar start where it ends. */
+:root[data-head] :is(#saved, #xp) { top: var(--bar-h, 37px); }
+html.focus:not(.head-peek) :is(#saved, #xp) { top: 0; }
+
+/* Focus: no bars, no side panel (header.js hides it without storing that). The
+   bar waits above the window and slides over the pages, which do not move; the
+   position bar is a thin line at the very top, then sits under the bar. */
+html.focus #bar { position: fixed; top: 0; left: 0; right: 0; z-index: 35; visibility: hidden; transform: translateY(-100%); transition: transform .16s ease-in, visibility 0s linear .16s; }
+html.focus.head-peek #bar { visibility: visible; transform: none; box-shadow: 0 10px 28px #0008; transition: transform .14s ease-out; }
+html.focus #track { position: absolute; top: 0; left: 0; right: 0; height: 3px; margin: 0; z-index: 8; pointer-events: none; }
+html.focus #track .tr-bar { top: 0; height: 3px; border-radius: 0; transition: none; }
+html.focus #track .tr-fill { border-radius: 0; }
+html.focus.head-peek #track { top: var(--bar-h, 37px); left: 14px; right: 14px; height: 18px; z-index: 34; pointer-events: auto; }
+html.focus.head-peek #track::before { content: ""; position: absolute; inset: 0 -14px; background: var(--bg); border-bottom: 1px solid var(--line); box-shadow: 0 10px 24px #0008; }
+html.focus.head-peek #track .tr-bar { top: 6px; height: 5px; border-radius: 2px; }
+html.focus.head-peek #track:hover .tr-bar { top: 4px; height: 10px; }
+html.focus #findbar { top: 10px !important; right: 18px !important; z-index: 36; } /* textlayer.js places it by the item header, hidden here */
+@media (prefers-reduced-motion: reduce) { html.focus #bar, html.focus.head-peek #bar { transition: none; } }
