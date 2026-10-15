@@ -73,7 +73,7 @@ Confidence is marked as high/medium/low or as "[~70%]". Sources dated before ~20
    - **Subscriptions:** institutional only [V].
    - **Raw co-assignment graph:** not openly downloadable. Anonymized data is available through research-use agreements or commercial licence [V].
 9. **Google Books is a lookup service, not a dataset.** It has 40M+ books in 400+ languages (2019) [V]. The API returns at most 40 results per call [V]. Anonymous calls share an already-exhausted global daily quota (HTTP 429 observed), so bring your own key [V]. The 2012 ToS bars charging users without Google's permission [V]. The **Ngram Viewer added a new dataset in July 2024**, and its data is free to use with acknowledgement [V].
-10. **Wikidata is a crosswalk, not a catalog.** It has ~523k items typed "literary work", 370k items with an ISBN-13, 497k with an Open Library ID, and only ~5.8k with an LCC property. Scholarly articles (46.0M) now live in a **separate query service** [V, SPARQL 2026-10-15]. Use it to join IDs and to pull "main subject" and genre for canonical works.
+10. **Wikidata is a crosswalk, not a catalog.** It has ~523k items typed "literary work", ~335k items with an ISBN-13 (370k ISBN-13 values, since some items carry several), 497k with an Open Library ID (of which ~257k are people, i.e. author IDs, not books), and only ~5.8k with an LCC property [corrected in verification]. Scholarly articles (46.0M) now live in a **separate query service** [V, SPARQL 2026-10-15]. Use it to join IDs and to pull "main subject" and genre for canonical works.
 11. **Paid metadata is cheap but thin on TOCs.**
     - **ISBNdb:** ~122M books, 19 fields, synopsis included, no TOC. Plans run $14.99/mo (5,000 calls/day, 1 call/s) to $99.99/mo (50,000/day, 5 calls/s) [V].
     - **Library-grade enrichment** (TOCs, summaries, reviews): Syndetics Unbound, sourced from Books in Print and LibraryThing [V]. Sold to libraries, not individuals.
@@ -294,7 +294,7 @@ I streamed the full editions file (56,827,250 lines) and the full works file (41
 | Creative Commons (all CC codes) | ≈96,500 |
 | Format BK (books) / SE (serials) | 12,836,413 / 6,628,971 |
 
-Secondary sources lag. Wikipedia cites "more than 18 million volumes … 6.7 million in the US public domain" (September 2024) [S]. A June 2025 conference deck says ">18 million items, ~40% public domain" [S].
+Secondary sources lag. Wikipedia cites "more than 18 million volumes … 6.7 million in the US public domain" (September 2024) [S]. A June 2025 conference deck says ">18 million items, ~40% public domain" [S; the deck's URL (source 23) returned HTTP 404 on re-check, so this quote is unverified] [corrected in verification].
 
 **Access caveat.**
 
@@ -429,7 +429,7 @@ From the HTRC EF 2.5 documentation page and Confluence REST API [V]:
 - **Free:** data capped at 2019, syllabi not shown, advanced features blocked.
 - **30-day trial.**
 - **Subscriptions:** annual and institutional only ("Individual subscriptions aren't offered"). US libraries can subscribe through Lyrasis.
-- **Prices:** none published. Pricing "depends mainly on organization type, size, and location."
+- **Prices:** none on the about-accounts page, which says pricing "depends mainly on organization type, size, and location." That page links to a separate pricing page (`analytics.opensyllabus.org/pricing`) that served a Cloudflare challenge to scripted fetches, so whether list prices are published there is unverified [corrected in verification].
 - **Research access:** "limited, anonymized versions of the dataset" for university-based researchers under a research-use agreement, with more requests than they can handle [V].
 - **Commercial licensing:** anonymized metadata and book rankings are licensed to publishers [V].
 - **Terms:** Open Syllabus "does not license access to the original documents" [V].
@@ -464,9 +464,9 @@ From the HTRC EF 2.5 documentation page and Confluence REST API [V]:
 |---|---|
 | Items with P31 = literary work (Q7725634), direct | 522,592 |
 | Items with P31 = written work (Q47461344), direct | 168,853 |
-| Items with P629 "edition of" | 243,359 |
-| Items with ISBN-13 (P212) | 370,068 |
-| Items with an Open Library ID (P648) | 496,710 |
+| Items with P629 "edition of" | 241,104 distinct items (243,359 is the count of P629 statements) [corrected in verification] |
+| Items with ISBN-13 (P212) | 334,900 distinct items (370,068 is the count of ISBN-13 values, not items) [corrected in verification] |
+| Items with an Open Library ID (P648) | 496,710 (257,125 of these are humans, i.e. OL author IDs; only ~240k are works/editions) [corrected in verification] |
 | Items with LCC (P1149) | 5,754 |
 | Scholarly articles (Q13442814) on the **main** endpoint | 0 (moved) |
 | Scholarly articles on `query-scholarly.wikidata.org` | 46,008,748 |
@@ -601,7 +601,7 @@ LLM-era tools can restore (1) with dense spine walls, (2) with multiple overlaid
 | **WorldCat** | 609.8M records; 3.58B holdings (October 2025) [V] | Some (505) | Yes | Some | Some | No | OCLC terms; no harvesting | Members only | No (scraping enjoined) |
 | **Google Books API** | 40M+ books (2019) [V] | No (API) [K] | `categories` (BISAC-ish) | Yes | Thumbnails | Snippet per query | ToS: no fee to users without agreement | Per-key daily quota; anonymous quota exhausted [V] | No |
 | **IA advanced search / metadata** | 52.7M text items [V] | No | Subjects as tagged | Some | Yes | **Yes** (search-inside, page numbers) | IA terms | Not stated | Partial (OL dumps) |
-| **Wikidata** | ~0.5M literary works; 370k ISBN-13 items [V] | No | P921 main subject; P1036/P1149 | Wikipedia links | Commons images (some) | No | **CC0** [K] | WDQS ~60 s query timeout [K] | Yes (weekly JSON dumps) [K] |
+| **Wikidata** | ~0.5M literary works; ~335k items with ISBN-13 (370k values) [V] [corrected in verification] | No | P921 main subject; P1036/P1149 | Wikipedia links | Commons images (some) | No | **CC0** [K] | WDQS ~60 s query timeout [K] | Yes (weekly JSON dumps) [K] |
 | **ISBNdb** | ~122M books [V] | **No** | Subjects | Synopsis | Thumbnail | No | Commercial | 1–5 calls/s; 2k–50k/day by plan [V] | No (bulk = 100–1,000 results/call) |
 | **Open Syllabus** | 4.4M works; 147M citations; 32.9M syllabi (v2.14) [V] | No | 69 fields | No | No | No | Proprietary; research agreements | Analytics UI; free tier to 2019 | No (licence) |
 | **Syndetics / Books in Print** | Trade-wide | **Yes** | Yes | Yes | Yes | "Look Inside" | Library licence | — | No |
@@ -643,7 +643,7 @@ LLM-era tools can restore (1) with dense spine walls, (2) with multiple overlaid
 | Open Syllabus | 32.9M syllabi; 147M citations; 4.4M works | v2.14 (2026) | docs.opensyllabus.org | V |
 | Open Syllabus free tier | data through 2019 only | 2026 | blog.opensyllabus.org | V |
 | Wikidata literary works (direct P31) | 522,592 | 2026-10-15 | SPARQL | V |
-| Wikidata items with OL ID | 496,710 | 2026-10-15 | SPARQL | V |
+| Wikidata items with OL ID | 496,710 (257,125 are people/author IDs) [corrected in verification] | 2026-10-15 | SPARQL | V |
 | ISBNdb size | ~122M books | 2026 | isbndb.com | V |
 | ISBNdb cheapest API plan | $14.99/mo, 5,000/day, 1 call/s | 2026 | isbndb.com | V |
 | Shortform price | $24/mo, or $16.42/mo annual; 12,000+ books | 2026 | shortform.com | V |
@@ -785,7 +785,7 @@ LLM-era tools can restore (1) with dense spine walls, (2) with multiple overlaid
 20. HathiTrust — Hathifiles listing — https://www.hathitrust.org/files/hathifiles/hathi_file_list.json — 2026-10-15
 21. HathiTrust — Hathifiles full file — https://www.hathitrust.org/files/hathifiles/hathi_full_20261001.txt.gz — 2026-10-01
 22. Wikipedia — HathiTrust — https://en.wikipedia.org/wiki/HathiTrust — revised 2026-09-22
-23. GALILEO Annual Conference 2025 — "HathiTrust: Spotlight on a Portal to Millions of Volumes" — https://about.galileo.usg.edu/assets/conference/presentations/HathiTrust_Spotlight_on_a_Portal_to_Millions_of_Volumes__GAC_2025.pdf — 2025 (search result)
+23. GALILEO Annual Conference 2025 — "HathiTrust: Spotlight on a Portal to Millions of Volumes" — https://about.galileo.usg.edu/assets/conference/presentations/HathiTrust_Spotlight_on_a_Portal_to_Millions_of_Volumes__GAC_2025.pdf — 2025 (search result; returned HTTP 404 on 2026-10-15 re-check) [corrected in verification]
 24. Vita Brevis — "Using the HathiTrust Digital Library" — https://vitabrevis.americanancestors.org/2014/05/using-hathitrust-digital-library — 2014-05 (stale)
 25. Florida State University Libraries — HathiTrust search guide — https://guides.lib.fsu.edu/hathitrust/search — updated 2024-10-09
 26. OCLC — Inside WorldCat — https://oclc.org/en/worldcat/inside-worldcat.html — figures October/November 2025
@@ -801,7 +801,7 @@ LLM-era tools can restore (1) with dense spine walls, (2) with multiple overlaid
 36. Goodreads developer forum — API deprecation thread — https://www.goodreads.com/topic/show/21788520-api-deprecation — 2020 (search result; stale)
 37. Wikipedia — LibraryThing — https://en.wikipedia.org/wiki/LibraryThing — revised 2026-09 (figures 2021)
 38. Wikipedia — The StoryGraph — https://en.wikipedia.org/wiki/The_StoryGraph — 2026
-39. Five Books — About — https://fivebooks.com/about/ — 2026
+39. Five Books — About — https://fivebooks.com/about/ (now redirects to https://fivebooks.com/contact-us/, which carries the quoted figures) — 2026 [corrected in verification]
 40. Wikipedia — Bookshop.org — https://en.wikipedia.org/wiki/Bookshop.org — 2026
 41. Brannans — "Shepherd.com" domain listing — https://www.brannans.com/domain/shepherd-com/ — 2026-10-15
 42. Open Syllabus — Dataset documentation (v2.14) — https://docs.opensyllabus.org/ — 2026
@@ -851,3 +851,46 @@ LLM-era tools can restore (1) with dense spine walls, (2) with multiple overlaid
 86. Open Library editions dump (streamed and tabulated for field coverage) — https://openlibrary.org/data/ol_dump_editions_latest.txt.gz (→ archive.org `ol_dump_2026-09-30`) — 2026-09-30
 87. Library of Congress — id.loc.gov About ("public domain data set") — https://id.loc.gov/about/ — 2026-10-15
 88. OCLC Classify (retired; redirects to 404) — https://classify.oclc.org/classify2/ — checked 2026-10-15
+
+---
+
+## Verification pass (independent)
+
+*Independent fact-check, 2026-10-15. Each load-bearing claim was re-checked against its cited primary source by direct fetch, live API query or full-file re-tabulation. The shared web-search budget for this session ran out before this pass began, so independent searches for newer or contradicting reports could not be run; the checks below rest on primary pages, live APIs and bulk files. Verdicts: confirmed / corrected / refuted / unverifiable.*
+
+| # | Claim | Verdict | Correction / note | Source |
+|---|---|---|---|---|
+| 1 | HTRC EF 2.5: 18,725,868 vols; 6,867,699,164 pages; 3,255,304,293,468 tokens; 9,969,251 in-copyright; CC BY 4.0; 4.4 TB bzip2; April 2025 snapshot; per-page header/body/footer `tokenPosCount` | confirmed | All figures match the Confluence page exactly. NDL dates the HTRC announcement 2025-07-24 | https://htrc.atlassian.net/wiki/rest/api/content/975306753?expand=body.storage |
+| 2 | Hathifiles 2026-10-01: 19,701,406 rows; 9,745,536 bib records; allow 8,293,334 (42.1%), deny 11,408,072; ic 10,366,655, pd 5,870,879, pdus 2,297,084 | confirmed | Re-streamed the full 1.23 GB file; every figure reproduced exactly (also und 964,698; CC codes 96,499; BK 12,836,413 / SE 6,628,971) | https://www.hathitrust.org/files/hathifiles/hathi_full_20261001.txt.gz |
+| 3 | OL dump 2026-09-30: 56,827,250 editions, 41,666,337 works; TOC 1,407,705 (2.5%); description 3.6%; LCC 34.4%; subjects 49.0% | unverifiable | Dump item and file sizes confirmed on archive.org; a full re-stream of the 12.6 GB editions and 4.07 GB works files was started but had not finished when this pass closed, so the record and key-presence counts are not independently reproduced | https://archive.org/metadata/ol_dump_2026-09-30 |
+| 4 | OL API: 1 req/s anonymous, 3x identified; no bulk download via API; covers by ISBN/OCLC/LCCN 100 req/IP/5 min | confirmed | Wording matches the API page (last edited 2026-10-09) and the Covers API page (403 beyond limit) | https://openlibrary.org/developers/api ; https://openlibrary.org/dev/docs/api/covers |
+| 5 | OL licensing: IA "does not assert any new copyright or other proprietary rights"; not a CC0 dedication | confirmed | Page last edited 2021-06-27; no CC0 language on it or on the dumps page. (Note: the wiki's CLAUDE.md labels `catalog.json` as "Open Library, CC0", which this page does not support.) | https://openlibrary.org/developers/licensing |
+| 6 | OL search: 14,734,568 works with LCC; 5,855,209 with DDC; 15,467,818 authors; `lcc_sort` enables shelf order | confirmed | DDC reproduced exactly; authors now 15,467,824 (live drift). `q=lcc:*` now returns HTTP 500 or 0, so the LCC figure could not be reproduced by the stated method; per-class counts (`lcc:A*`…`lcc:V*`) sum to ~15.0M before overlaps, consistent with 14.7M. `sort=lcc_sort` works | https://openlibrary.org/search.json |
+| 7 | `search/inside.json` "base rate neglect": 472 hits, 469 in printdisabled, with page numbers and snippets | confirmed | Reproduced: total 472; printdisabled 469; inlibrary 151; hits carry `page_num` and `{{{…}}}` highlights | https://openlibrary.org/search/inside.json?q=%22base%20rate%20neglect%22 |
+| 8 | id.loc.gov experimental 1024-d Titan V2 embeddings, 22 JSONL.gz files, ~190 GB, LCCN/title/creator/LCC per record; ~19–20M records (est.) | confirmed | Listed sizes sum to ~190.5 GB over 22 files; a 200 KB sample of the V file gave 20 records with `meta.{Title,Creator,LCCCode,LCCN}` and 1024-d vectors (~10 KB/record), consistent with the ~19–20M estimate (still an estimate) | https://id.loc.gov/download/ |
+| 9 | id.loc.gov "public domain data set" | confirmed | Exact wording on the About page | https://id.loc.gov/about/ |
+| 10 | WorldCat 609,755,407 records, 3,581,565,435 holdings (October 2025); production API access for qualifying member institutions, non-commercial | confirmed | Page still shows October 2025 figures; eligibility wording matches | https://oclc.org/en/worldcat/inside-worldcat.html ; https://oclc.org/developer/support/eligibility.en.html |
+| 11 | S.D. Ohio (Watson) 2026-01-15: default judgment on browsewrap contract and trespass to chattels; permanent injunction; deletion incl. torrents; no damages | confirmed | Opinion (Doc. 58) read in full: Counts I and IX granted; unjust enrichment (preempted) and tortious interference denied; OCLC "does not seek monetary damages". Later docket activity could not be checked (CourtListener rate-limited) | https://librarytechnology.org/docs/32142.pdf |
+| 12 | Open Syllabus v2.14: ~32.9M syllabi, 147M citations, 4.4M works; free tier capped at 2019; institutional-only subscriptions; no published prices; research use by agreement | corrected | Counts confirmed (32,941,092 syllabi; 22,238 institutions; 69 fields); free tier, institutional-only and research-access terms confirmed. "No published prices" softened: the accounts page links to a separate pricing page that blocked scripted access, so whether prices are published there is unverified | https://docs.opensyllabus.org/ ; https://blog.opensyllabus.org/about-accounts |
+| 13 | Goodreads stopped issuing API keys 2020-12-08; `/api` redirects to homepage | confirmed | Banner text "As of December 8th 2020, Goodreads is no longer issuing new developer keys" quoted in the forum thread; `/api` → 302 to `https://www.goodreads.com/` | https://www.goodreads.com/topic/show/21788520-api-deprecation ; live check |
+| 14 | Google Books: `maxResults` max 40; anonymous calls 429 "Queries per day"; ToS bars charging users without agreement | confirmed | Docs (updated 2025-08-28) state default 10, max 40; anonymous call reproduced the 429; ToS (2012-04-25) wording matches | https://developers.google.com/books/docs/v1/using ; https://developers.google.com/books/terms |
+| 15 | McKay, Smith & Chang (JCDL 2014): neighbour loan raises loan probability ≥9-fold; proposed as benchmark | confirmed | Exact wording in the accepted manuscript; OhioLINK 2007–08 data; DOI resolves via Crossref (pp. 145–154) | https://ndownloader.figshare.com/files/47655661 |
+| 16 | ISBNdb ~122M books; $14.99/mo (5,000/day, 1/s) to $99.99/mo (50,000/day, 5/s); no TOC field | confirmed | "nearly 122 million unique books"; plan table and 19-field list (no TOC) match; Premium $35.99 and Academic $7.50 also match | https://isbndb.com/isbn-database |
+| 17 | StackLife no longer resolves in DNS; Harvard publishes 12.7M bib records as CC0 bulk MARC | confirmed | `stacklife.harvard.edu` → "Name or service not known" (other Harvard hosts resolve); Harvard page: "over 12.7 million bibliographic records", MARC XML on Dataverse, CC0 1.0 | https://library.harvard.edu/services-tools/harvard-library-apis-datasets |
+| 18 | Anna's Archive 71,996,952 books / 239,545,528 papers (2026-10-01); $322M Spotify/labels default judgment (April 2026); $19.5M publishers' judgment with global domain takedown (May 2026) | confirmed | Wikipedia figures match; MBW confirms $322M (Judge Rakoff, granted 2026-04-14, S.D.N.Y.). The $19.5M judgment (2026-05-19) is supported only by Wikipedia in this pass (secondary) | https://en.wikipedia.org/wiki/Anna%27s_Archive ; https://www.musicbusinessworldwide.com/spotify-and-record-labels-win-322m-default-judgment-against-pirate-site-annas-archive/ |
+| 19 | Wikidata: 522,592 literary works; 370,068 with ISBN-13; 496,710 with OL ID; scholarly articles (46,008,748) moved to query-scholarly | corrected | 522,592 and the scholarly split confirmed (46,008,771 now). But 370,068 counts ISBN-13 *values*: only **334,900 distinct items** carry P212. And of 496,711 items with P648, **257,125 are humans** (OL author IDs), so only ~240k are works/editions. P629 "edition of": 241,104 distinct items (243,359 statements) | https://query.wikidata.org/sparql |
+
+**Other statements checked (the five most suspicious, plus spot checks):**
+
+| Statement | Verdict | Note | Source |
+|---|---|---|---|
+| Source 23, GALILEO 2025 HathiTrust deck (">18 million items, ~40% public domain") | unverifiable | The cited PDF URL returns HTTP 404; quote marked unverified inline | https://about.galileo.usg.edu/assets/conference/presentations/HathiTrust_Spotlight_on_a_Portal_to_Millions_of_Volumes__GAC_2025.pdf |
+| Wikidata P629 "edition of" 243,359 items | corrected | 243,359 statements; 241,104 distinct items | https://query.wikidata.org/sparql |
+| Open Syllabus "Prices: none published" | corrected | A pricing page exists but blocked scripted access; softened inline | https://analytics.opensyllabus.org/pricing |
+| Five Books ">1,700 interviews, ~8,000 recommendations; ≥2 new per week" | confirmed | `fivebooks.com/about/` now redirects to `/contact-us/`, which carries the figures; source URL annotated | https://fivebooks.com/contact-us/ |
+| Cited papers (Hinze 2012, McKay 2017, Björneborn 2017, Foster & Ford 2003, Makri & Blandford 2012, Michel 2011) | confirmed | All DOIs resolve on Crossref with matching titles, authors and venues; Hinze: "We interviewed 65 readers … 51 of whom were also directly observed"; Makri & Blandford Part 1 has 199 citations on Semantic Scholar (157 on Crossref) | https://api.crossref.org/works/ |
+| OL dump file sizes (editions 12.62 GB, works 4.07 GB, authors 0.78 GB, all 18.18 GB) | confirmed | archive.org item metadata matches (Wikidata crosswalk is 0.82 GB, not 0.83; trivial) | https://archive.org/metadata/ol_dump_2026-09-30 |
+| LoC free MARC "nearly 25 million" (2016 retrospective); FreeLCC "data selected in May 2024", page updated 02/10/2026; BEAT counts (dTOC ~30,000; ONIX TOC ~50,000) | confirmed | Wording matches the LoC pages | https://www.loc.gov/cds/products/marcDist.php ; https://www.loc.gov/aba/publications/FreeLCC/freelcc.html ; https://www.loc.gov/catdir/beat/ |
+| Ngram Viewer: new dataset added July 2024; up to 7 words; data "freely used for any purpose" | confirmed | Matches the info page | https://books.google.com/ngrams/info |
+| HTRC BookNLP: 201,527 vols (90,857 in copyright), 451.2 GB, CC BY 4.0 | confirmed | Matches the Confluence page | https://htrc.atlassian.net/wiki/rest/api/content/43300179?expand=body.storage,version |
+| WorldCat Search API v1 ended 2024-12-31; OCLC catalogue lists 35 APIs | confirmed | v2 requires both a cataloging subscription and a FirstSearch/WorldCat Discovery subscription | https://www.oclc.org/developer/api/oclc-apis/worldcat-search-api.en.html |

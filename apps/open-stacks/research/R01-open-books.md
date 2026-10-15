@@ -24,11 +24,11 @@ Legend: **[V]** verified on a primary source or official data in this session. *
    - decision theory/forecasting/economics: 2/9
 2. **The claim "free legal sources cover <20% of the modern technical textbooks someone would want" is false for the canonical core but probably true for the long tail.**
    - Canonical core: in my sample, 17 of 33 post-1990 technical textbooks (52%) are free. Without ML it is 9 of 23 (39%).
-   - Long tail: mainstream commercial textbook series barely appear in the OA record. DOAB lists only 5 *Graduate Texts in Mathematics*, 1 *Springer Texts in Statistics* and 0 *Undergraduate Topics in Computer Science* volumes [V, my count from the DOAB export].
+   - Long tail: mainstream commercial textbook series barely appear in the OA record. DOAB lists only 3 *Graduate Texts in Mathematics* (plus 2 *Undergraduate Texts in Mathematics*), 1 *Springer Texts in Statistics* and 0 *Undergraduate Topics in Computer Science* volumes [V, my count from the DOAB export]. [corrected in verification]
    - Popular non-fiction since 1990: 1 of 10 is free.
    - In-copyright classics from 1930–1989 (Feller, Savage, Kuhn, Popper, Parfit, Brooks): 0 of 6. This "20th-century hole" is the biggest gap.
 3. **"Free to read" is not the same as "free to reuse."** Only 7 of the 55 books are public domain or under a licence that allows commercial reuse (6 PD works plus SICP under CC BY-SA 4.0). Fifteen of the 24 free books are gratis PDFs hosted by authors or publishers with all rights reserved, often "personal use only" (ROS, BDA3) or "on-screen viewing" (MacKay) [V]. This matters for any tool that indexes, redistributes or trains on texts.
-4. **Controlled digital lending (CDL) adds roughly 20 points of reading access.** Open Library rates 12 of the 31 non-free books "borrowable" with a free account, including Kahneman, Kuhn, Parfit, Feller, Savage, Diamond and Brooks [V, Open Library API, 2026-10-15]. Counting CDL, 36/55 (65%) can be read free and legally. CDL is still under pressure: the Second Circuit affirmed *Hachette v. Internet Archive* on 2024-09-04, IA did not seek Supreme Court review (Dec 2024), and more than 500,000 books were removed from lending [S].
+4. **Controlled digital lending (CDL) adds roughly 11 points of reading access in English.** Open Library's search API rates 12 of the 31 non-free books "borrowable", but for six of them (Kahneman, Mankiw, Diamond, Harari, Acemoglu & Robinson, Brooks) the work-level flag comes only from a lendable translation or, for Mankiw, a study guide; their English scans are print-disabled only. Six have a lendable English edition: Bertsekas & Tsitsiklis, Feller, Géron (1st ed.), Savage, Parfit and Kuhn [V, Open Library editions API + Internet Archive item metadata, 2026-10-15]. [corrected in verification] Counting English-language CDL, 30/55 (55%) can be read free and legally; counting lendable translations too, 36/55 (65%). [corrected in verification] CDL is still under pressure: the Second Circuit affirmed *Hachette v. Internet Archive* on 2024-09-04, IA did not seek Supreme Court review (Dec 2024), and more than 500,000 books were removed from lending [S].
 5. **DOAB is large, but mostly humanities and social sciences, and its STEM half is mostly edited collections.**
    - Size: 92,260 book records and 9,818 chapter records from 819 publisher names [V, my count, export of 2026-10-15].
    - Subject mix among the 76% of books with a Thema/BIC classification:
@@ -366,20 +366,20 @@ Partial texts and controlled lending are reported separately.
 | 18 | b | Prince, *Understanding Deep Learning* (2023) | Yes | Gratis | udlbook.github.io/udlbook/ | no_ebook | [V] |
 | 19 | b | Géron, *Hands-On Machine Learning with Scikit-Learn* 3e (2022) | No | None | — | **borrowable** | [I, high] |
 | 20 | c | Tetlock & Gardner, *Superforecasting* (2015) | No | None | — | printdisabled | [I, high] |
-| 21 | c | Kahneman, *Thinking, Fast and Slow* (2011) | No | None | — | **borrowable** | [I, high] |
+| 21 | c | Kahneman, *Thinking, Fast and Slow* (2011) | No | None | — | borrowable (translations only; English scans printdisabled) [corrected in verification] | [I, high] |
 | 22 | c | Hyndman & Athanasopoulos, *Forecasting: Principles and Practice* 3e (2021) | Yes | Gratis | otexts.com | public | [V publisher statement] |
 | 23 | c | Peterson, *An Introduction to Decision Theory* 2e (2017) | No | None | — | printdisabled | [I, high] |
 | 24 | c | Hubbard, *How to Measure Anything* 3e (2014) | No | None | — | printdisabled | [I, high] |
 | 25 | c | Osborne & Rubinstein, *A Course in Game Theory* (1994) | Yes | Gratis | arielrubinstein.tau.ac.il/books.html | (unclassified) | [V] |
 | 26 | c | Mas-Colell, Whinston & Green, *Microeconomic Theory* (1995) | No | None | — | printdisabled | [I, high] |
-| 27 | c | Mankiw, *Principles of Economics* (recent eds.) | No (open substitutes: OpenStax *Principles of Economics* 3e, CORE) | None | — | **borrowable** | [I, high] |
+| 27 | c | Mankiw, *Principles of Economics* (recent eds.) | No (open substitutes: OpenStax *Principles of Economics* 3e, CORE) | None | — | printdisabled (the only lendable item in a matching work is a 2001 study guide) [corrected in verification] | [I, high] |
 | 28 | c | Savage, *The Foundations of Statistics* (1954; Dover 1972) | No | None | — | **borrowable** | [I, high] |
 | 29 | d | Yudkowsky, *Rationality: From AI to Zombies* (2015) | Yes | Gratis | readthesequences.com | no_ebook | [V] |
 | 30 | d | Parfit, *Reasons and Persons* (1984) | No | None | — | **borrowable** | [I, high] |
 | 31 | d | Hume, *A Treatise of Human Nature* (1739–40) | Yes | PD | gutenberg.org/ebooks/4705 | public | [V] |
 | 32 | d | Mill, *Utilitarianism* (1863) | Yes | PD | gutenberg.org/ebooks/11224 | public | [V] |
 | 33 | d | Kuhn, *The Structure of Scientific Revolutions* (1962) | No | None | — | **borrowable** | [I, high] |
-| 34 | d | Popper, *The Logic of Scientific Discovery* (1959) | No | None | — | no_ebook | [I, high] |
+| 34 | d | Popper, *The Logic of Scientific Discovery* (1959) | No | None | — | printdisabled (main work record OL262211W shows "borrowable" via a Galician translation) [corrected in verification] | [I, high] |
 | 35 | d | Pearl, *Causality* 2e (2009) | No | None | — | printdisabled | [I, high] |
 | 36 | d | MacAskill, Bykvist & Ord, *Moral Uncertainty* (2020) | Yes | CC BY-NC-ND | DOAB 20.500.12854/30579 (OUP) | no_ebook | [V DOAB] |
 | 37 | d | Bostrom, *Superintelligence* (2014) | No | None | — | printdisabled | [I, high] |
@@ -387,13 +387,13 @@ Partial texts and controlled lending are reported separately.
 | 39 | e | Thucydides, *History of the Peloponnesian War* (Crawley tr., 1874) | Yes | PD | gutenberg.org/ebooks/7142 | public | [V] |
 | 40 | e | Smith, *The Wealth of Nations* (1776) | Yes | PD | gutenberg.org/ebooks/3300 | public | [V] |
 | 41 | e | Tocqueville, *Democracy in America* (Reeve tr.) | Yes | PD | gutenberg.org/ebooks/815 (+816) | public | [V] |
-| 42 | e | Diamond, *Guns, Germs, and Steel* (1997) | No | None | — | **borrowable** | [I, high] |
-| 43 | e | Harari, *Sapiens* (2014) | No | None | — | **borrowable** | [I, high] |
+| 42 | e | Diamond, *Guns, Germs, and Steel* (1997) | No | None | — | borrowable (translations only) [corrected in verification] | [I, high] |
+| 43 | e | Harari, *Sapiens* (2014) | No | None | — | borrowable (translations only) [corrected in verification] | [I, high] |
 | 44 | e | Pinker, *The Better Angels of Our Nature* (2011) | No | None | — | (unclassified) | [I, high] |
-| 45 | e | Acemoglu & Robinson, *Why Nations Fail* (2012) | No | None | — | **borrowable** | [I, high] |
+| 45 | e | Acemoglu & Robinson, *Why Nations Fail* (2012) | No | None | — | borrowable (Spanish translation only) [corrected in verification] | [I, high] |
 | 46 | e | Scott, *Seeing Like a State* (1998) | No | None | — | printdisabled | [I, high] |
 | 47 | f | Abelson & Sussman, *Structure and Interpretation of Computer Programs* 2e (1996) | Yes | CC BY-SA 4.0 | web.mit.edu/6.001/6.037/sicp.pdf | borrowable | [V licence text] |
-| 48 | f | Brooks, *The Mythical Man-Month* (1975/1995) | No | None | — | **borrowable** | [I, high] |
+| 48 | f | Brooks, *The Mythical Man-Month* (1975/1995) | No | None | — | borrowable (Chinese translation only) [corrected in verification] | [I, high] |
 | 49 | f | Kleppmann, *Designing Data-Intensive Applications* (2017) | No | None | — | no_ebook | [V site] |
 | 50 | f | Martin, *Clean Code* (2008) | No | None | — | printdisabled | [I, high] |
 | 51 | f | Thomas & Hunt, *The Pragmatic Programmer* 2e (2019) | No | None | — | printdisabled | [I, high] |
@@ -402,7 +402,7 @@ Partial texts and controlled lending are reported separately.
 | 54 | f | Arpaci-Dusseau, *Operating Systems: Three Easy Pieces* (v1.10) | Yes | Gratis | pages.cs.wisc.edu/~remzi/OSTEP/ | no_ebook | [V] |
 | 55 | f | Beyer et al., *Site Reliability Engineering* (2016) | Yes (1st ed; the 2026 2nd ed is not) | Gratis | sre.google/books/ | public | [V] |
 
-Where the OL column says "(unclassified)", Open Library returned no ebook status, or a not-found result that I resolved manually. Open Library statuses are for the best-matching work record. "Borrowable" requires a free account and is subject to waitlists and loan limits.
+Where the OL column says "(unclassified)", Open Library returned no ebook status, or a not-found result that I resolved manually. Open Library statuses are for the best-matching work record. "Borrowable" requires a free account and is subject to waitlists and loan limits. The search API's `ebook_access` is a work-level maximum over all editions, including translations; checking each edition's Internet Archive item for the `inlibrary` (lending) collection shows that only six sample books (B&T, Feller, Géron, Savage, Parfit, Kuhn) have a lendable English edition. [corrected in verification]
 
 **Coverage by category.**
 
@@ -410,11 +410,11 @@ Where the OL column says "(unclassified)", Open Library returned no ebook status
 |---|---|---|---|---|---|---|
 | (a) Probability & statistics | 9 | 3 | 33% | 4 (44%) | +2 (B&T, Feller) | 5 (56%) |
 | (b) ML/AI | 10 | 8 | 80% | 8 | +1 (Géron) | 9 (90%) |
-| (c) Decision theory / forecasting / economics | 9 | 2 | 22% | 2 | +3 (Kahneman, Mankiw, Savage) | 5 (56%) |
+| (c) Decision theory / forecasting / economics | 9 | 2 | 22% | 2 | +1 (Savage); Kahneman only in translation, Mankiw only a study guide [corrected in verification] | 3 (33%) |
 | (d) Philosophy / rationality | 9 | 4 | 44% | 4 | +2 (Parfit, Kuhn) | 6 (67%) |
-| (e) History / social science | 9 | 4 | 44% (all PD) | 4 | +3 (Diamond, Harari, Acemoglu & Robinson) | 7 (78%) |
-| (f) Software engineering | 9 | 3 | 33% | 3 | +1 (Brooks) | 4 (44%) |
-| **Total** | **55** | **24** | **43.6%** | **25 (45.5%)** | **+12** | **36 (65.5%)** |
+| (e) History / social science | 9 | 4 | 44% (all PD) | 4 | +0 (Diamond, Harari, Acemoglu & Robinson lendable only in translation) [corrected in verification] | 4 (44%) |
+| (f) Software engineering | 9 | 3 | 33% | 3 | +0 (Brooks lendable only in Chinese translation) [corrected in verification] | 3 (33%) |
+| **Total** | **55** | **24** | **43.6%** | **25 (45.5%)** | **+6 in English (+12 counting translations)** [corrected in verification] | **30 (54.5%); 36 (65.5%) counting translations** |
 
 **By kind of free text.**
 
@@ -439,8 +439,8 @@ Where the OL column says "(unclassified)", Open Library returned no ebook status
 
 | Series | Volumes in DOAB | Example |
 |---|---|---|
-| *Graduate Texts in Mathematics* | 5 | — |
-| *Undergraduate Texts in Mathematics* | 2 | Axler's two books |
+| *Graduate Texts in Mathematics* | 3 [corrected in verification] | Axler, *Measure, Integration & Real Analysis*; *Metric Lie Groups*; *Quaternion Algebras* |
+| *Undergraduate Texts in Mathematics* | 2 | Axler, *Linear Algebra Done Right* 4e; *Beginning in Algebraic Geometry* [corrected in verification] |
 | *Springer Texts in Statistics* | 1 | — |
 | *Springer Series in Statistics* | 1 | — |
 | *Undergraduate Topics in Computer Science* | 0 | — |
@@ -452,7 +452,7 @@ Where the OL column says "(unclassified)", Open Library returned no ebook status
 These series each run to many dozens or hundreds of volumes. GTM alone is around 300 [I, ~70% on the exact figure]. So the openly licensed share of mainstream textbook series is likely ≤2–5% [I, medium]. DOAB undercounts because author-hosted PDFs never enter it: ISL is itself a *Springer Texts in Statistics* volume. Even allowing for that, the free share of the full universe of modern textbooks is probably well below 20% [I, ~75%].
 
 **Verdict.** "Free legal sources cover <20% of the modern technical textbooks someone would want" is:
-- **False for the canonical core** a technical researcher would actually reach for: 52% of modern technical textbooks in the sample, 80% in ML/AI, and 65% of all 55 books if CDL borrowing counts.
+- **False for the canonical core** a technical researcher would actually reach for: 52% of modern technical textbooks in the sample, 80% in ML/AI, and 55% of all 55 books if English-language CDL borrowing counts (65% counting lendable translations). [corrected in verification]
 - **True for the long tail** of commercial textbook series, recent popular non-fiction (10%) and 1930–1989 classics (0%).
 
 What you *want* matters a great deal. Someone reading ML and Bayesian statistics lives in an unusually open world; someone reading economics, decision theory or classic software-engineering texts does not.
@@ -504,7 +504,7 @@ What you *want* matters a great deal. Someone reading ML and Bayesian statistics
 | *Bartz v. Anthropic* settlement | $1.5B; final approval July 2026 | 2025–2026 | [70] (secondary) | Medium |
 | Sample: canonical books with free legal full text | 24/55 (43.6%) | 2026-10-15 | This dossier §9 | Medium (sample bias) |
 | Sample: modern technical textbooks free | 17/33 (52%); ML/AI 8/10 | 2026-10-15 | §9 | Medium |
-| Sample: free to read incl. Open Library CDL | 36/55 (65%) | 2026-10-15 | §9 + [64] | Medium |
+| Sample: free to read incl. Open Library CDL | 30/55 (55%) with English CDL; 36/55 (65%) counting translated editions [corrected in verification] | 2026-10-15 | §9 + [64] | Medium |
 | Sample: commercially reusable (PD/BY/BY-SA) | 7/55 (13%) | 2026-10-15 | §9 | Medium-high |
 | free-programming-books link entries | 13,418 (5,919 in books/) | commit of 2026-10-14 | [56] | High |
 
@@ -519,9 +519,9 @@ What you *want* matters a great deal. Someone reading ML and Bayesian statistics
 5. **Free drafts are often newer than print**: Murphy PML drafts from 2025-04-18 and 2025-12-10, SLP3 draft of 2026-08-19, UDL PDF built in 2026.
 6. **Harvard's Institutional Books** went from a June 2025 release to a renamed, gated dataset family in Aug–Oct 2026, with newspapers, proceedings and visual elements added, still under non-commercial early-access terms.
 7. **Public Domain Day 2026** added 1930 works, including Freud's *Civilization and Its Discontents* and Russell's *The Conquest of Happiness*. Each year now adds a meaningful slice of interwar non-fiction.
-8. **The *Hachette v. IA* appeal ended (no cert petition, Dec 2024).** Even so, Open Library still lists many modern trade books (Kahneman, Harari, Diamond, Kuhn, Parfit) as "borrowable" as of 2026-10-15. CDL is constrained but not dead.
+8. **The *Hachette v. IA* appeal ended (no cert petition, Dec 2024).** Open Library's search API still flags many modern trade books as "borrowable" as of 2026-10-15, but for Kahneman, Harari and Diamond the lendable copies are translations; English editions of Kuhn and Parfit remain lendable. [corrected in verification] CDL is constrained but not dead.
 9. **Book-data litigation and settlements (*Bartz v. Anthropic*, $1.5B; final approval July 2026)** raise the value of provably legal, licence-tagged corpora such as Common Pile and Common Corpus.
-10. **A 1930–1989 hole.** None of the six mid-century classics in my sample is free, and only half are CDL-borrowable. It will close by roughly one year of publication per calendar year.
+10. **A 1930–1989 hole.** None of the six mid-century classics in my sample is free; four (Feller, Savage, Kuhn, Parfit) have a CDL-borrowable English edition, while Popper and Brooks are lendable only in translation. [corrected in verification] It will close by roughly one year of publication per calendar year.
 
 ---
 
@@ -531,7 +531,7 @@ What you *want* matters a great deal. Someone reading ML and Bayesian statistics
 - **STEM vs humanities share.** My result (~29% STEM among classified) depends on mapping Thema codes to domains and on using the *first-listed* code. 23% of books are unclassified, and multi-coded books are common. Counting *any* listed code instead of the first: 24,534 of 70,725 classified books (34.7%) carry at least one STEM code (P/T/U/M), 45,529 (64.4%) carry at least one HSS code, and 3,442 carry both [V, my count]. A 2018 study of 10,866 DOAB books found social sciences, science and history the most common LCC classes [S, stale]; not directly comparable.
 - **Legality of some "free" links.** Blitzstein & Hwang's free PDF sits on Google Drive behind the authors' domain; I could not see the publisher-permission statement because the Stat110 site returned 403 [~80% legal]. ESL's free PDF is long-standing and well known, but I could not reach the host [~90%].
 - **"Not free" claims.** For 31 books I found no official free edition. I checked author or publisher pages directly for AIMA, Wasserman and DDIA. The others rest on prior knowledge, not page-by-page checks [I, high but not certain]. Free *partial* material (sample chapters, lecture videos) exists for several.
-- **Open Library CDL statuses** come from search-API metadata and reflect the best-matching work record. Actual borrowability (waitlists, region, the injunction's scope for specific publishers) can differ [medium].
+- **Open Library CDL statuses** come from search-API metadata and reflect the best-matching work record. Actual borrowability (waitlists, region, the injunction's scope for specific publishers) can differ [medium]. The work-level flag also counts translations and companion volumes: six of the twelve "borrowable" sample books have no lendable English edition. [corrected in verification]
 - **The sample's representativeness** is the biggest uncertainty. The 52% figure for modern technical textbooks is very sensitive to which ML books are included. Another analyst's list could plausibly produce 35–60%.
 - **MIT Press D2O figures** (launch 2021; "80 monographs in the second year"; "~30% of books OA as of 2026") come from Wikipedia. The official D2O pages were blocked from here.
 - **Licences in DOAB** are publisher-supplied. 12.6% have none recorded, and Common Pile explicitly warns about "license laundering and inaccurate metadata".
@@ -550,7 +550,7 @@ What you *want* matters a great deal. Someone reading ML and Bayesian statistics
 
    In my sample, lane A is 13% of books but lane A+B+C is 44%.
 4. **Filter DOAB by publisher quality before showing it to readers.** Otherwise the STEM shelf is dominated by special-issue reprints. A simple publisher allow-list, or a learned quality score (series, press type, peer-review metadata, page count), changes the experience.
-5. **Cover the 1930–1989 gap with CDL and substitutes.** Use Open Library `ebook_access` to route to borrowable scans. Offer "closest free substitute" suggestions, e.g. Grinstead & Snell (GFDL) or Durrett for Feller, and OpenStax *Principles of Economics* 3e or CORE for Mankiw.
+5. **Cover the 1930–1989 gap with CDL and substitutes.** Use Open Library `ebook_access` to route to borrowable scans, but resolve to a specific edition and check its language, because the work-level flag is also set by lendable translations. [corrected in verification] Offer "closest free substitute" suggestions, e.g. Grinstead & Snell (GFDL) or Durrett for Feller, and OpenStax *Principles of Economics* 3e or CORE for Mankiw.
 6. **Version awareness matters.** Free drafts (Murphy, SLP3, UDL) differ from print editions, and new editions may be closed (SRE 2e). Store edition, version date and source hash, and cite accordingly.
 7. **For corpus building, start from Common Pile and Common Corpus** rather than scraping. They already filter DOAB to English BY/BY-SA, LibreTexts, PressBooks, Gutenberg and pre-1929 books, with per-document licence metadata. Institutional Books is attractive for 19th–20th-century scholarship, but its terms are non-commercial and gated.
 8. **Watch licence drift.** The OpenStax move shows licences can tighten. Archive CC BY versions of resources you depend on, since derivatives of those versions remain valid.

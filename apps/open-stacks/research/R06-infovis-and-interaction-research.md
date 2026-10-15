@@ -64,7 +64,7 @@
 5. **3D information spaces failed on evidence, not just taste, and the spatial-memory benefit they claimed is available in 2D.**
    - Data Mountain (1998) beat Internet Explorer Favorites for 32 users with 100 pages. Users could still find pages after about 6 months. [P, high] [15][16]
    - But a 2D version performed as well. In Cockburn & McKenzie 2001, 2D was slightly faster (not significant), yet users significantly *preferred* 3D. [P, high] [17]
-   - In a 69-person study with 2,070 trials, retrieval time rose from 2D (3.7 s) to 2½D (3.8 s) to 3D (4.8 s). The effect was only marginal (p = .09), but users rated 3D more "cluttered." [P, high] [18]
+   - In a 69-person study with 2,070 trials, retrieval time rose from 2D (3.7 s) to 2½D (3.8 s) to 3D (4.8 s). The effect was only marginal (p = .09). Users rated the physical 2½D and 3D models significantly more "cluttered" than 2D, but clutter ratings did not differ significantly across the virtual interfaces. [corrected in verification] [P, high] [18]
    - Sebrechts et al. (1999): text was faster than 2D, which was faster than 3D. Tory et al. (2007): points beat landscapes and 2D beat 3D. [P-via-Hearst, high] [1]
    - Implication for VR reading rooms (see R08) [I]: use spatial layout, not depth.
 
@@ -77,7 +77,7 @@
    - Chari & Pachter (2023) found that a point's 30 nearest neighbors in 2D share little with its true neighbors: mean Jaccard distance "consistently above 0.7." [P, high (single-cell data; the geometric argument generalizes) [I]] [37]
    - Treat map position as a hint, not a measurement. [I]
 
-7. **Nomic, the best-known commercial "data map" vendor, has pivoted.** Nomic's homepage and pricing (2026) now sell an AI platform for architecture, engineering and construction (AEC) at $20/month (Individual) and $40/user/month (Business). Atlas is reduced to a footer link to separate "Atlas Docs." The `nomic` Python client was last released 2025-11-11. [P, high that the focus changed; Atlas's future status is unknown, ~60% it is in maintenance mode] [39][40][41][45]
+7. **Nomic, the best-known commercial "data map" vendor, has pivoted.** Nomic's homepage and pricing (2026) now sell an AI platform for architecture, engineering and construction (AEC) at $20/month (Individual) and $40/user/month (Business). The nomic.ai homepage and pricing page no longer mention Atlas at all. It survives as an "Atlas Docs" link on the separate docs site (docs.nomic.ai, where the Atlas section is now headed "Nomic Developer Platform") and at atlas.nomic.ai. [corrected in verification] The `nomic` Python client was last released 2025-11-11. [P, high that the focus changed; Atlas's future status is unknown, ~60% it is in maintenance mode] [39][40][41][45]
 
 8. **The most successful research-to-product line in reading interfaces is Ai2's Semantic Reader.**
    - Ten prototypes with 300+ study participants [P] [42].
@@ -247,7 +247,7 @@
     - Surprise: SPECTER2, a science-specific embedding model, *lagged* general-purpose embeddings (text-embedding-3-large, SFR-Mistral) for this task.
   - **Clio** (Anthropic, arXiv 2412.13678, Dec 2024) is Scatter/Gather at industrial scale. It embeds, runs k-means, has an LLM summarize and label, recursively builds "a multi-level hierarchy," and offers a 2D map view. [P] [34]
     - It reconstructed a synthetic 19,476-transcript topic distribution with 94% accuracy (vs 5% random).
-    - Cost was $48.81 per 100,000 conversations, about $0.0005 each.
+    - Estimated cost was $48.81 per 100,000 conversations, about $0.0005 each. This is the paper's calculation at Claude 3 Haiku and Claude 3.5 Sonnet prices, assuming ~1,000-token conversations, not a measured bill. [corrected in verification]
     - Its stated failure modes include "overly broad labels" and hierarchy errors.
   - **LLooM** (CHI 2024) turns clusters into **concepts with explicit inclusion criteria**, and scores every document against each criterion. [P] [31]
     - Across four analysis scenarios it surfaced on average 2.0 times as many high-quality topics as BERTopic.
@@ -319,7 +319,7 @@
   - Data Mountain "reliably facilitated speedy retrieval of web pages when compared to IE4." Reaction time effect: F(2,18) = 4.84, p < .02.
   - Users made fewer incorrect retrievals with the revised second version.
 - **Czerwinski et al. (INTERACT 1999)** [P] [16]:
-  - Nine subjects returned after about 6 months. Their retrieval times "were not significantly slower" despite not having seen their layouts.
+  - Nine subjects returned about 6 months after building their layouts. Their retrieval times "were not significantly slower" even though they "had not seen their web page layout for several months." They had seen it once more in a pilot about 6 weeks after the first session, and they got 5 minutes to review it before the trials. [corrected in verification]
   - Removing thumbnails (blank icons) caused an initial drop, then "within a short period of time" no difference. The layout, not the pictures, carried the memory.
 - **Cockburn & McKenzie, "3D or not 3D?" (CHI 2001)** [P, high] [17]:
   - The 2D and 3D versions of a Data-Mountain-like system "differ only in the number of dimensions."
@@ -328,7 +328,7 @@
 - **Cockburn & McKenzie (CHI 2002)**, physical and virtual 2D / 2½D / 3D models [P, high] [18]:
   - 69 CS students, 2,070 trials, mean retrieval 4.13 s.
   - Means were 3.7 s (2D), 3.8 s (2½D) and 4.8 s (3D), F(2,63) = 2.5, **p = .09 (marginal)**. Density effects were strong: 3.2 / 4.2 / 5.0 s, p < .001.
-  - Users rated higher-dimensional interfaces more "cluttered." The researchers often heard "where did I put that group" in the 3D physical condition.
+  - Users rated higher-dimensional interfaces more "cluttered." This was significant only for the physical models (2D 2.7 vs 3.4 for both 2½D and 3D); virtual-interface clutter ratings did not differ significantly. [corrected in verification] The researchers often heard "where did I put that group" in the 3D physical condition.
   - Conclusion: "for relatively sparse information retrieval tasks (up to 99 data items), 3D hinders retrieval."
   - Note that the abstract states this more strongly than the statistics support.
 - **Cockburn (2004), "Revisiting 2D vs 3D Implications on Spatial Memory."** Re-ran Tavanti & Lind's (2001) pro-3D experiment with tighter controls. "The effectiveness of spatial memory is unaffected by the presence or absence of three-dimensional perspective effects." Items are better remembered when "personally meaningful and visually distinctive." [P, high] [19a]
@@ -452,7 +452,7 @@ The program, 2020–2023, is a multi-institution effort. It produced ten researc
 | **Scim** (Fok et al., IUI 2023) [45a] | Faceted highlights (objective, novelty, method, result), evenly distributed and adjustable in density | Lab study, 19 participants: found information "in significantly less time … with comparable effort and accuracy." Diary study, 12 participants over 2 weeks: 74 of 105 sessions (70.4%) said highlights helped. Best for text-dense papers and papers outside one's field | "Skimming highlights" (Goal/Method/Result) for most English CS arXiv papers [48] |
 | **Paper Plain** (August et al., TOCHI 2023) [46] | For lay readers: term definitions, section "gists" (LLM-generated), key-question index linking to answering passages | 24 Upwork participants, within-subjects: "significantly easier time reading," more confident, with similar comprehension. Readers used gists more than definitions | Not as such |
 | **Threddy** (Kang et al., UIST 2022) [47] | Clip sentences from related-work sections into a hierarchy of "threads," keeping provenance and citations; thread-based recommendations | 9 participants vs Google Docs: significantly more clips and references collected; higher flow scores | No |
-| **Relatedly** (Palani et al., CHI 2023) | Search across *existing related-work paragraphs* from many papers; LLM-generated paragraph titles; diversity ranking; tracks explored references | Compared with a strong document-centric baseline, participants wrote summaries rated "significantly more coherent, insightful, and detailed after 20 minutes" | No |
+| **Relatedly** (Palani et al., CHI 2023) | Search across *existing related-work paragraphs* from many papers; auto-generated paragraph titles (from a fine-tuned BART summarization model, not a modern LLM) [corrected in verification]; diversity ranking; tracks explored references | Within-subjects study (n=15) against a baseline paper list emulating a scholarly search engine [corrected in verification]: participants wrote summaries rated "significantly more coherent, insightful, and detailed after 20 minutes" | No |
 | Others: CiteRead, Ocean, Papeo, SciA11y | Citances placed in the cited paper; low-vision hyperlinks; paper–video fusion; screen-reader HTML | See [42] | SciA11y lives on as papertohtml.org demo [42] |
 
 - **Key lessons [P quotes, I synthesis]:**
@@ -559,7 +559,7 @@ Gwern.net is the most developed public example of a "reading interface for a lar
 | Mnemonic medium | Expert-written prompts | Writing hard; QC fell short of its own standard [52] | LLM-drafted prompts the user edits | Unknown retention effect [~70% no RCT] |
 | Memex trails | Human trail blazers | Time | Agent-drafted trails with reasons | Plausible but shallow paths |
 | Gwern-style annotations | Hand-written or scraped abstracts | One author's time | LLM annotation per link [I] | Mislabeling; scent inflation (51.5% support) [57] |
-| Related-work synthesis (Relatedly) | Expert overviews | Generation unreliable in 2022–23 | Reuse human paragraphs plus LLM titles [42] | Licensing of reused text [42] |
+| Related-work synthesis (Relatedly) | Expert overviews | Generation unreliable in 2022–23 | Reuse human paragraphs plus machine-generated titles (fine-tuned BART in 2023; an LLM today) [corrected in verification] [42] | Licensing of reused text [42] |
 
 ---
 
@@ -616,7 +616,7 @@ Gwern.net is the most developed public example of a "reading interface for a lar
 
 ## Surprises and recent changes (2024–2026)
 
-1. **Nomic pivoted away from data maps.** Its 2026 homepage, pricing and docs sell agents for architecture, engineering and construction ($20/month Individual; $40/user/month Business with a 25-seat minimum). Atlas is reduced to a footer link. The open-source `deepscatter` npm package was last published 2024-03-26. [P] [39][40][41][45] Anyone planning to rely on hosted Atlas maps should plan for self-hosted alternatives: datamapplot, Embedding Atlas, Latent Scope.
+1. **Nomic pivoted away from data maps.** Its 2026 homepage and pricing sell agents for architecture, engineering and construction ($20/month Individual; $40/user/month Business with a 25-seat minimum). Neither page mentions Atlas; it survives only on the docs site (docs.nomic.ai, "Atlas Docs") and at atlas.nomic.ai. [corrected in verification] The open-source `deepscatter` npm package's latest stable release (2.15.2) dates from 2024-03-26, but 3.0.0 prereleases continued until 3.0.0-next.51 on 2025-05-29. [corrected in verification] [P] [39][40][41][45] Anyone planning to rely on hosted Atlas maps should plan for self-hosted alternatives: datamapplot, Embedding Atlas, Latent Scope.
 2. **OpenAlex moved topic assignment to a fine-tuned 8B LLM in October 2026.** The topic list was built by citation clustering plus LLM naming. This is the clearest case of LLMs taking over a classic cataloging job at scale. [P] [35]
 3. **Apple released a production-quality open-source embedding explorer** (Embedding Atlas, 2025; v0.25.0 in October 2026). It has MCP access so AI agents can query the map. [P] [30][30a]
 4. **The Tutte Institute stack** (datamapplot, EVoC, Toponymy) matured, and Toponymy turns multi-level LLM cluster naming into a library. [P] [26][27][45] Latent Scope reached 1.0 in July 2026. [P] [28][45]
@@ -813,3 +813,43 @@ Numbers match bracketed citations above. "Accessed" means fetched in this sessio
 58. Suh, Min, Palani & Xia, "Sensecape" (UIST 2023) — https://arxiv.org/abs/2305.11483 — 2023; also Jiang et al., "Graphologue" — https://arxiv.org/abs/2305.11473 — 2023
 59. Anthropic, "Pricing" (Claude API docs) — https://platform.claude.com/docs/en/about-claude/pricing — accessed 2026-10-15
 60. Sibling dossiers (internal, not re-verified here): `R04-ai-research-assistants.md` (Connected Papers free tier, Litmaps/ResearchRabbit, Semantic Reader coverage); `R07-generative-interfaces.md` (FABLES faithfulness, generative UI); `R10-catalog-architecture-and-costs.md` (Semantic Scholar SPECTER2/TLDR counts, embedding prices); `R08` (spatial computing)
+
+---
+
+## Verification pass (independent)
+
+Independent fact-check on 2026-10-15. Method: each load-bearing claim was re-checked against its cited primary source, re-fetched in this pass. PDFs were read with `pdftotext`, and live product, pricing and registry pages were re-fetched. The shared WebSearch budget ran out on this pass's first query, so "newer or contradicting information" was checked by re-fetching the live primary pages (pricing pages, help centers, package registries, PLOS correction notices), not by open web search. Corrected sentences above carry "[corrected in verification]".
+
+| # | Claim | Verdict | Correction / note | Source |
+|---|---|---|---|---|
+| 1 | Chen & Yu 2000: combined effect of visualization not significant; cognitive differences dominated; Hearst: "information visualization has not yet proven itself for search interfaces" | confirmed | Both quotes are verbatim in ch. 10 (six studies from five papers) | http://searchuserinterfaces.com/book/sui_ch10_visualization.html |
+| 2 | Flamenco: 32 art-history students, ~35,000 images, 91% preferred, 88% more useful, "order of magnitude slower"; automated categorization "about 75% correct" | confirmed | Baseline was "a Google images-type interface"; the 75% figure cites Sebastiani 2002 | http://searchuserinterfaces.com/book/sui_ch8_navigation_and_search.html |
+| 3 | Scatter/Gather: coherent picture and richer vocabulary, but worse than similarity search without search; relevant docs in 1–2 of 5 clusters | confirmed | S2 abstract and Hearst ch. 8 both match | https://api.semanticscholar.org/graph/v1/paper/DOI:10.1145/238386.238489?fields=title,year,abstract ; Hearst ch. 8 |
+| 4 | Hornbæk & Frøkjær 2001: 19 of 20 preferred O+D, higher grades, disliked fisheye | confirmed | Hearst says "achieved higher grades using the overview detail view" without saying the grades were for essays. The original paper was not reachable (ACM), so "essay grades" is a reasonable but unverified reading | http://searchuserinterfaces.com/book/sui_ch10_visualization.html |
+| 5 | Cockburn & McKenzie 2002: 69 users, 2,070 trials, 3.7/3.8/4.8 s, F(2,63)=2.5, p=.09, 3D more cluttered; 2001: 2D faster n.s., 3D significantly preferred | confirmed | Clutter difference was significant only for the physical models (2D 2.7 vs 3.4); virtual ratings did not differ. Wording clarified above | http://www.cosc.canterbury.ac.nz/~andy/papers/chi02DM.pdf ; http://www.cosc.canterbury.ac.nz/andrew.cockburn/papers/chi01DM.pdf |
+| 6 | Data Mountain: 32 IE4 users, 100 pages, faster than IE Favorites; 9 users not slower after ~6 months without seeing layouts | corrected | Main study confirmed (F(2,18)=4.84, p<.02; between-groups). Follow-up: the 9 users returned ~6 months after creating their layouts but had seen them once more in a 6-week pilot, and got 5 minutes' review before trials. The paper says "not seen ... for several months" | https://www.microsoft.com/en-us/research/wp-content/uploads/1998/01/p153-robertson.pdf ; https://www.microsoft.com/en-us/research/wp-content/uploads/1999/01/interact99.pdf |
+| 7 | Knowledge Navigator: 88% subtopic match; 2.3–3.18 of 50 clusters for 80% coverage vs 20.4 random; SPECTER2 lagged | confirmed | Table 1 and Table 2 match exactly (GPT-4o and Mixtral both 88% ± 4) | https://arxiv.org/abs/2408.15836 |
+| 8 | Clio: 94% vs 5% random; $48.81 per 100k conversations (~$0.0005 each); embeddings + k-means + LLM hierarchy | confirmed | The $48.81 is a calculated estimate at Claude 3 Haiku and 3.5 Sonnet prices with assumed token counts, not a measured cost. Clarified above | https://arxiv.org/abs/2412.13678 |
+| 9 | LLooM 93% vs 77.7% coverage, 2.0× high-quality topics; TopicGPT purity 0.74 vs 0.64 | confirmed | Both verbatim in the abstracts | https://arxiv.org/abs/2404.12259 ; https://arxiv.org/abs/2311.01449 |
+| 10 | OpenAlex Oct 2026 Qwen3-8B classifier; 4,516/252/26/4; 94.5% on the ~64% at ≥90% confidence; 81.7% (89.6% field); ~10% unclassified | confirmed | Page last updated 2026-10-07. It adds that the classifier was trained on 2M works labeled by Claude Opus 5.5, and that the old classifier endpoint lasts until 2027-01-13 | https://help.openalex.org/hc/en-us/articles/24736129405719-Topics |
+| 11 | Chari & Pachter: 30-NN Jaccard distance consistently > 0.7; neighbor-rank correlations ≤ 0.4 | confirmed | The rank correlations are for cell-*type* neighbor rankings. The 2025-11-04 correction only fixes the Data Availability statement; the numbers are unaffected | https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1011288 ; https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1013655 |
+| 12 | Nomic sells AEC agents ($20 Individual; $40/user Business, 25-seat min); no Atlas mention except a docs link; `nomic` client last released 2025-11-11 | confirmed | Prices, seat minimum and nomic 3.9.0 (2025-11-11) confirmed. The "footer link" wording elsewhere was wrong: nomic.ai has no Atlas link at all. "Atlas Docs" is on docs.nomic.ai, and atlas.nomic.ai still serves "Nomic Atlas". Fixed above | https://www.nomic.ai/pricing ; https://www.nomic.ai/ ; https://docs.nomic.ai/ ; https://pypi.org/pypi/nomic/json |
+| 13 | Semantic Reader Project: 10 prototypes, 300+ participants; highlights, definitions and personalized citations shipped; covers most arXiv papers; highlights only English CS | confirmed | Product page: "most English-language arXiv papers in computer science fields" | https://arxiv.org/abs/2303.14334 ; https://www.semanticscholar.org/product/semantic-reader |
+| 14 | ScholarPhi n=27; Scim n=19, 74/105 = 70.4%; Paper Plain n=24, easier, no comprehension loss | confirmed | All numbers match the papers | https://arxiv.org/abs/2205.04561 ; https://arxiv.org/abs/2009.14237 ; https://arxiv.org/abs/2203.00130 |
+| 15 | Page Previews: +20–22% distinct pages, −3 to −5% pageviews, −2 to −9% back button, 0.26–0.27 previews/pageview, ~0.01% disable | confirmed | "Seen" = card open ≥1,000 ms. Rolled out to all Wikipedias in July 2018 | https://www.mediawiki.org/wiki/Page_Previews/2017-18_A/B_Tests |
+| 16 | Generative search: 51.5% sentences fully supported; 74.5% citations supportive | confirmed | Bing Chat, NeevaAI, perplexity.ai and YouChat, 2023 | https://arxiv.org/abs/2304.09848 |
+| 17 | CiteSpace $65 (1 yr) / $110 / $155 (2 yr); v7.0.2 2026-08-25; 6.4.R2 Advanced "GPT-augmented cluster summarization"; VOSviewer 1.6.21 (2026-06-12) reads OpenAlex, Scopus, WoS, Dimensions, Europe PMC… | confirmed | $110 is 1 year on 2 computers. VOSviewer has read Dimensions exports since 1.6.9 (2018). The year of the Aug 31 malware notice is still not stated on the page | https://citespace.podia.com/ ; https://www.vosviewer.com/ |
+| 18 | Quantum Country: 112 cards; ~54 days per card after 6 reviews for ~95 min; 195 users with a month's retention on ≥80% within six months | confirmed | Verbatim in the essay (6,000 / 112 ≈ 54 days) | https://numinous.productions/ttft/ |
+| 19 | Claude prices: Haiku 5.5 $0.10/$0.50 (≤100k prompts), Sonnet 5.5 $2/$10, Opus 5.5 $4/$20; Batch halves both; ~$88 for 1M abstracts | confirmed | Batch: Haiku 5.5 $0.05/$0.25, Sonnet 5.5 $1/$5, Opus 5.5 $2/$10; Haiku 5.5 over 100k is $0.50/$2.50. All appendix arithmetic recomputed and correct ($87.50, $86.25, $975, $0.31, $1,750, $1,725, $19,500) | https://platform.claude.com/docs/en/about-claude/pricing |
+
+**Other statements spot-checked:**
+
+| Statement | Verdict | Correction / note | Source |
+|---|---|---|---|
+| `deepscatter` npm "last published 2024-03-26" | corrected | 2024-03-26 is the latest *stable* release (2.15.2); prereleases continued to 3.0.0-next.51 on 2025-05-29 | https://registry.npmjs.org/deepscatter |
+| Nomic "Atlas is reduced to a footer link" (exec summary 7; Surprises 1) | corrected | The nomic.ai homepage and pricing HTML contain no "Atlas" string; the link lives on docs.nomic.ai | https://www.nomic.ai/ ; https://docs.nomic.ai/ |
+| Relatedly "LLM-generated paragraph titles" | corrected | The titles came from a fine-tuned BART summarization model; within-subjects n=15 vs a baseline paper list. The "significantly more coherent, insightful, and detailed after 20 minutes" wording is from the Semantic Reader overview [42] | https://arxiv.org/abs/2302.06754 ; https://arxiv.org/abs/2303.14334 |
+| Package versions (datamapplot 0.7.3, Toponymy 0.5.4, Latent Scope 1.0.0, EVoC 0.3.1, Embedding Atlas 0.25.0, BERTopic 0.17.4) | confirmed | All match PyPI/npm dates exactly | PyPI JSON API; https://registry.npmjs.org/embedding-atlas |
+| S2 citation counts (VOSviewer 20,117; CiteSpace II 2,807; Furnas 2,195; Cockburn et al. 784; LiquidText 114) | confirmed | Identical on 2026-10-15 | Semantic Scholar Graph API |
+| Distill ~32 articles, latest 2021-09-02; Victor postscript Feb 2024 and its quotes | confirmed | 33 dated items including the hiatus note | https://distill.pub/ ; https://worrydream.com/ExplorableExplanations/ |
+| CiteSee (10 lab, 6 field, 8.2% vs 37%, ~21% prior survey), Threddy (n=9 vs Google Docs), Apolo (12, between-subjects, ~83,000 articles), Open Syllabus 32.9M | confirmed | All match | https://arxiv.org/abs/2302.07302 ; https://arxiv.org/pdf/2208.03455 ; https://poloclub.github.io/polochau/papers/11-chi-apolo.pdf ; https://www.opensyllabus.org/ |
