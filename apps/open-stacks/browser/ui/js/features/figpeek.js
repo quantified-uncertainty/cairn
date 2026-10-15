@@ -123,7 +123,8 @@ function ocrRuns(o) {
     const hl = median(ws.map((w) => w.y1 - w.y0));
     let S = null;
     for (const w of ws) {
-      if (S && w.x0 - S.x1 < 1.3 * hl) { S.str += ' ' + w.t; S.n += w.t.length + 1; grow(S, w); S.base = S.y1; } else {
+      // One run per line, except that "Fig. 35. … Fig. 36." under two drawings are two captions.
+      if (S && w.x0 - S.x1 < 3 * hl && !(w.x0 - S.x1 > hl && /^(fig|plate|table)/i.test(w.t))) { S.str += ' ' + w.t; S.n += w.t.length + 1; grow(S, w); S.base = S.y1; } else {
         S = { x0: w.x0, y0: w.y0, x1: w.x1, y1: w.y1, fs: hl, n: w.t.length, str: w.t, rot: false, base: w.y1 };
         runs.push(S);
       }
@@ -251,7 +252,7 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
   // 1. Body text size, the text block, and two columns or one.
   const hz = runs.filter((s) => !s.rot);
   const body = wmedian(hz.filter((s) => s.n >= 12 && textLike(s)).map((s) => [s.fs, s.n])) || wmedian(hz.map((s) => [s.fs, s.n])) || H * 0.012;
-  const fsOk = (s) => s.fs > body * 0.8 && s.fs < body * 1.25;
+  const fsOk = (s) => s.fs > body * (scan ? 0.7 : 0.8) && s.fs < body * (scan ? 1.45 : 1.25);
   const long = hz.filter((s) => fsOk(s) && s.n >= 25 && textLike(s));
   let two = false, gL = 0, gR = 0, bx0 = W * 0.08, bx1 = W * 0.92;
   if (long.length >= 4) {
@@ -271,7 +272,8 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
   const byY = hz.slice().sort((a, b) => a.y0 - b.y0);
   for (const s of byY) {
     if (s.prose || !fsOk(s) || !textLike(s)) continue;
-    if (byY.some((p) => p.prose && p !== s && s.y0 - p.y1 > -0.3 * body && s.y0 - p.y1 < 0.8 * body && Math.abs(s.x0 - p.x0) < 1.2 * body)) s.prose = true;
+    const c0 = colOf(s.x0, s.x1)[0];
+    if (byY.some((p) => p.prose && p !== s && s.y0 - p.y1 > -0.3 * body && s.y0 - p.y1 < 0.8 * body && (Math.abs(s.x0 - p.x0) < 1.2 * body || Math.abs(s.x0 - c0) < 1.2 * body))) s.prose = true;
   }
   // Running heads and page numbers.
   // Running heads and page numbers: the edges of the page, and a topmost line in small type.
@@ -341,6 +343,16 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
     Object.assign(b, { x0: Math.max(b.x0, x0 * cs), y0: Math.max(b.y0, y0 * cs), x1: Math.min(b.x1, (x1 + 1) * cs), y1: Math.min(b.y1, (y1 + 1) * cs) });
     fill(G, b);
   }
+  if (scan && long.length >= 4) { // page edges, shadows and the next page's bleed lie outside the text block
+    const a = ci(bx0 - 0.025 * W), z = ci(bx1 + 0.025 * W);
+    for (let y = 0; y < gh; y++) { B.fill(1, y * gw, y * gw + a); B.fill(1, y * gw + z + 1, (y + 1) * gw); }
+    // A page edge or binding shadow just beside the text: a tall column of ink outside the text block.
+    for (let x = Math.max(0, a); x <= Math.min(gw - 1, z); x++) {
+      if (x * cs >= bx0 && (x + 1) * cs <= bx1) continue;
+      let n = 0; for (let y = 0; y < gh; y++) n += G[y * gw + x];
+      if (n >= 0.3 * gh) for (let y = 0; y < gh; y++) B[y * gw + x] = 1;
+    }
+  }
   for (let i = 0; i < N; i++) if (B[i]) G[i] = 0;
   if (scan) { // specks and stray print: graphics cells with almost no graphics around them
     const K = G.slice();
@@ -355,8 +367,13 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
   const D = dilate(G, gw, gh, r, r);
   for (let i = 0; i < N; i++) if (B[i]) D[i] = 0;
   if (two) {
+    // Only graphics that run across the gutter join the columns (not a rule or a speck in it).
     const a = ci(gL + 0.15 * (gR - gL)), z = Math.max(a, ci(gR - 0.15 * (gR - gL)));
-    for (let y = 0; y < gh; y++) for (let x = a; x <= z; x++) D[y * gw + x] = G[y * gw + x] && !B[y * gw + x] ? 1 : 0;
+    for (let y = 0; y < gh; y++) {
+      let n = 0; for (let x = a; x <= z; x++) n += G[y * gw + x];
+      const across = n >= 0.6 * (z - a + 1);
+      for (let x = a; x <= z; x++) D[y * gw + x] = across && G[y * gw + x] ? 1 : 0;
+    }
   }
   // 6. Connected regions of grown graphics; each keeps the box of its own graphics.
   const lab = new Int32Array(N).fill(-1), regs = [];
@@ -384,7 +401,9 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
     if (R.dead) continue;
     for (let changed = true; changed;) {
       changed = false;
-      for (const s of lab2) if (!s.used && near(s, R, 1.6 * body, 1.25 * body)) { grow(R, s); s.used = R; changed = true; }
+      // Labels from the region's own column only (unless it spans both).
+      const side = !two ? 0 : R.x1 <= gm + body ? -1 : R.x0 >= gm - body ? 1 : 0;
+      for (const s of lab2) if (!s.used && near(s, R, 1.6 * body, 1.25 * body) && (side === 0 || (side < 0 ? s.x1 <= gm + body : s.x0 >= gm - body))) { grow(R, s); s.used = R; changed = true; }
       for (const Q of rs) if (Q !== R && !Q.dead && near(Q, R, 0.4 * body, 0.4 * body)) { grow(R, Q); R.gc += Q.gc; R.img ||= Q.img; Q.dead = true; changed = true; }
     }
   }
@@ -467,6 +486,11 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
   }));
   res.sort((a, b) => (Math.abs(a.y0 - b.y0) < 0.02 ? a.x0 - b.x0 : a.y0 - b.y0));
   const out2 = { regions: res, body: body / H, two, gutter: two ? [gL / W, gR / W] : null, caps: caps.length };
+  if (debug.on && typeof document !== 'undefined') {
+    const c = document.createElement('canvas'); c.width = gw; c.height = gh; const g = c.getContext('2d'); const im = g.createImageData(gw, gh);
+    for (let i = 0; i < N; i++) { const o = 4 * i; im.data[o] = G[i] ? 230 : D[i] ? 120 : 255; im.data[o + 1] = T[i] ? 200 : G[i] ? 40 : 255; im.data[o + 2] = B[i] ? 220 : G[i] ? 40 : 255; im.data[o + 3] = 255; if (ink[i] && !G[i] && !T[i] && !B[i]) { im.data[o] = im.data[o + 1] = im.data[o + 2] = 0; } }
+    g.putImageData(im, 0, 0); debug.grid = c.toDataURL();
+  }
   if (debug.on) out2.dbg = { runs: runs.map((s) => ({ b: [s.x0 / W, s.y0 / H, s.x1 / W, s.y1 / H].map((v) => +v.toFixed(3)), fs: +(s.fs / body).toFixed(2), str: s.str.slice(0, 40), f: (s.prose ? 'P' : '') + (s.cap ? 'C' : '') + (s.margin ? 'M' : '') + (s.used ? 'U' : '') })), rs: rs.map((R) => ({ b: [R.x0 / W, R.y0 / H, R.x1 / W, R.y1 / H].map((v) => +v.toFixed(3)), gc: R.gc, ok: R.ok, boxed: R.boxed, strong: R.strong, cap: R.cap?.label })), caps: caps.map((c) => ({ b: [c.x0 / W, c.y0 / H, c.x1 / W, c.y1 / H].map((v) => +v.toFixed(3)), label: c.label, n: c.runs.length })) };
   return out2;
 }

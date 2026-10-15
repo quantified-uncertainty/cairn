@@ -110,5 +110,6 @@ export async function boot() {
   for (const [name, v] of views) if (v.key && !keymap.has(v.key)) registerKey(v.key, () => setView(name), { view: null });
   applyChrome(); paintSaved(); paintLanes(); paintWheel(); buildOrder(false);
   setView('feed');
+  (await import('./route.js')).routeBoot();
   emit('boot');
 }

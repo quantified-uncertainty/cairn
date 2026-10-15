@@ -36,28 +36,28 @@ Each item lists its pictures (and the `show` value), the claim, the passage, the
 
 **Alignment faking in large language models** (2024, `arxiv:2412.14093`)
 - **Pictures:** Figure 2, then Figure 1 (`few`).
-- **Claim:** Claude 3 Opus is told it is being retrained to answer harmful requests, and how to tell training from deployment. It then complies strategically in training to keep its values, and RL can strengthen this.
+- **Claim:** Claude 3 Opus, told it is being retrained to answer harmful requests and how to tell training from deployment, complies strategically in training to keep its values, and RL can strengthen this.
 - **Passage** (`S1.SS0.SSS0.Px2.p1`): "We find that small variations in the prompt that prior to RL had no substantial effect on the compliance gap—such as swapping the AI company from “Anthropic” to “OpenAI”—now greatly increase the compliance gap (Table 2)." Training can hide a behavior without removing it.
 - **Number** (`S1.SS0.SSS0.Px1.p6`), **35–80%**: "For example, in our synthetic document fine-tuned helpful-only setting, the model takes opportunities to exfiltrate its weights 35–80% of the time, despite doing so only 0.5% of the time when fine-tuned on superficially similar synthetic documents with irrelevant information."
 - **Question:** Will a model pretend to go along with training it disagrees with, to keep its current values?
 
 **Refusal in Language Models Is Mediated by a Single Direction** (2024, `arxiv:2406.11717`)
 - **Pictures:** Figure 1, then Figure 3 (`few`). Together they show both halves: erasing the direction stops refusal, and adding it causes refusal.
-- **Claim:** In 13 open chat models up to 72B parameters, refusal runs through one direction in the activations. Erase it and the model stops refusing; add it and the model refuses harmless requests.
+- **Claim:** In 13 open chat models up to 72B parameters, refusal runs through one direction in the activations: erase it and the model stops refusing; add it and it refuses harmless requests.
 - **Passage** (`S5.SS2.p2`): "Normally, these heads focus on the instruction region of the prompt, which contains harmful content. With the adversarial suffix appended, these heads shift their attention to the suffix region, and away from the harmful instruction." It explains why gibberish jailbreak suffixes work.
 - **Number** (`S4.SS2.p4`), **22.6% vs 79.9%**: "For Llama-2 models, including the system prompt substantially reduces ASR compared to evaluation without it (e.g. 22.6% vs 79.9% for Llama-2 7B)."
 - **Question:** How is refusal implemented inside a safety-tuned chat model, and how easily can it be removed?
 
 **Thousands of AI Authors on the Future of AI** (2024, `arxiv:2401.02843`)
 - **Pictures:** Figure 3, then Figure 1 (`few`).
-- **Claim:** 2,778 AI researchers surveyed in late 2023 gave even odds that machines beat humans at every task by 2047. That is thirteen years sooner than the same survey a year earlier.
+- **Claim:** 2,778 AI researchers surveyed in late 2023 gave even odds that machines beat humans at every task by 2047, thirteen years sooner than the same survey a year earlier.
 - **Passage** (`S3.SS2.SSS3.p1`): "Predictions for a 50% chance of the arrival of FAOL are consistently more than sixty years later than those for a 50% chance of the arrival of HLMI. This was seen in the results from the surveys of 2023, 2022, and 2016." Asking about occupations instead of tasks, in nearly the same question, moves the median by six decades.
 - **Number** (`S3.SS2.SSS1.p4`), **thirteen years**: "The aggregate 2023 forecast predicted a 50% chance of HLMI by 2047, down thirteen years from 2060 in the 2022 survey."
 - **Question:** When do AI researchers expect AI to outdo humans at everything, and how fast are those expectations moving?
 
 **Dissolving the Fermi Paradox** (2018, `arxiv:1806.02404`)
 - **Pictures:** Figure 2, alone (`one`).
-- **Claim:** Carrying the real uncertainty in the Drake equation's factors through, instead of multiplying point guesses, gives a large chance that we are alone. An empty sky is then no paradox.
+- **Claim:** Carrying the real uncertainty in the Drake equation's factors through, instead of multiplying point guesses, gives a large chance that we are alone, so an empty sky is no paradox.
 - **Passage** (`S1.SS2.p3`): "Monte Carlo simulation shows that this actually produces an empty galaxy 21.45 % of the time: a result that is easily reconcilable with our observations and thus generating no paradox for us to explain."
 - **Number** (`S3.SS2.p3`), **0.32**: "The mean for N is very optimistic, at 27 million, but the median is now only 0.32 – less than one civilization per galaxy like our own."
 - **Question:** Is the silence of the sky actually surprising, given how little we know about the odds of life?
@@ -71,42 +71,42 @@ Each item lists its pictures (and the `show` value), the claim, the passage, the
 
 **SolidGoldMagikarp (plus, prompt generation)** (LessWrong, 2023, `lw:aPeJE8bSo6rAFoLqg`)
 - **Pictures:** `img6`, alone (`one`). It is the uncaptioned screenshot of ChatGPT explaining " SolidGoldMagikarp" as the word "distribute".
-- **Claim:** GPT-2 and GPT-3 contain a few hundred glitch tokens, such as " SolidGoldMagikarp", that sit near the centre of embedding space and that the models cannot repeat back.
+- **Claim:** GPT-2 and GPT-3 contain a few hundred glitch tokens, such as ' SolidGoldMagikarp', that sit near the centre of embedding space and that the models cannot repeat back.
 - **Passage** (`p175`): "The anomalous tokens may be those which had very little involvement in training, so that the model “doesn’t know what to do” when it encounters them, leading to evasive and erratic behaviour."
 - **Number** (`p164`), **374**: "Comparing the completions to the original lists we were able to dismiss all but 374 tokens." That is 374 out of 50,257 tokens.
-- **Question:** Why can't GPT-3 repeat back strings like " SolidGoldMagikarp"?
+- **Question:** Why can't GPT-3 repeat back strings like ' SolidGoldMagikarp'?
 
 **What 2026 looks like** (Daniel Kokotajlo, 2021, `lw:6Xgy6CAf2jqHhynHL`)
 - **Pictures:** none (`none`).
-- **Claim:** A year-by-year guess, written in 2021, at AI from 2022 to 2026: chatbots and agentic "bureaucracies" keep improving, while AI-tuned propaganda and censorship split the internet into territories.
+- **Claim:** A year-by-year guess, written in 2021, at AI from 2022 to 2026: chatbots and agentic 'bureaucracies' keep improving while AI-tuned propaganda and censorship split the internet into territories.
 - **Passage** (`p39`): "Making models bigger is not what’s cool anymore. They are trillions of parameters big already. What’s cool is making them run longer, in bureaucracies of various designs, before giving their answers."
 - **Number** (`p23`), **5x10^25 FLOPs**: "(So, the most compute spent on a single training run is something like 5x10^25 FLOPs.)" It is a forecast for 2024 that can now be checked.
 - **Question:** What did a careful forecaster in 2021 expect AI and the world to look like by 2026?
 
 **Schelling fences on slippery slopes** (Scott Alexander, 2012, `lw:Kbm6QnJv9dgWsPHQP`)
 - **Pictures:** none (`none`).
-- **Claim:** A slope is truly slippery when each step changes the values or power of whoever takes the next one. The defence is a Schelling fence, an arbitrary line everyone credibly commits to hold.
+- **Claim:** A slope is truly slippery when each step changes the values or power of whoever takes the next one; the defence is a Schelling fence, an arbitrary line everyone credibly commits to hold.
 - **Passage** (`p13`): "Unfortunately, original Gandhi isn't the one making the choice of whether or not to take the 6th pill. 95%-Gandhi is."
 - **Number:** none (`null`), because the essay's numbers are toy values.
 - **Question:** When are slippery-slope arguments valid, and how can you stop sliding?
 
 **Judgemental Predictions are Low-Signal, High-Skill** (QURI wiki, `web:priors…`)
 - **Pictures:** `img0` (Tetlock's distribution of Brier scores), then `img1` (a path model in which content knowledge predicts accuracy less than belief updating does) (`few`).
-- **Claim:** Judgemental forecasting is high-skill but low-signal. A superforecaster's "42%" looks like anyone's guess, so its value only shows in a track record such as a Brier score.
+- **Claim:** Judgemental forecasting is high-skill but low-signal: a superforecaster's '42%' looks like anyone's guess, so its value only shows in a track record such as a Brier score.
 - **Passage** (`p7`): "The main conflict I’m raising here is that judgemental forecasts by themselves often don’t come with much information to signal how valuable they are. The result of 5 hours, 10 hours, or 500 hours of work by radically different groups of people would itself look near identical."
 - **Number** (`p13`), **roughly 70%**: "Importantly, being a superforecaster in one year correlated strongly with being a superforecaster the next year; there was some regression to the mean but roughly 70% of the superforecasters maintained their status from one year to the next."
 - **Question:** Why is a great forecast hard to tell from a mediocre one, and whom should you trust?
 
 **Agent Incidents, 2024–2026** (QURI Delegation Risk wiki, `web:delegation-risk…`)
 - **Pictures:** `tbl0`, the incident table (`one`).
-- **Claim:** In eight real incidents from 2022 to 2026 where AI agents could act, the damage was set by what their credentials could reach. The fixes that work sit outside the model.
+- **Claim:** In eight real incidents from 2022 to 2026 where AI agents could act, the damage was set by what their credentials could reach, and the fixes that work sit outside the model.
 - **Passage** (`p66`): "In the accidents and supply-chain cases, exposure was set by credentials, not by capability. The same models with read-only, sandboxed access would have produced only embarrassments."
 - **Number** (`p57`), **341**: "In early February 2026 Koi Security reported that of 2,857 skills it audited, 341 were malicious." That is about 12% of the skills.
 - **Question:** What actually went wrong when AI agents with real permissions caused harm, and what would have stopped it?
 
 **Little Wars** (H. G. Wells, 1913, `ia:littlewarsgamefo00well`, read through its OCR text)
 - **Pictures:** page `k27` ("THE WAR GAME IN THE OPEN AIR.", two photographs of a game on a lawn), then `k17` (`few`).
-- **Claim:** H. G. Wells sets out tested rules for a floor wargame with toy soldiers and spring-loaded guns. He ends by arguing that playing it shows how blundering real war must be.
+- **Claim:** H. G. Wells sets out tested rules for a floor wargame with toy soldiers and spring-loaded guns, and ends by arguing that playing it shows how blundering real war must be.
 - **Passage** (`k121`, printed page 100): "You have only to play at Little Wars three or four times to realise just what a blundering thing Great War must be. Great War is at present, I am convinced, not only the most expensive game in the universe, but it is a game out of all proportion." It was published a year before the First World War.
 - **Number** (`k15`), **nine times out of ten**: "This priceless gift to boyhood appeared somewhen towards the end of the last century, a gun capable of hitting a toy soldier nine times out of ten at a distance of nine yards."
 - **Question:** How did H. G. Wells turn toy soldiers into a playable wargame, and what did it teach him about war?
@@ -116,8 +116,9 @@ Each item lists its pictures (and the `show` value), the claim, the passage, the
 Each finding below changed the design.
 
 1. **The lead figure needs judgment, not just reference counts.** I scored each paper's figures with the heuristic in section 1 of feed-ideas.md: references, a Figure 1 bonus, result words, and appendix and table penalties.
-   - The heuristic's top figure matched mine in only 2 of the 6 papers. Mine was in its top two in 4 of 6.
-   - Both misses were figures cited many times as lookup tables. In Alignment faking, Figure 9, a bar chart of prompt variations, has 26 in-text references against 8 for Figure 2, the result. In Scaling Laws, Figure 4 (6 references) beat Figure 1.
+   - The heuristic's top figure matched mine in only 2 of the 6 papers. My first pick was in its top two in 4 of 6, and in two of those its first choice was my second.
+   - Where my pick fell outside its top two, many references won. In Alignment faking, Figure 9, a bar chart of prompt variations that the text cites once per variation, has 26 in-text references against 8 for Figure 2, the result. In Scaling Laws, Figure 4, a detailed fit cited from several sections (6 references), outscored Figure 1, the paper's summary of its three power laws.
+   - **Counting differently helps but is not enough.** Counting the distinct sections that cite a figure, and ignoring citations from inside captions, fixes Alignment faking: 3 of 6 top picks then match, and 5 of 6 are in the top two. Scaling Laws still loses Figure 1 to Figure 4.
    - **Change:** the prompt tells the model that "a figure cited many times only as a lookup table is not" the one. Section 8 combines the two signals.
 2. **The best picture can have no caption.** The most telling image in the SolidGoldMagikarp post is an uncaptioned screenshot; the paragraph just before it says what it shows.
    - **Change:** images and tables get markers of their own (`img6`, `tbl0`), placed in text order. An image without a caption is shown as "(image) no caption", so the model reads it from the text around it.
@@ -136,7 +137,9 @@ Each finding below changed the design.
    Essays seldom have such a number: the Schelling fences essay gets `null`.
    - **Change:** the prompt asks for a number "against a baseline or an expectation", and the schema allows `null`.
 6. **Where the picks sit in the text.** Every pick in the six papers came within the first 25,000 characters of the request, captions included. The scan's passage was at 72,000 characters, in Wells's closing chapter, which is the part people quote.
-   - **Change:** papers can be cut hard without losing much (the lean option in section 7). Long books keep their ends as well as their beginnings (section 5).
+   - **Papers can be cut hard.** A first attempt at a 40,000-character cap lost both of Alignment faking's picks: its 83 captions (31,000 characters) left almost no room for the body.
+   - **Change:** captions are held to 30% of the budget, main-text captions first. With that rule, all six papers keep their passage, number and top two figures at 40,000 characters as well as at 100,000.
+   - **Books cannot be cut as hard.** At 40,000 characters *Little Wars* loses its passage even when the back pages are kept, because a 19-page appendix follows the closing chapter. So the lean option in section 7 leaves scans at the full cap, and long books keep their back pages as well as their front (section 5).
 7. **Quotes must be checked against the text the model saw.**
    - LaTeXML math comes out as TeX in the extracted text (`N^0.74/D`), so a quote with math matches the extraction, not the rendered page.
    - OCR splits words at line ends ("con- vinced").
@@ -227,7 +230,7 @@ When `figures` ends up empty, it sets `show` to `none`. It keeps a passage that 
 
 The sample file has a single `by` in its header in place of the per-item `by`, `at`, `usd` and `tok`. Its picks were made by hand, not by the batch prompt.
 
-**Serving.** One route serves the file, and `corpus.js` merges it into the items under `it.hl`, the way it merges `enrich.json`. The new route is either `GET /highlights.json`, added to the static map in `server.mjs`, or a small `server/routes/67-highlights.mjs`. The file for the whole corpus is about 2 MB: the sample averages 2 KB per item.
+**Serving.** One route serves the file, and `corpus.js` merges it into the items under `it.hl`, the way it merges `enrich.json`. The new route is either `GET /highlights.json`, added to the static map in `server.mjs`, or a small `server/routes/67-highlights.mjs`. The sample averages 1.7 KB per item without indentation, so the whole corpus comes to about 3 MB.
 
 ## 5. The prompt
 
@@ -255,7 +258,7 @@ Pick the highlights of this document.
 
 **What goes in.** Each item's text is capped at 100,000 characters, which is about 37,000 tokens.
 
-- **arXiv papers:** the abstract and body paragraphs, in order. Appendices (`A*`), acknowledgements and other unnumbered sections (`Sx*`) are dropped, but every figure and table caption is kept, including the appendix ones. A body still over the cap is cut from the end, so the captions always fit.
+- **arXiv papers:** the abstract and body paragraphs, in order, and the figure and table captions. Appendices (`A*`), acknowledgements and other unnumbered sections (`Sx*`) are dropped, but their captions are kept while they fit. For a paper over the cap, captions get at most 30% of the budget, main-text captions first, and the body fills the rest from the start.
 - **Posts and wiki pages:** whole, with the `img` and `tbl` markers.
 - **Scans:** every page, as `[k<N> p.<printed>]`, with `plate` added to near-empty pages. A book over the cap keeps every plate page, then fills 40% of the remaining space from the front and 30% from the back, where conclusions are, and the rest with evenly spaced pages from the middle.
 
@@ -351,7 +354,7 @@ const params = (model, userText) => ({
    - **Non-arXiv PDFs:** these 100 items have no server-side text extraction yet (pdf.js runs in the browser), so version 1 skips them. Later, either add `pdfjs-dist` to the server or compute their highlights in the browser on first open.
 2. **Count tokens first.** Run `client.messages.countTokens` on a sample of requests; it costs nothing. This replaces the 2.7 characters per token assumed in section 7.
 3. **Submit one batch.** The whole corpus is about 1,950 requests and 120 MB, well inside the limits of 100,000 requests or 256 MB per batch. Save the batch id in `data/highlights.batch.json` so that a restarted job picks up the results, which are kept for 29 days.
-4. **Poll** every minute. Most batches finish within an hour, and all within 24 hours.
+4. **Poll** every minute. Most batches finish within an hour; a request still unprocessed after 24 hours expires.
 5. **Read the results**, matching them by `custom_id`, since they arrive in any order:
    - Verify the quotes and fill in the locations (section 4).
    - Write the entries into `data/highlights.json`, with each entry's cost at batch prices.
@@ -367,7 +370,7 @@ const cid = (id) => 'h' + createHash('sha1').update(id).digest('hex').slice(0, 2
 const byCid = new Map(todo.map((it) => [cid(it.id), it]));
 
 const batch = await client.messages.batches.create({
-  requests: todo.map((it) => ({ custom_id: cid(it.id), params: params(MODEL, userText(it, blocksOf(it))) })),
+  requests: todo.map((it) => ({ custom_id: cid(it.id), params: params(MODEL, userText(it, LANES[it.lane], kindOf(it), blocksOf(it))) })),
 });
 saveBatchId(batch.id);
 
@@ -389,7 +392,7 @@ for await (const r of await client.messages.batches.results(batch.id)) {
 }
 ```
 
-**Retries.** Errored and expired items go into a second batch. Refused items go to Sonnet 5.5, which handles different refusal categories than Haiku; through the interactive API it can also use the server-side fallback.
+**Retries.** Errored and expired items go into a second batch. Refused items are retried on Sonnet 5.5 through the interactive API, where `fallbacks: 'default'` can route a refusal to another model.
 
 **Spending.** The job runs only when the reader starts it, and it reports its estimated cost before submitting. It charges the daily budget only for what it actually spent, using `charge()` from `30-summarize.mjs`, so it shares `STACKS_DAILY_BUDGET` with summaries. A whole-corpus Haiku run costs about as much as one day's default budget of $3.
 
@@ -402,7 +405,7 @@ Each request carries 5,004 characters of shared prompt: the system prompt (3,099
 | Item | Kind | Extracted text (chars) | Document block sent (chars) | Tokens with the prompt (2.7 / 3.5 chars a token) |
 |---|---|---|---|---|
 | Measuring AI Ability to Complete Long Software Tasks | arXiv | 94,861 | 33,934 | 14,421 / 11,125 |
-| Alignment faking in large language models | arXiv | 322,357 | 100,253 (capped) | 38,984 / 30,073 |
+| Alignment faking in large language models | arXiv | 322,357 | 100,146 (capped) | 38,944 / 30,043 |
 | Refusal … Single Direction | arXiv | 62,329 | 38,803 | 16,225 / 12,516 |
 | Thousands of AI Authors on the Future of AI | arXiv | 92,160 | 73,533 | 29,088 / 22,439 |
 | Dissolving the Fermi Paradox | arXiv | 36,683 | 37,774 | 15,844 / 12,222 |
@@ -413,9 +416,9 @@ Each request carries 5,004 characters of shared prompt: the system prompt (3,099
 | Judgemental Predictions are Low-Signal, High-Skill | wiki | 14,487 | 15,097 | 7,445 / 5,743 |
 | Agent Incidents, 2024–2026 | wiki | 13,674 | 14,305 | 7,151 / 5,517 |
 | *Little Wars* (140 pages) | scan | 87,490 | 89,108 | 34,856 / 26,889 |
-| **Mean of the 12** | | | 44,107 | **18,189 / 14,032** |
+| **Mean of the 12** | | | 44,098 | **18,186 / 14,029** |
 
-**Why the papers shrink.** Dropping the appendices and references halves an arXiv paper, from a mean of 115,000 characters to 56,600.
+**Why the papers shrink.** References are never extracted. Dropping appendices and acknowledgements, plus the cap on Alignment faking, takes the six papers from a mean of 112,200 characters extracted to 56,600 sent.
 
 **Output.** The answer JSON averaged 1,209 characters, about 450 tokens. Thinking at `low` effort adds an unknown amount, so the plan assumes 1,500 output tokens per item, with 600-3,000 as the range.
 
@@ -425,7 +428,7 @@ Each request carries 5,004 characters of shared prompt: the system prompt (3,099
 |---|---|---|---|
 | arXiv papers | 677 | 56,600 | mean of the 6 measured |
 | Other PDFs | 100 | 90,000 | assumed (textbooks and reports, most at the cap) |
-| Posts | 515 | 23,000 | corpus `words` (mean 3,690) × 6.2 characters a word, as measured on the 3 posts |
+| Posts | 515 | 23,000 | corpus `words` (mean 3,690) × 6.2 characters a word (5.7-8.2 on the 3 sampled posts) |
 | Web and wiki pages | 217 | 27,600 | 155 QURI pages at 14,700 (measured) and 62 others (Distill, Transformer Circuits, METR …) assumed at 60,000 |
 | Scans | 437 | 97,000 | nearly all at the cap (median length 376 pages) |
 
@@ -433,7 +436,7 @@ That comes to a mean of 60,300 characters a request with the prompt: **about 22,
 
 ### Per 1,000 items
 
-At 22,300 input and 1,500 output tokens an item:
+At 22,300 input and 1,500 output tokens an item, and at prices as of October 2026:
 
 | Model ($ per million tokens, input / output) | Standard API | Batch API (50%) | Whole corpus, batch (1,948 items) | One arXiv paper, batch |
 |---|---|---|---|---|
@@ -445,14 +448,14 @@ How the batch figures per 1,000 items move with the assumptions:
 
 | Assumption | Haiku | Sonnet | Opus |
 |---|---|---|---|
-| 3.5 characters a token (fewer input tokens) | $1.24 | $24.72 | $49.44 |
+| 3.5 characters a token (fewer input tokens) | $1.24 | $24.73 | $49.46 |
 | 600 output tokens | $1.27 | $25.33 | $50.67 |
 | 3,000 output tokens | $1.87 | $37.33 | $74.67 |
-| Lean cap: 40,000 characters (papers keep their head and all captions; books their front, back and plates) | $1.10 | $21.99 | $43.98 |
+| Lean: papers, PDFs and web pages capped at 40,000 characters; scans keep 100,000 | $1.32 | $26.49 | $52.99 |
 
 - **Where the cost goes.** Input is about three quarters of the cost on every model, because the prices keep the same 1:5 input-to-output ratio.
-- **Prompt caching.** The shared prompt is about 1,850 tokens, roughly 8% of an average request. Caching it would save at most a few percent and needs a prefix longer than this one, so the job does without.
-- **The lean cap** loses none of the picks in the six sampled papers, which all sat in the first 25,000 characters. It would have cut the scan's best passage had the book been longer than the cap; that is why books keep their back pages.
+- **Prompt caching.** The shared prompt is about 1,850 tokens, roughly 8% of an average request. Caching it could save at most that share of the input, and caching in batches is best-effort, so the job does without.
+- **The lean option** keeps every pick in the six sampled papers (section 2, finding 6). It saves only about 11%, because scans keep the full cap and are the largest share of the input, about 40%.
 - **Vision add-on.** The model chooses figures from their captions alone. Sending up to six candidate figures as thumbnails lets it look at them before choosing.
   - **Size:** at about 800 × 500 pixels, a thumbnail is roughly (width × height) / 750 ≈ 530 tokens. Six of them add about 3,200 tokens to an average paper, about 14%.
   - **Cost per paper at batch prices:** $0.00016 on Haiku, $0.0032 on Sonnet, $0.0064 on Opus.
@@ -471,7 +474,7 @@ How the batch figures per 1,000 items move with the assumptions:
 **The lead picture.** This answers "top few pictures/graphs, or just top graph, as is best" for wall tiles, the F1 board and the Figures river.
 
 - When an item has a highlight, its `figures` and `show` decide the picture: `one` draws `figures[0]` alone, and `few` draws a mosaic of the first two or three.
-- Otherwise the reference-count heuristic decides, with one fix: count references from distinct sections, so that a lookup figure cited 26 times from one section does not win.
+- Otherwise the reference-count heuristic decides, with one fix: count the distinct sections that cite a figure, not the citations, so that a lookup figure cited once per row of a comparison does not win (section 2, finding 1).
 - When the two agree, the pick can be trusted; when they disagree, it is worth looking at.
 
 **The highlight card in the Deck.**
@@ -504,7 +507,7 @@ How the batch figures per 1,000 items move with the assumptions:
 **Measures, per model:**
 
 - **Quotes:** the share of passages and numbers that verify. The target is at least 95% of passages; anything lower means the prompt or the block markers need work.
-- **Lead figure:** whether the model's first figure is the gold one, and whether it is in the gold top two. The heuristic scored 2 of 6 and 4 of 6, so a model that does no better is not worth paying for on this field.
+- **Lead figure:** whether the gold lead figure is the model's first figure, or at least in its first two. The heuristic, counting distinct citing sections, scored 3 of 6 and 5 of 6, so a model that does no better is not worth paying for on this field.
 - **`show` and `null`:** agreement on `show`, and whether `number` is `null` on essays.
 - **Passages:** blind pairwise preference against the gold passage, which takes the reader a few minutes.
 - **Variants:** Haiku with thinking off against adaptive; effort `low` against `medium`; text only against the vision add-on.

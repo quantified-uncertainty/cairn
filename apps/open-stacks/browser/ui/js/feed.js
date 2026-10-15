@@ -5,7 +5,7 @@ import { state, current } from './state.js';
 import { openDoc, isFlow, scanUrl } from './docs.js';
 import { renderPage, cachedRender, renderedNow } from './render.js';
 import { planAround, startOf, serverPrefetch } from './prefetch.js';
-import { showFlow, dropLive, live, vpToCol } from './flow.js';
+import { showFlow, dropLive, live, vpToCol, flowRange } from './flow.js';
 import { goPage, toggleZoom } from './nav.js';
 import { itemIcon } from './icons.js';
 
@@ -349,6 +349,44 @@ function placeLabel(x) {
   peek.style.left = Math.min(innerWidth - 140, Math.max(8, x - 60)) + 'px';
   peek.style.top = r.top - 30 + 'px';
 }
+// ---------- riffle: hold a page key to thumb through the item ----------
+// Called by riffle.js. Uses the same quick pages as track scrubbing.
+let riff = null;
+export function riffleStart() {
+  const i = current(); if (i == null) return false;
+  const it = items[i]; const n = it.n || 0;
+  if (!n || (isFlow(it) && live?.id !== it.id)) return false;
+  riff = { i, it, n, k: isFlow(it) ? (state.start.get(i) ?? 0) : (state.start.get(i) ?? startOf(i)) };
+  tr = tr && tr.it === it ? tr : { i, it, n, s: riff.k };
+  if (it.kind === 'scan') serverPrefetch(Array.from({ length: Math.min(n, 1200) }, (_, k) => scanUrl(it, k, 200)), 50, 'track');
+  peek.classList.add('textonly'); peek.hidden = false;
+  return true;
+}
+export function riffleStep(dir) {
+  if (!riff) return;
+  const { it, n } = riff;
+  if (isFlow(it)) {
+    riff.k = Math.max(0, Math.min(live.n - 1, riff.k + dir));
+    live.flow.style.transform = `translateX(${-riff.k * live.g.pitch}px)`;
+    const [a] = flowRange(riff.k);
+    peek.querySelector('.pk-label').textContent = `p. ${a + 1} / ${it.n}`;
+  } else {
+    riff.k = Math.max(0, Math.min(n - 1, riff.k + dir));
+    if (it.kind === 'scan') serverPrefetch(Array.from({ length: 30 }, (_, j) => riff.k + dir * j).filter((x) => x >= 0 && x < n).map((x) => scanUrl(it, x, 200)), 75, 'track-near');
+    scrubSpread(riff.k);
+    peek.querySelector('.pk-label').textContent = `p. ${riff.k + 1} / ${n}`;
+  }
+  const r = track.getBoundingClientRect();
+  const f = (riff.k + 0.5) / (isFlow(it) ? live.n : n);
+  placeLabel(r.left + f * r.width);
+  track.querySelector('.tr-hover').style.left = f * 100 + '%';
+}
+export function riffleEnd() {
+  if (!riff) return;
+  const { i, it, k } = riff; riff = null; want = null; peek.hidden = true;
+  if (isFlow(it)) { state.start.set(i, k); showFeed(); } else goPage(k);
+}
+
 track.addEventListener('pointerenter', () => {
   if (!tr) return;
   const { it, n } = tr;

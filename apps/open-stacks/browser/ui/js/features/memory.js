@@ -105,7 +105,7 @@ const active = () => !document.hidden && state.view === 'feed' && (Date.now() - 
 // ---------- visits and spreads ----------
 let visit = null;  // { id, i, s, a, last (last active, ms), settled, sent, sentAt }
 let spread = null; // { id, k, c, s, ms, seen }
-const newVisit = (i, settled) => ({ id: items[i].id, i, s: Date.now(), a: 0, last: Date.now(), settled, sent: false, sentAt: 0 });
+const newVisit = (i, settled) => ({ id: items[i].id, i, s: Date.now(), t0: performance.now(), a: 0, last: Date.now(), settled, sent: false, sentAt: 0 });
 
 function sendVisit() {
   const v = visit; if (!v?.settled) return;
@@ -139,9 +139,10 @@ setInterval(() => {
   // Back after a long gap (the window hidden, or away from the keyboard): a new visit.
   if (Date.now() - visit.last > SPLIT_MS) { const i = visit.i; endSpread(); sendVisit(); visit = newVisit(i, true); }
   visit.last = Date.now();
-  visit.a += dt;
-  if (visit.settled) rec(visit.id).a += dt;
-  if (spread?.id === visit.id) { spread.ms += dt; if (!spread.seen && spread.ms >= SEEN_MS) markSeen(); }
+  const va = Math.min(dt, now - visit.t0); // a tick counts only the time since the visit or spread began
+  visit.a += va;
+  if (visit.settled) rec(visit.id).a += va;
+  if (spread?.id === visit.id) { spread.ms += Math.min(dt, now - spread.t0); if (!spread.seen && spread.ms >= SEEN_MS) markSeen(); }
   if (visit.settled && Date.now() - visit.sentAt > BEAT_MS) sendVisit();
 }, 1000);
 
@@ -171,7 +172,7 @@ on('spread:settled', (d) => {
   const p = onScreen(d);
   if (spread?.id === d.it.id && spread.k === p.k && spread.c === p.c) return; // the same pages, laid out again
   endSpread();
-  spread = { id: d.it.id, k: p.k, c: p.c, s: Date.now(), ms: 0, seen: false };
+  spread = { id: d.it.id, k: p.k, c: p.c, s: Date.now(), t0: performance.now(), ms: 0, seen: false };
   const f = d.flow ? 1 : 0;
   op('at', d.it.id, { k: p.k, c: p.c, n: p.n, f, ...(f ? { col: p.col, g: p.g } : {}), lay: p.lay });
   const r = rec(d.it.id);
@@ -222,9 +223,10 @@ let chip = null; // { id, s (the start it opened at, once rendered), k }
 function resumeChip(i, it) {
   chip = null;
   const r = mem.get(it.id), k = resumeAt(i, it, r);
-  if (k == null || Date.now() - r.last < 120e3) return; // just here: flipping j/k is not coming back
-  const placed = state.start.has(i);
-  if (placed ? state.start.get(i) !== (r.f ? r.col : r.k) : !r.f && defaultStart(i) === k) return;
+  if (k == null) return;
+  // Placed this session: only when it is still where you left it, and you were away a while
+  // (flipping j/k is not coming back). Not placed: it opens at k, unless that is where it opens anyway.
+  if (state.start.has(i) ? state.start.get(i) !== (r.f ? r.col : r.k) || Date.now() - r.last < 120e3 : !r.f && defaultStart(i) === k) return;
   chip = { id: it.id, s: null, k };
   chipEl.replaceChildren(
     h('span', { textContent: `Resumed at p. ${k + 1}` }),

@@ -1,0 +1,59 @@
+/* Library (features/library.js): the side panel's Item / Library tabs and the tree. */
+
+/* Item / Library: a small switch at the top of the side panel. */
+.lib-tabs { display: flex; align-items: center; gap: 2px; flex: none; order: -1; }
+.lib-tabs button { border: 0; border-radius: 3px; padding: 2px 8px; font: 600 10px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); }
+.lib-tabs button:hover { color: var(--ink); }
+.lib-tabs button.on { background: var(--bg-3); color: var(--ink); }
+.lib-tabs .lt-key { margin-left: auto; opacity: .55; font-size: 10px; }
+#panel > .lib-tabs { margin: -6px 0 -6px -8px; }
+#panel.stale > .lib-tabs { opacity: 1; }
+
+/* The Library takes the side panel's place (and width) while it is on. */
+#lib { display: none; flex-direction: column; min-height: 0; background: var(--bg-2); border-right: 1px solid var(--line); padding-top: 8px; }
+#main.lib-on[data-view="feed"]:not(.nopanel) > #panel { display: none; }
+#main.lib-on[data-view="feed"]:not(.nopanel) > #lib { display: flex; }
+#main.panel-right > #lib { order: 2; border-right: 0; border-left: 1px solid var(--line); }
+#lib > .lib-tabs { padding: 0 10px 0 10px; }
+.lib-top { padding: 8px 10px 6px; display: flex; flex-direction: column; gap: 6px; flex: none; }
+.lib-qbox { position: relative; }
+.lib-q { width: 100%; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 3px; padding: 4px 34px 4px 8px; font: 12px var(--sans); }
+.lib-q::placeholder { color: var(--ink-3); }
+.lib-qn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font: 10px var(--mono); color: var(--ink-3); pointer-events: none; }
+.lib-scope { display: flex; align-items: baseline; gap: 6px; min-width: 0; font-size: 11px; }
+.lib-scope[hidden] { display: none; }
+.lib-scope .ls-l { font: 600 9.5px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); flex: none; }
+.lib-scope .ls-t { border: 0; padding: 0; color: var(--accent); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+.lib-scope .ls-x { border: 0; padding: 0 4px; margin-left: auto; color: var(--ink-3); flex: none; }
+.lib-scope .ls-x:hover, .lib-scope .ls-t:hover { color: var(--ink); }
+
+/* The tree: a virtual list, only the rows in view exist. */
+.lib-list { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; position: relative; outline: none; scrollbar-width: thin; scrollbar-color: var(--line) transparent; padding-bottom: 12px; }
+.lib-pad { width: 1px; }
+.lib-slice { position: absolute; top: 0; left: 0; right: 0; }
+.lr { height: 24px; display: flex; align-items: center; gap: 6px; padding: 0 8px 0 calc(8px + var(--d, 0) * 14px); cursor: pointer; white-space: nowrap; color: var(--ink-2); font: 12.5px/1 var(--serif); user-select: none; }
+.lr:hover { background: color-mix(in srgb, var(--ink) 5%, transparent); }
+.lr.sel { background: var(--bg-3); }
+.lib-list:focus .lr.sel { box-shadow: inset 2px 0 0 var(--accent); color: var(--ink); }
+.lr-t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.lr-c { width: 10px; flex: none; font-size: 9px; color: var(--ink-3); text-align: center; }
+.lr-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.lr-l .lr-t { font: 600 12px var(--sans); color: var(--ink); }
+.lr-f .lr-t { font: 500 12px var(--sans); }
+.lr-n { font: 10px var(--mono); color: var(--ink-3); flex: none; }
+.lr-go { visibility: hidden; border: 0; padding: 0 2px; font-size: 8px; line-height: 1; color: var(--accent); flex: none; }
+.lr:hover .lr-go, .lr.sel .lr-go { visibility: visible; }
+.lr-go:hover { color: var(--ink); }
+.lr.scoped .lr-t { color: var(--accent); }
+.lr.has-cur .lr-c { color: var(--accent); }
+.lr-i .ticon, .lr-b { flex: none; color: var(--ink-3); display: inline-flex; }
+.lr-b { width: 4px; height: 4px; border-radius: 50%; background: var(--line); margin: 0 4px; }
+.lr.cur { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.lr.cur .ticon { color: var(--accent); }
+.lr-p { flex: none; width: 18px; height: 3px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.lr-p i { display: block; height: 100%; background: var(--ink-3); }
+.lr-p.done { width: auto; height: auto; background: none; font: 10px var(--sans); color: var(--ok); }
+
+/* While browsing a folder, its name follows the lane in the item header. */
+#item-head .lib-crumb { border: 0; padding: 0; font: 10px var(--mono); text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); max-width: 46ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#item-head .lib-crumb:hover { color: var(--accent); }

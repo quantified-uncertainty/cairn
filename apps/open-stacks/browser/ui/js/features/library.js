@@ -174,8 +174,9 @@ function openItem(i) {
   } else jumpTo(i);
   done();
 }
-/** After acting from the tree, keys go back to the page. */
-function done() { if (list?.contains(document.activeElement) || document.activeElement === input) document.activeElement.blur(); }
+/** After acting from the tree, keys go back to the page; the filter stays for arrowing on, but typing starts a new one. */
+let stale = false;
+function done() { stale = !!q; if (list?.contains(document.activeElement) || document.activeElement === input) document.activeElement.blur(); }
 
 // ---------- the label in the item header while browsing a folder ----------
 // feed.js repaints the header on every turn; this re-adds one span to it.
@@ -384,10 +385,11 @@ list.addEventListener('keydown', (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   if (treeKey(e)) { e.preventDefault(); e.stopPropagation(); return; }
   // Type to filter (Space still reaches the page: it is Advance; L switches back to the item).
-  if (e.key.length === 1 && e.key !== ' ' && e.key !== 'L') { e.preventDefault(); e.stopPropagation(); input.focus(); input.value += e.key; onInput(); }
+  if (e.key.length === 1 && e.key !== ' ' && e.key !== 'L') { e.preventDefault(); e.stopPropagation(); input.focus(); input.value = (stale ? '' : input.value) + e.key; onInput(); }
   else if (e.key === 'Backspace' && q) { e.preventDefault(); e.stopPropagation(); input.focus(); input.value = input.value.slice(0, -1); onInput(); }
 });
 function onInput() {
+  stale = false;
   setFilter(input.value);
   // The cursor goes to the first matching item.
   const k = q ? rows.findIndex((x) => x.i != null) : -1;

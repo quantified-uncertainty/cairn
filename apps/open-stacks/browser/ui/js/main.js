@@ -11,6 +11,8 @@ import './notes.js';
 import './text.js';
 import './wall.js';
 import './search.js';
+import './riffle.js';
+import './route.js';
 import { boot } from './chrome.js';
 
 try {
