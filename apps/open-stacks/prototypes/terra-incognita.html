@@ -286,6 +286,7 @@ a { color: var(--accent-ink); text-underline-offset: 2px; text-decoration-thickn
 }
 .tab i { display: block; font: italic 12px/1 var(--f-serif); color: var(--ink-3); margin-bottom: 3px; letter-spacing: 0; }
 .tab[aria-selected="true"] { color: var(--ink); }
+.tab:focus-visible { outline-offset: -3px; }
 .tab[aria-selected="true"]::after { content: ""; position: absolute; left: 6px; right: 6px; bottom: -1px; height: 3px; background: var(--accent); }
 .pb { flex: 1 1 auto; overflow-y: auto; padding: 16px max(16px, env(safe-area-inset-right, 0px)) 28px 20px; overscroll-behavior: contain; }
 .pb[hidden] { display: none; }
@@ -1811,7 +1812,7 @@ function renderCard() {
 /* =============================== tabs =============================== */
 function setTab(tab, opts = {}) {
   st.tab = tab;
-  $$('.tab').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
+  $$('.tab').forEach((b) => { b.setAttribute('aria-selected', String(b.dataset.tab === tab)); b.tabIndex = b.dataset.tab === tab ? 0 : -1; });
   $$('.pb').forEach((p) => (p.hidden = p.id !== 'pb-' + tab));
   if (tab === 'atlas') renderAtlas();
   if (tab === 'prov') renderProvince();
@@ -2405,22 +2406,24 @@ function matchList(text) {
   }
   const lines = text.split(/\n+/).map((l) => l.trim()).filter(Boolean).slice(0, 400);
   const out = [];
+  const jac = (a, b) => { const B = new Set(b); const inter = [...new Set(a)].filter((t) => B.has(t)).length; return inter / (new Set([...a, ...b]).size || 1); };
+  const clean = (t) => String(t).replace(/\([^)]*\)/g, ' ');
   for (const line of lines) {
     const [tPart, aPart] = line.split(/\s+(?:by|—|–|-)\s+(?=[^—–-]+$)/i);
-    const tt = tokens(tPart), at = tokens(aPart || '');
-    if (!tt.length) { out.push({ line, i: -1 }); continue; }
-    const rare = tt.slice().sort((a, b) => (tokIndex.get(a)?.length || 1e9) - (tokIndex.get(b)?.length || 1e9))[0];
-    const cands = tokIndex.get(rare) || [];
+    const full = tokens(clean(tPart)), head = tokens(clean(tPart).split(/:\s|\s[—–]\s/)[0]), at = tokens(aPart || '');
+    if (!full.length) { out.push({ line, i: -1 }); continue; }
+    const cand = new Set();
+    for (const tk of [...head, ...full].sort((a, b) => (tokIndex.get(a)?.length || 1e9) - (tokIndex.get(b)?.length || 1e9)).slice(0, 2)) for (const i of tokIndex.get(tk) || []) cand.add(i);
     let best = -1, bs = 0;
-    for (const i of cands) {
-      const w = M.works[i]; const wt = new Set(tokens(w.t.split(/:\s/)[0]));
-      const inter = tt.filter((t) => wt.has(t)).length;
-      let s = inter / (tt.length + wt.size - inter);
+    for (const i of cand) {
+      const w = M.works[i];
+      const wHead = tokens(clean(w.t).split(/:\s/)[0]), wFull = tokens(clean(w.t + ' ' + (w.st || '')));
+      let s = Math.max(jac(head, wHead), jac(full, wFull), jac(full, wHead) * 0.9);
       if (at.length) { const wa = new Set(tokens((w.a || []).join(' '))); s += 0.25 * at.filter((t) => wa.has(t)).length / at.length; }
       s += 0.02 * Math.log1p(w.rl || 0);
       if (s > bs) { bs = s; best = i; }
     }
-    out.push({ line, i: bs >= 0.55 ? best : -1 });
+    out.push({ line, i: bs >= 0.6 ? best : -1 });
   }
   return out;
 }
@@ -2445,6 +2448,12 @@ function bind() {
   $('#z-fit').onclick = () => sel.transition().duration(REDUCED ? 0 : 700).call(zoomB.transform, fitTransform());
   $$('#stops .stop').forEach((b) => (b.onclick = () => zoomToLevel(+b.dataset.z)));
   $$('.tab').forEach((b) => (b.onclick = () => setTab(b.dataset.tab)));
+  $('.tabs').addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const tabs = $$('.tab'); const k = tabs.findIndex((t) => t.dataset.tab === st.tab);
+    const n = tabs[(k + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+    e.preventDefault(); setTab(n.dataset.tab); n.focus();
+  });
   $('#legend').addEventListener('toggle', () => requestRender());
   // delegated clicks
   document.addEventListener('click', (e) => {
