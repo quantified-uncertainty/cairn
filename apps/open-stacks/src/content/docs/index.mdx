@@ -1,6 +1,88 @@
 ---
 title: Open Stacks
-description: Exploring the world's literature cheaply and well — what is free, what is cheap, what tools exist, and what could be built.
+description: A research wiki on exploring the world's literature cheaply and well — what is free and legal, cheap and institutional access, tools for finding things, reading environments from e-ink to VR, the law for tool builders, a reference architecture, and a gallery of interface prototypes.
+template: splash
+hero:
+  tagline: Browse and read across thousands of books, textbooks, papers and lectures without a university affiliation. What is free and legal, what is cheap, what tools exist, and what could be built.
+  actions:
+    - text: What to do first
+      link: /start-here/decision-guide/
+      icon: right-arrow
+    - text: The Access Ladder
+      link: /access/access-ladder/
+      icon: open-book
+      variant: minimal
 ---
 
-*Status: under construction, October 2026. Research is in progress; chapters will appear here.*
+## The idea in one paragraph
+
+Exploring a large literature has two parts that are usually tangled together. The **catalog** is titles, tables of contents, summaries and where each work sits among its neighbours. It is small and mostly open data. The **content** is the text itself, scattered across open repositories, public and university libraries, subscriptions and paywalls. This wiki separates them. It maps what content you can legally reach and at what cost, what is known about tools and interfaces for finding things, and how to build one place to browse everything that sends each work to wherever it can actually be read, at the right page.
+
+## What the research found
+
+Every figure below is dated October 2026 and comes from a chapter that cites its primary sources. Most are from small spot-checks; read them as rough upper estimates for less famous reading lists.
+
+- **More of the canonical technical shelf is free than people assume.** In a test of 55 frequently recommended books, 24 have a free, legal full text, including 8 of 10 in machine learning. None of six classics from 1930–1989 do. See [Open-Access Books](/access/open-books/).
+- **One free library card does most of the rest.** A San Francisco Public Library card (free to California residents) plus legal free copies covered 28 of 33 technical books in a spot-check, including an O'Reilly login that stands in for a \$499/year plan. See [Public Libraries](/access/public-libraries/) and [The Access Ladder](/access/access-ladder/).
+- **For papers, free legal tools find about three quarters.** Recomputed from item-level data for 875 cited works: free legal tools reached 73% (58% in the final version); adding one university library raised that to 88%. See [Open Papers](/access/open-papers/).
+- **You can find the right page in books you don't have.** HathiTrust and Internet Archive search and HathiTrust's page-level word counts can say which books discuss a concept and roughly where. HathiTrust's research center shut down its services on 2026-09-30, so the open data is worth mirroring now. See [Searching Inside Books](/finding/searching-inside-books/).
+- **Licences increasingly forbid feeding content to AI.** O'Reilly's membership agreement bars using its content as input to any AI system, and OpenStax moved to a non-commercial licence in April 2026. A tool should route readers to licensed pages, not ingest them. See [The Legal Map](/building/legal-map/).
+- **Headsets give you more room, not sharper text.** Headsets show about 20–34 pixels per degree against 67–90 for a good monitor, and the one controlled week-long study of VR work found it worse on almost every measure. See [VR and Spatial Computing](/environments/vr-and-spatial-computing/).
+- **Building a catalog is cheap in model costs and expensive in hours.** A one-paragraph summary of each of 100,000 books costs about \$15 on Claude Haiku 5.5 in batch; a usable month-scale build takes an estimated 80–120 hours. See [Costs and Effort](/building/costs-and-effort/).
+
+## The book
+
+{/* chapter-table */}
+| # | Chapter | Status |
+|---|---|---|
+| 1 | Open Stacks | planned |
+| 2 | [What to Do First](/start-here/decision-guide/) | draft |
+| 3 | Cruxes | planned |
+| **I** | **Getting the Text** | |
+| 4 | [Open-Access Books and Textbooks](/access/open-books/) | draft |
+| 5 | [The Public Domain and Open Corpora](/access/public-domain/) | draft |
+| 6 | [Open Papers and Preprints](/access/open-papers/) | draft |
+| 7 | Grey Literature and Community Archives | planned |
+| 8 | [Cheap Subscriptions](/access/subscriptions/) | draft |
+| 9 | [Public Libraries](/access/public-libraries/) | draft |
+| 10 | [University and Employer Access](/access/academic-and-employer/) | draft |
+| 11 | Your Own Library | planned |
+| 12 | [The Shadow Libraries](/access/shadow-libraries/) | draft |
+| 13 | [The Access Ladder](/access/access-ladder/) | draft |
+| **II** | **Finding Things** | |
+| 14 | [Catalogs and Metadata](/finding/catalogs-and-metadata/) | draft |
+| 15 | [Browsing the Stacks](/finding/browsing-the-stacks/) | draft |
+| 16 | [Searching Inside Books You Don’t Have](/finding/searching-inside-books/) | draft |
+| 17 | [AI Research Assistants](/finding/ai-research-assistants/) | draft |
+| 18 | [Curation: Syllabi, Experts and Reviews](/finding/curation/) | draft |
+| 19 | Lectures, Talks and Podcasts | planned |
+| **III** | **Interfaces: What Has Been Tried** | |
+| 20 | [Foraging and Exploratory Search](/interfaces/exploratory-search/) | draft |
+| 21 | [Maps of Knowledge](/interfaces/maps-of-knowledge/) | draft |
+| 22 | [Reading Interfaces](/interfaces/reading-interfaces/) | draft |
+| 23 | [Generative Interfaces](/interfaces/generative-interfaces/) | draft |
+| **IV** | **Where You Read** | |
+| 24 | [Reading Modes and Devices](/environments/reading-modes-and-devices/) | draft |
+| 25 | [VR and Spatial Computing](/environments/vr-and-spatial-computing/) | draft |
+| 26 | [Building a Virtual Reading Room](/environments/virtual-reading-room/) | draft |
+| **V** | **Building Your Own** | |
+| 27 | [The Legal Map](/building/legal-map/) | draft |
+| 28 | [A Reference Architecture](/building/reference-architecture/) | draft |
+| 29 | [Costs and Effort](/building/costs-and-effort/) | draft |
+| 30 | The Design Space | planned |
+| 31 | Prototype Gallery | planned |
+| — | Directory of Sources and Tools | planned |
+| — | Glossary | planned |
+| — | Open Problems | planned |
+| — | About the Research | planned |
+{/* /chapter-table */}
+
+**Read it offline or feed it to an LLM.** The whole wiki is available as one file, [llms-full.txt](/llms-full.txt), with every page in reading order.
+
+## The prototypes
+
+Alongside the chapters, Open Stacks includes twelve mockups and working prototypes of new ways to explore literature, built on real open data: an Open Library catalog with Library of Congress call numbers, the Project Gutenberg catalogue, arXiv metadata, the LC Classification Outline and nine public-domain books on probability and inference. They include a syntopicon whose every quotation is verified word for word, a fog-of-war map of the classification, a ledger that turns papers into likelihood ratios, and a bindery that assembles the book you wish existed from real chapters. See the [Prototype Gallery](/building/prototype-gallery/) and [The Design Space](/building/design-space/).
+
+## Status
+
+This wiki is an early draft. It was researched and written in October 2026 by research agents whose work was checked by independent fact-checking agents; [About the Research](/reference/methodology/) explains the process and its limits. Prices, catalogue sizes and product statuses go stale fastest. It is part of the [CAIRN](https://github.com/quantified-uncertainty/cairn) project by [QURI](https://quantifieduncertainty.org/), alongside the [Robust Reasoning Processes](https://reasoning-processes.quantifieduncertainty.org/) and [Evaluation Engineering](https://evaluation-engineering.quantifieduncertainty.org/) wikis.
