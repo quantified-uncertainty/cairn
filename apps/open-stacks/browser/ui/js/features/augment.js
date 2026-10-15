@@ -281,7 +281,7 @@ function paintGuide(it) {
   if (a?.error) return msg([a.error, a.code === 'budget' || a.code === 'no_text' ? null : makeBtn('try again')], a.code === 'budget' ? 'budget' : 'err');
   if (inflight.has(k)) return msg([phase.get(k) === 'text' ? 'Reading the text…' : `Writing a reading guide with ${short(S.model)}…`, h('span', { className: 'bar' })], 'working');
   if (state.status.summariesEnabled === false) return msg('Reading guides are off. Start the server with ANTHROPIC_API_KEY set, or with STACKS_MOCK_AI=1 to try the interface.');
-  if (spend && spend.today >= spend.budget) return msg([`Daily AI budget reached ($${spend.today.toFixed(2)} of $${spend.budget}).`, makeBtn('make anyway')], 'budget');
+  if (spend && spend.today >= spend.budget) return msg(`Daily AI budget reached ($${spend.today.toFixed(2)} of $${spend.budget}). Raise it in Settings (⌘, or Ctrl+,) for reading guides.`, 'budget');
   if (countdown?.id === it.id) {
     const left = Math.max(0, countdown.ms - (Date.now() - countdown.at));
     const bar = h('span', { className: 'bar' }); bar.style.setProperty('--aug-t', left + 'ms');

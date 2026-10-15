@@ -86,6 +86,12 @@ function prune(el, drop) {
 const tagText = (h) => { if (!h) return ''; for (const el of walk(h)) if (hasClass(el, 'ltx_tag')) return sq(text({ kids: el.kids })); return ''; };
 const BOLD = (el) => el.tag === 'b' || el.tag === 'strong' || hasClass(el, 'ltx_font_bold');
 const EMPH = (el) => el.tag === 'em' || el.tag === 'i' || BOLD(el) || hasClass(el, 'ltx_emph') || hasClass(el, 'ltx_font_italic');
+/** LaTeXML's bold and italic spans as <b> and <i>, which clean() keeps and any stylesheet shows. */
+function inl(el) {
+  if (!isEl(el)) return el;
+  const tag = el.tag !== 'span' ? el.tag : hasClass(el, 'ltx_font_bold') ? 'b' : hasClass(el, 'ltx_font_italic') || hasClass(el, 'ltx_emph') ? 'i' : 'span';
+  return { ...el, tag, kids: el.kids.map(inl) };
+}
 const unwrapBlocks = (h) => h.replace(/<\/?(?:div|p)\b[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
 /** The bold run an element's text starts with, or ''. Tags (bullets) are skipped. */
@@ -207,7 +213,7 @@ function listHtml(items, intro) {
   const lis = items.slice(0, 5).map((li) => {
     const t = text(li);
     if (t.length <= 220) {
-      const h = unwrapBlocks(clean(prune(li, (x) => hasClass(x, 'ltx_tag') || hasClass(x, 'footnote-reference') || x.tag === 'ul' || x.tag === 'ol')));
+      const h = unwrapBlocks(clean(inl(prune(li, (x) => hasClass(x, 'ltx_tag') || hasClass(x, 'footnote-reference') || x.tag === 'ul' || x.tag === 'ol'))));
       if (h.length <= 4000) return `<li>${h}</li>`;
     }
     const lead = leadBold(li);
@@ -558,24 +564,26 @@ export function fromLatexml({ html, url, figures = [] }) {
     if (/^(?:defin|assum)/.test(kind)) { type = 'definition'; score = 0.9 + 0.1 * n; }
     else if (/^(?:theorem|thm|prop|corollary|cor\b|claim)/.test(kind) || (/^lem/.test(kind) && n >= 2)) { type = 'theorem'; score = 0.6 + 0.1 * n; }
     if (!type) continue;
-    let bh = clean(body);
+    let bh = clean(inl(body));
     bh = bh.length <= 4096 ? bh.trim().replace(/^<div[^>]*>|<\/div>$/g, '').trim() : undefined;
     P.add({ pid: `${type}:${div.a.id}`, type, kind, text: t, html: bh, label: label || undefined, sec: sec.title || undefined, loc: { anchor: div.a.id, quote: t, href: href(div.a.id) }, at: at(div), score });
   }
 
   // Tables and figures from /figures.
+  const figSec = new Map();
+  for (const el of walk(article)) if (el.tag === 'figure' && el.a.id) figSec.set(el.a.id, secOf(el).title || undefined);
   for (const f of figures) {
     if (!f.table || !f.html) continue;
     if (!(f.rows >= 2 && f.rows <= 25 && f.cols >= 2 && f.cols <= 10) || f.html.length > 40000 || /^Fig/i.test(f.label || '') || f.at >= 0.9 || /^A[\d.]/.test(f.id || '')) continue;
     const st = tableStats(parse(f.html));
     const main = f.at < 0.7;
     const cap = f.caption || '';
-    P.add({ pid: `table:${f.id || f.label}`, type: 'table', text: cap ? `${f.label}: ${cap}` : f.label, html: f.html, label: f.label, caption: cap || null, rows: f.rows, cols: f.cols, loc: { anchor: f.id || undefined, quote: cap || undefined, href: href(f.id) }, at: f.at, score: tableScore(f.html, st.numeric, main) });
+    P.add({ pid: `table:${f.id || f.label}`, type: 'table', text: cap ? `${f.label}: ${cap}` : f.label, html: f.html, label: f.label, caption: cap || null, rows: f.rows, cols: f.cols, sec: figSec.get(f.id), loc: { anchor: f.id || undefined, quote: cap || undefined, href: href(f.id) }, at: f.at, score: tableScore(f.html, st.numeric, main) });
   }
   const scored = scoreFigures(figures, citeSecs);
   for (const x of scored) {
     const pic = figPic(x.f, url);
-    P.add({ ...pic, text: x.f.caption ? `${x.f.label}: ${x.f.caption}` : x.f.label, score: rescale(x.s) });
+    P.add({ ...pic, text: x.f.caption ? `${x.f.label}: ${x.f.caption}` : x.f.label, sec: figSec.get(x.f.id), score: rescale(x.s) });
   }
   return { src: 'latexml', url, lead: arxivLead(scored, url), parts: P.finish() };
 }
