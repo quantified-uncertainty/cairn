@@ -47,11 +47,11 @@ let ptr = { x: null, y: null };
 // Chrome merges the wheel events queued while the page is busy into one (deltas
 // summed, stamped with the last one's time). unit: a mouse notch's delta per
 // deltaMode, from notches that arrived on time (kept once their gesture ends as
-// a mouse's), so that a merged event counts as the notches it holds. devStamps:
-// events carry the device's time (some event has waited in the queue), so a gap
-// between stamps is the reader's.
+// a mouse's; else the spin's first notch), so that a merged event counts as the
+// notches it holds. devStamps: events carry the device's time (some event has
+// waited in the queue), so a gap between stamps is the reader's.
 const unit = {};
-const unitOf = (mode) => (G?.device === 'mouse' && G.u?.[0] === mode ? G.u[1] : unit[mode]);
+const unitOf = (mode) => (G?.device === 'mouse' && G.u?.[0] === mode ? G.u[1] : unit[mode] || (G?.device === 'mouse' && !mode ? G.first : 0));
 let devStamps = false;
 
 function begin(now, device, final, big = 0) {

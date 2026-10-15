@@ -32,7 +32,7 @@ const SEP = '\u0001';
 
 // ---------- the tree ----------
 // node: { key, label, lane, depth, parent, kids: [{node} | {i}] in tree order, n, o, items: [i] (all below) }
-let T = null; // { lanes: [node], byKey: Map, parentOf: Int32Array → node index… }
+let T = null; // { lanes: [lane nodes, in chip order], byKey: Map key → node }
 const parentOf = new Map(); // item index → its folder node
 function build() {
   if (T) return T;
@@ -119,13 +119,15 @@ function setScope(n) {
 const findNode = (lane, path) => { build(); return T.byKey.get([lane, ...path].join(SEP)) || null; };
 // Back: the lane switch or folder change it undoes also restores the folder.
 const scopeUndo = [];
+const SCOPED = /^(lane switch|browse folder|leave folder|browse results)$/;
 on('nav:before', (s) => {
-  if (s.label !== 'lane switch' && s.label !== 'browse folder' && s.label !== 'leave folder') return;
+  if (!SCOPED.test(s.label)) return;
   scopeUndo.push(scopeNode); if (scopeUndo.length > 100) scopeUndo.shift();
-  if (s.label === 'lane switch') setScope(null); // a lane chip (or 0-9) leaves the folder
+  // A lane chip (or 0-9) or browsing search results leaves the folder.
+  if (s.label === 'lane switch' || s.label === 'browse results') setScope(null);
 });
 on('nav', (d) => {
-  if (d.type !== 'back' || !/^(lane switch|browse folder|leave folder)$/.test(d.undone || '')) return;
+  if (d.type !== 'back' || !SCOPED.test(d.undone || '')) return;
   if (scopeUndo.length) setScope(scopeUndo.pop());
   paint();
 });
@@ -133,7 +135,7 @@ on('nav', (d) => {
 /** Browse a folder (or a lane) in the feed, optionally starting at item `at`. */
 function browse(n, at) {
   if (!n.parent) { // a lane: the whole lane
-    if (state.lane === n.lane && !scopeNode) { if (at != null) openItem(at); return; }
+    if (state.lane === n.lane && !scopeNode) { if (at != null) openItem(at); else done(); return; }
     setLane(n.lane);
     if (at != null) openItem(at);
     done(); return;

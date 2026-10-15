@@ -259,7 +259,8 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
     bx0 = pct(long.map((s) => s.x0), 0.05); bx1 = pct(long.map((s) => s.x1), 0.95);
     const mid = (bx0 + bx1) / 2;
     const L = long.filter((s) => s.x1 < mid + body), R = long.filter((s) => s.x0 > mid - body), X = long.filter((s) => s.x0 < mid - 2 * body && s.x1 > mid + 2 * body);
-    if (L.length >= 3 && R.length >= 3 && X.length < 0.2 * long.length) {
+    // (Full-width captions and figures may span the gutter on a page whose text is in two columns.)
+    if (L.length >= 3 && R.length >= 3 && (X.length < 0.2 * long.length || L.length + R.length >= Math.max(8, X.length))) {
       gL = pct(L.map((s) => s.x1), 0.9); gR = pct(R.map((s) => s.x0), 0.1);
       two = gR - gL > 0.3 * body;
     }
@@ -294,8 +295,10 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
     const blk = { x0: s.x0, y0: s.y0, x1: s.x1, y1: s.y1, runs: [s], kind: capKind(m[1]), label: capLabel(m) };
     s.cap = blk;
     let last = s;
+    // A caption stays in its column on a two-column page (unless its label starts across both).
+    const inCol = !two ? () => true : s.x1 <= gm + body ? (o) => o.x1 <= gm + body : s.x0 >= gm - body ? (o) => o.x0 >= gm - body : () => true;
     // The rest of the label's line first (a bold label is often a run of its own).
-    for (const o of byY.filter((o) => !o.cap && !o.margin && Math.abs(o.base - s.base) < 0.5 * body && o.x0 >= s.x0).sort((a, b) => a.x0 - b.x0)) {
+    for (const o of byY.filter((o) => !o.cap && !o.margin && inCol(o) && Math.abs(o.base - s.base) < 0.5 * body && o.x0 >= s.x0).sort((a, b) => a.x0 - b.x0)) {
       if (o.x0 - blk.x1 > 3 * body || CAP.test(o.str)) break;
       o.cap = blk; blk.runs.push(o); grow(blk, o);
     }
@@ -304,7 +307,8 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
     for (let more = true; more && blk.runs.length < 24;) {
       more = false;
       for (const o of byY) {
-        if (o.cap || o.margin || CAP.test(o.str) || ((bare || scan) && o.prose)) continue;
+        // A line that starts "Figure 7." continues a caption whose line breaks mid-sentence ("… are shown in").
+        if (o.cap || o.margin || !inCol(o) || (CAP.test(o.str) && /[.!?:]["”)]?\s*$/.test(last.str)) || ((bare || scan) && o.prose)) continue;
         const sameLine = Math.abs(o.base - last.base) < 0.5 * body && o.x0 >= blk.x0 - body && o.x0 - blk.x1 < 3 * body && o.y0 >= blk.y0 - body;
         const next = o.y0 - last.y1 > -0.5 * s.fs && o.y0 - last.y1 < 0.75 * s.fs && ovX(o, blk) > 0 && Math.abs(o.fs - s.fs) < 0.2 * s.fs;
         if (sameLine || next) { o.cap = blk; blk.runs.push(o); grow(blk, o); if (o.y0 > last.y0) last = o; more = true; }
@@ -459,17 +463,19 @@ export function findRegions({ W, H, runs, imgs = [], grid, scan = false }) {
     const [sx0, sx1] = spanOf(C);
     const S = { x0: sx0, x1: sx1 };
     const sideOf = (R) => (R.y1 <= C.y0 + 0.5 * body ? 'above' : R.y0 >= C.y1 - 0.5 * body ? 'below' : null);
-    const cand = rs.filter((R) => (R.ok || R.boxed) && !R.cap && ovX(R, S) > 0.3 * Math.min(R.x1 - R.x0, sx1 - sx0)).map((R) => {
+    // A caption vouches for small drawings too.
+    const fits = (R) => R.ok || R.boxed || (R.x1 - R.x0 >= 0.025 * W && R.y1 - R.y0 >= 0.025 * H && R.gc >= 12);
+    const cand = rs.filter((R) => fits(R) && !R.cap && ovX(R, S) > 0.3 * Math.min(R.x1 - R.x0, sx1 - sx0)).map((R) => {
       const side = sideOf(R); if (!side) return null;
       const d = side === 'above' ? C.y0 - R.y1 : R.y0 - C.y1;
-      if (d > 0.15 * H) return null;
+      if (d > 0.45 * H) return null;
       if (side === 'above' ? between(R.y1, C.y0, Math.max(R.x0, sx0), Math.min(R.x1, sx1), C) : between(C.y1, R.y0, Math.max(R.x0, sx0), Math.min(R.x1, sx1), C)) return null;
       // Prefer the figure on the caption's side, then the one right above (or below) the caption.
       const al = Math.max(0, ovX(R, C)) / Math.max(1, Math.min(R.x1 - R.x0, C.x1 - C.x0));
       return { R, side, al, d: d + ((side === 'below') === (C.kind === 'figure') ? 0.02 * H : 0) + 0.25 * H * (1 - Math.min(1, al)) };
     }).filter(Boolean).sort((a, b) => a.d - b.d);
     let F = null;
-    if (cand.length) {
+    if (cand.length && (cand[0].side === 'above' ? C.y0 - cand[0].R.y1 : cand[0].R.y0 - C.y1) <= 0.15 * H) {
       const side = cand[0].side;
       // Sub-figures: every region on that side up to the barrier beyond the nearest.
       F = { ...cand[0].R };
