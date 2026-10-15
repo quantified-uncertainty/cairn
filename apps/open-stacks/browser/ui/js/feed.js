@@ -3,7 +3,7 @@ import { $, h, P, on, emit, emitQuiet, fmtDate, lru } from './util.js';
 import { items, LANES } from './corpus.js';
 import { state, current } from './state.js';
 import { openDoc, isFlow, scanUrl } from './docs.js';
-import { renderPage, cachedRender, renderedNow } from './render.js';
+import { renderPage, cachedRender, renderedNow, previewScan, SCAN_W } from './render.js';
 import { planAround, startOf, serverPrefetch } from './prefetch.js';
 import { showFlow, dropLive, live, vpToCol, flowRange } from './flow.js';
 import { goPage, toggleZoom } from './nav.js';
@@ -80,13 +80,11 @@ export async function showFeed() {
   const slots = []; let k = s;
   while (slots.length < per && k < n) { const kk = k++; slots.push({ el: h('div', { className: 'pg loading' }), k: kk, p: renderPage(it, kk) }); }
   spread.replaceChildren(...slots.map((x) => x.el));
-  for (const x of slots) {
-    if (it.kind === 'scan') { x.el.append(h('img', { src: P(scanUrl(it, x.k, 400)), alt: '' })); x.el.classList.add('lowres'); }
-    x.el.dataset.aspect = String(hint);
-  }
+  for (const x of slots) x.el.dataset.aspect = String(hint);
   // Placeholders take the shape the pages are expected to have, so the
   // spread does not jump when they arrive.
   layoutPanels(slots.map((x) => x.el), boxW, boxH);
+  if (it.kind === 'scan') progressive(gen, it, slots, boxW, boxH);
   state.shown = slots.length;
   paintPos(it, s, slots.length, n);
   paintScrub(i, s, slots.length);
@@ -102,6 +100,33 @@ export async function showFeed() {
     results.push(p); slots.push({ k: kk }); if (!(p.length === 1 && p[0].blank)) extra--;
   }
   finish(i, it, s, n, results, slots, boxW, boxH);
+}
+/** Scans: each page goes up as soon as it can, not when the whole spread is in:
+ *  its sharp render, or before that a preview (render.js previewScan: a small
+ *  image already on disk, or one fetched beside the sharp one), cut exactly as
+ *  the sharp page will be and sized by the same aspect, which the sharp page
+ *  then replaces in place. The spread is laid out again only when a page's
+ *  shape first differs from the guess. finish() then puts up the same pages. */
+export const scanPreview = { fetch: true }; // fetch a preview for cold pages (the benchmark switches it)
+function progressive(gen, it, slots, boxW, boxH) {
+  const one = (p) => (p && p.length === 1 && p[0].canvas ? p[0] : null); // not blank, not split into columns
+  const put = (x, pnl, sharp) => {
+    if (gen !== state.gen || !x.el.isConnected || x.sharp || (!sharp && x.shown)) return;
+    x.shown = true; if (sharp) x.sharp = true;
+    x.el.replaceChildren(pnl.canvas, h('span', { className: 'pno', textContent: String(x.k + 1) }));
+    x.el.classList.remove('loading');
+    x.el.classList.toggle('preview', !sharp); x.el.classList.toggle('lowres', !sharp);
+    const a = pnl.aspect ?? pnl.canvas.width / pnl.canvas.height;
+    if (Math.abs(a / Number(x.el.dataset.aspect) - 1) > 0.002) { x.el.dataset.aspect = String(a); layoutPanels(slots.map((y) => y.el), boxW, boxH); }
+  };
+  for (const x of slots) {
+    x.p.then((p) => { const pnl = one(p); if (pnl) put(x, { ...pnl, canvas: cloneCanvas(pnl.canvas) }, true); }, () => {});
+    // Not when the page is about to be there anyway (on disk; the render is a decode away).
+    setTimeout(() => {
+      if (gen !== state.gen || x.shown) return;
+      previewScan(it, x.k, { fetch: scanPreview.fetch }).then((p) => { const pnl = one(p); if (pnl) put(x, pnl, false); }, () => {});
+    }, 40);
+  }
 }
 /** A spread of an item with a profile: its pages and their shapes are known, so
  *  placeholders are exact and blank pages need no render to be found. */
@@ -121,16 +146,21 @@ async function showProfiled(gen, i, it, pf, s, n, per, boxW, boxH) {
   for (const x of slots) {
     const a = pageAspect(pf, x.k);
     if (!a) { x.el.dataset.aspect = '0.06'; continue; }
-    if (it.kind === 'scan') { x.el.append(h('img', { src: P(scanUrl(it, x.k, 400)), alt: '' })); x.el.classList.add('lowres'); }
     x.el.dataset.aspect = String(a);
   }
   layoutPanels(slots.map((x) => x.el), boxW, boxH);
-  // Until the page arrives: the scan's low-resolution image, cropped as the page
-  // will be, or the page's cell of the sprite (body pages, whose cells they fill).
+  // Until the page arrives: the page's cell of the sprite (body pages, whose
+  // cells they fill), else for a scan a small image of it (on disk, or fetched
+  // beside the sharp one: routes/13-ia.mjs), cropped as the page will be.
   for (const x of slots) {
     if (!pageAspect(pf, x.k)) continue;
-    if (it.kind === 'scan') { placeLowres(x.el, pf, x.k); continue; }
-    if (state.crop !== false && pf.pages[x.k]?.cg !== 'own') { const cell = spriteCell(pf, x.k, parseFloat(x.el.style.height) || 0); if (cell) Object.assign(x.el.style, cell); }
+    const cell = state.crop !== false && pf.pages[x.k]?.cg !== 'own' && spriteCell(pf, x.k, parseFloat(x.el.style.height) || 0);
+    if (cell) { Object.assign(x.el.style, cell); continue; }
+    if (it.kind === 'scan') {
+      const im = h('img', { alt: '' }); im.onerror = () => im.remove();
+      im.src = `/ia/preview?u=${encodeURIComponent(scanUrl(it, x.k, SCAN_W))}&w=600,400,200${scanPreview.fetch ? '&fetch=1' : ''}`;
+      x.el.append(im); x.el.classList.add('lowres'); placeLowres(x.el, pf, x.k);
+    }
   }
   state.shown = slots.length;
   paintPos(it, s, slots.length, n);
@@ -160,7 +190,7 @@ function finish(i, it, s, n, results, slots, boxW, boxH) {
       el._pnl = pnl;
       if (pnl.blank) { el.className = 'pg blank'; el.textContent = 'blank'; el.dataset.aspect = '0.06'; }
       else if (pnl.err) { el.className = 'pg err'; el.textContent = pnl.err; el.dataset.aspect = '0.68'; }
-      else { el.append(pnl.canvas); el.dataset.aspect = String(pnl.canvas.width / pnl.canvas.height); }
+      else { el.append(pnl.canvas); el.dataset.aspect = String(pnl.aspect ?? pnl.canvas.width / pnl.canvas.height); }
       el.append(h('span', { className: 'pno', textContent: String(Number(el.dataset.k) + 1) + (pnl.part || '') }));
       el.onclick = (e) => { if (!state.zoom && !e.target.closest('.tl, a') && !getSelection().toString()) toggleZoom(true, Number(el.dataset.k)); };
       els.push(el);
@@ -380,10 +410,10 @@ function waitingNote(it, slots, gen) {
 
 // ---------- how much of the item is ready ----------
 // Scans: which page images are in the server's disk cache (the rest come from
-// the Internet Archive at 1-3 s a page); PDFs and posts are whole files, ready
-// once opened. Shown as a lighter band under the track and, while incomplete,
-// as a percentage before the title. Staying on a scan for a few seconds asks
-// the server to fetch the whole book in the background.
+// the Internet Archive at about a second a page); PDFs and posts are whole
+// files, ready once opened. Shown as a lighter band under the track and, while
+// incomplete, as a percentage before the title. Staying on a scan for a moment
+// asks the server to fetch the whole book in the background (warmBook).
 let loaded = null; // { id, bits: '0101…', pct }
 let pollT = null, bookT = null;
 function paintLoaded() {
@@ -427,17 +457,31 @@ async function pollLoaded() {
     if (loaded.pct < 100) pollT = setTimeout(pollLoaded, 2000);
   } catch { /* offline */ }
 }
+// The whole book at the size the feed reads (w1000; smaller sizes are served
+// from it), nearest pages first, pages ahead before pages behind (two ahead
+// for each one behind), behind everything more urgent. A page costs the
+// Internet Archive's datanode the same at any size, so this is the fastest way
+// to have every page sharp: about 10 pages a second (cache.mjs: 12 at a time),
+// two minutes for a 1,200-page book. It starts 1.5 s after you settle on a scan
+// and starts over from where you are when you jump within it.
+let warmed = null; // id of the book being warmed
+function warmBook(it) {
+  if (tr?.it !== it) return;
+  const s = state.start.get(tr.i) ?? 0, s1 = s + Math.max(1, state.shown || state.per);
+  const d = (k) => (k >= s ? Math.max(0, k - s1 + 1) : 2 * (s - k));
+  const ks = Array.from({ length: Math.min(it.n, 1500) }, (_, k) => k).sort((a, b) => d(a) - d(b) || a - b);
+  serverPrefetch(ks.map((k) => scanUrl(it, k, SCAN_W)), 20, 'book');
+  warmed = it.id;
+  pollLoaded();
+}
 on('item:settled', ({ it }) => {
-  clearTimeout(bookT);
+  clearTimeout(bookT); warmed = null;
   if (it.kind !== 'scan' || !it.n) return;
-  bookT = setTimeout(() => {
-    if (tr?.it !== it) return;
-    const s = state.start.get(tr.i) ?? 0;
-    // The whole book, nearest pages first, behind everything more urgent.
-    const ks = Array.from({ length: Math.min(it.n, 1500) }, (_, k) => k).sort((a, b) => Math.abs(a - s) - Math.abs(b - s));
-    serverPrefetch(ks.map((k) => scanUrl(it, k, 1000)), 20, 'book');
-    pollLoaded();
-  }, 4000);
+  bookT = setTimeout(() => warmBook(it), 1500);
+});
+on('nav', ({ type, it }) => {
+  if ((type !== 'page' && type !== 'random') || !it || it.id !== warmed || (loaded?.id === it.id && loaded.pct >= 100)) return;
+  clearTimeout(bookT); bookT = setTimeout(() => warmBook(it), 400);
 });
 
 // Scrubbing redraws the main spread at the page under the pointer from
@@ -535,7 +579,7 @@ export function riffleStart() {
   if (!n || (isFlow(it) && live?.id !== it.id)) return false;
   riff = { i, it, n, k: isFlow(it) ? (state.start.get(i) ?? 0) : (state.start.get(i) ?? startOf(i)) };
   tr = tr && tr.it === it ? tr : { i, it, n, s: riff.k };
-  if (it.kind === 'scan') serverPrefetch(Array.from({ length: Math.min(n, 1200) }, (_, k) => scanUrl(it, k, 200)), 50, 'track');
+  if (it.kind === 'scan') serverPrefetch(coarseToFine(Math.min(n, 1200)).map((k) => scanUrl(it, k, 200)), 50, 'track');
   peek.classList.add('textonly'); peek.hidden = false;
   return true;
 }
@@ -564,12 +608,20 @@ export function riffleEnd() {
   if (isFlow(it)) { state.start.set(i, k); showFeed(); } else goPage(k);
 }
 
+// Pages spread over the whole item, coarse to fine (every 64th, then every
+// 32nd between them, …), so wherever the pointer lands a page near it is in.
+function coarseToFine(n) {
+  const out = [], seen = new Uint8Array(n);
+  for (let step = 64; step >= 1; step >>= 1) for (let k = 0; k < n; k += step) if (!seen[k]) { seen[k] = 1; out.push(k); }
+  return out;
+}
 track.addEventListener('pointerenter', () => {
   if (!tr) return;
   const { it, n } = tr;
-  // Get the whole item's small page images coming for scans.
+  // Get the whole item's small page images coming for scans (served from the
+  // book's w1000s where those are on disk or queued: cache.mjs merge()).
   if (it.kind === 'scan') {
-    serverPrefetch(Array.from({ length: Math.min(n, 1200) }, (_, k) => scanUrl(it, k, 200)), 50, 'track');
+    serverPrefetch(coarseToFine(Math.min(n, 1200)).map((k) => scanUrl(it, k, 200)), 50, 'track');
     // And pull an evenly spaced set into the browser first, so any hover lands near a page.
     for (let j = 0; j < 40; j++) { const k = Math.floor((j * n) / 40); if (!thumbOk.has(`${it.id}|${k}`)) loadThumb(it, k); }
   }

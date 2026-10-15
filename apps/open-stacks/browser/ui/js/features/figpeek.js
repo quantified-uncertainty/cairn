@@ -658,8 +658,9 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
       more = false;
       for (const s of pool) {
         if (got.has(s)) continue;
+        // (beyond the block's edge, or beside it: a label turned on its side)
         const d = below ? s.y0 - R.y1 : R.y0 - s.y1;
-        if (d < -0.3 * body || d > (got.size ? 1.6 : 2.2) * body) continue;
+        if ((below ? s.y0 < R.y0 - 0.3 * body : s.y1 > R.y1 + 0.3 * body) || d > (got.size ? 1.6 : 2.2) * body) continue;
         if (!s.rot && s.fs > 1.2 * body && s.n < 80) return null; // a heading: the section, not a figure
         got.add(s); grow(R, s); more = true;
         if (R.y1 - R.y0 > 0.6 * H) return null;
@@ -672,7 +673,7 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
     const indented = ls.filter((s) => s.x0 > c0 + 2 * body).length >= 0.6 * ls.length;
     const ownSize = Math.abs(median(ls.map((s) => s.fs)) - body) > 0.1 * body;
     if (!(g >= 6 || got.size > ls.length || indented || ownSize)) return null;
-    R.y0 = Math.min(R.y0, C.y0); R.y1 = Math.max(R.y1, C.y1); // with its caption: the lines read with it
+    for (const Q of rs) if (!Q.cap && Q.x0 >= sx0 - body && Q.x1 <= sx1 + body && ovY(Q, R) > 0.5 * (Q.y1 - Q.y0)) grow(R, Q); // marks drawn beside its lines
     return R;
   };
   // An algorithm: its label line on top, then its lines down to the closing rule
@@ -727,16 +728,21 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
       cand[0].R.cap = C;
       for (const c of cand.slice(1)) {
         if (c.side !== side || !(wide || c.al > 0.3) || c.d > 0.45 * H) continue;
-        { const o = bestFor.get(c.R); if (o && o.C !== C && o.d < c.d) continue; }
+        { const o = bestFor.get(c.R); if (o && o.C !== C && o.d < c.d && !o.C.done) continue; } // left for a nearer caption still to come
         const R = c.R, gapY = Math.max(R.y0 - F.y1, F.y0 - R.y1);
         if ((ovY(R, F) > 0.3 * Math.min(R.y1 - R.y0, F.y1 - F.y0) && c.d < 0.12 * H) || gapY < 0.04 * H) { grow(F, R); R.cap = C; } else { R.cap = C; out.push({ ...R, cap: C, kind: C.kind }); }
       }
     } else {
-      const order2 = C.kind === 'table' ? [true, false] : [false, true];
-      for (const below of order2) if ((F = profile(C, sx0, sx1, below))) break;
-      if (!F) for (const below of order2) if ((F = textBlock(C, sx0, sx1, below))) break;
+      // The side its kind is on (on this page) first; not over a figure another caption has.
+      const taken = (P) => out.some((o) => o.cap !== C && ovX(o, P) > 0 && ovY(o, P) > 0 && ovX(o, P) * ovY(o, P) > 0.3 * Math.min((o.x1 - o.x0) * (o.y1 - o.y0), (P.x1 - P.x0) * (P.y1 - P.y0)));
+      for (const below of prefOf(C.kind) === 'below' ? [true, false] : [false, true]) {
+        F = profile(C, sx0, sx1, below); if (F && taken(F)) F = null;
+        if (!F) { F = textBlock(C, sx0, sx1, below); if (F && taken(F)) F = null; }
+        if (F) break;
+      }
     }
     if (F) { F.cap = C; F.kind = C.kind; out.push(F); }
+    C.done = true;
   }
   // Lines of print, not a picture: graphics that lie on the lines of text inside
   // the region (dot leaders, a band of colour behind a heading), or, in a scan,
@@ -757,7 +763,9 @@ export function findRegions({ W, H, runs: runs0, imgs = [], grid, scan = false }
     if (scan && (R.x1 - R.x0) * (R.y1 - R.y0) > 0.3 * W * H) {
       const cx = (R.x0 + R.x1) / 2;
       // (A legend is short, and may already be inside the region, taken in as a label.)
-      const leg = hz.filter((s) => !s.margin && !s.prose && textLike(s) && s.x1 - s.x0 < 0.75 * (R.x1 - R.x0) && s.y0 >= R.y1 - 2.2 * body && s.y0 - R.y1 < 1.6 * body && Math.abs((s.x0 + s.x1) / 2 - cx) < 0.12 * (R.x1 - R.x0)).sort((a, b) => a.y0 - b.y0).slice(0, 2);
+      // (A long line only when nothing follows it: not the first line of a paragraph.)
+      const alone = (s) => !hz.some((o) => o !== s && o.y0 > s.y1 - 0.3 * body && o.y0 - s.y1 < 1.0 * body && ovX(o, s) > 0);
+      const leg = hz.filter((s) => !s.margin && textLike(s) && (s.x1 - s.x0 < 0.75 * (R.x1 - R.x0) ? !s.prose : alone(s)) && s.y0 >= R.y1 - 2.2 * body && s.y0 - R.y1 < Math.max(1.6 * body, 0.025 * H) && Math.abs((s.x0 + s.x1) / 2 - cx) < 0.12 * (R.x1 - R.x0)).sort((a, b) => a.y0 - b.y0).slice(0, 2);
       if (leg.length) R.cap = { label: '', text: leg.map((s) => s.str).join(' ').replace(/\s+/g, ' ').trim() };
     }
   }
@@ -1245,6 +1253,8 @@ on('nav', closeOv);
 on('view:changed', closeOv);
 on('item:shown', closeOv);
 addEventListener('resize', closeOv);
+// The pages scroll under it (Settings: fit width): it would no longer sit beside its figure.
+spread.addEventListener('scroll', () => { if (ov && !ov.hidden) closeOv(); }, { passive: true });
 
 // ---------- on / off ----------
 function applyEnabled() { document.body.classList.toggle('fp-off', !enabled); }

@@ -252,9 +252,12 @@ function cued(text, cue) {
   return [text.slice(0, k), h('span', { className: 'cue', textContent: cue }), text.slice(k + cue.length)];
 }
 const tail = (s, n) => (s && s.length > n ? '…' + s.slice(s.length - n).replace(/^\S*\s/, '') : s || '');
+/** The picture a lead or highlight card shows (for plates: the candidate that passed the ink test). */
+const shownPic = (card) => cardRec.get(card)?.ready?.[0] || card.pics?.[0];
 function placeOf(card, it) {
-  const page = card.loc?.page ?? (card.pics?.[0]?.loc?.page);
-  if (it?.kind === 'scan' && page != null) return 'p. ' + (card.loc?.label || card.pics?.[0]?.loc?.label || page + 1);
+  const pic = card.pics ? shownPic(card) : null;
+  const page = card.loc?.page ?? pic?.loc?.page;
+  if (it?.kind === 'scan' && page != null) return 'p. ' + (card.loc?.label || pic?.loc?.label || page + 1);
   const sec = card.sec || '';
   const m = sec.match(/^([A-Z]?\d+(?:\.\d+)*)\s/);
   if (m) return '§' + m[1];
@@ -959,8 +962,8 @@ function renderPeek(card, body, ctx) {
 }
 // ---------------------------------------------------------------- opening at the place
 let dive = null; // { i, phase: 'anchor' | 'mark', anchor, quote, card, n, t }
-const locOf = (card) => card.loc || card.passage?.loc || card.pics?.[0]?.loc || {};
-const quoteOf = (card) => card.loc?.quote || card.passage?.quote || card.pics?.[0]?.caption || card.caption || card.text || '';
+const locOf = (card) => card.loc || (card.type === 'highlight' && card.passage?.ok ? card.passage.loc : null) || shownPic(card)?.loc || card.passage?.loc || {};
+const quoteOf = (card) => card.loc?.quote || (card.type === 'highlight' && card.passage?.ok ? card.passage.quote : '') || shownPic(card)?.caption || card.caption || card.text || '';
 function goItem(i, k) {
   state.hist.set(i, []); state.zoom = false;
   state.start.set(i, k);
@@ -978,7 +981,7 @@ async function openCard(card, { pdf = false, feed } = {}) {
   pinPeek(false); closePeek();
   tel('open', feed || recFeed(card), card);
   const loc = locOf(card); const quote = quoteOf(card);
-  const page = loc.page ?? card.pics?.[0]?.loc?.page;
+  const page = loc.page;
   if (it.kind === 'scan' && page != null) { // (a) scans: the page itself
     dive = { i, phase: 'mark', quote, n: 0, t: performance.now() };
     goItem(i, page);
@@ -1074,7 +1077,7 @@ function showMark(i, run) {
 function quote(r) {
   const card = r.card; const it = itemOf(card); if (!it) return;
   const t = card.type;
-  const p0 = card.pics?.[0];
+  const p0 = card.pics ? shownPic(card) : null;
   let text = card.loc?.quote || card.text || '';
   if (t === 'table' || t === 'lead' || t === 'plate') text = `${card.label || p0?.label || TYPE_LABEL[t]}: ${card.caption || p0?.caption || ''}`;
   if (t === 'highlight') text = card.passage?.ok ? card.passage.quote : card.claim;

@@ -15,7 +15,7 @@
 // LessWrong and EA Forum see at most 2 fetches at a time from here, a web host
 // 2, archive.org 2 books. Background work (read-ahead, bg=1) runs 2 items at a
 // time and waits while the reader has page loads in flight.
-import { existsSync, mkdirSync, readFileSync, writeFileSync, renameSync, statSync, readdirSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, renameSync, statSync, readdirSync, openSync, readSync, closeSync } from 'fs';
 import { join } from 'path';
 import http from 'http';
 import { createHash } from 'crypto';
@@ -180,16 +180,56 @@ export default function (app) {
   }
 
   // ----------------------------------------------------------- worker ----
-  // One worker thread runs the parsers, one job at a time (foreground first).
-  const WSRC = `const { parentPort } = require('worker_threads');
-import(${JSON.stringify(LIB)}).then((X) => {
-  parentPort.on('message', ({ n, job }) => {
-    const t0 = performance.now(); let out = null, err = null;
-    try { out = X.run(job); } catch (e) { err = String((e && e.stack) || e); }
-    parentPort.postMessage({ n, out, err, cpu: performance.now() - t0 });
-  });
-  parentPort.postMessage({ ready: true });
-}, (e) => parentPort.postMessage({ fatal: String(e && e.stack || e) }));`;
+  // One worker thread runs the parsers, one job at a time (foreground first). It also reads
+  // the sources and writes the results, so the main thread hands it file paths and gets the
+  // parts back: no large string is read, copied or stringified on the thread serving pages.
+  function workerMain(lib) {
+    const { parentPort } = require('worker_threads');
+    const fs = require('fs'), path = require('path');
+    const safe = (s) => String(s).replace(/[^\w.-]+/g, '_');
+    const readJson = (f) => { try { return JSON.parse(fs.readFileSync(f, 'utf-8')); } catch { return null; } };
+    const write = (f, s) => { fs.writeFileSync(f + '.tmp', s); fs.renameSync(f + '.tmp', f); };
+    function handle(X, job) {
+      const j = { ...job };
+      if (job.src === 'latexml') {
+        j.html = fs.readFileSync(job.htmlPath, 'utf-8');
+        const fj = job.figPath && readJson(job.figPath);
+        j.figures = fj && fj.src && Array.isArray(fj.figures) ? fj.figures : null;
+      } else if (job.src === 'post') {
+        j.htmlBody = readJson(job.bodyPath)?.data?.post?.result?.htmlBody || null;
+        if (!j.htmlBody) return { err: 'empty' };
+        j.preview = (job.previewPath && readJson(job.previewPath)?.data?.post?.result?.socialPreviewImageUrl) || null;
+      } else if (job.src === 'web') j.html = fs.readFileSync(job.htmlPath, 'utf-8');
+      else if (job.src === 'ocr') j.pages = (job.textPath ? readJson(job.textPath) : JSON.parse(job.textBody))?.pages || [];
+      const r = X.run(j);
+      if (job.src === 'latexml') {
+        // The figure list in /figures' cache format (so the Figures view and Peek's strip find it
+        // without parsing the paper again), and the inline SVGs /figures/svg serves.
+        if (r.figures && job.figWrite && !fs.existsSync(job.figPath)) try { write(job.figPath, JSON.stringify({ v: job.figWrite.v, at: Date.now(), src: job.figWrite.src, figures: r.figures })); } catch { /* not essential */ }
+        if (r.svgs && r.svgs.length) { fs.mkdirSync(job.svgDir, { recursive: true }); for (const s of r.svgs) { const f = path.join(job.svgDir, `${safe(s.f)}-${s.k}.svg`); if (!fs.existsSync(f)) fs.writeFileSync(f, s.svg); } }
+        // A stub ("See pages 1-last of paper.pdf") is a paper without HTML.
+        if (!r.ex.parts.length && r.ex.lead.show === 'none' && j.html.length < 60000) return { err: 'no-html' };
+      }
+      return { ex: r.ex };
+    }
+    import(lib).then((X) => {
+      parentPort.on('message', ({ n, job }) => {
+        const t0 = performance.now(); let out = null, err = null;
+        try {
+          out = handle(X, job);
+          if (out.ex) {
+            const ex = { v: job.v, id: job.id, at: Date.now(), ms: Date.now() - job.t0, cpu: Math.round(performance.now() - t0), ...out.ex };
+            if (!ex.parts.length && ex.lead.show === 'none') ex.err = 'empty';
+            write(job.outPath, JSON.stringify(ex));
+            out = { ex };
+          }
+        } catch (e) { err = String((e && e.stack) || e); }
+        parentPort.postMessage({ n, out, err, cpu: performance.now() - t0 });
+      });
+      parentPort.postMessage({ ready: true });
+    }, (e) => parentPort.postMessage({ fatal: String((e && e.stack) || e) }));
+  }
+  const WSRC = `(${workerMain.toString()})(${JSON.stringify(LIB)})`;
   let worker = null, wBusy = null, wSeq = 0, wIdleT = null;
   const wQueue = [];
   function startWorker() {
@@ -199,7 +239,7 @@ import(${JSON.stringify(LIB)}).then((X) => {
       if (m.ready || !wBusy || m.n !== wBusy.n) return;
       const j = wBusy; wBusy = null; clearTimeout(j.timer);
       stats.cpuMs += m.cpu; stats.cpuMax = Math.max(stats.cpuMax, m.cpu);
-      if (m.err) j.reject(new Error('extract: ' + m.err.split('\n')[0])); else j.resolve({ ...m.out, cpu: m.cpu });
+      if (m.err) j.reject(new Error('extract: ' + m.err.split('\n')[0])); else j.resolve(m.out);
       setImmediate(pumpWorker);
     });
     const dead = (e) => {
@@ -260,14 +300,24 @@ import(${JSON.stringify(LIB)}).then((X) => {
   async function fetchArxiv(u, job) {
     if (!cache.cached(u)) { await idle(job); if (!cache.cached(u)) await arxivGate(job); }
     await cache.ensure(u, { fg: job.fg });
-    return cache.read(u).toString('utf-8');
   }
-  function loop(path) {
+  /** The first `n` bytes of a file (to look for a marker without reading a 14 MB page). */
+  function head(f, n = 524288) {
+    const fd = openSync(f, 'r');
+    try { const b = Buffer.alloc(n); return b.subarray(0, readSync(fd, b, 0, n, 0)); } finally { closeSync(fd); }
+  }
+  /** The body path of a cached URL; reading meta() counts as an access for the cache's eviction. */
+  const bodyOf = (u) => { try { cache.meta(u); } catch { /* evicted just now: the worker reports it */ } return cache.paths(u).body; };
+  function loop(path, raw = false) {
     return new Promise((resolve, reject) => {
       const r = http.get(LOOP + path, { timeout: 180e3 }, (res) => {
         let b = ''; res.setEncoding('utf8');
         res.on('data', (c) => { b += c; });
-        res.on('end', () => { let j = null; try { j = JSON.parse(b); } catch { /* not JSON */ } if (res.statusCode === 200 && j) resolve(j); else reject(new Error(j?.error || `HTTP ${res.statusCode}`)); });
+        res.on('end', () => {
+          if (raw && res.statusCode === 200) return resolve(b);
+          let j = null; try { j = JSON.parse(b); } catch { /* not JSON */ }
+          if (res.statusCode === 200 && j) resolve(j); else reject(new Error(j?.error || `HTTP ${res.statusCode}`));
+        });
       });
       r.on('timeout', () => r.destroy(new Error('timeout')));
       r.on('error', reject);
@@ -285,93 +335,83 @@ import(${JSON.stringify(LIB)}).then((X) => {
   }
   const NO_LEAD = { show: 'none', pics: [], by: 'score' };
   const failed = (src, url, err) => ({ src, url, err, lead: NO_LEAD, parts: [] });
-
-  async function buildArxiv(it, job) {
+  // Each builder fetches its sources, then returns either {ex} (parsed and stored by the
+  // worker) or a failed record for build() to store.
+  async function buildArxiv(it, job, meta) {
     const aid = it.id.slice(6);
-    let html = null, used = null;
+    let used = null;
     for (const u of [`https://arxiv.org/html/${aid}`, `https://ar5iv.labs.arxiv.org/html/${aid}`]) {
-      try { html = await fetchArxiv(u, job); } catch (e) { if (missing(e)) continue; throw netErr(e); }
+      try { await fetchArxiv(u, job); } catch (e) { if (missing(e)) continue; throw netErr(e); }
       // ar5iv answers 200 with the abstract page for papers it lacks.
-      if (html.includes('ltx_document')) { used = u; break; }
-      html = null;
+      if (head(cache.paths(u).body).includes('ltx_document')) { used = u; break; }
     }
     if (!used) return failed('latexml', null, 'no-html');
     let url = used; try { url = cache.meta(used).final || used; } catch { /* evicted */ }
-    let figures = null;
-    try { const j = JSON.parse(readFileSync(join(FIG_DIR, safe(aid) + '.json'), 'utf-8')); if (j.src && Array.isArray(j.figures)) figures = j.figures; } catch { /* not built yet */ }
     await idle(job);
-    const r = await parseJob({ src: 'latexml', html, url, base: used, aid, figures }, job);
-    if (r.figures && FIG_VER) {
-      const f = join(FIG_DIR, safe(aid) + '.json');
-      if (!existsSync(f)) try { writeFileSync(f + '.tmp', JSON.stringify({ v: FIG_VER, at: Date.now(), src: used, figures: r.figures })); renameSync(f + '.tmp', f); } catch { /* not essential */ }
-    }
-    // Inline SVG pictures are served by /figures/svg (65-figures.mjs) from these files.
-    if (r.svgs?.length) {
-      const d = join(FIG_DIR, 'svg', safe(aid));
-      mkdirSync(d, { recursive: true });
-      for (const s of r.svgs) { const f = join(d, `${safe(s.f)}-${s.k}.svg`); if (!existsSync(f)) writeFileSync(f, s.svg); }
-    }
-    // A stub ("See pages 1-last of paper.pdf") is a paper without HTML.
-    if (!r.ex.parts.length && r.ex.lead.show === 'none' && html.length < 60000) return failed('latexml', url, 'no-html');
-    return { ...r.ex, cpu: r.cpu };
+    const r = await parseJob({ src: 'latexml', htmlPath: cache.paths(used).body, url, base: used, aid, figPath: join(FIG_DIR, safe(aid) + '.json'), figWrite: FIG_VER ? { v: FIG_VER, src: used } : null, svgDir: join(FIG_DIR, 'svg', safe(aid)), ...meta }, job);
+    return r.ex ? r : failed('latexml', url, r.err);
   }
-  async function buildPost(it, job) {
+  async function buildPost(it, job, meta) {
     const host = new URL(it.url).host;
     const pid = (/_id:"([\w-]+)"/.exec(decodeURIComponent(it.url)) || [])[1] || it.id.replace(/^\w+:/, '');
     const pre = `https://${host}/graphql?query=${encodeURIComponent(`{post(input:{selector:{_id:"${pid}"}}){result{socialPreviewImageUrl}}}`)}`;
     await forum.run(job, async () => { await idle(job); try { await cache.ensure(it.url, { fg: job.fg }); } catch (e) { if (!missing(e)) throw netErr(e); } });
     if (!cache.cached(it.url)) return failed('post', it.page || null, 'empty');
-    let preview = null;
     await forum.run(job, async () => { await idle(job); try { await cache.ensure(pre, { fg: job.fg }); } catch (e) { if (!missing(e) && !/HTTP 400/.test(e.message)) throw netErr(e); } });
-    try { if (cache.cached(pre)) preview = JSON.parse(cache.read(pre).toString('utf-8'))?.data?.post?.result?.socialPreviewImageUrl || null; } catch { /* no preview */ }
-    let htmlBody = null;
-    try { htmlBody = JSON.parse(cache.read(it.url).toString('utf-8'))?.data?.post?.result?.htmlBody || null; } catch { /* not JSON */ }
-    if (!htmlBody) return failed('post', it.page || null, 'empty');
     await idle(job);
-    const r = await parseJob({ src: 'post', htmlBody, page: it.page || it.url, preview }, job);
-    return { ...r.ex, cpu: r.cpu };
+    const r = await parseJob({ src: 'post', bodyPath: bodyOf(it.url), previewPath: cache.cached(pre) ? bodyOf(pre) : null, page: it.page || it.url, ...meta }, job);
+    return r.ex ? r : failed('post', it.page || null, r.err);
   }
-  async function buildWeb(it, job) {
+  async function buildWeb(it, job, meta) {
     await hostSem(it.url).run(job, async () => { await idle(job); try { await cache.ensure(it.url, { fg: job.fg }); } catch (e) { if (!missing(e)) throw netErr(e); } });
     if (!cache.cached(it.url)) return failed('web', it.url, 'empty');
     let m = {}; try { m = cache.meta(it.url); } catch { /* evicted */ }
     if (m.type && !/html|xml/i.test(m.type)) return failed('web', it.url, 'unsupported');
-    const html = cache.read(it.url).toString('utf-8');
     await idle(job);
-    const r = await parseJob({ src: 'web', html, url: m.final || it.url }, job);
-    return { ...r.ex, cpu: r.cpu };
+    const r = await parseJob({ src: 'web', htmlPath: cache.paths(it.url).body, url: m.final || it.url, ...meta }, job);
+    return r.ex ? r : failed('web', it.url, r.err);
   }
-  async function buildScan(it, job) {
-    let pages = null, labels = null;
-    await books.run(job, async () => {
+  async function buildScan(it, job, meta) {
+    const home = `https://archive.org/details/${it.ia}`;
+    // /ocr/text keeps each book's page texts in CACHE/ocr/<ia>/text.json (50-ocr.mjs); once
+    // it is there the worker reads it directly.
+    const textPath = join(CACHE, 'ocr', it.ia, 'text.json');
+    let textBody = null, labels = null, n = 0;
+    const ok = await books.run(job, async () => {
       await idle(job);
       const enc = encodeURIComponent(it.ia);
       const lP = loop(`/ocr/labels?ia=${enc}`).then((l) => l.labels || null, () => null);
-      try { pages = (await loop(`/ocr/text?ia=${enc}`)).pages || []; } catch (e) { if (/no OCR|no such page|HTTP 40[34]\b|bad id/i.test(e.message || '')) return; throw netErr(e); }
-      // Printed page labels only name the plates; a book too short for plates does not
-      // wait for them, and a reader waits at most 1.5 s (the labels can need archive.org).
-      if (pages.length > 12) labels = await Promise.race([lP, sleep(job.fg ? 1500 : 20000).then(() => null)]);
+      if (!existsSync(textPath)) {
+        try { textBody = await loop(`/ocr/text?ia=${enc}`, true); } catch (e) { if (/no OCR|no such page|HTTP 40[34]\b|bad id/i.test(e.message || '')) return false; throw netErr(e); }
+      }
+      n = it.n || 0;
+      // Printed page labels only name the plates; a book too short for plates does not wait
+      // for them, and a reader waits at most 1.5 s (the labels can need archive.org).
+      const lab = await Promise.race([lP, sleep(job.fg ? 1500 : 20000).then(() => null)]);
+      if (!n || n > 12) labels = lab;
+      return true;
     });
-    if (!pages) return failed('ocr', `https://archive.org/details/${it.ia}`, 'empty');
-    const r = await parseJob({ src: 'ocr', pages, labels, ia: it.ia, n: it.n }, job);
-    return { ...r.ex, cpu: r.cpu };
+    if (!ok) return failed('ocr', home, 'empty');
+    const r = await parseJob({ src: 'ocr', textPath: textBody == null ? textPath : null, textBody, labels, ia: it.ia, n: it.n, ...meta }, job);
+    return r.ex ? r : failed('ocr', home, r.err);
   }
 
   const building = new Map(); // id -> job {fg, p}
   const bgSem = new Sem(2);
   async function build(it, job) {
     const t0 = Date.now();
+    const meta = { v: VER, id: it.id, t0, outPath: fileOf(it.id) };
+    const fresh = !existsSync(meta.outPath);
     const src = srcOf(it);
     let res;
     if (src === 'none') res = failed('none', null, isArxiv(it) ? 'no-html' : 'unsupported');
-    else if (src === 'latexml') res = await buildArxiv(it, job);
-    else if (src === 'post') res = await buildPost(it, job);
-    else if (src === 'web') res = await buildWeb(it, job);
-    else res = await buildScan(it, job);
-    const { cpu, ...rest } = res;
-    const ex = { v: VER, id: it.id, at: Date.now(), ms: Date.now() - t0, ...(cpu != null ? { cpu: Math.round(cpu) } : {}), ...rest };
-    if (!ex.err && !ex.parts.length && ex.lead.show === 'none') ex.err = 'empty';
-    save(ex);
+    else if (src === 'latexml') res = await buildArxiv(it, job, meta);
+    else if (src === 'post') res = await buildPost(it, job, meta);
+    else if (src === 'web') res = await buildWeb(it, job, meta);
+    else res = await buildScan(it, job, meta);
+    let ex = res.ex;
+    if (ex) { if (fresh) stats.files++; remember(ex); note(ex); } // written by the worker
+    else { ex = { v: VER, id: it.id, at: Date.now(), ms: Date.now() - t0, ...res }; save(ex); }
     stats.built++;
     return ex;
   }

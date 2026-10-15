@@ -48,6 +48,45 @@ export function panelsFrom(src, k, extra = {}) {
   if (a.blank) return [{ blank: true, k }];
   return panelsBox(src, k, state.crop ? a.box : FULL, a.gutter, extra);
 }
+
+// Scans without a profile: a page's ink box, blank flag and gutter are found
+// once, from whichever image of it came first (a small preview or the sharp
+// w1000; analyze() reads a 240-px-wide grid either way, and boxes are fractions
+// of the page), and reused for the other, so the preview and the sharp page are
+// cut identically. Panels carry `aspect` from the box and the image's shape
+// (IA's sizes are power-of-two reductions of one image, so it is the same for
+// both), and feed.js sizes pages by it: the sharp page replaces the preview
+// without the spread moving.
+const scanCuts = new Map(); // `${id}|${k}|${pad}` -> analyze() result
+function scanPanels(it, k, src, extra) {
+  const key = `${it.id}|${k}|${state.cropPad ?? ''}`;
+  let a = scanCuts.get(key);
+  if (!a) { a = analyze(src); scanCuts.set(key, a); if (scanCuts.size > 4000) scanCuts.delete(scanCuts.keys().next().value); }
+  if (a.blank) return [{ blank: true, k }];
+  return panelsBox(src, k, state.crop ? a.box : FULL, a.gutter, extra)
+    .map((p) => ({ ...p, aspect: ((p.box.x1 - p.box.x0) * src.width) / ((p.box.y1 - p.box.y0) * src.height) }));
+}
+// The size scans are read at (the Internet Archive's w1000: ~1064 px wide for a
+// 500 ppi scan), and the small sizes a preview may come from, largest first.
+export const SCAN_W = 1000;
+const PREVIEW_W = [600, 400, 200];
+/**
+ * A quick look at a scan page without a profile while its sharp image loads:
+ * the largest small image of it already on the server's disk, else (with
+ * `fetch`) its w200 fetched now beside the w1000 (routes/13-ia.mjs). Panels cut
+ * exactly as the sharp page will be (src 'preview'), or null when there is
+ * nothing quick to show.
+ */
+export async function previewScan(it, k, { fetch: get = false } = {}) {
+  if (it.kind !== 'scan' || profileOf(it)?.pages?.[k]) return null;
+  const r = await fetch(`/ia/preview?u=${encodeURIComponent(scanUrl(it, k, SCAN_W))}&w=${PREVIEW_W.join(',')}${get ? '&fetch=1' : ''}`).catch(() => null);
+  if (!r || r.status !== 200) return null;
+  const bm = await createImageBitmap(await r.blob()).catch(() => null);
+  if (!bm) return null;
+  const c = document.createElement('canvas'); c.width = bm.width; c.height = bm.height;
+  c.getContext('2d').drawImage(bm, 0, 0); bm.close?.();
+  return scanPanels(it, k, c, { src: 'preview' });
+}
 const FULL = { x0: 0, y0: 0, x1: 1, y1: 1 };
 /** The boxes a page shows: the crop, or its two columns split at the gutter. */
 function partsOf(box, gutter) {
@@ -100,7 +139,7 @@ const done = new Map();
 // own ink) are not mixed with ones cropped to the profile's shared box.
 const keyOf = (it, k) => `${it.id}|${k}|${state.crop}|${state.cols}|${state.cropPad ?? ''}|${cropKey(profileOf(it))}`;
 /** Forget every render in memory (the benchmark measures cold paths with it). */
-export function dropRenders() { renders.clear(); done.clear(); imgs.clear(); }
+export function dropRenders() { renders.clear(); done.clear(); imgs.clear(); scanCuts.clear(); }
 export const renderedNow = (it, k) => { const key = keyOf(it, k); return renders.has(key) ? done.get(key) || null : null; };
 export function renderPage(it, k) {
   const key = keyOf(it, k);
@@ -126,16 +165,16 @@ function renderPage1(it, k, key) {
         } catch { assetMissing(pf, 'display', k); /* fall back to rendering */ }
       }
       if (it.kind === 'scan') {
-        const r = await fetch(P(scanUrl(it, k, 1000)));
+        const r = await fetch(P(scanUrl(it, k, SCAN_W)));
         if (!r.ok) throw new Error('image unavailable');
         return panelsFromImage(await r.blob(), k, [0, 0, 1, 1], 0, 0, 0, 0, state.crop ? cropOf(pf, k) : FULL, pg.gut, { src: 'scan' });
       }
     }
     if (it.kind === 'scan') {
-      const im = await loadImg(P(scanUrl(it, k, 1000)));
+      const im = await loadImg(P(scanUrl(it, k, SCAN_W)));
       const c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
       c.getContext('2d').drawImage(im, 0, 0);
-      return panelsFrom(c, k, { src: 'scan' });
+      return scanPanels(it, k, c, { src: 'scan' });
     }
     const d = await openDoc(it);
     if (k >= d.n) return [];

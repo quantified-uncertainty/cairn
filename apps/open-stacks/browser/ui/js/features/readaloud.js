@@ -910,6 +910,7 @@ function armCont() { clearTimeout(contT); contT = setTimeout(() => { if (mode &&
 function moveTo(j, { speak: how = 'now', play = false } = {}) {
   const r = R; if (!r || !r.words.length) return;
   j = Math.max(0, Math.min(r.words.length - 1, j));
+  if (backTo && backTo.j !== j) backTo = null; // moved elsewhere: the next step back is a fresh one
   stopSpeech(); dropFetches();
   r.passages = []; r.built = j; extend(r);
   r.index = 0; r.tok = 0; r.at = 0; r.c = 0; r.loading = false;
@@ -928,15 +929,18 @@ function sentIdx(r, j) {
   while (lo < hi) { const m = (lo + hi + 1) >> 1; if (r.sents[m][0] <= j) lo = m; else hi = m - 1; }
   return lo;
 }
-let navBusy = false, lastBack = 0;
+let navBusy = false, backTo = null; // { r, gen, j, t }: where the last step back went, and when
 const edge = (msg, icon) => toast(msg, { icon, kind: 'edge' });
+/** The last step back, while a press now counts as "again" (within 1.5 s, nothing else moved the voice since). */
+const lastStepBack = (r) => (backTo && backTo.r === r && backTo.gen === r.gen && performance.now() - backTo.t < 1500 ? backTo : null);
+const steppedBack = (r, j) => { backTo = { r, gen: r.gen, j, t: performance.now() }; };
 /** Whether a step back should only go to the start of what is being read: the
  *  voice is a few words into it, and this is not a second press in a row. */
-function restart(r, a, o) {
-  const again = performance.now() - lastBack < 1500;
-  lastBack = performance.now();
-  return r.cur - a >= 3 && !o.repeat && !again;
-}
+const restart = (r, a, o) => r.cur - a >= 3 && !o.repeat && !lastStepBack(r);
+/** Where a step back counts from: the voice, or, pressed again, where the last
+ *  step back went. A short sentence ("2.", a heading) is read before the next
+ *  press, so counting from the voice would land on it again. */
+function backFrom(r) { const b = lastStepBack(r); return b && b.j < r.cur ? b.j : r.cur; }
 /** Back or forward a sentence. Back goes to the start of this sentence when the
  *  voice is a few words into it, else (or pressed again) to the one before;
  *  a held key skims on. */
@@ -944,13 +948,14 @@ async function stepSentence(d, o = {}) {
   const r = R; if (!r || navBusy || !r.sents.length) return;
   navBusy = true;
   try {
-    let si = sentIdx(r, r.cur), target = null;
+    let si = sentIdx(r, d < 0 ? backFrom(r) : r.cur), target = null;
     if (d < 0) {
-      const a = r.sents[si][0];
+      const a = r.sents[si][0], m0 = r.words.length;
       if (restart(r, a, o)) target = a;
       else if (si > 0) target = r.sents[si - 1][0];
-      else if (r.kind !== 'flow' && r.first > 0 && await earlier(r)) { if (R !== r) return; si = sentIdx(r, r.cur); target = r.sents[Math.max(0, si - 1)][0]; }
+      else if (r.kind !== 'flow' && r.first > 0 && await earlier(r)) { if (R !== r) return; si = sentIdx(r, a + r.words.length - m0); target = r.sents[Math.max(0, si - 1)][0]; }
       else { target = a; if (!o.repeat) edge('Start of document', 'arrow-up-to-line'); }
+      if (target != null) steppedBack(r, target);
     } else {
       if (si + 1 >= r.sents.length && r.kind !== 'flow' && r.next < r.n) {
         for (let n = 0; n < 6 && si + 1 >= r.sents.length && r.next < r.n; n++) { if (!(await more(r)) || R !== r) return; si = sentIdx(r, r.cur); }
@@ -970,12 +975,18 @@ async function stepPara(d, o = {}) {
     const sentFrom = (j) => { const si = sentIdx(r, j), s = r.sents[si]; return s && s[0] >= j ? s[0] : r.sents[si + 1]?.[0] ?? s?.[0] ?? j; };
     let target = null;
     if (d < 0) {
-      let a = start(r.cur);
-      if (a === 0 && r.kind !== 'flow' && r.first > 0 && (r.cur - sentFrom(a) < 3 || o.repeat) && await earlier(r)) { if (R !== r) return; a = start(r.cur); }
+      const from = backFrom(r);
+      let a = start(from);
+      const prev = o.repeat || !!lastStepBack(r) || from - sentFrom(a) < 3; // it goes to the paragraph before
+      if (a === 0 && r.kind !== 'flow' && r.first > 0 && prev) {
+        const m0 = r.words.length;
+        if (await earlier(r)) { if (R !== r) return; a = start(r.words.length - m0); }
+      }
       const fa = sentFrom(a);
       if (restart(r, fa, o)) target = fa;
       else if (a > 0) target = sentFrom(start(a - 1));
       else { target = fa; if (!o.repeat) edge('Start of document', 'arrow-up-to-line'); }
+      steppedBack(r, target);
     } else {
       const p = r.words[r.cur].para; let j = r.cur;
       for (let n = 0; n < 6; n++) {

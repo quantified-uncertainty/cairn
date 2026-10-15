@@ -48,13 +48,18 @@ process.on('exit', () => { if (saveT) saveNow(); });
 /** {id, page} of a canonical page image URL, else null. */
 export const pageOf = (u) => { const m = PAGE.exec(u); return m ? { id: m[1], page: m[2] } : null; };
 
-/** The datanode URL for a canonical page image URL, or null to go through archive.org. */
-export function direct(u) {
+/** The datanode URL for a canonical page image URL, or null to go through
+ *  archive.org. `avoid` (a URL) names a node not to use when the item has
+ *  another one: a second request for the same page goes to the other node. */
+export function direct(u, avoid = null) {
   const p = pageOf(u); if (!p) return null;
   const e = items.get(p.id); if (!e?.nodes.length) return null;
-  // One node known: let every fourth request take the 302, so the other is found.
-  if (e.nodes.length < 2 && ++e.n % 4 === 0) return null;
-  const node = e.nodes[e.rr++ % e.nodes.length];
+  let not = null; try { not = avoid ? new URL(avoid).hostname : null; } catch { /* none */ }
+  const nodes = not && e.nodes.length > 1 ? e.nodes.filter((x) => x !== not) : e.nodes;
+  // One node known: let every fourth request take the 302, so the other is
+  // found (and a second request for a page on that node always does).
+  if (nodes.length < 2 && (nodes[0] === not || ++e.n % 4 === 0)) return null;
+  const node = nodes[e.rr++ % nodes.length];
   iaStats.direct++;
   return `https://${node}/BookReader/BookReaderImages.php?id=${encodeURIComponent(p.id)}&itemPath=${encodeURIComponent(e.dir)}&server=${node}&page=${p.page}`;
 }
@@ -83,15 +88,26 @@ export function forget(u, src) {
 
 // Sizes the app asks for. IA serves the JP2's power-of-two reduction at or
 // above the width asked (w120 comes back ~133 px, w200 ~266, w400 ~532,
-// w600 and w1000 both ~1064 for a 500 ppi scan), so a cached image up to 2.5x
-// the width asked for is a fine stand-in: the feed's w400 placeholder for a
-// page whose w1000 is on disk, the strip's w120 for a w200.
+// w600 and w1000 both ~1064 for a 500 ppi scan). A page costs the datanode
+// ~0.6 s whatever its size, so one image per page is fetched, the w1000 the
+// feed reads, and smaller sizes are served from it (cache.mjs alias()): the
+// strip's w120, the track's w200, the feed's w400. A larger image stands in
+// up to w1000, or up to 1.5x the width asked above that (a w1500 for a w1000,
+// never a w2000 for a w1000: renders keep their memory).
 const WIDTHS = [120, 200, 400, 600, 1000, 1500, 2000];
-/** A canonical URL of the same page at a larger width (at most 2.5x) for which has(url) holds, smallest first; else null. */
+const SIZE = /^(.*\/page\/n\d+)_w(\d+)\.jpg$/;
+/** A canonical URL of the same page at a larger width for which has(url) holds, smallest first; else null. */
 export function larger(u, has) {
-  const m = /^(.*\/page\/n\d+)_w(\d+)\.jpg$/.exec(u);
+  const m = SIZE.exec(u);
   if (!m || !PAGE.test(u)) return null;
   const w = Number(m[2]);
-  for (const x of WIDTHS) if (x > w && x <= 2.5 * w) { const v = `${m[1]}_w${x}.jpg`; if (has(v)) return v; }
+  for (const x of WIDTHS) if (x > w && x <= Math.max(1000, 1.5 * w)) { const v = `${m[1]}_w${x}.jpg`; if (has(v)) return v; }
   return null;
 }
+/** The page's w1000 URL when `u` is a smaller size of an Internet Archive page image, else null. */
+export function bigOf(u) {
+  const m = SIZE.exec(u);
+  return m && Number(m[2]) < 1000 && PAGE.test(u) ? `${m[1]}_w1000.jpg` : null;
+}
+/** The same page at width w. */
+export const sized = (u, w) => u.replace(/_w\d+\.jpg$/, `_w${w}.jpg`);

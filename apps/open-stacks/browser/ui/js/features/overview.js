@@ -366,7 +366,8 @@ let lastScroll = 0, pfT = 0, progAt = 0;
 const scrollTo = (y) => { progAt = performance.now(); sc.scrollTop = y; };
 sc.addEventListener('scroll', () => {
   lastScroll = performance.now();
-  if (lastScroll - progAt > 150) { hidePeek(); S.anchor = null; }
+  // The reader scrolled: the pages under the pointer changed, so the enlarged one goes.
+  if (lastScroll - progAt > 150) { if (!peekEl.hidden) hidePeek(); if (peekAttached && opt.peek.peekState?.().root === grid) opt.peek.closePeek(); S.anchor = null; }
   if (S.kind === 'scan') { clearTimeout(pfT); pfT = setTimeout(() => S.open && prefetchScan(S.center), 250); }
 }, { passive: true });
 
@@ -412,6 +413,7 @@ function run() {
     const p = S.kind === 'pdf' ? pdfInto(k, job) : scanInto(k, job);
     p.catch(() => false).then((ok) => {
       if (jobs.get(k) === job) jobs.delete(k);
+      if (job.gen !== S.gen) return; // an earlier opening or item: its cells are gone
       if (!ok && !job.dead && S.st[k] < 2) S.cells[k]?.classList.add('err');
       pump();
     });
@@ -679,13 +681,17 @@ function scrollToK(k, how = 'nearest') {
 }
 /** Change the level by d (+1 more pages, -1 bigger pages), keeping the page under the pointer (or the cursor) in place. */
 function zoomBy(d, anchorK) {
-  const l = clampLvl(S.lvl + d);
-  if (l === S.lvl || !S.built) return;
+  if (!S.built) return;
+  // The next level that changes the grid (on a small stage two levels can come out the same).
+  const W = sc.clientWidth, H = sc.clientHeight, same = (g) => g.c === S.g.c && g.r === S.g.r && Math.abs(g.cw - S.g.cw) < 2;
+  let l = S.lvl;
+  do l = clampLvl(l + d); while (l !== clampLvl(l + d) && same(geometry(W, H, S.a, S.n, LEVELS[l])));
+  if (l === S.lvl || same(geometry(W, H, S.a, S.n, LEVELS[l]))) { hud.classList.remove('bump'); void hud.offsetWidth; hud.classList.add('bump'); return; }
   const k = anchorK ?? (S.hot >= 0 ? S.hot : S.inView.has(S.cursor) ? S.cursor : S.view?.[0] ?? S.cursor);
   const el = S.cells[k];
   const off = el ? el.offsetTop - sc.scrollTop : 0;
   S.lvl = l; store.set('ovLevel', l);
-  hidePeek();
+  hidePeek(); opt.peek?.closePeek?.();
   layout();
   if (el) scrollTo(Math.max(0, el.offsetTop - off));
   hudN.textContent = S.g.fit ? `all ${S.n}` : `${S.g.r * S.g.c} a screen`;
@@ -698,8 +704,8 @@ root.addEventListener('wheel', (e) => {
   e.stopPropagation();
   if (!e.ctrlKey) return;
   e.preventDefault();
-  const now = performance.now();
-  if (now - pinchAt > 300) { pinchAcc = 0; pinchSteps = 0; }
+  const now = e.timeStamp; // event time: a relayout in between does not end the pinch
+  if (now - pinchAt > 450) { pinchAcc = 0; pinchSteps = 0; }
   pinchAt = now;
   pinchAcc += e.deltaMode ? e.deltaY * 30 : e.deltaY;
   // One level as a pinch starts; a long pinch goes on, a level per further stretch.

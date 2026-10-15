@@ -45,7 +45,7 @@ export const meta = (u) => { const k = key(u); const m = JSON.parse(readFileSync
 /** Body of a cached URL; counts as an access for eviction. */
 export const read = (u) => { const k = key(u); const b = readFileSync(pathsK(k).body); touch(k); return b; };
 
-export const stats = { hits: 0, misses: 0, fetched: 0, failed: 0, bytes: 0, throttled: 0, evicted: 0, evictedBytes: 0, aliased: 0, iaDirect: 0 };
+export const stats = { hits: 0, misses: 0, fetched: 0, failed: 0, bytes: 0, throttled: 0, evicted: 0, evictedBytes: 0, aliased: 0, iaDirect: 0, merged: 0, hedged: 0 };
 
 // ---------------------------------------------------------------- index ----
 
@@ -194,10 +194,16 @@ process.on('exit', flush);
 // archive.org: page images go straight to the item's datanodes (ia.mjs), ~0.6 s
 // each whatever their size; measured (2026-10-15), w1000 pages per second went
 // 2.1 / 3.5 / 5.5 / 8.6 / 12.7 at 2 / 4 / 6 / 8 / 12 at a time and no further at
-// 16, with no 429 or 503. 10 leaves room below that, and the background still
-// keeps slots free for the reader (bgCap).
+// 16 (slow outliers), with no 429 or 503, and a page took as long at 12 at a
+// time as at 2. So 12, of which the background keeps 4 free while the reader
+// is pulling pages (reserve) rather than half: the cost is the datanode's time
+// per request, not bandwidth, so the reader's pages do not wait on the
+// background's and the background need not yield to them overall (pump()).
+// Pacing (adaptive): if the datanodes slow down (time to first byte averaging
+// over 2.5 s, about 3x normal) the background narrows, 2 slots at a time down
+// to 4, and widens again one slot at a time once they are back under 1.5 s.
 const LIMITS = {
-  'archive.org': { conc: 10 },
+  'archive.org': { conc: 12, reserve: 4, adaptive: true },
   'arxiv.org': { conc: 2, rps: 2 },
   'lesswrong.com': { conc: 3 },
   'alignmentforum.org': { conc: 3 },
@@ -214,15 +220,29 @@ function hostOf(u) {
   let h = hosts.get(base);
   if (!h) {
     const L = LIMITS[base] || DEFAULT_LIMIT;
-    h = { name: base, conc: L.conc, gap: L.rps ? 1000 / L.rps : 0, active: 0, fg: 0, peak: 0, next: 0, pause: 0, strikes: 0, waiting: [], timer: null, n: 0, throttled: 0, lastFg: 0 };
+    h = { name: base, conc: L.conc, gap: L.rps ? 1000 / L.rps : 0, active: 0, fg: 0, peak: 0, next: 0, pause: 0, strikes: 0, waiting: [], timer: null, n: 0, throttled: 0, lastFg: 0,
+      reserve: L.reserve || 0, adaptive: !!L.adaptive, lim: L.conc, ttfb: 0, adjAt: 0 };
     hosts.set(base, h);
   }
   return h;
 }
 // Background may use all but one slot; while the reader is pulling pages from
-// this host (a foreground request in the last 10 s), only half, so a whole
-// spread of cache misses starts at once.
-const bgCap = (h) => Math.max(1, Date.now() - h.lastFg < 10e3 ? Math.floor(h.conc / 2) : h.conc - 1);
+// this host (a foreground request in the last 10 s), only half (or all but the
+// host's reserve), so a whole spread of cache misses starts at once.
+const bgCap = (h) => {
+  const c = Math.min(h.conc, h.lim), reading = Date.now() - h.lastFg < 10e3;
+  return Math.max(1, reading ? (h.reserve ? c - h.reserve : Math.floor(c / 2)) : c - 1);
+};
+// Adaptive pacing: follow the host's time to first byte (page images only).
+function pace(h, ms) {
+  if (!h.adaptive) return;
+  h.ttfb = h.ttfb ? 0.85 * h.ttfb + 0.15 * ms : ms;
+  const now = Date.now();
+  if (h.ttfb > 2500 && h.lim > 4 && now - h.adjAt > 2000) {
+    h.lim = Math.max(4, h.lim - 2); h.adjAt = now;
+    console.warn(`[host] ${h.name}: answering slowly (${(h.ttfb / 1000).toFixed(1)} s to first byte), background down to ${bgCap(h)} at a time`);
+  } else if (h.ttfb < 1500 && h.lim < h.conc && now - h.adjAt > 5000) { h.lim++; h.adjAt = now; }
+}
 function ready(h, fg) {
   const now = Date.now();
   if (now < h.pause || now < h.next) return false;
@@ -272,11 +292,15 @@ function retryAfter(v) {
   const s = Number(v); if (Number.isFinite(s)) return s * 1000;
   const t = Date.parse(v); return Number.isFinite(t) ? Math.max(0, t - Date.now()) : 0;
 }
-/** Per-host activity for /status: concurrency now and at peak, pauses, totals. */
-export const hostState = () => Object.fromEntries([...hosts.values()].map((h) => [h.name, {
+/** Per-host activity for /status: concurrency now and at peak, pauses, totals,
+ *  and how fast the host has been (hostTimes(): p50, p90, perMin, kb), which the
+ *  reader quotes while a page loads (feed.js sourceSpeed). */
+export const hostState = () => { const t = hostTimes(); return Object.fromEntries([...hosts.values()].map((h) => [h.name, {
   active: h.active, fg: h.fg, peak: h.peak, waiting: h.waiting.length, requests: h.n, throttled: h.throttled,
   ...(h.pause > Date.now() ? { pausedMs: h.pause - Date.now() } : {}),
-}]));
+  ...(h.lim < h.conc ? { limit: bgCap(h) } : {}),
+  ...(t[h.name] || {}),
+}])); };
 
 // ---------------------------------------------------------------- fetch ----
 const inflight = new Map(); // url -> job { fg, p, group? }
@@ -314,10 +338,19 @@ function alias(u) {
     return true;
   } catch { return false; } // evicted meanwhile: fetch it
 }
-export function ensure(u, { fg = true } = {}) {
+export function ensure(u, { fg = true, exact = false } = {}) {
   if (cached(u) || alias(u)) return Promise.resolve();
   const cur = inflight.get(u);
   if (cur) { if (fg && !cur.fg) promote(cur); return cur.p; }
+  // One image per Internet Archive page: a smaller size of a page whose w1000
+  // is on its way or queued comes from that w1000 (alias()), fetched now if it
+  // was only queued. `exact` asks for the size itself (a preview, routes/13-ia.mjs).
+  const big = !exact && ia.bigOf(u);
+  if (big && (inflight.has(big) || queued.has(big))) {
+    stats.merged++;
+    const own = () => (cached(u) || alias(u) ? undefined : ensure(u, { fg, exact: true }));
+    return ensure(big, { fg }).then(own, own);
+  }
   return start(u, { fg }, false);
 }
 function promote(job) {
@@ -336,6 +369,40 @@ function start(u, job, held) {
 // fn(url, {status, error?, type?, buf?, fg}) -> {buf, type, meta} | null.
 let deadHook = null;
 export const onDead = (fn) => { deadHook = fn; };
+// The reader is waiting for an Internet Archive page image and the datanode
+// has not answered in HEDGE_MS (about the slowest one in five; measured times
+// to first byte: median ~0.6 s, p90 1.2-1.7 s, the odd one 7 s): ask the
+// item's other node too (or archive.org, which picks one), keep whichever
+// answers first, and cancel the other. Background fetches never hedge; one that
+// the reader starts waiting for (promote) does once it is late.
+const HEDGE_MS = 1100;
+function firstOk(ps) {
+  return new Promise((resolve) => {
+    let left = ps.length, first = null;
+    const miss = (x) => { first ??= x; if (--left === 0) resolve(first); };
+    ps.forEach((p, i) => p.then((r) => (r.ok ? resolve({ i, r }) : miss({ i, r })), (e) => miss({ i, e })));
+  });
+}
+async function fetchSource(u, src, job) {
+  const opts = (signal) => ({ headers: { 'User-Agent': UA }, redirect: 'follow', signal });
+  const limit = AbortSignal.timeout(TIMEOUT), a1 = new AbortController();
+  const p1 = fetch(src || u, opts(AbortSignal.any([a1.signal, limit])));
+  if (!ia.pageOf(u)) return { res: await p1, src };
+  const late = await new Promise((resolve) => {
+    let t = null; const done = (v) => { clearTimeout(t); resolve(v); };
+    p1.then(() => done(false), () => done(false));
+    const check = () => { if (job.fg) done(true); else t = setTimeout(check, 200); };
+    t = setTimeout(check, src ? HEDGE_MS : HEDGE_MS + 450); // through the 302: its ~0.45 s on top
+  });
+  if (!late) return { res: await p1, src };
+  stats.hedged++;
+  const src2 = ia.direct(u, src), a2 = new AbortController();
+  const p2 = fetch(src2 || u, opts(AbortSignal.any([a2.signal, limit])));
+  const w = await firstOk([p1, p2]);
+  (w.i === 0 ? a2 : a1).abort();
+  if (w.e) throw w.e;
+  return { res: w.r, src: w.i === 0 ? src : src2 };
+}
 async function fetchInto(u, job, held) {
   const h = hostOf(u);
   let viaIA = true; // Internet Archive page images may go straight to the datanode (ia.mjs)
@@ -347,7 +414,8 @@ async function fetchInto(u, job, held) {
       job.t0 = Date.now();
       src = viaIA ? ia.direct(u) : null;
       if (src) stats.iaDirect++;
-      res = await fetch(src || u, { headers: { 'User-Agent': UA }, redirect: 'follow', signal: AbortSignal.timeout(TIMEOUT) });
+      ({ res, src } = await fetchSource(u, src, job));
+      if (ia.pageOf(u)) pace(h, Date.now() - job.t0);
       if (res.ok) {
         // Read in chunks so the reader can see the download's progress (/progress).
         job.total = Number(res.headers.get('content-length')) || 0; job.got = 0;
@@ -405,16 +473,24 @@ async function fetchInto(u, job, held) {
 // Jobs only start when their host has a background slot, so a slow host
 // never holds up the others.
 let queue = [];
-const WORKERS = 12, WORKERS_YIELD = 4; // background fetches overall; fewer while the reader waits
+const queued = new Map(); // url -> its queued job (the highest priority one)
+const reindex = () => { queued.clear(); for (const j of queue) if (!queued.has(j.u)) queued.set(j.u, j); }; // queue is sorted
+// Background fetches overall, and fewer while the reader waits on a host whose
+// downloads share the reader's bandwidth (hosts with a reserve, archive.org,
+// keep slots for the reader per host instead: bgCap).
+const WORKERS = 16, WORKERS_YIELD = 4;
+const readerWaiting = () => fgActive + fgWaiting > 0 && [...hosts.values()].some((h) => !h.reserve && (h.fg > 0 || h.waiting.some((w) => w.job.fg)));
 let bgActive = 0, pumpT = null, pumpAt = 0;
 function pump() {
-  const cap = fgActive + fgWaiting > 0 ? WORKERS_YIELD : WORKERS;
+  const cap = readerWaiting() ? WORKERS_YIELD : WORKERS;
   if (bgActive >= cap || !queue.length) return;
   let wake = Infinity;
   const keep = [];
   for (const job of queue) {
     if (bgActive >= cap) { keep.push(job); continue; }
     if (inflight.has(job.u)) continue;
+    const big = ia.bigOf(job.u);
+    if (big && inflight.has(big)) { stats.merged++; continue; } // served from that w1000 (ensure)
     const h = hostOf(job.u);
     if (!ready(h, false)) {
       keep.push(job);
@@ -426,7 +502,7 @@ function pump() {
     bgActive++; take(h, job);
     start(job.u, job, true).catch(() => { stats.failed++; }).finally(() => { bgActive--; pump(); });
   }
-  queue = keep;
+  queue = keep; reindex();
   // Some jobs wait on a time gate: come back when the earliest one opens.
   if (wake < Infinity && (!pumpT || Date.now() + wake < pumpAt)) {
     clearTimeout(pumpT); pumpAt = Date.now() + wake;
@@ -437,9 +513,29 @@ function pump() {
 export function enqueue(urls, pri = 1, group = 'default') {
   queue = queue.filter((j) => j.group !== group);
   urls.forEach((u, i) => { if (allowed(u) && !cached(u)) queue.push({ u, pri: pri - i * 0.001, group, fg: false }); });
+  merge();
   queue.sort((a, b) => b.pri - a.pri);
+  reindex();
   pump();
   return queue.length;
+}
+// One image per Internet Archive page (a page costs the datanode ~0.6 s at any
+// size): a smaller size of a page whose w1000 is queued or on its way is not
+// fetched on its own; ensure() serves it from the w1000 once that is on disk.
+// If the small one was wanted sooner (the track under the pointer, the riffle),
+// the w1000 moves up to its priority; a little sooner (the profile compiler's
+// w200s at 25 against the whole book's w1000s at 20) does not reorder the book.
+function merge() {
+  const bigs = new Map();
+  for (const j of queue) if (ia.pageOf(j.u) && !ia.bigOf(j.u)) { const b = bigs.get(j.u); if (!b || b.pri < j.pri) bigs.set(j.u, j); }
+  if (!bigs.size && !inflight.size) return;
+  queue = queue.filter((j) => {
+    const big = ia.bigOf(j.u); if (!big) return true;
+    const b = bigs.get(big);
+    if (!b && !inflight.has(big)) return true;
+    if (b && j.pri > b.pri + 5) b.pri = j.pri;
+    stats.merged++; return false;
+  });
 }
 // How fast each source is: recent fetch times per host (median, 90th
 // percentile, bytes), so the reader can say how long a page will take.
@@ -459,7 +555,7 @@ export function hostTimes() {
 }
 export const queueState = () => ({ queue: queue.length, active: bgActive + fgActive, foreground: fgActive });
 /** Drop every queued prefetch (fetches in flight finish); returns how many were dropped. (Settings, routes/85-settings.mjs) */
-export function clearQueue() { const n = queue.length; queue = []; return n; }
+export function clearQueue() { const n = queue.length; queue = []; reindex(); return n; }
 /**
  * Where each URL stands, without counting as an access: states[j] is 'c'
  * (cached), 'p' (queued or in flight) or '-' (neither: failed or never

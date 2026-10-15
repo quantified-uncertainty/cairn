@@ -52,14 +52,16 @@ export const RE = {
   definition: /\b(?:we define|we call|is defined as|are defined as|we refer to [^.]{1,60}? as|we term|we say that|we introduce the (?:notion|concept|term)|we use the term|refers to|is called|are called|which we call|we coin)\b/i,
   eqCue: /\b(?:objective|loss|we define|defined as|bound|minimi[sz]e|maximi[sz]e|update rule|reward|expected)\b/i,
   limitSec: /limitation|threats to validity|caveat|weakness/i,
-  limit: /\b(?:a limitation of|one limitation|limited to|we do not (?:address|study|evaluate|consider)|does not (?:generalize|account for))\b/i,
+  // "we do not consider" was dropped from the spec's list: in practice it mostly states setup ("we do not consider X necessary").
+  limit: /\b(?:a limitation of|one limitation|(?<!not |but not |not be |is not |are not )limited to|we do not (?:address|study|evaluate)|does not (?:generalize|account for))\b/i,
+  limitLine: /\b(?:limit\w*|caveat|however|only|cannot|can ?not|unclear|does not|do not|did not|may not|might not|future|assum\w+|restrict\w*|narrow|small|weak\w*)\b/i,
   limitGeneric: /\b(?:other|more|additional|different|larger) (?:datasets|models|tasks|domains|languages|benchmarks)\b/i,
   futureSec: /future work|future direction|open (?:problem|question)s?|outstanding questions|unsolved|cruxes/i,
   question: /\b(?:remains? (?:unclear|open|unknown)|an open question|we leave .{0,60}(?:to|for) future work|future work (?:should|could|might)|is not yet (?:known|clear))\b/i,
   futureLine: /\b(?:future|further|remains?|open|unclear|unknown|could|should|would be|interesting|we plan|we hope|next steps?)\b/i,
   tldr: /^\W{0,3}(?:tl;?dr|tldr|summary|in short|short version|bottom line|key takeaways?|executive summary|abstract|overview)\b(?:\W|$)/i,
   status: /^\W{0,3}(?:epistemic (?:status|state|effort)|confidence)\b/i,
-  notOpener: /^\W{0,3}(?:Originally posted|Cross-?posted|This is a linkpost|Epistemic)/i,
+  notOpener: /^\s*[[(]|^\W{0,3}(?:Originally posted|Cross-?posted|This is a linkpost|Epistemic|Note:|Edit:|Update:|Disclaimer|Content warning|CW:|Thanks to|This post (?:is|was) (?:also )?(?:available|cross)|Link ?post)/i,
   pullNot: /^(?:figure|fig\.|table|chart)\b/i,
   badImg: /emoji|icon|avatar|logo|gravatar|latex|codecogs|badge|favicon/i,
   resultWords: /\b(?:accuracy|performance|loss|rates?|scaling|vs\.?|versus|compared|improv\w*|outperform\w*|increas\w*|decreas\w*|over training|as a function of)\b|%|×/i,
@@ -252,7 +254,7 @@ function boldLed(items) {
 }
 /** Table stats for scoring: numeric share and bold cells. */
 function tableStats(tbl) {
-  let cells = 0, num = 0, rows = 0, cols = 0;
+  let cells = 0, num = 0, rows = 0, cols = 0, digits = 0;
   for (const tr of collect(tbl)) {
     if (tr.tag !== 'tr') continue;
     rows++;
@@ -263,11 +265,12 @@ function tableStats(tbl) {
       const t = text(td);
       if (!t) continue;
       cells++;
+      if (/\d/.test(t)) digits++;
       if (/\d/.test(t) && /^[\s\d.,%±+\-−–()×x$€£~<>≤≥*†‡/:]+$/i.test(t)) num++;
     }
     cols = Math.max(cols, c);
   }
-  return { rows, cols, numeric: cells ? num / cells : 0 };
+  return { rows, cols, numeric: cells ? num / cells : 0, digits: cells ? digits / cells : 0 };
 }
 function tableScore(html, numeric, main) {
   return 0.3 + (numeric >= 0.3 ? 0.3 : 0) + (/ltx_font_bold|<b>|<strong>/.test(html) ? 0.2 : 0) + (main ? 0.2 : 0);
@@ -437,7 +440,8 @@ export function fromLatexml({ html, url, figures = [] }) {
   for (const info of secs.values()) {
     if (info.skip || !info.title) continue;
     if (RE.limitSec.test(info.title)) {
-      const idx = sentsIn(info);
+      let idx = sentsIn(info);
+      if (/discussion|conclu|summary|recommend|finding|result/i.test(info.title)) idx = idx.filter((i) => RE.limitLine.test(S[i].t));
       const take = [];
       let len = 0;
       for (const i of idx) { const L = S[i].t.length; if (take.length >= 3 || (take.length && len + L > 420)) break; take.push(i); len += L + 1; }
@@ -460,8 +464,7 @@ export function fromLatexml({ html, url, figures = [] }) {
           P.add({ pid: `question:${info.id}:li${k}`, type: 'question', text: t, label: info.title, sec: info.title, loc: { anchor, quote: t, href: href(anchor) }, at: at(li), score: 0.8 - k * 0.02 });
         });
       } else {
-        let idx = sentsIn(info);
-        if (RE.concl.test(info.title)) idx = idx.filter((i) => RE.futureLine.test(S[i].t));
+        const idx = sentsIn(info).filter((i) => RE.futureLine.test(S[i].t));
         const take = idx.slice(0, 2);
         if (take.length) {
           const s0 = S[take[0]];
@@ -601,6 +604,9 @@ export function fromLatexml({ html, url, figures = [] }) {
     const late = f.at >= 0.9 || /^A[\d.]/.test(f.id || '');
     if (late && !(RE.resultCap.test(cap) && !RE.setupCap.test(cap))) continue;
     const st = tableStats(parse(f.html));
+    // A paper's table card should hold data or results: one with hardly a number in it is a
+    // concept table, a prompt or an example, which the paper's text or figures show better.
+    if (st.digits < 0.15) continue;
     const main = f.at < 0.7 && !late;
     P.add({ pid: `table:${f.id || f.label}`, type: 'table', text: cap ? `${f.label}: ${cap}` : f.label, html: f.html, label: f.label, caption: cap || null, rows: f.rows, cols: f.cols, sec: figSec.get(f.id), loc: { anchor: f.id || undefined, quote: cap || undefined, href: href(f.id) }, at: f.at, score: tableScore(f.html, st.numeric, main) - (late ? 0.3 : 0) });
   }
@@ -875,9 +881,9 @@ export function fromPost({ htmlBody, page, preview }) {
     if (b.tag !== 'p' || b.quote || b.t.length > 400 || RE.pullNot.test(b.t) || RE.tldr.test(b.t) || RE.status.test(b.t)) continue;
     const share = b.t.length <= 250 ? boldShare(b.seg) : 0;
     const sentenceLike = (t) => wordsOf(t).length >= 5 && (/[.!?"”’)]$/.test(t) || t.length >= 60) && !/:$/.test(t);
-    if (b.t.length >= 20 && b.t.length <= 250 && share >= 0.8 && sentenceLike(b.t)) { P.add(part('pull', b, b.t, { html: `<p>${unwrapBlocks(clean(b.seg))}</p>`, score: 0.7 })); continue; }
+    if (b.t.length >= 20 && b.t.length <= 250 && share >= 0.8 && sentenceLike(b.t) && !(/\?$/.test(b.t) && wordsOf(b.t).length < 8) && !/^\W*(?:example|step|part|case|question|update|edit)\s*\d*\b/i.test(b.t)) { P.add(part('pull', b, b.t, { html: `<p>${unwrapBlocks(clean(b.seg))}</p>`, score: 0.7 })); continue; }
     const lead = leadBold(b.seg);
-    if (b.t.length <= 400 && lead.length >= 15 && lead.length <= 200 && b.t.startsWith(lead.slice(0, 10)) && wordsOf(lead).length >= 4 && !/:\s*$/.test(lead) && !b.list) P.add(part('pull', b, b.t, { html: `<p>${unwrapBlocks(clean(b.seg))}</p>`, cue: lead, score: 0.7 - 0.05 }));
+    if (b.t.length <= 400 && lead.length >= 15 && lead.length <= 200 && b.t.startsWith(lead.slice(0, 10)) && wordsOf(lead).length >= 4 && !/:\s*$/.test(lead) && !b.list && b.t.length - lead.length >= 20 && !/^\W*(?:example|step|part|case|question|update|edit)\s*\d*\b/i.test(lead)) P.add(part('pull', b, b.t, { html: `<p>${unwrapBlocks(clean(b.seg))}</p>`, cue: lead, score: 0.7 - 0.05 }));
   }
   // Opening paragraph, when there is no TL;DR.
   if (!tldr) {
@@ -888,7 +894,8 @@ export function fromPost({ htmlBody, page, preview }) {
   for (const q of collect(root)) {
     if (q.tag !== 'blockquote' || up(q, (x) => x.tag === 'blockquote') || up(q, FOOT)) continue;
     const t = text(q);
-    if (t.length < 40 || t.length > 600) continue;
+    // Epigraphs, transcripts and formulas are not the author's voice.
+    if (t.length < 80 || t.length > 600 || /^\s*[[>]/.test(t) || (t.replace(/[^a-z]/gi, '').length / t.length) < 0.6) continue;
     const b = blocks.find((x) => x.quote === q || (x.s >= q.s && x.s < q.e));
     if (!b) continue;
     const h = unwrapBlocks(clean(prune(q, (x) => hasClass(x, 'footnote-reference'))));
