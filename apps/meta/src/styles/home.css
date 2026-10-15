@@ -1,0 +1,85 @@
+@import '@fontsource-variable/source-serif-4';
+
+/* apps/meta/src/styles/home.css: imported by src/components/starlight/Footer.astro
+   (astro.config.mjs is left untouched). Unlayered, so it overrides Starlight's layered defaults. */
+
+/* Site-wide: subtle warm neutrals and the ochre accent. Starlight's :root is dark. */
+:root {
+  --sl-color-white: #f4f1ea;   /* headings        16.2:1 */
+  --sl-color-gray-1: #ebe7df;
+  --sl-color-gray-2: #dcd7cd;  /* body text       12.7:1 */
+  --sl-color-gray-3: #a7a195;  /* secondary text   7.1:1 */
+  --sl-color-gray-4: #8f897e;
+  --sl-color-gray-5: #45423c;
+  --sl-color-gray-6: #24231f;  /* nav bg, hairlines */
+  --sl-color-black: #161514;   /* page bg */
+  --sl-color-accent-low: #3a2c12;
+  --sl-color-accent: #b98a35;
+  --sl-color-accent-high: #e8be6a; /* links      10.4:1 */
+}
+:root[data-theme='light'] {
+  --sl-color-white: #1c1b19;   /* headings        17.2:1 */
+  --sl-color-gray-1: #24221f;
+  --sl-color-gray-2: #2e2c28;  /* body text       13.9:1 */
+  --sl-color-gray-3: #5f5b53;  /* secondary text   6.8:1 */
+  --sl-color-gray-4: #6f6a61;
+  --sl-color-gray-5: #d6d1c7;
+  --sl-color-gray-6: #ebe8e2;
+  --sl-color-gray-7: #f7f6f3;  /* nav bg */
+  --sl-color-black: #ffffff;
+  --sl-color-accent-low: #f3e6c8;
+  --sl-color-accent: #8a5a0b;  /* links            5.9:1 */
+  --sl-color-accent-high: #5e3d06;
+}
+
+/* Homepage only (splash pages have no sidebar). Use :root, not html:
+   Starlight's own unlayered `html:not([data-has-sidebar])` would otherwise win. */
+:root:not([data-has-sidebar]) {
+  --sl-content-width: 39rem;
+  --sl-line-height: 1.6;
+  --sl-text-h1: 2.25rem;
+  --sl-text-h2: 1.25rem;
+}
+:root:not([data-has-sidebar]) .content-panel + .content-panel { border-top: 0; padding-top: 0; }
+:root:not([data-has-sidebar]) .sl-markdown-content { font-size: 1.0625rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content h2 { margin-top: 2rem; }
+:root:not([data-has-sidebar]) .sl-markdown-content dt { font-weight: 600; }
+:root:not([data-has-sidebar]) .sl-markdown-content dt a { text-decoration: none; }
+:root:not([data-has-sidebar]) .sl-markdown-content dt a:hover { text-decoration: underline; }
+:root:not([data-has-sidebar]) .sl-markdown-content dd { padding-inline-start: 0; }
+:root:not([data-has-sidebar]) .sl-markdown-content hr { margin-top: 2.5rem; border: 0; border-top: 1px solid var(--sl-color-gray-5); }
+:root:not([data-has-sidebar]) .sl-markdown-content hr ~ p { font-size: 1rem; color: var(--sl-color-gray-3); }
+:root:not([data-has-sidebar]) .sl-markdown-content hr + p a { white-space: nowrap; }
+:root:not([data-has-sidebar]) .copy-markdown-container { display: none; }
+
+/* =====================================================================
+   4. SPEC: flourish. Shared round-3 system (style/CHOSEN.md). Swappable as one block.
+      Placeholder: option 1, Source Serif 4 + warm paper (CHOSEN.md was absent when built).
+   ===================================================================== */
+:root:not([data-has-sidebar]) h1, :root:not([data-has-sidebar]) .sl-markdown-content h2 { font-family: 'Source Serif 4 Variable', Georgia, serif; font-weight: 600; letter-spacing: -0.005em; }
+:root:not([data-has-sidebar]) .sl-markdown-content h2 { font-size: 1.375rem; }
+:root:not([data-has-sidebar]) { --sl-color-black: #181715; }
+:root:not([data-has-sidebar]):root[data-theme='light'] { --sl-color-black: #fbf9f4; }
+@media (prefers-color-scheme: light) { :root:not([data-has-sidebar]):not([data-theme='dark']) { --sl-color-black: #fbf9f4; } }
+
+/* =====================================================================
+   5. SPEC: review-round figure (also in home.css).
+   ===================================================================== */
+.rw-fig { margin-top: 1.75rem !important; }
+.rw-fig svg { display: block; width: 100%; height: auto; overflow: visible; font-family: inherit; }
+.rw-fig .rw-tall { display: none; max-width: 343px; }
+@media (max-width: 40rem) { .rw-fig .rw-wide { display: none; } .rw-fig .rw-tall { display: block; } }
+.rw-fig .st { font-size: 12.5px; font-weight: 600; fill: var(--sl-color-white); }
+.rw-fig .bl { font-size: 12px; fill: var(--sl-color-gray-2); }
+.rw-fig .nt { font-size: 12px; fill: var(--sl-color-gray-3); }
+.rw-fig .box { fill: var(--sl-color-black); stroke: var(--sl-color-gray-4); stroke-width: 1; }
+.rw-fig .box.live { stroke: var(--sl-color-gray-2); stroke-width: 1.25; }
+.rw-fig .e { fill: none; stroke: var(--sl-color-gray-4); stroke-width: 1.1; }
+.rw-fig .ah { fill: var(--sl-color-gray-4); }
+.rw-fig .wr { fill: var(--sl-color-gray-2); }
+.rw-fig .rd { fill: var(--sl-color-black); stroke: var(--sl-color-gray-2); stroke-width: 1.5; }
+.rw-fig .mg { stroke: var(--sl-color-text-accent); stroke-width: 1.5; stroke-dasharray: 3 3; }
+.rw-fig figcaption { margin-top: .75rem; font-size: .9375rem; line-height: 1.5; color: var(--sl-color-gray-3); }
+.rw-fig .key { display: inline-block; width: .6em; height: .6em; border-radius: 50%; vertical-align: .02em; margin-inline: .1em .25em; }
+.rw-fig .key.wr { background: var(--sl-color-gray-2); }
+.rw-fig .key.rd { box-shadow: inset 0 0 0 1.5px var(--sl-color-gray-2); }
