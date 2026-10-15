@@ -214,6 +214,7 @@ function finish(i, it, s, n, results, slots, boxW, boxH) {
 }
 function showError(e) {
   const it = items[current()]; if (it) it.err = e.message; // Advance may then move on (nav.js)
+  emit('item:error', { i: current(), it, msg: e.message });
   $('#spread').replaceChildren(h('div', { className: 'pg err', textContent: 'Could not open: ' + e.message, style: 'width:420px;height:300px' }));
 }
 

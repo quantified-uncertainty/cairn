@@ -403,6 +403,7 @@ const followSoon = (i) => {
   });
 };
 on('item:shown', ({ i }) => followSoon(i));
+on('item:skim', ({ i }) => followSoon(i)); // holding j/k (riffle.js)
 on('stack:changed', () => { topKey = ''; mk = {}; followSoon(current()); });
 on('nav', (d) => { if (d.type === 'back') { topKey = ''; mk = {}; followSoon(current()); } });
 on('stack:show', () => { if (!showing()) setMode(true); const n = stackNode(); if (n) revealNode(n); else follow(current(), true); });

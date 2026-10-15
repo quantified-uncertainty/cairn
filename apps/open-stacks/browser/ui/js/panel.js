@@ -1,6 +1,6 @@
 // The side panel: sections registered by modules (why, summary, outline,
 // note, related, today), repainted when the item changes.
-import { $, h, on, emit, sections, registerSection, store, today, fmtDate } from './util.js';
+import { $, h, on, emit, sections, registerSection, store, today, fmtDate, whyLines } from './util.js';
 import { items, LANES, byId, tokens, related } from './corpus.js';
 import { state, current, learn } from './state.js';
 import { openDoc, pdfOutline } from './docs.js';
@@ -24,8 +24,8 @@ on('item:settled', ({ i, it }) => { if (state.panelItem !== it.id) return; paint
 
 registerSection({
   id: 'why', title: 'Why this', order: 10,
-  render(it) {
-    const liked = tokens(it).filter((w) => (state.aff.tok[w] || 0) >= 1).slice(0, 2);
+  render(it, i) {
+    const liked = whyLines.length ? [] : tokens(it).filter((w) => (state.aff.tok[w] || 0) >= 1).slice(0, 2);
     const links = [['Original', it.page || it.url]];
     if (it.kind === 'pdf') links.push(['PDF', it.url]);
     else if (it.pdf) links.push(['PDF', it.pdf]);
@@ -33,6 +33,7 @@ registerSection({
     return h('div', {},
       it.hook ? h('div', { className: 'hook', textContent: it.hook }) : null,
       h('div', { className: 'why' }, h('b', { textContent: it.why || LANES[it.lane] || '' }), liked.length ? ` · you liked “${liked.join('”, “')}”` : ''),
+      whyLines.map((f) => { try { return f(it, i); } catch (e) { console.error('why line', e); return null; } }),
       h('div', { className: 'byline', textContent: [it.a, fmtDate(it), it.src].filter(Boolean).join(' · ') }),
       h('div', { className: 'links' }, ...links.map(([l, u]) => h('a', { href: u, target: '_blank', rel: 'noopener', textContent: l + ' ↗' }))));
   },

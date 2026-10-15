@@ -30,14 +30,29 @@ const noise = (i) => { let x = (i + 1) * 2654435761 ^ seed; x = Math.imul(x ^ (x
 
 export const current = () => state.order[state.pos];
 
-export function score(i) {
+// ---------- learned ranking (features/learn.js registers these) ----------
+/** fn(i, it) → a number added to score(i). With none registered, score() keeps the old
+ *  state.aff terms (lane affinity clamped to ±1). */
+export const scoreTerms = [];
+export const registerScoreTerm = (fn) => { scoreTerms.push(fn); };
+/** fn(lane) → a factor on the lane's share of All. With none registered: 1 + 0.5·clamp(aff.lane, ±1). */
+export const laneFactors = [];
+export const registerLaneFactor = (fn) => { laneFactors.push(fn); };
+/** The ranking with nothing learned: variety (noise), quality, relevance, the PDF bonus. */
+export function baseScore(i) {
   const it = items[i];
-  const lane = state.aff.lane[it.lane] || 0;
-  const tok = Math.max(-2, Math.min(2, tokens(it).reduce((s, w) => s + (state.aff.tok[w] || 0), 0)));
   const q = it.q ?? Math.log(1 + (it.score || 0)) / Math.log(1 + laneMax[it.lane]); // quality percentile in lane
   const rel = it.rel ?? 0.5; // enrichment relevance, 0-1
   const doc = it.kind === 'pdf' ? 0.35 : 0; // the reader prefers technical PDFs
-  return noise(i) * 0.9 + 0.5 * lane + 0.25 * tok + 0.8 * q + 0.8 * (rel - 0.5) + doc;
+  return noise(i) * 0.9 + 0.8 * q + 0.8 * (rel - 0.5) + doc;
+}
+export function score(i) {
+  const it = items[i];
+  if (scoreTerms.length) { let s = baseScore(i); for (const f of scoreTerms) s += f(i, it) || 0; return s; }
+  // the old rule, unchanged except that lane affinity is clamped to ±1
+  const lane = Math.max(-1, Math.min(1, state.aff.lane[it.lane] || 0));
+  const tok = Math.max(-2, Math.min(2, tokens(it).reduce((s, w) => s + (state.aff.tok[w] || 0), 0)));
+  return baseScore(i) + 0.5 * lane + 0.25 * tok;
 }
 // ---------- sorts (stack.js shows and switches them) ----------
 export const SORT_KEYS = ['topic', 'ranked', 'newest', 'oldest'];
@@ -95,7 +110,9 @@ export function buildOrder(keepHead = true, keep = null) {
     const buckets = {};
     for (const i of pool) (buckets[items[i].lane] ||= []).push(i);
     const lanes = Object.keys(buckets);
-    const weight = (l) => Math.max(0.1, (LANE_WEIGHTS[l] ?? 1) * (1 + (state.aff.lane[l] || 0) * 0.5));
+    const factor = (l) => (laneFactors.length ? laneFactors.reduce((p, f) => p * (f(l) ?? 1), 1)
+      : 1 + Math.max(-1, Math.min(1, state.aff.lane[l] || 0)) * 0.5);
+    const weight = (l) => Math.max(0.1, (LANE_WEIGHTS[l] ?? 1) * factor(l));
     const total = lanes.reduce((s, l) => s + weight(l), 0);
     const out = []; const credit = Object.fromEntries(lanes.map((l) => [l, 0]));
     while (out.length < pool.length) {

@@ -617,6 +617,16 @@ function anchorAt(r, j) {
 const tlReady = import('./textlayer.js').catch(() => null);
 const ENDS_LINE = /[.!?:…]["'”’)\]]*$/;
 const isPageNo = (t) => /^\s*(\d{1,4}|[ivxlc]{1,7})\s*$/i.test(t);
+/** A running head or foot ("382      BELL SYSTEM TECHNICAL JOURNAL"): the first
+ *  line in the page's top tenth or the last in its bottom tenth, whose first or
+ *  last piece ([x0, x1, text]) is a page number set well apart from the rest. A
+ *  heading such as "1 Introduction" keeps the usual word gap and is read. */
+function runningHead(lines, x, H) {
+  const l = lines[x], ps = l?.parts || [];
+  if (ps.length < 2 || !((x === 0 && l.top < H * 0.1) || (x === lines.length - 1 && l.bottom > H * 0.9))) return false;
+  const [a, b] = ps, [y, z] = ps.slice(-2);
+  return (isPageNo(a[2]) && b[0] - a[1] > 3 * l.h) || (isPageNo(z[2]) && z[0] - y[1] > 3 * l.h);
+}
 /** Paragraph numbers for lines { x0, x1, top, bottom, h, text } in reading order:
  *  a new one after a blank line, into or out of a heading, after a short line
  *  that ends a sentence, or at an indented first line. */
@@ -652,15 +662,17 @@ function pdfWords(tc, view, k) {
     if (Math.abs(b) > 0.01 || Math.abs(c) > 0.01) { L = null; continue; } // sideways: margin stamps, axis labels
     const hgt = x.height || Math.abs(dd) || 10;
     if (x.str) {
-      if (!L || Math.abs(f - L.y) > hgt * 0.5) { L = { y: f, h: hgt, x0: e, x1: e + (x.width || 0), text: '' }; lines.push(L); }
+      if (!L || Math.abs(f - L.y) > hgt * 0.5) { L = { y: f, h: hgt, x0: e, x1: e + (x.width || 0), text: '', parts: [] }; lines.push(L); }
       else if (L.text && !/\s$/.test(L.text) && !/^\s/.test(x.str) && e - L.x1 > hgt * 0.2) L.text += ' '; // pdf.js leaves some spaces implicit
       L.text += x.str; L.x1 = Math.max(L.x1, e + (x.width || 0)); L.h = Math.max(L.h, hgt);
+      if (x.str.trim()) L.parts.push([e, e + (x.width || 0), x.str.trim()]);
     }
     if (x.hasEOL) L = null;
   }
   let body = lines.filter((l) => l.text.trim());
   body = body.filter((l, x) => !(isPageNo(l.text) && (x === 0 || x === body.length - 1 || l.y - vy0 < H * 0.08 || vy1 - l.y > H * 0.92)));
   for (const l of body) { l.top = vy1 - l.y - l.h; l.bottom = vy1 - l.y; } // PDF y grows upward
+  body = body.filter((l, x, all) => !runningHead(all, x, H));
   const paras = paragraphs(body, W);
   const out = [];
   body.forEach((l, x) => {
@@ -683,7 +695,8 @@ function ocrWords(m, k) {
     lines.push({ a: j, b: e, x0: Math.min(...seg.map((w) => w.x0)), x1: Math.max(...seg.map((w) => w.x1)), top, bottom, h: bottom - top, text: seg.map((w) => w.t).join(' ') });
     j = e;
   }
-  const body = lines.filter((l, x) => !(isPageNo(l.text) && (x === 0 || x === lines.length - 1 || l.top < H * 0.08 || l.bottom > H * 0.92)));
+  const body = lines.filter((l, x) => !(isPageNo(l.text) && (x === 0 || x === lines.length - 1 || l.top < H * 0.08 || l.bottom > H * 0.92)))
+    .filter((l, x, all) => { l.parts = ws.slice(l.a, l.b).map((w) => [w.x0, w.x1, w.t]); return !runningHead(all, x, H); });
   const paras = paragraphs(body, W);
   const out = [];
   body.forEach((l, x) => {

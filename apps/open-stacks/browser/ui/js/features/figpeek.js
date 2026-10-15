@@ -812,10 +812,13 @@ export function regionsOf(it, k) {
       const page = await d.pdf.getPage(k + 1);
       const vp = page.getViewport({ scale: 1 });
       const tc = tl?.pageModel ? (await tl.pageModel(it, k).catch(() => null))?.tc : null;
-      const [text, ol] = await Promise.all([tc || page.getTextContent(), withTimeout(page.getOperatorList(), 8000).catch(() => null)]);
+      const ta = performance.now();
+      const [text, ol] = await Promise.all([tc || page.getTextContent(), debug.noOps ? null : withTimeout(page.getOperatorList(), 8000).catch(() => null)]);
+      const tb = performance.now();
       // A page that is one picture (a scanned book or journal, its OCR as the
       // text) is looked at as a scan: its paper is not white, and its picture is the page.
       const imgs = ol ? imageBoxes(ol, lib.OPS, vp) : [];
+      const tcx = performance.now();
       // (Or, when its operator list is slow to come, a page whose paper is not white.)
       let scanned = imgs.some((b) => (b.x1 - b.x0) * (b.y1 - b.y0) > 0.7 * vp.width * vp.height);
       let grid = await inkGrid(it, k, vp.width, vp.height, scanned);
@@ -825,6 +828,7 @@ export function regionsOf(it, k) {
       if (scanned && runs.length < 5) runs = inkRuns(grid); // a scan with no text layer
       res = { W: vp.width, H: vp.height, scanned, ...findRegions({ W: vp.width, H: vp.height, runs, imgs: scanned ? [] : imgs, grid, scan: scanned }) };
       res.cpu = [grid.ms, Math.round(performance.now() - c1)]; // ink grid, analysis (main thread)
+      res.t = { wait: Math.round(tb - ta), ops: ol?.fnArray.length || 0, imgs: Math.round(tcx - tb) };
     } else {
       const tl = await textlayer();
       const m = tl?.pageModel ? await tl.pageModel(it, k).catch(() => null) : null;

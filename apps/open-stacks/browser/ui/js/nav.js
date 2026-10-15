@@ -387,3 +387,6 @@ K('c', () => { state.cols = !state.cols; store.set('cols', state.cols); showFeed
 K('C', () => { state.crop = !state.crop; store.set('crop', state.crop); showFeed(); });
 K('W', toggleWheel, ['W', 'mouse wheel: continue → items → pages (or middle-click)'], 23);
 K('o', () => { const it = items[current()]; window.open(it.page || it.url, '_blank', 'noopener'); }, ['o', 'open the original'], 40);
+
+// For the hold-to-skim in riffle.js, which ends on the same notices.
+export { laneEnd, laneStart };

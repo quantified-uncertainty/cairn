@@ -49,7 +49,8 @@ export function fmtDate(it) {
 // debounced twins 'item:settled' (300 ms) and 'spread:settled' (160 ms);
 // 'summary:updated' {id}, 'view:changed' {view}, 'nav' {type, i, it, s}, 'boot' {},
 // 'nav:before' {label, i, pos, s, hist, zoom, order?, aff?, saved?, lane?} (where
-// you were, just before a move or judgment), 'gesture:step', 'gesture:pinch' (gesture.js).
+// you were, just before a move or judgment), 'gesture:step', 'gesture:pinch' (gesture.js),
+// 'item:error' {i, it, msg} (feed.js: the item could not open).
 const bus = new EventTarget();
 export const on = (name, fn) => bus.addEventListener(name, (e) => fn(e.detail));
 export const emit = (name, detail = {}) => bus.dispatchEvent(new CustomEvent(name, { detail }));
@@ -89,6 +90,12 @@ export function registerStepper(fn, order = 50) { steppers.push({ fn, order }); 
 // themselves later through document.getElementById('sec-' + id).
 export const sections = [];
 export function registerSection(s) { sections.push(s); sections.sort((a, b) => (a.order ?? 50) - (b.order ?? 50)); }
+
+// ---- why lines ----
+// registerWhyLine(fn): fn(it, i) → Node | null, added to the panel's "Why this" section
+// after the why line. While any is registered, the section drops its "you liked …" line.
+export const whyLines = [];
+export function registerWhyLine(fn) { whyLines.push(fn); }
 
 // ---- views ----
 // registerView('figures', { label, key, show(root), hide() }); each view gets

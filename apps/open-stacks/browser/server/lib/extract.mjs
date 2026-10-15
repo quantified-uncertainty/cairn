@@ -37,7 +37,8 @@ export const RE = {
   concl: /conclu|summary|discussion/i,
   finding: /\b(?:we|our (?:results|experiments|analysis|findings|evaluations?))\s+(?:also\s+)?(?:find|found|show|showed|demonstrate|observe|observed|discover|conclude|confirm|reveal|establish)(?:s|es)?\b|\bour results (?:suggest|indicate|show)\b|\b(?:surprisingly|counterintuitively|strikingly|contrary to (?:prior|previous|common))\b/i,
   surprise: /\b(?:surprisingly|counterintuitively|strikingly|contrary to)\b/i,
-  findingNot: /\b(?:as we (?:will )?show|we will show|we hope|shown in (?:Figure|Table|Section))\b|^(?:In|See|As (?:shown|seen) in) (?:§|Sections?\b|Sec\.|Figures?\b|Fig\.|Tables?\b|Appendix\b)|\bwe (?:show|demonstrate)s? (?:the|an?|our|some|several|examples?|how|in)\b/i,
+  claimIntro: /\b(?:find|found|findings|show|shows|showed|results?|takeaways?|conclu\w*|contribut\w*|summar\w*|lessons?|key|observ\w*|demonstrat\w*|claims?|argue|argument|believe|predict\w*|reasons? (?:why|that)|insights?)\b/i,
+  findingNot: /\bwe conclude (?:with|by)\b|\b(?:as we (?:will )?show|we will show|we hope|shown in (?:Figure|Table|Section))\b|^(?:In|See|As (?:shown|seen) in) (?:§|Sections?\b|Sec\.|Figures?\b|Fig\.|Tables?\b|Appendix\b)|\bwe (?:show|demonstrate)s? (?:the|an?|our|some|several|examples?|how|in)\b/i,
   // extraction-yields.md section 2 ("Results"), with ranges ("5-18x") and a few more comparatives.
   result: /\b(?:improv|reduc|increas|outperform|achiev|boost|decreas|gain|drop|exceed|surpass|match|cut|lower|rais|speed|accelerat|beat|recover|halv|doubl)\w*\b[^.;]{0,90}?(?:\d+(?:\.\d+)?\s?(?:%|×|x\b|-fold|fold\b|points?\b|pp\b|percentage points)|by (?:a factor of|an order of magnitude))|\d+(?:\.\d+)?\s?% of\b|\b\d+(?:\.\d+)?(?:\s?[-–]\s?\d+(?:\.\d+)?)?\s?[×x]\s+(?:faster|slower|more|fewer|larger|bigger|smaller|less|cheaper|higher|lower|longer|shorter|better|worse)\b/i,
   prob: /\b\d+(?:\.\d+)?\s?% (?:chance|probability|likely|confiden)|(?:probability|chance|odds) (?:of|that)[^.]{0,60}\d+\s?%|\bp\s?=\s?0?\.\d+/i,
@@ -67,6 +68,8 @@ export const RE = {
   resultWords: /\b(?:accuracy|performance|loss|rates?|scaling|vs\.?|versus|compared|improv\w*|outperform\w*|increas\w*|decreas\w*|over training|as a function of)\b|%|×/i,
   resultCap: /\b(?:results?|accuracy|accuracies|performance|scores?|rates?|comparison|compar\w+|vs\.?|versus|win|success|errors?|evaluations?|ablations?|benchmarks?|metrics?|effect)\b|%/i,
   setupCap: /hyper-?parameters?|configurations?|settings|training details|implementation details|prompts?|templates?|examples?|notation|glossary|statistics of|list of|data ?sets? (?:statistics|details|used)|instructions|questionnaire|demographics/i,
+  // Tables that describe the setup rather than hold data or results.
+  notData: /\b(?:overview of (?:the |our )?(?:experiments|tasks|evaluations|datasets|methods|approaches|settings)|task (?:overview|descriptions?)|examples? (?:of|from)|(?:here are )?(?:some )?examples|sample (?:outputs|completions|prompts)|prompts? (?:used|for)|hyper-?parameters?|parameters of|glossary|notation|list of|links?\b)/i,
   exampleWords: /\b(?:examples?|prompts?|transcripts?|screenshots?|sample outputs?|interface|illustrat\w*)/i,
 };
 
@@ -160,11 +163,11 @@ export function sentences(t) {
 }
 
 // Numbers: the quantity as written, and whether it is a multiple or a big change.
-const QTY = /(?:\d+(?:[.,]\d+)?\s?[-–]\s?)?\d+(?:[.,]\d+)?\s?(?:%|(?:×|x\b)(?!\s?10\b)|-fold|fold\b|percentage points|points?\b|pp\b)/i;
+const QTY = /(?:\d+(?:[.,]\d+)?\s?[-–]\s?)?(?:\d+(?:[.,]\d+)?|\.\d+)\s?(?:%|(?:×|x\b)(?!\s?10\b)|-fold|fold\b|percentage points|points?\b|pp\b)/i;
 function numValue(s, m) {
   if (/^\d{1,3} (?:in|out of) \d{1,3}$/.test(m[0])) return { value: m[0], mult: false, big: false };
   const ft = /\bfrom\s+(\d+(?:\.\d+)?\s?%?)\s+to\s+(\d+(?:\.\d+)?\s?%?)/i.exec(s);
-  if (ft && /\b(?:rang(?:e|es|ing)|between|vary|varies|varying|spanning)\b[^.]{0,30}$/i.test(s.slice(0, ft.index))) {
+  if (ft && /\b(?:rang(?:e|es|ed|ing)|between|vary|varies|varying|spanning)\b[^.]{0,30}$/i.test(s.slice(0, ft.index))) {
     return { value: `${ft[1].trim().replace(/\s?%$/, '')}–${ft[2].trim()}`, big: false, mult: false };
   }
   if (ft) {
@@ -252,9 +255,20 @@ function boldLed(items) {
   const n = items.filter((li) => { const b = leadBold(li); return (b.length >= 2 && b.length <= 200) || LABEL.test(text(li)); }).length;
   return n >= Math.max(2, Math.ceil(items.length * 0.8));
 }
+/**
+ * A bold-led list is a list of claims (not of methods, datasets or definitions) when the
+ * sentence before it introduces findings or claims, or when at least 40% of its items state
+ * a result or a number.
+ */
+function claimy(its, before) {
+  if (RE.claimIntro.test(before || '')) return true;
+  return its.filter((t) => RE.finding.test(t) || RE.result.test(t) || HAS_NUM.test(t)).length >= Math.max(1, its.length * 0.4);
+}
+/** A sentence that can stand as a finding: not a question, a lead-in or a formula. */
+const findingOk = (t) => !/[?:]$/.test(t) && !RE.findingNot.test(t) && t.replace(/[^a-z]/gi, '').length / t.length >= 0.6;
 /** Table stats for scoring: numeric share and bold cells. */
 function tableStats(tbl) {
-  let cells = 0, num = 0, rows = 0, cols = 0, digits = 0;
+  let cells = 0, num = 0, rows = 0, cols = 0, digits = 0, chars = 0;
   for (const tr of collect(tbl)) {
     if (tr.tag !== 'tr') continue;
     rows++;
@@ -264,13 +278,13 @@ function tableStats(tbl) {
       c += Number(td.a.colspan) || 1;
       const t = text(td);
       if (!t) continue;
-      cells++;
+      cells++; chars += t.length;
       if (/\d/.test(t)) digits++;
       if (/\d/.test(t) && /^[\s\d.,%±+\-−–()×x$€£~<>≤≥*†‡/:]+$/i.test(t)) num++;
     }
     cols = Math.max(cols, c);
   }
-  return { rows, cols, numeric: cells ? num / cells : 0, digits: cells ? digits / cells : 0 };
+  return { rows, cols, chars, numeric: cells ? num / cells : 0, digits: cells ? digits / cells : 0 };
 }
 function tableScore(html, numeric, main) {
   return 0.3 + (numeric >= 0.3 ? 0.3 : 0) + (/ltx_font_bold|<b>|<strong>/.test(html) ? 0.2 : 0) + (main ? 0.2 : 0);
@@ -410,7 +424,7 @@ export function fromLatexml({ html, url, figures = [] }) {
     const lead = s.sec.abstract || s.sec.intro || s.sec.concl;
     // finding
     let m;
-    if (main && (m = RE.finding.exec(t)) && !RE.findingNot.test(t)) {
+    if (main && (m = RE.finding.exec(t)) && findingOk(t)) {
       P.add(sentPart('finding', i, { cue: m[0], score: 0.4 + (lead ? 0.2 : 0) + (HAS_NUM.test(t) ? 0.2 : 0) + (RE.surprise.test(m[0]) ? 0.1 : 0) }));
     }
     // number
@@ -533,9 +547,11 @@ export function fromLatexml({ html, url, figures = [] }) {
     if (items.length < 2 || items.length > 10 || !boldLed(items)) continue;
     const anchor = upSelf(list, (x) => !!x.a.id)?.a.id || '';
     const para = upSelf(list, (x) => hasClass(x, 'ltx_para'));
-    const prevP = para ? kidsOf(para).filter((k) => k.tag === 'p' && k.e <= list.s).at(-1) : null;
-    const before = prevP ? sentences(text(prevP)).at(-1) : '';
+    let prevP = para ? kidsOf(para).filter((k) => k.tag === 'p' && k.e <= list.s).at(-1) : null;
+    if (!prevP && para?.p) { const sib = kidsOf(para.p); const prevPara = sib[sib.indexOf(para) - 1]; prevP = prevPara ? collect(prevPara).filter((k) => k.tag === 'p').at(-1) : null; }
+    const before = prevP ? sentences(text(prevP)).at(-1) || '' : '';
     const its = items.map((li) => text(li));
+    if (!claimy(its, before)) continue;
     P.add({ pid: `claims:${anchor}`, type: 'claims', text: its.join(' · '), html: listHtml(items), sec: sec.title || undefined, ctx: { before }, loc: { anchor: anchor || undefined, quote: its[0], href: href(anchor) }, at: at(list), score: 0.7 });
   }
 
@@ -606,7 +622,7 @@ export function fromLatexml({ html, url, figures = [] }) {
     const st = tableStats(parse(f.html));
     // A paper's table card should hold data or results: one with hardly a number in it is a
     // concept table, a prompt or an example, which the paper's text or figures show better.
-    if (st.digits < 0.15) continue;
+    if (st.digits < 0.15 || st.chars < 20 || RE.notData.test(cap)) continue;
     const main = f.at < 0.7 && !late;
     P.add({ pid: `table:${f.id || f.label}`, type: 'table', text: cap ? `${f.label}: ${cap}` : f.label, html: f.html, label: f.label, caption: cap || null, rows: f.rows, cols: f.cols, sec: figSec.get(f.id), loc: { anchor: f.id || undefined, quote: cap || undefined, href: href(f.id) }, at: f.at, score: tableScore(f.html, st.numeric, main) - (late ? 0.3 : 0) });
   }
@@ -718,7 +734,7 @@ function fromBlocks(root, { kind, base, page, docLen }) {
     if (t.length < 50 || t.length > 320) continue;
     const early = s.b.k < Math.max(15, nb * 0.1);
     let m;
-    if ((m = RE.finding.exec(t)) && !RE.findingNot.test(t)) P.add(sentPart('finding', i, { cue: m[0], score: 0.4 + (early ? 0.2 : 0) + (HAS_NUM.test(t) ? 0.2 : 0) + (RE.surprise.test(m[0]) ? 0.1 : 0) }));
+    if ((m = RE.finding.exec(t)) && findingOk(t)) P.add(sentPart('finding', i, { cue: m[0], score: 0.4 + (early ? 0.2 : 0) + (HAS_NUM.test(t) ? 0.2 : 0) + (RE.surprise.test(m[0]) ? 0.1 : 0) }));
     if (((m = RE.result.exec(t)) || (m = RE.prob.exec(t)) || (m = RE.postNum.exec(t))) && !RE.setup.test(t)) {
       const v = numValue(t, m);
       P.add(sentPart('number', i, { value: v.value, cue: m[0], score: 0.5 + (early ? 0.2 : 0) + (v.mult ? 0.2 : 0) + (v.big ? 0.1 : 0) }));
@@ -747,7 +763,7 @@ function fromBlocks(root, { kind, base, page, docLen }) {
       continue;
     }
     const afterHead = prev && (HEAD.test(prev.tag) || prev.tag === 'p') && RE.claimHead.test(prev.tag === 'p' ? prev.t.slice(0, 80) : prev.t);
-    const ok = (items.length >= 2 && items.length <= 10 && boldLed(items)) || (afterHead && items.length >= 3 && items.length <= 12);
+    const ok = (items.length >= 2 && items.length <= 10 && boldLed(items) && claimy(its, prev && prev.tag === 'p' ? prev.t : prev?.t)) || (afterHead && items.length >= 3 && items.length <= 12);
     if (!ok || its.join('').length < 60) continue;
     P.add({ pid: `claims:p${first.k}`, type: 'claims', text: its.join(' · '), html: listHtml(items), label: afterHead && HEAD.test(prev.tag) ? prev.t : undefined, sec: secOf(first), ctx: { before: prev && prev.tag === 'p' ? sentences(prev.t).at(-1) : '' }, loc: { anchor: `p${first.k}`, quote: its[0], href: hrefOf(first, its[0]) }, at: at(list), score: 0.6 });
   }
@@ -795,12 +811,13 @@ function fromBlocks(root, { kind, base, page, docLen }) {
   tables.forEach((tbl, k) => {
     if (up(tbl, (x) => x.tag === 'table') || up(tbl, FOOT)) return;
     const st = tableStats(tbl);
-    if (st.rows < 2 || st.rows > 25 || st.cols < 2 || st.cols > 10) return;
+    if (st.rows < 2 || st.rows > 25 || st.cols < 2 || st.cols > 10 || st.digits < 0.15 || st.chars < 20) return;
     const html = clean(tbl);
     if (html.length > 40000) return;
     const capEl = kidsOf(tbl).find((x) => x.tag === 'caption');
     const prev = before(tbl.s, (b) => b.tag === 'p');
     const caption = capEl ? text(capEl) : prev && prev.t.length <= 300 ? prev.t : prev ? sentences(prev.t).at(-1) : '';
+    if (RE.notData.test(caption)) return;
     const head = before(tbl.s, () => true)?.head;
     P.add({ pid: `table:tbl${k}`, type: 'table', text: caption ? cut(caption, 300) : `Table ${k + 1}`, html, label: `Table ${k + 1}`, caption: caption || null, rows: st.rows, cols: st.cols, sec: head?.t, loc: { anchor: `tbl${k}`, quote: caption || undefined, href: kind === 'web' && head?.id ? `${page}#${head.id}` : page }, at: at(tbl), score: tableScore(html, st.numeric, true) });
   });

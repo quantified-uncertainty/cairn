@@ -107,12 +107,22 @@ const active = () => !document.hidden && state.view === 'feed' && (Date.now() - 
 // ---------- visits and spreads ----------
 let visit = null;  // { id, i, s, a, last (last active, ms), settled, sent, sentAt }
 let spread = null; // { id, k, c, s, ms, seen }
-const newVisit = (i, settled) => ({ id: items[i].id, i, s: Date.now(), t0: performance.now(), a: 0, last: Date.now(), settled, sent: false, sentAt: 0 });
+const newVisit = (i, settled) => ({ id: items[i].id, i, s: Date.now(), t0: performance.now(), a: 0, last: Date.now(), settled, sent: false, sentAt: 0, via: reached() });
 
-function sendVisit() {
+// How a visit ended (x) and how it was reached (via), from the last 'nav:before' label
+// (the learning model weighs a quick exit by them: server/learn.mjs). The first label
+// of a synchronous burst wins: 'less like this' is followed at once by go()'s 'next item'.
+const EXIT = { 'next item': 'next', 'previous item': 'prev', 'less like this': 'less', 'more like this': 'more',
+  'open item': 'jump', 'browse results': 'jump', 'stay in': 'jump', 'leave stack': 'jump', 'link jump': 'jump', 'lane switch': 'lane' };
+let lastBefore = null, burst = false;
+const recent = () => (lastBefore && Date.now() - lastBefore.t < 2000 ? lastBefore.label : null);
+const exitMove = () => EXIT[recent()] || 'next';
+const reached = () => (EXIT[recent()] === 'jump' ? 'jump' : 'feed');
+
+function sendVisit(x) {
   const v = visit; if (!v?.settled) return;
   const it = items[v.i], r = rec(v.id);
-  op('visit', v.id, { s: v.s, e: Math.max(v.s, v.last), a: Math.round(v.a), ...(v.sent ? {} : { ti: it.t, lane: it.lane, kind: it.kind }) });
+  op('visit', v.id, { s: v.s, e: Math.max(v.s, v.last), a: Math.round(v.a), ...(v.sent ? {} : { ti: it.t, lane: it.lane, kind: it.kind, via: v.via || 'feed' }), ...(x ? { x } : {}) });
   if (!v.sent) { r.nv++; r.ti ||= it.t; }
   v.sent = true; v.sentAt = Date.now();
   r.last = Math.max(r.last, v.last);
@@ -122,7 +132,7 @@ function sendSpread() {
   op('saw', p.id, { k: p.k, c: p.c, s: p.s, ms: Math.round(p.ms), seen: p.seen ? 1 : 0 });
 }
 const endSpread = () => { sendSpread(); spread = null; };
-function endVisit() { endSpread(); sendVisit(); visit = null; }
+function endVisit(x) { endSpread(); sendVisit(x); visit = null; }
 
 function markSeen() {
   const p = spread; p.seen = true;
@@ -149,7 +159,7 @@ setInterval(() => {
 }, 1000);
 
 on('item:shown', ({ i, it }) => {
-  endVisit();
+  endVisit(exitMove());
   visit = newVisit(i, false);
   resumeChip(i, it);
   paintSeen(it.id, it.n || mem.get(it.id)?.n);
@@ -187,7 +197,7 @@ on('spread:settled', (d) => {
 
 // Leaving the feed ends the visit; coming back starts one when the pages settle.
 on('view:changed', ({ view }) => {
-  if (view !== 'feed') { endVisit(); hideChip(); flush(); return; }
+  if (view !== 'feed') { endVisit('view'); hideChip(); flush(); return; }
   const i = current();
   if (i != null && visit?.id !== items[i].id) { endVisit(); visit = { ...newVisit(i, false), ret: true }; }
 });
@@ -198,13 +208,21 @@ addEventListener('pagehide', save);
 
 // Judgments, from nav.js's 'nav:before' labels.
 const JUDGE = { save: 'save', unsave: 'unsave', 'less like this': 'less', 'more like this': 'more' };
-on('nav:before', ({ label, i }) => {
-  const j = JUDGE[label]; if (!j || i == null) return;
+function judge(i, j) {
   const id = items[i].id, r = rec(id);
   op('judge', id, { j });
-  if (j === 'save') r.saved = 1; else if (j === 'unsave') delete r.saved; else r[j] = Date.now();
+  if (j === 'save') r.saved = 1; else if (j === 'unsave') delete r.saved;
+  else if (j === 'unless') delete r.less; else if (j === 'unmore') delete r.more; else r[j] = Date.now();
   emit('memory:updated', { id });
+}
+on('nav:before', ({ label, i }) => {
+  if (!burst) { lastBefore = { label, t: Date.now() }; burst = true; queueMicrotask(() => { burst = false; }); }
+  const j = JUDGE[label]; if (!j || i == null) return;
+  judge(i, j);
 });
+// Back undid a judgment: retract it (the server replays jl, so 'unless' cancels 'less').
+const RETRACT = { save: 'unsave', unsave: 'save', 'less like this': 'unless', 'more like this': 'unmore' };
+on('nav', (d) => { if (d.type === 'back' && RETRACT[d.undone] && d.i != null && items[d.i]) judge(d.i, RETRACT[d.undone]); });
 
 // ---------- resume ----------
 // prefetch.js asks where an item opens when nothing has placed it this session.

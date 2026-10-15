@@ -378,7 +378,7 @@ function need(k) {
   const el = S.cells[k];
   if (!el) return;
   if (S.st[k] === 0 && S.sprite) spriteInto(k);
-  if (S.st[k] < 3 && !jobs.has(k)) want.add(k);
+  if ((S.st[k] < 3 || S.st[k] === 5) && !jobs.has(k)) want.add(k); // 5: failed, tried again when it comes back into view
 }
 function drop(k) {
   want.delete(k);
@@ -414,7 +414,7 @@ function run() {
     p.catch(() => false).then((ok) => {
       if (jobs.get(k) === job) jobs.delete(k);
       if (job.gen !== S.gen) return; // an earlier opening or item: its cells are gone
-      if (!ok && !job.dead && S.st[k] < 2) S.cells[k]?.classList.add('err');
+      if (!ok && !job.dead && (S.st[k] < 2 || S.st[k] === 5)) { S.cells[k]?.classList.add('err'); S.st[k] = 5; checkFull(); }
       pump();
     });
   }
@@ -463,7 +463,7 @@ function sizeMedia(k, a) {
 function checkFull() {
   const t = S.t; if (!t || (t.full && t.sharp) || !S.inView.size) return;
   let all = true, sharp = true;
-  for (const k of S.inView) { if (S.st[k] < 2 && S.st[k] !== 1) all = false; if (S.st[k] < 3) sharp = false; }
+  for (const k of S.inView) { if (!S.st[k]) all = false; if (S.st[k] < 3) sharp = false; } // a failed page (5) counts as settled
   const ms = Math.round(performance.now() - t.t0);
   if (all && !t.full) t.full = ms;
   if (sharp && !t.sharp) {
@@ -956,8 +956,19 @@ on('spread:rendered', ({ i }) => {
   if (!S.inView.has(a)) scrollToK(a, 'nearest');
 });
 on('view:changed', ({ view }) => { if (view !== 'feed') closeOv(); });
-// The overview's own copy of a PDF goes once the reader has moved on to another item.
-on('item:settled', ({ it }) => { if (!S.open && tdoc && tdoc.id !== it.id) { tdoc.p.then((d) => d.pdf.destroy(), () => {}); tdoc = null; } });
+// The overview's own copy of a PDF: opened in idle time once the reader has stayed on
+// the item a couple of seconds (its parse runs on the overview's worker, off the main
+// thread, from bytes the browser has cached), so O shows pages without waiting for it;
+// dropped when the reader moves on.
+let warmT = 0;
+on('item:settled', ({ i, it }) => {
+  clearTimeout(warmT);
+  if (!S.open && tdoc && tdoc.id !== it.id) { tdoc.p.then((d) => d.pdf.destroy(), () => {}); tdoc = null; }
+  if (it.kind !== 'pdf' || S.open) return;
+  warmT = setTimeout(() => (window.requestIdleCallback || setTimeout)(() => {
+    if (current() === i && state.view === 'feed' && !profileOf(it)?.assets?.sprite) thumbDoc(it).catch(() => {});
+  }, { timeout: 3000 }), 2000);
+});
 for (const ev of ['memory:updated', 'summary:updated']) on(ev, () => { if (S.open) paintMarks(); });
 on('augment:updated', ({ id }) => {
   if (!S.open || S.it?.id !== id) return;

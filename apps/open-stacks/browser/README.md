@@ -30,7 +30,7 @@ The curated lanes come from `seeds.json` (every arXiv ID and URL was checked aga
 The screen is mostly pages. A thin strip at the bottom shows where you are in the item; hover it (or press `p`) for page thumbnails. The side panel (`i` to hide) shows why the item is here, an AI summary, the outline, your note, related items and today's trail. Press `?` for all keys:
 
 - `Space` (or `PageDown`) the next page, then the next item · `Backspace` (or `Shift+Space`, `PageUp`) go back: undo the last move, save or skip
-- `j`/`k` next/previous item · `l`/`h` (or arrows) turn pages · `z` or `Enter` zoom to one page · `Esc` up a level (unzoom, then the wall) · `r` random spot
+- `j`/`k` next/previous item (hold to skim through items, 5 to 14 a second; release opens the one you are on) · `l`/`h` (or arrows) turn pages (hold to riffle) · `z` or `Enter` zoom to one page · `Esc` up a level (unzoom, then the wall) · `r` random spot
 - Mouse wheel: one notch, one step (continue: down = next page, then the next item, up = go back; `W` or a middle click switches continue, items, pages). At the end of a document the wheel stops: pause, then scroll again to go on · trackpad: one step per stroke, up/down items, sideways pages; pinch out zooms into a page, pinch in zooms back out
 - Messages appear briefly, low in the middle of the pages: a big icon, a few words, and a second line when needed
 - `a` summarize now (otherwise automatic after 5 s on an item) · `s` save · `x` less like this · `m` more like this

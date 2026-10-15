@@ -42,6 +42,7 @@ How the pieces fit, for anyone adding a feature. The README covers running and u
 
 - `on(name, fn)` and `emit(name, detail)` drive an event bus. The events are:
   - `item:shown {i, it}`;
+  - `item:skim {i, it}`: a step of hold-to-skim (`riffle.js`: holding `j`/`k` steps through the stack showing each item's title and, when at hand, first page); not a visit, nothing loads, and only the item released on gets `item:shown`;
   - `spread:rendered {i, it, s, els, doc, flow?}`; for rasters, `els[j]._pnl` is the panel and `els[j].dataset.k` the page;
   - `summary:updated {id, summary}`;
   - `nav {type, i, it, ...}`; types: `item`, `turn`, `page`, `random`, `zoom`, `back`;
