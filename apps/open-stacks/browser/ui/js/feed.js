@@ -88,7 +88,9 @@ export async function showFeed() {
   paintPos(it, s, slots.length, n);
   paintScrub(i, s, slots.length);
   planAround(i, s);
+  const stopWait = waitingNote(it, slots, gen);
   const results = await Promise.all(slots.map((x) => x.p.catch((e) => [{ err: e.message, k: x.k }])));
+  stopWait();
   if (gen !== state.gen) return;
   let extra = results.filter((r) => r.length === 1 && r[0].blank).length;
   while (extra > 0 && k < n) {
@@ -340,6 +342,35 @@ function showDownload(it, gen) {
   return () => { alive = false; const el = document.getElementById('loadpct'); if (el && el.textContent.startsWith('↓')) el.hidden = true; };
 }
 
+// ---------- waiting for a page ----------
+// If pages are not ready within 250 ms, say where they come from, how long
+// that source usually takes (measured by the server), and count the seconds.
+const SOURCE = (it) => it.kind === 'scan' ? ['archive.org', 'Internet Archive'] : (() => { try { const h = new URL(it.url).hostname.replace(/^www\./, ''); return [h, h]; } catch { return ['', 'the source']; } })();
+export function sourceSpeed(it) {
+  const [host, name] = SOURCE(it);
+  const st = state.status?.hosts?.[host];
+  return { name, p50: st?.p50 ? st.p50 / 1000 : null, perMin: st?.perMin || 0 };
+}
+function waitingNote(it, slots, gen) {
+  const t0 = performance.now();
+  let iv = 0;
+  const to = setTimeout(() => {
+    const { name, p50 } = sourceSpeed(it);
+    const tick = () => {
+      if (gen !== state.gen) return;
+      const sec = (performance.now() - t0) / 1000;
+      for (const x of slots) {
+        if (!x.el?.isConnected || !x.el.classList.contains('loading')) continue;
+        let w = x.el.querySelector('.pg-wait');
+        if (!w) { w = h('div', { className: 'pg-wait' }); x.el.append(w); }
+        w.textContent = `Loading p. ${x.k + 1} from ${name} · ${sec.toFixed(1)} s` + (p50 ? ` (usually ${p50.toFixed(1)} s)` : '');
+      }
+    };
+    tick(); iv = setInterval(tick, 250);
+  }, 250);
+  return () => { clearTimeout(to); clearInterval(iv); };
+}
+
 // ---------- how much of the item is ready ----------
 // Scans: which page images are in the server's disk cache (the rest come from
 // the Internet Archive at 1-3 s a page); PDFs and posts are whole files, ready
@@ -358,7 +389,19 @@ function paintLoaded() {
   const stops = []; let j = 0;
   while (j < n) { let e = j; while (e < n && bits[e] === bits[j]) e++; if (bits[j] === '1') stops.push(`transparent ${(100 * j) / n}%, var(--ink-3) ${(100 * j) / n}% ${(100 * e) / n}%, transparent ${(100 * e) / n}%`); j = e; }
   el.style.background = stops.length ? `linear-gradient(90deg, ${stops.join(', ')})` : 'none';
-  if (pctEl) { pctEl.hidden = loaded.pct >= 100; pctEl.textContent = `${loaded.pct}%`; pctEl.title = `${loaded.pct}% of this book's pages are on your disk; the rest load from the Internet Archive`; }
+  if (pctEl) {
+    const have = [...bits].filter((b) => b === '1').length, n2 = bits.length;
+    const s0 = tr ? (state.start.get(tr.i) ?? 0) + Math.max(1, state.shown || 1) : 0;
+    let ahead = 0; while (s0 + ahead < n2 && bits[s0 + ahead] === '1') ahead++;
+    const rate = loaded.rate || 0; // pages per second, measured between polls
+    const eta = rate > 0.05 ? (n2 - have) / rate : null;
+    const fmt = (x) => (x < 90 ? `${Math.round(x)} s` : `${Math.round(x / 60)} min`);
+    pctEl.hidden = loaded.pct >= 100;
+    pctEl.textContent = `${loaded.pct}% · ${ahead >= n2 - s0 ? 'rest ready' : ahead + ' ready ahead'}${eta ? ' · ~' + fmt(eta) : ''}`;
+    const { p50 } = sourceSpeed(tr?.it || {});
+    pctEl.title = `${have} of ${n2} pages are on your disk. ${ahead} pages after these are ready to turn to instantly.`
+      + ` The rest come from the Internet Archive${p50 ? `, about ${p50.toFixed(1)} s a page` : ''}${rate ? `; downloading ${rate.toFixed(1)} pages a second in the background` : ''}${eta ? `, about ${fmt(eta)} to go` : ''}.`;
+  }
 }
 async function pollLoaded() {
   clearTimeout(pollT);
@@ -370,7 +413,9 @@ async function pollLoaded() {
     const bits = await (await fetch('/cached', { method: 'POST', body: JSON.stringify({ urls }) })).text();
     if (tr?.it !== it) return;
     const have = [...bits].filter((b) => b === '1').length;
-    loaded = { id: it.id, bits, pct: Math.floor((100 * have) / Math.max(1, bits.length)) };
+    const prev = loaded?.id === it.id ? loaded : null, now = performance.now();
+    const rate = prev && now > prev.at + 500 ? Math.max(0, (have - prev.have) / ((now - prev.at) / 1000)) : prev?.rate || 0;
+    loaded = { id: it.id, bits, have, at: now, rate: prev ? 0.6 * rate + 0.4 * (prev.rate || rate) : 0, pct: Math.floor((100 * have) / Math.max(1, bits.length)) };
     paintLoaded();
     if (loaded.pct < 100) pollT = setTimeout(pollLoaded, 2000);
   } catch { /* offline */ }

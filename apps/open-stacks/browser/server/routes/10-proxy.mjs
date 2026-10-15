@@ -17,5 +17,5 @@ export default function (app) {
     const { urls = [], pri = 1, group = 'default' } = await app.body(req);
     app.json(res, { queued: cache.enqueue(urls, pri, group) });
   });
-  app.status(() => ({ ...cache.stats, ...cache.queueState() }));
+  app.status(() => ({ ...cache.stats, ...cache.queueState(), hosts: cache.hostTimes() }));
 }

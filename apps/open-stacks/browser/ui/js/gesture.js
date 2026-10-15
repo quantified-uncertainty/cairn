@@ -52,7 +52,7 @@ let ptr = { x: null, y: null };
 // counts as the notches it holds. Only within a spin: notch sizes differ between
 // wheels and settings. devStamps: events carry the device's time (some event
 // has waited in the queue), so a gap between stamps is the reader's.
-const unitOf = (mode) => (G?.device === 'mouse' && !mode ? (G.u?.[0] === mode ? G.u[1] : G.first) : 0);
+const unitOf = (mode) => (G?.device === 'mouse' && !mode && G.mode === mode ? G.u?.[1] || G.first : 0);
 let devStamps = false;
 
 function begin(now, device, final, big = 0) {
@@ -97,7 +97,7 @@ function onWheel(e, steps, pinches) {
   // were merged) continues the tail when its speed carries on from where it
   // was (a new stroke starts slow again); the rise test still catches a new flick.
   const resumes = G?.device === 'pad' && G.made && !mode && dt < 400 && rate <= Math.max(6, 1.5 * G.prevA) && rate >= 0.25 * G.prevA;
-  if (!G || (dt > (G.device === 'mouse' ? tune.mouseGap : tune.padGap) && !resumes && !busy && !(merged > 1 && G.device === 'mouse'))) {
+  if (!G || (dt > (G.device === 'mouse' ? tune.mouseGap : tune.padGap) && !resumes && !busy && !(merged > 1 && G.device === 'mouse' && dt < 1000))) {
     const sure = forced || (mode ? 'mouse' : dx && dy ? 'pad' : null);
     begin(now, sure || (big >= tune.notch || (notchPx && Math.abs(big - notchPx) < 0.5) ? 'mouse' : 'pad'), !!sure, big);
     merged = 1; // a new spin's first event sets its notch size
@@ -109,7 +109,7 @@ function onWheel(e, steps, pinches) {
     const q = big / (unitOf(mode) || G.first), whole = q > 0.9 && Math.abs(q - Math.round(q)) < 0.1;
     if (dt < 50 && !whole && Math.abs(big - G.first) > 0.5 && ++G.vary >= 2 && G.device === 'mouse' && !G.final) { G.device = 'pad'; G.final = true; dropQueued(G); }
   }
-  G.n++; G.ax += dx; G.ay += dy;
+  G.mode ??= mode; G.n++; G.ax += dx; G.ay += dy;
   if (G.device === 'mouse') {
     // The rest of a stopped spin is dropped; turning the wheel back starts a new one.
     if (G.stop && Math.sign(Math.abs(dx) > Math.abs(dy) ? dx : dy) === G.dir) return;

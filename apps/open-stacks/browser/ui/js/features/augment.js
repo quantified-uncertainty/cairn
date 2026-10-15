@@ -236,11 +236,12 @@ registerStepper((dir, e) => {
 }, 30);
 function toggleSkim() {
   store.set('skim', !S.skim);
-  toast(S.skim ? 'Skim path on: Advance goes to the next stop of the reading guide' : 'Skim path off: Advance turns pages');
+  if (S.skim) toast('Skim path on', { icon: 'route', kind: 'mode', sub: 'Space goes to the next stop of the reading guide' });
+  else toast('Skim path off', { icon: 'route', kind: 'mode', sub: 'Space turns pages' });
   const it = items[current()]; if (it) { paintGuide(it); paintBadge(); }
 }
 if (keymap.has('T')) console.warn('augment: T is taken; the skim path toggle has no key');
-else registerKey('T', toggleSkim, { help: ['T', 'skim path: Advance follows the reading guide (on / off)'], order: 32 });
+else registerKey('T', toggleSkim, { help: ['T', 'skim path: Space follows the reading guide (on / off)'], order: 32 });
 on('boot', () => { if (keymap.get('T') && keymap.get('T').fn !== toggleSkim) console.warn('augment: another feature took T; the skim path toggle is in the panel only'); });
 
 // "stop 3/6 · p. 12" in the head while skim mode is on.
@@ -343,7 +344,7 @@ function apply(it, code) {
   else if (code === 'sequential') { if (S.skim) toggleSkim(); return; }
   state.hist.set(i, []);
   feed.showFeed();
-  toast(`Applied for this item: ${HINT_TEXT[code]}`);
+  toast('Applied for this item', { icon: 'wand-sparkles', kind: 'ok', sub: HINT_TEXT[code] });
 }
 function restoreApplied(it) {
   if (!applied || applied.id === it.id) return;
@@ -460,7 +461,7 @@ let notesGen = 0, notesT = null;
 const pending = new Map(); // k -> fn: pages whose text layer is not attached yet
 function paintNotesSoon() { clearTimeout(notesT); notesT = setTimeout(paintNotes, 30); }
 on('spread:settled', paintNotesSoon);
-on('textlayer:ready', ({ it, k }) => { if (here(it) && pending.has(k)) { const fn = pending.get(k); pending.delete(k); fn(); } });
+on('textlayer:ready', ({ it, k }) => { if (here(it) && pending.has(k)) pending.get(k)(); });
 on('profile:updated', ({ id }) => { if (items[current()]?.id === id) paintNotesSoon(); });
 
 async function paintNotes() {
@@ -493,7 +494,7 @@ async function paintNotes() {
   const r = await currentWords().catch(() => null);
   if (gen !== notesGen || !r?.words?.length) return;
   const words = r.words;
-  const place = (k) => {
+  const place = (k, tries = 0) => {
     if (gen !== notesGen) return;
     let waiting = false;
     for (const n of notes.filter((x) => x.k === k).slice(0, 4)) {
@@ -506,7 +507,12 @@ async function paintNotes() {
       const pr = el.getBoundingClientRect(), wr = wel.getBoundingClientRect();
       addMark(el, el === first, wr.top - pr.top + wr.height / 2, { kind: 'note', k, title: n.note, quote: n.quote, words, span: sp, label: `Note · p. ${k + 1}` });
     }
-    if (waiting) pending.set(k, () => place(k)); // the text layer attaches a moment later
+    if (waiting && tries < 6) {
+      // The text layer attaches a moment later: on its 'textlayer:ready', or the next try, whichever comes first.
+      const again = () => { if (pending.get(k) === again) { pending.delete(k); place(k, tries + 1); } };
+      pending.set(k, again);
+      setTimeout(again, 200 * 2 ** tries);
+    }
   };
   for (const k of byK.keys()) place(k);
 }

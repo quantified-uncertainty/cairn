@@ -315,3 +315,6 @@ export default function (app) {
 
   app.status(() => ({ figures: stats }));
 }
+
+// Shared with server/lib/extract.mjs (the Feeds extraction).
+export { parse, walk, text, clean, hasClass, decode, tex };

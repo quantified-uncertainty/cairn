@@ -33,12 +33,14 @@ const DEF = {
   middle: 'wheel', repeat: 'off',
   panelW: 330, secHidden: [], secOrder: [], showSpend: true,
 };
-// Core options: state field and store key of the same name.
-const CORE = { font: 15, per: 3, perAuto: true, crop: true, cols: false, flowCols: 0, pin: false, panel: true, panelSide: 'left', presum: true, wheelMouse: 'continue', wheelPad: '2d', wheelDevice: 'auto' };
+// Core options: state field and store key of the same name. The defaults must
+// match state.js (and STORE summary.js, RA_DEF readaloud.js, TUNE_DEF gesture.js):
+// Reset puts these values back.
+const CORE = { font: 15, per: 3, perAuto: true, crop: true, cols: false, flowCols: 0, pin: false, panel: true, panelSide: 'left', presum: true, wheelMouse: 'continue', wheelPad: 'continue', wheelDevice: 'auto' };
 // Read straight from the store by summary.js.
 const STORE = { autoSum: true, sumDelay: 5000, summodel: 'claude-haiku-5-5' };
 const RA_DEF = { rate: 1.5, engine: 'browser', browserVoice: '', geminiVoice: 'Kore' };
-const TUNE_DEF = { rate: 6, stroke: 40 };
+const TUNE_DEF = { rate: 14, stroke: 40 };
 
 let S = { ...DEF, ...store.get('settings', {}) };
 const save = () => store.set('settings', S);
@@ -49,9 +51,14 @@ const THEMES = {
   black: { label: 'Near-black', bg: '#0b0b0b', 'bg-2': '#121212', 'bg-3': '#1b1b1b', line: '#2b2b2b', ink: '#e6e4e0', 'ink-2': '#a09d98', 'ink-3': '#69665f' },
   grey: { label: 'Dark grey', bg: '#26272b', 'bg-2': '#2d2e33', 'bg-3': '#36373d', line: '#45464d', ink: '#e8e8ea', 'ink-2': '#abacb2', 'ink-3': '#7a7b82' },
   warm: { label: 'Warm dark', bg: '#211912', 'bg-2': '#2a2018', 'bg-3': '#33281e', line: '#47382b', ink: '#f2e4cd', 'ink-2': '#bba78b', 'ink-3': '#85735d' },
-  sepia: { label: 'Sepia', light: true, bg: '#eee3cb', 'bg-2': '#e6d9bd', 'bg-3': '#ddcfb0', line: '#cbb994', ink: '#3a2e1f', 'ink-2': '#685740', 'ink-3': '#958162' },
-  light: { label: 'Light', light: true, bg: '#f6f5f2', 'bg-2': '#ecebe7', 'bg-3': '#e3e1dc', line: '#d2cfc8', ink: '#1e1c19', 'ink-2': '#57534c', 'ink-3': '#8b867d' },
+  // Light themes: the faint text (ink-3) keeps 4:1 on every surface, more than the dark themes' 3:1, for a bright room.
+  sepia: { label: 'Sepia', light: true, bg: '#eee3cb', 'bg-2': '#e6d9bd', 'bg-3': '#ddcfb0', line: '#cbb994', ink: '#3a2e1f', 'ink-2': '#584a36', 'ink-3': '#6e5f49' },
+  light: { label: 'Light', light: true, bg: '#f6f5f2', 'bg-2': '#ecebe7', 'bg-3': '#e3e1dc', line: '#d2cfc8', ink: '#1e1c19', 'ink-2': '#57534c', 'ink-3': '#6f6b64' },
 };
+// On light backgrounds: status colours dark enough to read as text (4.5:1), and
+// a darker amber for the default accent.
+const LIGHT_STATUS = { ok: '#286a2a', warn: '#7a5000', bad: '#983626' };
+const ACCENT0 = '#e2a54a', ACCENT0_LIGHT = '#86490f';
 const ACCENTS = [['#e2a54a', 'Amber'], ['#6aa6e8', 'Blue'], ['#7fb37a', 'Green'], ['#4fb3a9', 'Teal'], ['#a98bdf', 'Violet'], ['#d9776a', 'Red']];
 const PAPER_VARS = ['paper', 'paper-ink', 'paper-head', 'paper-ink-2', 'paper-ink-3', 'paper-rule', 'paper-rule-2', 'paper-quote', 'paper-code', 'paper-link'];
 const PAPERS = {
@@ -76,10 +83,22 @@ const rgb = (x) => { const n = parseInt(x.slice(1), 16); return [(n >> 16) & 255
 const hex = (c) => '#' + c.map((v) => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0')).join('');
 const mix = (a, b, t) => { const A = rgb(a), B = rgb(b); return hex(A.map((v, j) => v + (B[j] - v) * t)); };
 const lum = (x) => { const [r, g, b] = rgb(x).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
-/** A full set of tokens from one background colour. */
+const contrast = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+/** `from` moved toward `to` just far enough to reach `want` contrast on `on`. */
+const reach = (from, to, on, want) => { let c = from; for (let t = 0.05; t <= 1.001 && contrast(c, on) < want; t += 0.05) c = mix(from, to, t); return c; };
+/** A full set of tokens from one background colour. Text is black or white,
+ *  whichever contrasts more, and fades toward the background only as far as
+ *  it stays readable (ink 7:1, ink-2 4.5:1, ink-3 3.2:1 or 4:1 on light, on bg-3). */
 function derive(bg) {
-  const light = lum(bg) > 0.3, to = light ? '#000000' : '#ffffff';
-  return { light, bg, 'bg-2': mix(bg, to, 0.04), 'bg-3': mix(bg, to, 0.08), line: mix(bg, to, 0.16), ink: mix(to, bg, 0.1), 'ink-2': mix(to, bg, 0.38), 'ink-3': mix(to, bg, 0.58) };
+  const light = contrast(bg, '#000000') >= contrast(bg, '#ffffff'), to = light ? '#000000' : '#ffffff';
+  const b3 = mix(bg, to, 0.08);
+  const ink = (t, want) => reach(mix(to, bg, t), to, b3, want);
+  return { light, bg, 'bg-2': mix(bg, to, 0.04), 'bg-3': b3, line: mix(bg, to, 0.16), ink: ink(0.1, 7), 'ink-2': ink(0.38, 4.5), 'ink-3': ink(0.58, light ? 4 : 3.2) };
+}
+/** The accent, moved toward the text colour as needed to read at 4.5:1 on bg-3. */
+function accentOf(th) {
+  const a = S.accent || (th.light ? ACCENT0_LIGHT : ACCENT0);
+  return reach(a, th.light ? '#000000' : '#ffffff', th['bg-3'], 4.5);
 }
 const themeOf = () => (S.theme === 'custom' ? derive(S.bgCustom) : THEMES[S.theme] || THEMES.reading);
 
@@ -104,7 +123,9 @@ function applyAll() {
   for (const t of TOKENS) cssVar('--' + t, S.theme === 'reading' ? null : th[t]);
   R.style.colorScheme = th.light ? 'light' : '';
   R.toggleAttribute('data-st-light', !!th.light);
-  cssVar('--accent', S.accent || (th.light ? '#a8631a' : null));
+  const acc = accentOf(th);
+  cssVar('--accent', acc === ACCENT0 ? null : acc);
+  for (const k of ['ok', 'warn', 'bad']) cssVar('--' + k, th.light ? LIGHT_STATUS[k] : null);
   const pp = S.paper !== 'cream' && PAPERS[S.paper];
   PAPER_VARS.forEach((v, j) => cssVar('--' + v, pp ? pp.v[j] : null));
   R.dataset.stPaper = S.paper; R.dataset.stFilter = S.filter; R.dataset.stDensity = S.density;
@@ -124,7 +145,9 @@ function applyAll() {
   state.measure = S.measureCh ? S.measureCh * charEm() : undefined;
   state.cropPad = S.cropPad === DEF.cropPad ? undefined : S.cropPad / 100;
   state.pageGap = S.pageGap; state.fit = S.fit;
-  if (sheet) sheet.style.top = Math.round($('#bar').getBoundingClientRect().bottom) + 'px';
+  const barB = Math.round($('#bar').getBoundingClientRect().bottom);
+  cssVar('--st-bar-h', S.density === 'comfortable' ? null : barB + 'px'); // Saved and the export tray sit under the bar
+  if (sheet) sheet.style.top = barB + 'px';
 }
 
 /** Lay the stage out again: flow documents are typeset afresh at the same place. */
@@ -387,7 +410,7 @@ function secNav() {
       row('Trackpad stroke', 'How far a stroke travels before it counts; shorter is more sensitive.',
         ...slider([16, 120, 4], () => tune.stroke, (v) => setTune('stroke', v), (v) => v + ' px')),
       row('Middle click', 'On the pages.',
-        seg([['wheel', 'Cycle wheel mode'], ['advance', 'Advance'], ['back', 'Back'], ['zoom', 'Zoom'], ['none', 'Nothing']], () => S.middle, (v) => setS('middle', v))),
+        seg([['wheel', 'Cycle wheel mode'], ['advance', 'Next page'], ['back', 'Go back'], ['zoom', 'Zoom'], ['none', 'Nothing']], () => S.middle, (v) => setS('middle', v))),
       row('Holding a key', 'Off: one press, one step. Otherwise a held key repeats.',
         seg([['off', 'One step'], ['pages', 'Repeat page turns'], ['items', 'Repeat turns and items']], () => S.repeat, (v) => setS('repeat', v))),
       row('Page strip', ['Keep the thumbnails open under the pages. ', kb('p')], ...tog(() => state.pin, (v) => setCore('pin', v), ['Pinned', 'Hidden'])),
@@ -476,6 +499,7 @@ async function setBudget(usd) {
   sync(); repaintPanel();
 }
 
+let voicesFill = null, voicesHooked = false;
 function secVoice() {
   if (!RA?.readAloudPrefs) return { id: 'voice', title: 'Read-aloud', rows: [row('Read-aloud', 'The read-aloud feature did not load.')] };
   const P = RA.readAloudPrefs;
@@ -495,7 +519,8 @@ function secVoice() {
     voice.replaceChildren(...opts);
     voice.value = P.engine === 'gemini' ? 'g:' + P.geminiVoice : 'b:' + (mine.some((v) => v.voiceURI === P.browserVoice) ? P.browserVoice : '');
   };
-  if (typeof speechSynthesis !== 'undefined') speechSynthesis.addEventListener?.('voiceschanged', fill);
+  voicesFill = fill; // one listener for the life of the page, filling the current sheet's list
+  if (!voicesHooked && typeof speechSynthesis !== 'undefined') { voicesHooked = true; speechSynthesis.addEventListener?.('voiceschanged', () => voicesFill?.()); }
   upd(fill);
   const msg = h('span', { className: 'st-msg' });
   const hear = h('button', { type: 'button', className: 'st-btn', textContent: 'Hear it', onclick: () => sample(msg) });
@@ -627,35 +652,49 @@ function build() {
   const secs = [secAppearance(), secText(), secPages(), secNav(), secPanel(), secAI(), secVoice(), secData()];
   const main = h('div', { className: 'st-main', tabIndex: -1 });
   const nav = h('nav', { className: 'st-nav', ariaLabel: 'Settings sections' });
-  for (const s of secs) {
+  let picked = -1; // the section last clicked in the list: the last ones cannot scroll to the top
+  secs.forEach((s, j) => {
     const el = h('section', { className: 'st-sec', id: 'st-' + s.id },
       h('div', { className: 'st-sh' }, h('h3', { textContent: s.title }), s.note ? h('span', { className: 'st-note', textContent: s.note }) : null,
         s.id === 'data' ? null : h('button', { type: 'button', className: 'st-reset', textContent: 'Reset', title: `Put ${s.title} back to the defaults`, onclick: () => resetSection(s) })),
       ...s.rows);
     main.append(el);
-    nav.append(h('button', { type: 'button', textContent: s.title, onclick: () => { main.scrollTop = el.offsetTop - 4; } }));
-  }
+    nav.append(h('button', { type: 'button', textContent: s.title, onclick: () => { picked = j; main.scrollTop = el.offsetTop - 4; } }));
+  });
   main.addEventListener('scroll', () => {
     let cur = 0;
     [...main.children].forEach((el, j) => { if (el.offsetTop - 30 <= main.scrollTop) cur = j; });
+    if (main.scrollTop + main.clientHeight >= main.scrollHeight - 2) cur = Math.max(cur, picked >= 0 ? picked : main.children.length - 1);
     [...nav.children].forEach((b, j) => b.classList.toggle('cur', j === cur));
   });
+  for (const ev of ['wheel', 'keydown', 'pointerdown']) main.addEventListener(ev, () => { picked = -1; }, { passive: true });
   const all = h('button', { type: 'button', className: 'st-btn', textContent: 'Reset all', title: 'Every setting back to the defaults (asks once more)' });
   all.onclick = () => resetAll(all);
   const el = h('aside', { id: 'st', role: 'dialog', ariaLabel: 'Settings', hidden: true },
     h('div', { className: 'st-head' }, h('h2', { textContent: 'Settings' }), h('span', { className: 'st-sub', textContent: 'changes apply at once · Esc closes' }),
       h('span', { className: 'st-sp' }), h('span', { className: 'st-flash st-msg' }), all,
-      h('button', { type: 'button', className: 'st-x', title: 'Close (Esc, ⌘, or Ctrl+,)', ariaLabel: 'Close settings', textContent: '×', onclick: () => toggleSheet(false) })),
+      h('button', { type: 'button', className: 'st-x', title: 'Close (Esc or ,)', ariaLabel: 'Close settings', textContent: '×', onclick: () => toggleSheet(false) })),
     h('div', { className: 'st-body' }, nav, main));
   nav.firstChild?.classList.add('cur');
   return el;
 }
 let section0 = store.get('settings:at', 0);
+let opening = null; // a second press while the sheet is being built does nothing
 export async function toggleSheet(show) {
+  if (opening) return opening;
   const open = sheet && !sheet.hidden;
   show = show ?? !open;
   if (show === open) return;
-  if (!show) { section0 = sheet.querySelector('.st-main').scrollTop; store.set('settings:at', section0); sheet.hidden = true; gear?.classList.remove('on'); return; }
+  if (show) { opening = openSheet().finally(() => { opening = null; }); return opening; }
+  return closeSheet();
+}
+function closeSheet() {
+  section0 = sheet.querySelector('.st-main').scrollTop; store.set('settings:at', section0);
+  const had = sheet.contains(document.activeElement);
+  sheet.hidden = true; gear?.classList.remove('on');
+  if (had) document.activeElement?.blur?.(); // keys go to the page again
+}
+async function openSheet() {
   // What the server and the read-aloud module know, before building.
   const [si, g] = await Promise.all([
     fetch('/settings/server').then((r) => r.json()).catch(() => null),
@@ -677,20 +716,27 @@ export async function toggleSheet(show) {
 on('status', () => { if (sheet && !sheet.hidden) sync(); });
 on('spread:rendered', () => { if (sheet && !sheet.hidden) sync(); }); // [ ] + - c C changed by key while the sheet is open
 
-// ⌘, or Ctrl+, anywhere; while the sheet is open, Esc closes it and keys
-// pressed in it stay in it (keys pressed on the page still work, to look).
+// ⌘, or Ctrl+, anywhere, and , alone wherever no view uses it (the wall does:
+// , . move depth there). Firefox on a Mac keeps ⌘, for its own settings and
+// never passes it to the page, so , alone or the gear is the way in there.
+// While the sheet is open, Esc closes it and keys pressed in it stay in it
+// (keys pressed on the page still work, to look).
+const typing = (t) => /^(INPUT|TEXTAREA|SELECT)$/.test(t?.tagName) || t?.isContentEditable;
+const commaFree = () => { const b = keymap.get(','); return !b || (b.view && b.view !== state.view); };
 addEventListener('keydown', (e) => {
-  if (e.key === ',' && (e.metaKey || e.ctrlKey) && !e.altKey) { e.preventDefault(); e.stopPropagation(); toggleSheet(); return; }
+  const chord = (e.metaKey || e.ctrlKey) && !e.altKey && !e.shiftKey;
+  const bare = !e.metaKey && !e.ctrlKey && !e.altKey && !typing(e.target) && commaFree();
+  if (e.key === ',' && (chord || bare)) { e.preventDefault(); e.stopPropagation(); if (!e.repeat) toggleSheet(); return; }
   if (!sheet || sheet.hidden) return;
   if (e.key === 'Escape' && $('#search')?.hidden !== false && $('#keys')?.hidden !== false) { e.preventDefault(); e.stopPropagation(); toggleSheet(false); return; }
   if (sheet.contains(e.target)) e.stopPropagation();
 }, true);
 
 // The gear, beside ?.
-gear = h('button', { id: 'st-btn', className: 'ghost', type: 'button', title: 'Settings (⌘, or Ctrl+,)', ariaLabel: 'Settings', onclick: () => toggleSheet() });
+gear = h('button', { id: 'st-btn', className: 'ghost', type: 'button', title: 'Settings (, or Ctrl+,)', ariaLabel: 'Settings', onclick: () => toggleSheet() });
 gear.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>';
 if ($('#keys-btn')) $('#keys-btn').after(gear); else $('#bar').append(gear);
-keyHelp.push({ label: '⌘, Ctrl+,', text: 'settings: colours, text, pages, wheel, side panel, AI budget, voice', order: 66 });
+keyHelp.push({ label: ', Ctrl+, ⌘,', text: 'settings: colours, text, pages, wheel, side panel, AI budget, voice (Firefox on a Mac keeps ⌘, for itself)', order: 66 });
 
 // Apply what was saved now, before the first page is laid out; sections and
 // keys registered by later modules are picked up at boot.

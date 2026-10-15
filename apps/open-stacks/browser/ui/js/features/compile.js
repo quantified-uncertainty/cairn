@@ -33,6 +33,8 @@ const BATCH = Q.get('compile') === 'batch';
 const opt = (k, d) => store.get(k, d);
 /** Diagnostics: {id, level, k, ms} per unit, the last 400. */
 export const compileTimes = [];
+/** Diagnostics: what the compiler is doing (jobs and their phases, failures). */
+export const compileState = () => ({ jobs: S.jobs.map((j) => ({ id: j.it.id, depth: j.depth, phase: j.phase, k: j.k, n: j.n, busy: j.busy })), failed: [...S.failed], paused: paused(), looping: S.looping, writeQ: writeQ.length });
 const note = (id, level, k, ms) => { compileTimes.push({ id, level, k, ms: Math.round(ms) }); if (compileTimes.length > 400) compileTimes.shift(); };
 const enc = encodeURIComponent;
 
@@ -396,6 +398,9 @@ async function flowProfile(it) {
 // ------------------------------------------------------------ track layer ----
 // The front matter, references, appendix and index as faint bands on the track.
 registerTrackLayer('profile', ({ it, n, el }) => {
+  // Under the bright part (the spread), not over it.
+  const fill = el.parentNode?.querySelector(':scope > .tr-fill');
+  if (fill && fill.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) el.parentNode.insertBefore(el, fill);
   const Pf = profileOf(it);
   const sig = Pf ? `${Pf.pid}.${Pf.gen}.${n}` : '';
   if (el.dataset.sig === sig) return;

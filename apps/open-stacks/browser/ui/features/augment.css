@@ -47,17 +47,21 @@
 #item-head .aug-skim { margin-left: auto; font: 11px var(--mono); color: var(--accent); white-space: nowrap; }
 #item-head .aug-skim + .pos { margin-left: 0; }
 
-/* ---- margin notes on the pages ---- */
+/* ---- margin notes on the pages ----
+   A small tab on the page's outer edge (cropped pages have little margin, so it
+   must not cover the text), level with the sentence; on posts, a dot in the
+   gap left of the column. */
 .pg > .aug-mk {
-  position: absolute; z-index: 3; width: 16px; height: 16px; margin-top: -8px; padding: 0;
-  border: 0; border-radius: 50%; background: rgb(226 165 74 / .92); color: #1a1611;
-  font: 700 10px/16px var(--serif); text-align: center; cursor: pointer;
-  box-shadow: 0 1px 3px #0005; opacity: .82; transition: opacity .12s, transform .12s;
+  position: absolute; z-index: 3; width: 7px; height: 18px; margin-top: -9px; padding: 0;
+  border: 0; background: rgb(226 165 74 / .95); color: transparent; font-size: 0; cursor: pointer;
+  box-shadow: 0 1px 2px #0004; opacity: .85; transition: width .1s, opacity .1s;
 }
-.pg > .aug-mk.l { left: 3px; }
-.pg > .aug-mk.r { right: 3px; }
-.pg > .aug-mk.fig { border-radius: 3px; font: 9px/16px var(--mono); }
-.pg > .aug-mk:hover, .pg > .aug-mk:focus-visible { opacity: 1; transform: scale(1.15); outline: none; }
+.pg > .aug-mk.l { left: 0; border-radius: 0 4px 4px 0; }
+.pg > .aug-mk.r { right: 0; border-radius: 4px 0 0 4px; }
+.pg > .aug-mk.fig { background: rgb(120 150 190 / .95); }
+.pg > .aug-mk:hover, .pg > .aug-mk:focus-visible { width: 11px; opacity: 1; outline: none; }
+.pg > .aug-mk.at { width: 14px; height: 14px; margin-top: -7px; border-radius: 50%; color: #1a1611; font: 700 10px/14px var(--serif); text-align: center; }
+.pg > .aug-mk.at:hover, .pg > .aug-mk.at:focus-visible { width: 14px; transform: scale(1.15); }
 .aug-pop {
   position: fixed; z-index: 60; width: 320px; pointer-events: none;
   background: var(--bg-3); border: 1px solid var(--line); border-radius: 5px; padding: 8px 10px 9px;

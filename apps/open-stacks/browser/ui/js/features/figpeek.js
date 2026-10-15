@@ -181,6 +181,7 @@ async function pageSource(it, k) {
 async function inkGrid(it, k, W, H, scan) {
   let srcs = panelsOf(it, k).map((p) => ({ src: p.canvas, box: p.box }));
   if (!srcs.length) srcs = await pageSource(it, k);
+  const t0 = performance.now();
   const GW = scan ? 300 : 240, cs = W / GW, GH = Math.max(8, Math.round(H / cs));
   const c = h('canvas', { width: GW, height: GH });
   const g = c.getContext('2d', { willReadFrequently: true });
@@ -188,11 +189,15 @@ async function inkGrid(it, k, W, H, scan) {
   g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
   const cover = scan ? new Uint8Array(GW * GH) : null;
   for (const { src, box: b } of srcs) {
+    // Shrink on the GPU first, so only a grid-sized canvas is ever read back.
     const sw = src.naturalWidth || src.width, sh = src.naturalHeight || src.height;
-    g.drawImage(src, 0, 0, sw, sh, b.x0 * GW, b.y0 * GH, (b.x1 - b.x0) * GW, (b.y1 - b.y0) * GH);
+    const sm = h('canvas', { width: Math.max(1, Math.round((b.x1 - b.x0) * GW)), height: Math.max(1, Math.round((b.y1 - b.y0) * GH)) });
+    const sg = sm.getContext('2d'); sg.imageSmoothingEnabled = true; sg.imageSmoothingQuality = 'high';
+    sg.drawImage(src, 0, 0, sw, sh, 0, 0, sm.width, sm.height);
+    g.drawImage(sm, b.x0 * GW, b.y0 * GH, (b.x1 - b.x0) * GW, (b.y1 - b.y0) * GH);
     if (scan) {
       // Only the printed area counts: not scanner beds, page edges or shadows.
-      const a = analyze(src);
+      const a = analyze(sm);
       if (a.blank) continue;
       const bw = b.x1 - b.x0, bh = b.y1 - b.y0;
       const x0 = Math.floor((b.x0 + a.box.x0 * bw) * GW), x1 = Math.ceil((b.x0 + a.box.x1 * bw) * GW), y0 = Math.floor((b.y0 + a.box.y0 * bh) * GH), y1 = Math.ceil((b.y0 + a.box.y1 * bh) * GH);
@@ -211,7 +216,7 @@ async function inkGrid(it, k, W, H, scan) {
     const bg = ls.length ? pct(ls, 0.8) : 230, thr = bg - Math.max(26, bg * 0.13);
     for (let i = 0; i < GW * GH; i++) ink[i] = cover[i] && lum(i) < thr ? 1 : 0;
   }
-  return { gw: GW, gh: GH, cs, ink };
+  return { gw: GW, gh: GH, cs, ink, ms: Math.round(performance.now() - t0) };
 }
 
 // ---------- finding regions ----------
@@ -554,16 +559,18 @@ export function regionsOf(it, k) {
       const vp = page.getViewport({ scale: 1 });
       const tc = tl?.pageModel ? (await tl.pageModel(it, k).catch(() => null))?.tc : null;
       const [text, ol] = await Promise.all([tc || page.getTextContent(), withTimeout(page.getOperatorList(), 2500).catch(() => null)]);
-      const grid = await inkGrid(it, k, vp.width, vp.height, false);
+      const c0 = performance.now(), grid = await inkGrid(it, k, vp.width, vp.height, false), c1 = performance.now();
       res = { W: vp.width, H: vp.height, ...findRegions({ W: vp.width, H: vp.height, runs: pdfRuns(text, vp), imgs: ol ? imageBoxes(ol, lib.OPS, vp) : [], grid }) };
+      res.cpu = [grid.ms, Math.round(performance.now() - c1)]; // ink grid, analysis (main thread)
     } else {
       const tl = await textlayer();
       const m = tl?.pageModel ? await tl.pageModel(it, k).catch(() => null) : null;
       let W = m?.o?.w, H = m?.o?.h;
       if (!W) { const p = panelsOf(it, k)[0]; W = p?.srcW || 1000; H = p?.srcH || 1500; }
-      const grid = await inkGrid(it, k, W, H, true);
+      const c0 = performance.now(), grid = await inkGrid(it, k, W, H, true), c1 = performance.now();
       const runs = m?.o ? ocrRuns(m.o) : inkRuns(grid);
       res = { W, H, ...findRegions({ W, H, runs, grid, scan: true }) };
+      res.cpu = [grid.ms, Math.round(performance.now() - c1)];
     }
     for (const r of res.regions) r.k = k;
     res.ms = Math.round(performance.now() - t0);

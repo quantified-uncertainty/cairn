@@ -306,6 +306,7 @@ async function fetchInto(u, job, held) {
     held = false;
     let res, buf, err;
     try {
+      job.t0 = Date.now();
       res = await fetch(u, { headers: { 'User-Agent': UA }, redirect: 'follow', signal: AbortSignal.timeout(TIMEOUT) });
       if (res.ok) {
         // Read in chunks so the reader can see the download's progress (/progress).
@@ -325,6 +326,7 @@ async function fetchInto(u, job, held) {
       await writeFile(p.meta, m); // last: cached() means the body is complete
       put(k, buf.length + m.length, nowSec());
       stats.fetched++; stats.bytes += buf.length;
+      timing(u, Date.now() - job.t0, buf.length);
       evictSoon();
       return;
     }
@@ -385,6 +387,22 @@ export function enqueue(urls, pri = 1, group = 'default') {
   queue.sort((a, b) => b.pri - a.pri);
   pump();
   return queue.length;
+}
+// How fast each source is: recent fetch times per host (median, 90th
+// percentile, bytes), so the reader can say how long a page will take.
+const times = new Map(); // host -> [{ms, bytes, at}]
+function timing(u, ms, bytes) {
+  let h; try { h = new URL(u).hostname.replace(/^www\./, ''); } catch { return; }
+  const a = times.get(h) || []; a.push({ ms, bytes, at: Date.now() }); if (a.length > 200) a.shift(); times.set(h, a);
+}
+export function hostTimes() {
+  const out = {};
+  for (const [h, a] of times) {
+    const ms = a.map((x) => x.ms).sort((x, y) => x - y);
+    const recent = a.filter((x) => Date.now() - x.at < 60e3).length;
+    out[h] = { n: a.length, p50: ms[Math.floor(ms.length / 2)], p90: ms[Math.floor(ms.length * 0.9)], perMin: recent, kb: Math.round(a.reduce((s, x) => s + x.bytes, 0) / a.length / 1024) };
+  }
+  return out;
 }
 export const queueState = () => ({ queue: queue.length, active: bgActive + fgActive, foreground: fgActive });
 /** Drop every queued prefetch (fetches in flight finish); returns how many were dropped. (Settings, routes/85-settings.mjs) */
