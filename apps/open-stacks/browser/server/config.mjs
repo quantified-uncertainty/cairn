@@ -7,6 +7,10 @@ import { fileURLToPath } from 'url';
 export const HERE = join(dirname(fileURLToPath(import.meta.url)), '..');
 const argPort = process.argv.indexOf('--port');
 export const PORT = Number(argPort > 0 ? process.argv[argPort + 1] : process.env.STACKS_PORT) || 4747;
+// Listen on loopback only: the proxy, notes and paid summaries must not be
+// reachable from other machines on the network (cafes, shared offices).
+// STACKS_HOST=0.0.0.0 opts in, e.g. for a tablet on a trusted network.
+export const HOST = process.env.STACKS_HOST || '127.0.0.1';
 export const CACHE = process.env.STACKS_CACHE || join(homedir(), '.cache', 'open-stacks');
 export const MODEL = process.env.STACKS_MODEL || 'claude-opus-5-5';
 export const UA = 'OpenStacksBrowser/0.3 (personal research reader; https://github.com/quantified-uncertainty/cairn)';

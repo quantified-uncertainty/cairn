@@ -17,7 +17,7 @@
 import http from 'http';
 import { existsSync, readdirSync, statSync, createReadStream } from 'fs';
 import { join, extname } from 'path';
-import { HERE, PORT, CACHE, MODEL, UA, hasKey } from './server/config.mjs';
+import { HERE, HOST, PORT, CACHE, MODEL, UA, hasKey } from './server/config.mjs';
 import * as cache from './server/cache.mjs';
 
 const MIME = {
@@ -86,7 +86,7 @@ server.on('error', (e) => {
   console.log(`Port ${PORT} is in use (already running?). Try --port N.`);
   openApp(); setTimeout(() => process.exit(1), 300);
 });
-server.listen(PORT, () => {
+server.listen(PORT, HOST, () => {
   const ai = hasKey() ? `summaries on (${MODEL})` : 'summaries off (set ANTHROPIC_API_KEY)';
   console.log(`Stacks Browser on http://localhost:${PORT}  ·  cache ${CACHE}  ·  ${ai}`);
   for (const fn of startHooks) Promise.resolve().then(() => fn()).catch((e) => console.warn('start hook:', e.message));
