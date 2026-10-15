@@ -6,6 +6,9 @@ The standard: a figure earns its place only if it shows a mechanism the reader w
 
 ## Implementation conventions
 
+Owner feedback (2026-10-15): readability first, minimal, no ornament. Draw figures with thin lines, label them in plain text at body size, use no decorative fonts or textures, and use the accent at most once per figure. If a sentence does the job, the figure goes. See HOMEPAGE-BRIEF.md.
+
+
 - **Format.** Each figure is a hand-authored inline-SVG Astro component in `apps/reasoning-processes/src/components/figures/`. Follow the existing `ProcessMap.astro`. No runtime JS, no images, no Mermaid for these.
 - **Plotted functions.** Compute the data in the component's frontmatter from the page's own formula, so a figure can't drift from the text.
 - **Theme.** Strokes and text use `currentColor` or Starlight CSS variables (`--sl-color-*`), so the figure works in light and dark mode. At most one or two accent hues, and only where colour carries meaning.
