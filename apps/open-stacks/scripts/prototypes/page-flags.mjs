@@ -509,9 +509,19 @@ for (const c of CONCEPTS) {
 if (!PROBE) {
   // Merge with an existing index when --only was used.
   const idxFile = join(OUT, 'concepts.json');
-  let prev = [];
-  if (ONLY && existsSync(idxFile)) prev = JSON.parse(readFileSync(idxFile, 'utf-8')).concepts || [];
-  const merged = CONCEPTS.map((c) => index.find((x) => x.id === c.id) || prev.find((x) => x.id === c.id)).filter(Boolean);
+  // Concepts not fetched in this run take their counts from their existing si/<id>.json, so the
+  // index always reflects the files on disk (a concept with no file is left out).
+  const fromFile = (c) => {
+    const f = join(OUT, 'si', c.id + '.json');
+    if (!existsSync(f)) return null;
+    const s = JSON.parse(readFileSync(f, 'utf-8'));
+    return {
+      ...c, f: undefined, field: c.f, siTotal: s.total, siBooks: s.books.length,
+      siLocated: s.books.filter((b) => b.flags).length,
+      siFlags: s.books.reduce((n, b) => n + (b.flags?.length || 0), 0),
+    };
+  };
+  const merged = CONCEPTS.map((c) => index.find((x) => x.id === c.id) || fromFile(c)).filter(Boolean);
   writeFileSync(
     idxFile,
     JSON.stringify(

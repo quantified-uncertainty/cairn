@@ -21,3 +21,16 @@ Paused 2026-10-15. This file records where the build stopped and what remains, s
 6. **Publish**: each prototype as a Claude artifact with the `sample` capability and its data files, plus a gallery artifact linking them.
 
 The writing guide and builder guide used for chapters and prototypes are summarized in `CLAUDE.md`. Chapters follow the sibling wikis' conventions: status line, dated prices, bracketed confidence, Open questions and Related pages.
+
+## Published previews (private Claude artifacts, 2026-10-15)
+
+| Prototype | Artifact |
+|---|---|
+| Crux Table | https://claude.ai/artifact/NfB6CNT35snSUPoYRrN1Za |
+| Chapter Lenses | https://claude.ai/artifact/K1PVr9531iHK8UzTPLgT2o |
+| Gearbox | https://claude.ai/artifact/KrMw11cnbYaQY6SLNAezfN |
+| Terra Incognita | https://claude.ai/artifact/C61F6xfzE2gcy8Nza43KfD |
+| Evidence Ledger | https://claude.ai/artifact/7rwYi9NXr5xpBR3NKoyxdB |
+| The Bindery | https://claude.ai/artifact/FYmB19bci2Xm2hu9jddBta |
+
+Republish from the same file path to update each one in place.
