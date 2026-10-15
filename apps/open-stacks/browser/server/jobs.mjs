@@ -562,8 +562,14 @@ export function makeFlag(root, f, now = Date.now()) {
 // ------------------------------------------------------------ dedupe keys ----
 export const normTitle = (t) => String(t || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const arxivOf = (s) => {
-  const m = /arxiv\.org\/(?:abs|pdf)\/((?:\d{4}\.\d{4,5})|(?:[a-z-]+(?:\.[a-z]{2})?\/\d{7}))(?:v\d+)?(?:\.pdf)?/i.exec(s || '') || /10\.48550\/arxiv\.((?:\d{4}\.\d{4,5})|(?:[a-z-]+\/\d{7}))/i.exec(s || '');
+  const m = /arxiv\.org\/(?:abs|pdf|html)\/((?:\d{4}\.\d{4,5})|(?:[a-z-]+(?:\.[a-z]{2})?\/\d{7}))(?:v\d+)?(?:\.pdf)?/i.exec(s || '') || /10\.48550\/arxiv\.((?:\d{4}\.\d{4,5})|(?:[a-z-]+\/\d{7}))/i.exec(s || '');
   return m ? m[1].toLowerCase() : null;
+};
+/** The forum post a URL names (a post page, or the GraphQL htmlBody URL): 'lw:<_id>' or 'eaf:<_id>'. */
+const postOf = (u) => {
+  let s = String(u || ''); try { s = decodeURIComponent(s); } catch { /* as is */ }
+  const m = /^https?:\/\/(?:www\.)?(lesswrong\.com|alignmentforum\.org|greaterwrong\.com|forum\.effectivealtruism\.org|ea\.greaterwrong\.com)\/(?:posts\/([A-Za-z0-9]{8,24})\b|graphql\b.*_id:\s*"([A-Za-z0-9]{8,24})")/i.exec(s);
+  return m ? `${/effectivealtruism|^ea\./i.test(m[1]) ? 'eaf' : 'lw'}:${m[2] || m[3]}` : null;
 };
 const hostOf = (u) => { try { return new URL(u).hostname.toLowerCase().replace(/^www\./, ''); } catch { return null; } };
 const isGraphql = (u) => /\/graphql\b/.test(u || '');
@@ -576,9 +582,9 @@ export function dedupeKeys(it) {
   if (it.id) k.add('id:' + it.id);
   const ax = (/^arxiv:(.+)$/i.exec(it.id || '')?.[1]?.replace(/v\d+$/, '').toLowerCase()) || arxivOf(it.url) || arxivOf(it.page) || arxivOf(it.doi ? 'doi.org/' + it.doi : '');
   if (ax) k.add('arxiv:' + ax);
-  const doi = (it.doi || /doi\.org\/(10\.[^\s?#]+)/i.exec(it.page || '')?.[1] || /doi\.org\/(10\.[^\s?#]+)/i.exec(it.url || '')?.[1] || '').toLowerCase().replace(/^https?:\/\/(dx\.)?doi\.org\//, '');
+  const doi = (it.doi || /doi\.org\/(10\.[^\s?#]+)/i.exec(it.page || '')?.[1] || /doi\.org\/(10\.[^\s?#]+)/i.exec(it.url || '')?.[1] || '').toLowerCase().trim().replace(/^https?:\/\/(dx\.)?doi\.org\//, '').replace(/^doi:\s*/, '');
   if (doi) { k.add('doi:' + doi); const a = arxivOf(doi); if (a) k.add('arxiv:' + a); }
-  for (const p of [it.id, it.xpost]) if (/^(lw|eaf):/.test(p || '')) k.add('post:' + p);
+  for (const p of [it.id, it.xpost, postOf(it.url), postOf(it.page)]) if (/^(lw|eaf):/.test(p || '')) k.add('post:' + p);
   const sur = firstAuthor(it.a) || '';
   const ia = it.ia || /^ia:(.+)$/.exec(it.id || '')?.[1];
   if (ia) { k.add('ia:' + ia.toLowerCase()); }
@@ -603,6 +609,12 @@ const patternRe = (p) => new RegExp('^' + p.replace(/[.+^${}()|[\]\\]/g, '\\$&')
 export function denied(host, hosts) {
   for (const p of hosts?.deny || []) { const re = patternRe(p); if (parents(host).some((h) => re.test(h))) return p; }
   return null;
+}
+/** The deny pattern a URL hits: its host, or the host of the page a Wayback Machine URL archives. */
+export function deniedUrl(u, hosts) {
+  const h = hostOf(u); if (!h) return null;
+  const inner = /^(?:web\.)?archive\.org$/.test(h) ? /^\/web\/(?:[^/]*\/)?(?:https?:\/\/?)?([^/?#:]+)/i.exec(String(u).replace(/^https?:\/\/[^/]+/i, ''))?.[1] : null;
+  return denied(h, hosts) || (inner ? denied(inner.toLowerCase().replace(/^www\./, ''), hosts) : null);
 }
 export function allowedHost(host, hosts, corpusHosts = new Set()) {
   const allow = hosts?.allow || {};
@@ -632,6 +644,8 @@ export function itemProblems(it, { tagIds = null, job = null } = {}) {
   if (it.d != null && !/^\d{4}-\d{2}(-\d{2})?$/.test(it.d)) p.push('d must be YYYY-MM or YYYY-MM-DD');
   if (it.y != null && !(Number.isInteger(it.y) && it.y > 1400 && it.y < 2100)) p.push('y must be a year (a number)');
   for (const k of ['url', 'page']) if (!/^https:\/\//.test(it[k] || '')) p.push(`${k} must be an https:// URL`);
+  if (/^https:\/\/(dx\.)?doi\.org\//i.test(it.url || '')) p.push('url must be the open copy itself, not a doi.org link (a DOI resolves to the publisher, often a paywall): put the DOI in doi or page');
+  if (/^(pdf|web):/.test(id) && [it.url, it.page].some((u) => postOf(u))) p.push(`a forum post takes the id ${postOf(it.page) || postOf(it.url)} and the GraphQL url (jobs/README.md, section 3)`);
   if (/^arxiv:/.test(id)) {
     const a = id.slice(6);
     if (it.url !== `https://arxiv.org/pdf/${a}`) p.push(`arXiv url must be https://arxiv.org/pdf/${a}`);
@@ -780,15 +794,19 @@ export async function checkJob(id, { root, dir, live = false, fetchImpl, now = D
     for (const it of mine) { const p = itemProblems(it, { tagIds, job: id }); if (p.length) { bad++; say(false, `${it.id || '(no id)'}: ${p.join('; ')}`); } }
     if (!bad) say(true, `${mine.length} items follow the item rules`);
     // Duplicates: against the corpus and the other lane-file items (without this job's), and within the job.
+    // The corpus without this job's own merged items (they carry `job`): an item whose id the
+    // corpus already had before this job is a duplicate, not "merged".
     const mineIds = new Set(mine.map((x) => x.id));
-    const base = keyIndex([...[...corpusById.values()].filter((it) => !mineIds.has(it.id)), ...others]);
+    const ofJob = (it) => it.job === id && mineIds.has(it.id);
+    const base = keyIndex([...[...corpusById.values()].filter((it) => !ofJob(it)), ...others]);
     const seen = new Map(), what = { id: 'id', arxiv: 'arXiv id', doi: 'DOI', post: 'forum post id', ia: 'IA identifier', work: 'work (title, author, year)', url: 'URL', t: 'title', ts: 'short title and author' };
     let dups = 0;
     for (const it of mine) {
       const keys = dedupeKeys(it);
       for (const k of keys) {
         const kind = k.slice(0, k.indexOf(':')), val = k.slice(k.indexOf(':') + 1);
-        const hit = (base.get(k) || []).filter((x) => x !== it.twin);
+        // `twin` (README section 4) lets the same work in another form past the title keys only.
+        const hit = (base.get(k) || []).filter((x) => !(x === it.twin && (kind === 't' || kind === 'ts')));
         if (hit.length) { dups++; say(false, `${it.id} duplicates ${hit.slice(0, 3).join(', ')} (same ${what[kind] || kind}: ${trunc(val, 80)})`); break; }
         if (seen.has(k) && seen.get(k) !== it.id) { dups++; say(false, `${it.id} duplicates ${seen.get(k)} in this job (same ${what[kind] || kind})`); break; }
       }
@@ -797,7 +815,7 @@ export async function checkJob(id, { root, dir, live = false, fetchImpl, now = D
     if (!dups) say(true, 'no duplicates against the corpus, the lane files or each other');
     // Hosts.
     const corpusHosts = new Set();
-    for (const it of corpusById.values()) if (!mineIds.has(it.id)) for (const u of [it.url, it.page]) { const h = hostOf(u); if (h) corpusHosts.add(h); }
+    for (const it of corpusById.values()) if (!ofJob(it)) for (const u of [it.url, it.page]) { const h = hostOf(u); if (h) corpusHosts.add(h); }
     let hostBad = 0;
     const added = new Set();
     for (const it of mine) for (const u of [it.url, it.page, it.pdf]) {

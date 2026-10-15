@@ -132,8 +132,9 @@ const FILE_LIKE = /\.(pdf|docx?|indd|idml|qxp|qxd|pages|rtf|txt|ai|psd|tex|dvi|p
 /** A cleaned file name as a title: no extension, underscores (and dashes in a name with no spaces) as spaces. */
 export function cleanTitle(name) {
   let t = String(name).replace(/\.[A-Za-z0-9]{1,5}$/, '');
+  const spaced = /\s/.test(t);
   t = t.replace(/_+/g, ' ');
-  if (!/\s/.test(t)) t = t.replace(/-+/g, ' ');
+  if (!spaced) t = t.replace(/-+/g, ' ');
   t = t.replace(/\s+/g, ' ').trim();
   if (t && t === t.toLowerCase()) t = t[0].toUpperCase() + t.slice(1);
   return t || String(name);
@@ -263,7 +264,7 @@ function mdBlocks(lines, ctx) {
       out.push(`<pre><code>${esc(body.join('\n'))}</code></pre>`);
       continue;
     }
-    para.push(line.trim());
+    para.push(line.replace(/^\s+/, '')); // trailing spaces stay: two of them break the line
     i++;
   }
   flush();
@@ -320,10 +321,11 @@ function mdInline(s, ctx) {
   s = s.replace(/(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/g, (_, b, c) => keep(`<code>${esc(c.replace(/\n/g, ' ').replace(/^ ([\s\S]*) $/, '$1'))}</code>`));
   s = s.replace(/<((?:https?|mailto|ftp):[^\s<>]+)>/gi, (_, u) => keep(link(u, null, esc(u))));
   s = s.replace(new RegExp(`<(/?)(${INLINE_TAGS})\\s*/?>`, 'gi'), (_, sl, t) => keep(`<${sl}${t.toLowerCase()}>`));
-  s = s.replace(/!\[([^\]]*)\]\(\s*<?([^\s)>]*)>?(?:\s+(?:"([^"]*)"|'([^']*)'))?\s*\)/g, (_, alt, src, t1, t2) => keep(img(src, alt, t1 ?? t2)));
+  const DEST = String.raw`(?:<([^>\n]*)>|([^\s()]*(?:\([^\s()]*\)[^\s()]*)*))(?:\s+(?:"([^"]*)"|'([^']*)'))?\s*\)`;
+  s = s.replace(new RegExp(String.raw`!\[([^\]]*)\]\(\s*` + DEST, 'g'), (_, alt, d1, d2, t1, t2) => keep(img(d1 ?? d2, alt, t1 ?? t2)));
   s = s.replace(/!\[([^\]]*)\]\[([^\]]*)\]/g, (all, alt, k) => { const r = ref(k || alt); return r ? keep(img(r.u, alt, r.t)) : all; });
   const rest = (t) => emph(esc(t));
-  s = s.replace(/\[((?:[^\]\\]|\\.)+)\]\(\s*<?([^\s)>]*(?:\([^\s)]*\)[^\s)>]*)*)>?(?:\s+(?:"([^"]*)"|'([^']*)'))?\s*\)/g, (_, txt, href, t1, t2) => keep(link(href, t1 ?? t2, rest(txt))));
+  s = s.replace(new RegExp(String.raw`\[((?:[^\]\\]|\\.)+)\]\(\s*` + DEST, 'g'), (_, txt, d1, d2, t1, t2) => keep(link(d1 ?? d2, t1 ?? t2, rest(txt))));
   s = s.replace(/\[((?:[^\]\\]|\\.)+)\](?:\[([^\]]*)\])?/g, (all, txt, k) => { const r = ref(k || txt); return r ? keep(link(r.u, r.t, rest(txt))) : all; });
   s = rest(s);
   s = s.replace(/(^|[\s(])(https?:\/\/[^\s<\u0000]*[^\s<\u0000.,:;"')\]!?])/g, (_, pre, u) => pre + keep(link(u.replace(/&amp;/g, '&'), null, u)));

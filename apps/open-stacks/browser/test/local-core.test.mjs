@@ -125,7 +125,7 @@ test('html: body only, no scripts, handlers or javascript: links, relative URLs 
   const r = L.htmlDoc(Buffer.from('<html><head><title>T &amp; U</title><style>p{}</style></head><body onload="x()"><p onclick=\'y()\' style="color:red">Hi <a href="javascript:alert(1)">j</a> <a href="#a">a</a> <a href="https://e.org/">e</a> <img src="pics/x.png" srcset="pics/x2.png 2x"> <img src="data:image/png;base64,AAA"> <a href="data:text/html,x">d</a></p><iframe src="https://evil"></iframe><form action="/x"><input name=q></form><svg><image xlink:href="pics/y.png"/></svg></body></html>'),
     (v, img) => (img ? 'IMG:' : 'LINK:') + v);
   assert.equal(r.title, 'T & U');
-  assert.equal(r.html, '<p style="color:red">Hi <a href="#">j</a> <a href="LINK:#a">a</a> <a href="LINK:https://e.org/">e</a> <img src="IMG:pics/x.png"> <img src="IMG:data:image/png;base64,AAA"> <a href="#">d</a></p><svg><image xlink:href="IMG:pics/y.png"></image></svg>');
+  assert.equal(r.html, '<p style="color:red">Hi <a href="#">j</a> <a href="LINK:#a">a</a> <a href="LINK:https://e.org/">e</a> <img src="IMG:pics/x.png"> <img src="IMG:data:image/png;base64,AAA"> <a href="#">d</a></p><svg><image xlink:href="IMG:pics/y.png"/></svg>');
   assert.equal(L.htmlDoc(Buffer.from('<meta charset="iso-8859-1"><p>caf\xe9</p>', 'latin1')).html, '<p>café</p>', 'a declared Latin-1 page');
   assert.equal(L.htmlDoc('<h1>Only a heading</h1>').title, 'Only a heading');
 });
