@@ -58,7 +58,7 @@ Confidence is written as high, med or low, or as a percentage. Sources older tha
    - Consensus Pro is $20/month or $144/year; Consensus Deep is $65/month or $540/year [V].
    - Undermind Pro is $16/month billed annually [V].
    - Scite is $12 or $40/month billed yearly [V].
-   - Litmaps Pro is $10/month or $120/year [V]; ResearchRabbit RR+ is $10/month annual or $12.50 monthly [V].
+   - Litmaps Pro is $10/month billed annually ($120/year; academic email required) or $12.50 billed monthly [V] [corrected in verification]. ResearchRabbit RR+ is $10/month annual or $12.50 monthly [V].
    - Free and good: Semantic Scholar, Asta, Scholar Labs, Scholar Inbox, Hugging Face Papers, Inciteful, Local Citation Network, Zotero.
 
 3. **Independent studies find search recall far below vendor claims.**
@@ -79,7 +79,7 @@ Confidence is written as high, med or low, or as a percentage. Sources older tha
    - Any tool we build should verify every reference it emits. [high]
 
 6. **Google has entered properly.**
-   - Scholar Labs launched Nov 18, 2025 for a limited group. On June 3, 2026 it opened to all logged-in users, became "~10x faster", scans "up to 3x more papers" and allows 10x more daily searches [V].
+   - Scholar Labs launched Nov 18, 2025 for a limited group. The June 3, 2026 update made it "~10x faster", scans "up to 3x more papers" and allows 10x more daily searches; the post states Labs "is available for all logged in users" but does not say when the waitlist ended, and the updated version shipped in English first [V] [corrected in verification].
    - Scholar Quick Read (Aug 25, 2026) gives an Answers / Approach / Considerations digest of a paper for your query. It works only for papers you have access to, through publisher partnerships for subscribed articles [V].
    - Google's advantage is index size: Aaron Tay found it beat Undermind on at least one query for that reason [S]. Scholar Labs finds papers; it does not synthesize. [V]
 
@@ -95,7 +95,7 @@ Confidence is written as high, med or low, or as a percentage. Sources older tha
 9. **Papers with Code is gone.** paperswithcode.com now 302-redirects to Hugging Face Trending Papers [V]. The sunset happened in late July 2025 [S]. The SOTA leaderboards were not carried over in comparable form [S].
 
 10. **NotebookLM is now "Gemini Notebook" (renamed Jul 16, 2026).**
-    - Each notebook now gets a cloud computer that can run code [V].
+    - Each notebook now gets a cloud computer that can run code; at launch this was limited to Google AI Ultra and eligible Workspace business customers, with Pro users on the web to follow "over the coming weeks" [V] [corrected in verification].
     - Each source can hold up to 500,000 words, and a notebook can hold 50 (free) to 300 (Pro, $19.99) or 600 (top Ultra) sources [S].
     - It is the only mainstream tool that comfortably holds *whole books*, but only books you upload.
 
@@ -162,8 +162,8 @@ Confidence is written as high, med or low, or as a percentage. Sources older tha
 | Enterprise | Custom | Screen 40,000 papers, extract 40 columns |
 
 - **Pricing churn.**
-  - CostBench (an aggregator) logged several 2026 changes: the top plan moved from $780 to $79/user/month in April 2026 and then to $169 on June 16, 2026, and a plan was removed in September 2026 [S, costbench.com changelogs; low–med confidence on the exact history].
-  - The current page shows no "Plus" tier, consistent with that removal. [V/I]
+  - CostBench (an aggregator, tracking Elicit only since May 17, 2026) logged one repricing: the top tier went from $79 to $169/user/month between its May 17 and June 16, 2026 snapshots, alongside renames ("Pro" → "Scale", "Team" → "Enterprise") [S, costbench.com price history] [corrected in verification].
+  - CostBench shows 4 tiers in every snapshot (May 17 – Oct 11, 2026), so it records no plan removal and no $780 price [corrected in verification].
 - **Status.** Independent company, actively developing. [V]
 - **Distinctive interaction.** The "papers × questions" spreadsheet: each row a paper, each column an LLM-extracted attribute with a quote. This is still the best UI pattern for comparing many studies. [I, high]
 - **Evidence.** See §6. Vendor numbers are very high; independent search-recall numbers are low.
@@ -346,7 +346,7 @@ All items below are verified from the Google Scholar blog Atom feed, which carri
 ### 4. Notebook-style and generative tools
 
 - **NotebookLM → Gemini Notebook** [V Google blog, Jul 16, 2026]:
-  - "We're renaming NotebookLM to Gemini Notebook". Same product, now with a "secure cloud computer" per notebook for code execution.
+  - "We're renaming NotebookLM to Gemini Notebook". Same product, now with a "secure cloud computer" per notebook for code execution, initially for Google AI Ultra and eligible Workspace business customers, with Pro on the web to follow [corrected in verification].
   - It also appears in the Gemini app, and soon in AI Mode in Search.
   - History: May 2023 "Project Tailwind" → NotebookLM 2024 → Audio Overviews Sept 2024 [S Wikipedia, which carries an LLM-content warning].
   - **Limits** [S elephas.app, updated Sept 28, 2026]:
@@ -356,7 +356,7 @@ All items below are verified from the Google Scholar blog Atom feed, which carri
     | Free | 100 | 50 |
     | Google AI Plus ($4.99) | 200 | 100 |
     | Google AI Pro ($19.99) | 500 | 300 |
-    | Ultra | – | 500–600 |
+    | Google AI Ultra ($99.99 20TB / $199.99 30TB) | 500 | 500 (20TB plan) / 600 (30TB plan) [corrected in verification] |
 
     Every tier caps each source at **500,000 words or 200MB**. Usage budgets now refresh on a rolling basis.
   - **Implication.** A 500k-word cap holds essentially any single book (most textbooks are 150k–400k words [I]). A Pro notebook could hold about 300 books' worth of *user-supplied* text. This is the closest mainstream product to "chat with a shelf of books". It is limited to what you can legally upload, and there is no discovery. [I, high]
@@ -389,7 +389,7 @@ All items below are verified from the Google Scholar blog Atom feed, which carri
 | Tool | Method | Data | Price | Status |
 |---|---|---|---|---|
 | **Connected Papers** | Single-seed or multi-origin similarity graph | (Semantic Scholar historically [I, med]) | Free: **5 graphs/month** [V JS bundle and 2022 post]. Academic and Business plans billed annually or quarterly [V]. Price ~$6/month academic annual [S, low] | Active |
-| **Litmaps** | Citation maps with customizable axes; SPECTER-style similarity [S]; alerts | – | Free (20 inputs, 100 articles); **Pro $10/month or $120/year** (annual needs academic email) [V] | Active; **acquired ResearchRabbit (May 7, 2025)** with a US$1M round; ARR doubled to US$1M; combined users >2M [S itbrief] |
+| **Litmaps** | Citation maps with customizable axes; SPECTER-style similarity [S]; alerts | – | Free (20 inputs, 100 articles); **Pro $10/month billed annually ($120/year; academic email required) or $12.50 billed monthly** [V] [corrected in verification] | Active; **acquired ResearchRabbit (May 7, 2025)** with a US$1M round; ARR doubled to US$1M; combined users >2M [S itbrief] |
 | **ResearchRabbit** | Seeds → similar/references/citations; Oct 30, 2025 revamp added semantic-similarity expansion, Litmaps-style axes, and "iteration checkpoints" with branching [S Tay] | "310+ million articles" [V] | Free (50 seeds, unlimited collections); **RR+ $10/month annual, $12.50 monthly**, country discounts; up to 300 seeds, advanced filters, "Signals" alerts [V] | Active; footer "© Litmap Limited" [V] |
 | **Inciteful** | Seed papers → graph; similarity by co-citation and bibliographic coupling plus PageRank; "Literature Connector" between two papers [S] | OpenAlex, Semantic Scholar, Crossref [S ISTL, Mar 2026] | Free | **inciteful.xyz 301-redirects to incitefulmed.com/academic/** [V] |
 | **Local Citation Network** | Seeds → "Top Cited"/"Top Citing" missing papers; co-authorship and co-citation networks; CSV/RIS/JSON export [V] | OpenAlex, Semantic Scholar, Crossref or Zotero Cita (switchable) [V] | Free, GPL-3, built "in my spare time" [V] | Active but maintainer-limited [S] |
@@ -567,7 +567,7 @@ All items below are verified from the Google Scholar blog Atom feed, which carri
 | OpenAlex unit costs | List $0.10 per 1k; search $1 per 1k; PDF $10 per 1k | Oct 2026 | help.openalex.org/access/example-costs | V |
 | OpenAlex OA PDF sync | 50M+ PDFs (annual plans, from $5,000/yr) | Aug 2026 | help.openalex.org/access/pricing | V |
 | Exa search | $7 per 1k requests (auto/fast) | 2026-10-15 | exa.ai/pricing | V |
-| Litmaps Pro | $10/month; $120/yr | 2026-10-15 | litmaps.com/pricing | V |
+| Litmaps Pro | $10/month billed annually ($120/yr, academic email); $12.50 billed monthly [corrected in verification] | 2026-10-15 | litmaps.com/pricing | V |
 | RR+ | $10/month annual; $12.50 monthly | 2026-10-15 | researchrabbit.ai/pricing | V |
 | Connected Papers free | 5 graphs/month | 2026-10-15 | connectedpapers.com JS bundle | V |
 | Emergent Mind Pro / Max | $12 / $30 per month ($10 / $25 annual) | 2026-10-15 | emergentmind.com/pricing | V |
@@ -595,7 +595,7 @@ All items below are verified from the Google Scholar blog Atom feed, which carri
 8. **Vendors now benchmark against general coding agents.** Undermind's 2026 baselines are GPT-5.6 in the Codex CLI and **Claude Opus 5 in Claude Code** [V]. "Claude Code with web search" is the baseline a custom tool must beat. Specialized pipelines still claim roughly a 1.7× recall advantage.
 9. **Deep research modes hallucinate *more* URLs than plain search-augmented chat** (10.7% vs 4.8%) [V]. Longer agent loops mean more opportunities to invent.
 10. **The OpenScholar demo was folded into Asta** (redirect) even as the paper landed in *Nature* [V]. SciArena's demo was scheduled to retire July 15, 2026 [V]. Ai2 is consolidating.
-11. **Elicit's top-tier pricing swung widely in 2026** ($780 → $79 → $169 per CostBench) [S]. Its current Pro is $49 annual-billed [V]. Elicit is moving up-market toward systematic-review buyers. [I]
+11. **Elicit's top-tier price more than doubled in mid-2026** ($79 → $169/user/month between CostBench's May 17 and June 16, 2026 snapshots, alongside renames Pro → Scale and Team → Enterprise) [S] [corrected in verification]. Its current Pro is $49 annual-billed [V]. Elicit is moving up-market toward systematic-review buyers. [I]
 12. **Consensus's corpus claim doubled** from ~200M to "400M+" [V claim vs S earlier]. The definition of "paper" probably broadened. [I]
 13. **Fabricated citations are now a measurable feature of the literature**, roughly 6–10× higher by early 2026 than in 2023 [V/S]. Discovery tools that use citation graphs will increasingly ingest phantom edges. [I]
 14. **The Kagi "Academic" lens is just a `.edu` site filter** [V], not a scholarly index.
@@ -796,3 +796,48 @@ All items below are verified from the Google Scholar blog Atom feed, which carri
 106. Inciteful (301 → incitefulmed.com/academic/) — https://inciteful.xyz/ — checked 2026-10-15
 107. OpenScholar demo (301 → asta.allen.ai) — https://openscilm.allen.ai/ — checked 2026-10-15
 108. FutureHouse platform (301 → platform.edisonscientific.com) — https://platform.futurehouse.org/ — checked 2026-10-15
+
+---
+
+## Verification pass (independent)
+
+**Date:** 2026-10-15. **Method:** each load-bearing claim was re-checked against its cited primary source by live fetch (WebFetch, or curl for redirects, headers, the Scholar Atom feed and raw pricing HTML). **Limitation:** the shared web-search budget was exhausted at the start of this pass, so the "search independently for newer information" step was limited to fetching other known primary pages directly: the settlement site, Wikipedia, CostBench, consensus.app/pricing, the Zotero changelog, GitHub and arXiv abstracts. Developments reported only in the news after these pages were last updated could have been missed.
+
+| # | Claim | Verdict | Correction | Source |
+|---|---|---|---|---|
+| 1 | Elicit: Basic free; Pro $49/user/mo billed annually ($588), SR screens 5,000; Scale $169 ($2,028); Enterprise custom (40,000) | confirmed | – | https://elicit.com/pricing |
+| 2 | Elicit searches 138M papers (Semantic Scholar, PubMed, OpenAlex); full text only for OA or subscribed papers via extension, else title + abstract | confirmed | – | https://support.elicit.com/en/articles/553025 |
+| 3 | Lau & Golder (Sept 27, 2025): sensitivity 39.5% (25.5–69.2%) vs 94.5%; precision 41.8% vs 7.55% | confirmed | – | https://pmc.ncbi.nlm.nih.gov/articles/PMC12483133/ |
+| 4 | Consensus plans (Sept 12, 2026): Free 10 Pro msgs / 3 Deep; Pro $20/mo or $144/yr (15 Deep, 500 API/MCP); Deep $65/mo or $540/yr (200 Deep, 2,000 API/MCP) | confirmed | consensus.app/pricing renders no prices server-side, so the help-center article is the only primary check | https://intercom.help/consensus-d118a252369c/en/articles/10087865-subscription-plans |
+| 5 | Undermind Pro $16/mo annual; vendor benchmark 23 queries, judge reads abstracts, 85% top-20 recall at 10 min vs 47–50% (Claude Opus 5 in Claude Code, GPT-5.6 in Codex) | confirmed | The page also lists GPT-5.6 Luna (high) at 43%. The benchmark is vendor-run (the page says so) | https://www.undermind.ai/ ; https://www.undermind.ai/pricing |
+| 6 | GPT-4o (no retrieval) 78–90% citation hallucination; OpenScholar (45M papers) matches experts; *Nature* Feb 4, 2026 | confirmed | – | https://www.washington.edu/news/2026/02/04/in-a-study-ai-model-openscholar-synthesizes-scientific-research-and-cites-sources-as-accurately-as-human-experts/ |
+| 7 | 3–13% hallucinated URLs; DR 10.7% vs search LLMs 4.8%; Gemini 2.5 Pro DR 13.3%; urlhealth loop < 1% | confirmed | Per model: GPT-5.1 16.0→0.6%, Gemini 2.5 Pro 6.1→0.1%, Claude Sonnet 4.5 4.9→0.8% (6–79×) | https://arxiv.org/html/2604.03173v1 |
+| 8 | PaperQA2 LitQA2: precision 85.2% vs 73.8% (p = 0.0036); accuracy 66.0% vs 67.7% (p = 0.66) | confirmed | – | https://arxiv.org/html/2409.13740v2 |
+| 9 | PaperQA3 (Feb 18, 2026) multimodal, 150M+ papers and patents, ~20 free calls/day for academics; futurehouse 301 → edisonscientific; $70M seed Dec 18, 2025 | confirmed | 301 re-observed by curl | https://edisonscientific.com/news/edison-literature-agent ; https://siliconangle.com/2025/12/18/edison-scientific-raises-70m-build-autonomous-ai-scientists-research |
+| 10 | Scholar Labs Nov 18, 2025 (limited); June 3, 2026 update made it available to all logged-in users, ~10x faster, 3x more papers, 10x more searches/day; Quick Read Aug 25, 2026 only for accessible papers | corrected (minor) | The June 3 post says Labs "is available for all logged in users" but does not say the update is what opened it. The updated version shipped in English first. All other figures confirmed from the Atom feed post bodies | https://scholar.googleblog.com/feeds/posts/default (Atom feed) |
+| 11 | paperswithcode.com 302 → huggingface.co/papers/trending | confirmed | Re-observed by curl | https://paperswithcode.com/ |
+| 12 | Asta launched Aug 26, 2025; Scientific Corpus Tool = free MCP extension of S2 API over 200M+ index; Asta v0 53.0% on AstaBench; OpenScholar demo → asta.allen.ai | confirmed | Ai2 notes Asta v0 is "an experimental agent not used in the production version". The openscilm 301 was re-observed | https://allenai.org/blog/asta |
+| 13 | S2 API: 214M papers, 2.49B citations, 79M authors; intro key 1 RPS; Semantic Reader arXiv-only (250k+); TLDRs CS + biomed | confirmed | – | https://www.semanticscholar.org/product/api ; https://www.semanticscholar.org/faq |
+| 14 | OpenAlex USD metering: free key $1/day; keyless $0.10/day; list $0.10/1k, search $1/1k, PDF $10/1k; annual from $5,000; PDF sync 50M+ | confirmed | Live header `x-ratelimit-limit-usd: 0.1` (429) re-observed. "Per IP" is an inference | https://help.openalex.org/access/example-costs/ ; https://help.openalex.org/access/pricing/ |
+| 15 | NotebookLM → Gemini Notebook (Jul 16, 2026) with per-notebook cloud computer; 500k words/source; 50 / 300 / 600 sources | corrected (minor) | Code execution launched only for Google AI Ultra and eligible Workspace business customers, with Pro on the web "over the coming weeks". Ultra is 500 sources on the 20TB plan and 600 on the 30TB plan. Limits are from a secondary source (elephas.app, updated Sept 28, 2026); Google's post gives no limits | https://blog.google/innovation-and-ai/products/gemini-notebook/notebooklm-gemini-notebook/ ; https://elephas.app/blog/notebooklm-free-vs-plus |
+| 16 | HTRC Analytics ended Sept 30, 2026; accounts, Algorithms, Data Capsules discontinued | confirmed | – | https://analytics.hathitrust.org/ |
+| 17 | Bartz v. Anthropic: fair use for lawfully acquired books (June 23, 2025); $1.5B settlement final approval July 20, 2026; first payments by Nov 15, 2026 | confirmed | The settlement site says the effective date has passed "assuming that no late-filed appeal is permitted to go forward". Wikipedia notes some opt-outs are suing separately | https://www.anthropiccopyrightsettlement.com/ ; https://en.wikipedia.org/wiki/Bartz_v._Anthropic |
+| 18 | Zotero 8.0 (Jan 22), 9 (Apr 10, Read Aloud), 10 (Aug 17, PDF Reading Mode); latest 10.0.6 (Oct 7, 2026); 8.0 added `/fulltext`; zotero-mcp ~5.4k stars, 38 tools | confirmed | zotero-mcp had 5,404 stars on 2026-10-15. "38 tools" is the README's *default profile* | https://www.zotero.org/blog/ ; https://www.zotero.org/support/changelog ; https://www.zotero.org/support/8.0_changelog ; https://github.com/54yyyu/zotero-mcp |
+| 19 | 146,932 hallucinated citations in 2025 (arXiv, bioRxiv, SSRN, PMC; 111M refs in 2.5M papers) | confirmed | The abstract calls it "a conservative estimate" | https://arxiv.org/abs/2605.07723 |
+| 20 | Litmaps acquired ResearchRabbit May 7, 2025; Litmaps Pro $10/mo or $120/yr; RR+ $10/mo annual or $12.50 monthly | corrected | Litmaps Pro is $10/mo **billed annually** ($120/yr, academic email required) or **$12.50 billed monthly**: the page's JS sets "12.50" when "Monthly billing" is selected, and $120/yr is labeled "save 20%". RR+ prices and the "© Litmap Limited" footer are confirmed. The acquisition date is confirmed by trade press (IT Brief) only | https://www.litmaps.com/pricing ; https://www.researchrabbit.ai/pricing ; https://itbrief.news/story/litmaps-acquires-researchrabbit-raises-1-million-for-ai |
+| x1 | Elicit pricing history (CostBench): $780 → $79 (Apr 2026) → $169 (June 16, 2026); a plan removed Sept 2026 | corrected | CostBench has tracked Elicit only since May 17, 2026. It logs a single repricing ($79 → $169/user/month between May 17 and June 16), plus renames Pro → Scale and Team → Enterprise. It shows 4 tiers in every snapshot. There is no $780 price, no April change and no September removal. Fixed in §2.1 and Surprises #11 | https://costbench.com/software/ai-research-tools/elicit/price-history/ |
+| x2 | SciArena: o3 first, ahead of Claude Opus 4.1 / Gemini 3 Pro Preview; best judge o3 at 65.1%; demo retiring July 15, 2026 | confirmed | – | https://allenai.org/blog/sciarena |
+| x3 | Lancet (Topaz et al.) via STAT: 2M+ papers, 97M citations, ~4,000 fabricated citations in ~2,800 papers; 1/2,828 → 1/458 → 1/277 | confirmed | – | https://www.statnews.com/2026/05/07/lancet-study-finds-steep-rise-fraudulent-citations-academic-papers/ |
+| x4 | Orduña-Malea & Lopezosa, arXiv 2606.08301 (June 6, 2026), Asta citation instability | confirmed (paper exists; findings match abstract) | – | https://arxiv.org/abs/2606.08301 |
+| x5 | Scholar Inbox: logistic regression, GTE-large, 5k random negatives, ~78 positive ratings per user, 800k ratings / 14.3k users, 1.1k-participant study | confirmed | The paper says "users have an average of 78 positive ratings" | https://www.cvlibs.net/publications/Flicke2025ACLSDT.pdf |
+| x6 | Claude pricing: Pro $20 ($17 annual), Max from $100, Team $25/$125 per seat monthly; Research not on Free | confirmed | Team annual is $20/$100 per seat | https://claude.com/pricing |
+| x7 | AstaBench (arXiv 2510.21652) at ICLR 2026, 2,400+ problems, 57 agents / 22 classes | confirmed | – | https://arxiv.org/abs/2510.21652 |
+| x8 | Undermind whitepaper (Jan 5, 2024): arXiv full texts of 2.3M papers, GPT-4 classifier, exponential discovery curve | confirmed | – | https://www.undermind.ai/whitepaper.pdf |
+
+**Other live re-checks (2026-10-15):**
+
+- inciteful.xyz 301-redirects to incitefulmed.com/academic/.
+- storm.genie.stanford.edu returned 200.
+- arxiv-sanity-lite.com did not connect, consistent with "unreachable".
+- scholar-inbox.com returned 200.
+- These source URLs resolve (200): iacis.org (Acar & Floyd PDF), elicit.com blog posts, hyper.ai, tokencost.app, open.umn.edu.

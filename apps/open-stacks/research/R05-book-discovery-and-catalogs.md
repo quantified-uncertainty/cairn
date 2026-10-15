@@ -45,6 +45,8 @@ Confidence is marked as high/medium/low or as "[~70%]". Sources dated before ~20
 
 1. **Open Library (OL) is the most builder-friendly open catalog spine, and it is current.**
    - **Dumps:** monthly; the latest is dated 2026-09-30 [V]. Sizes (gzip): editions 12.6 GB, works 4.07 GB, authors 0.78 GB, all-types 18.2 GB, plus reading-log, lists, ratings, covers metadata and a Wikidata crosswalk [V].
+   - **Records in that dump:** **56,827,250 editions and 41,666,337 works** [V, my full-file count].
+   - **What the records hold:** half of editions carry subjects and 34% an LCC. Only **2.5% carry a table of contents** and 3.6% a description.
    - **Licence:** the Internet Archive "does not assert any new copyright" over the database. This is a no-rights-claimed statement, not a formal CC0 licence [V].
    - **API limits:** 1 request/s for anonymous clients, 3 requests/s with an identifying User-Agent. Bulk-harvesting through the API is explicitly discouraged [V].
 2. **OL's search index already holds a usable shelf order.** 14,734,568 works carry an LCC (Library of Congress Classification) number and 5,855,209 carry a DDC (Dewey) number. They are queryable and sortable with `lcc:`/`lcc_sort`. 15,467,818 author records exist [V, live API, 2026-10-15]. A virtual LoC-order shelf over ~15M works is therefore buildable without touching WorldCat.
@@ -76,7 +78,7 @@ Confidence is marked as high/medium/low or as "[~70%]". Sources dated before ~20
     - **ISBNdb:** ~122M books, 19 fields, synopsis included, no TOC. Plans run $14.99/mo (5,000 calls/day, 1 call/s) to $99.99/mo (50,000/day, 5 calls/s) [V].
     - **Library-grade enrichment** (TOCs, summaries, reviews): Syndetics Unbound, sourced from Books in Print and LibraryThing [V]. Sold to libraries, not individuals.
 12. **TOC data is the weakest link in open metadata.**
-    - **OL:** a `table_of_contents` field exists but is sparse (measured coverage in the table below) [V].
+    - **OL:** only 1,407,705 of 56.8M editions (≤2.5%) have a `table_of_contents` field [V, my count].
     - **LoC's BEAT program:** produced only tens of thousands of web TOCs (2005-era counts, stale) [V].
     - **ONIX TOCs:** exist in publisher feeds but are not public [K].
     - **Implication:** an LLM pass that detects TOC pages in scans (or in HTRC page features) is a high-leverage build.
@@ -110,11 +112,47 @@ Confidence is marked as high/medium/low or as "[~70%]". Sources dated before ~20
 | Works with a `first_sentence` | 394,847 | search API |
 | Works in LCC class Q (Science) | 880,841 | `lcc:Q*` |
 | Works in LCC QA273 (probabilities) | 4,746 | `lcc:QA-0273*` |
-| Edition records in the 2026-09-30 dump | **{{OL_EDITIONS}}** | full-file stream count (see TOC section) |
+| Edition records in the 2026-09-30 dump | **56,827,250** | full-file stream count of `ol_dump_editions_2026-09-30` |
+| Work records in the 2026-09-30 dump | **41,666,337** | full-file stream count of `ol_dump_works_2026-09-30` |
 
-**Notes on the table.**
+**Field coverage in the 2026-09-30 dumps** [V].
 
-- Total *works* could not be counted via the API: wildcard queries return HTTP 500.
+I streamed the full editions file (56,827,250 lines) and the full works file (41,666,337 lines) and counted records whose JSON contains each key. These are upper bounds: an empty array still counts.
+
+| Field (editions) | Editions with key | Share |
+|---|---|---|
+| `source_records` | 56,184,736 | 98.9% |
+| `works` (linked to a work) | 54,882,992 | 96.6% |
+| `number_of_pages` | 35,750,331 | 62.9% |
+| `isbn_13` | 29,802,081 | 52.4% |
+| `subjects` | 27,826,920 | 49.0% |
+| `oclc_numbers` | 20,017,243 | 35.2% |
+| `lc_classifications` | 19,571,031 | 34.4% |
+| `isbn_10` | 18,812,002 | 33.1% |
+| `covers` | 13,206,666 | 23.2% |
+| `lccn` | 12,699,707 | 22.3% |
+| `identifiers` (Goodreads, LibraryThing, Amazon, etc.) | 10,407,675 | 18.3% |
+| `dewey_decimal_class` | 6,910,069 | 12.2% |
+| `ocaid` (has an IA scan) | 6,442,861 | 11.3% |
+| `description` | 2,055,369 | 3.6% |
+| **`table_of_contents`** | **1,407,705** | **2.5%** |
+| `first_sentence` | 524,102 | 0.9% |
+
+| Field (works) | Works with key | Share |
+|---|---|---|
+| `subjects` | 20,683,302 | 49.6% |
+| `lc_classifications` (work level) | 2,374,903 | 5.7% |
+| `description` | 1,948,763 | 4.7% |
+
+**Reading the coverage numbers** [I].
+
+- About half the catalog has subject strings, and about a third of editions have an LCC.
+- Only ~2.5% of editions have a TOC, and under 5% have a description.
+- So OL is strong for *identity and shelf position*, weak for *what is inside*. That gap is what HTRC EF, search-inside and LLM-extracted TOCs can fill.
+
+**Notes on the scale table.**
+
+- Total *works* could not be counted via the API: wildcard queries return HTTP 500. The count above is from the dump.
 - Older public figures, all stale: "over 20 million records" (≈2015 [S]) and "nearly 38M editions" (2022 [S]).
 
 **Bulk dumps** [V, archive.org item metadata for `ol_dump_2026-09-30`, files dated 2026-10-02]:
@@ -339,7 +377,7 @@ From the HTRC EF 2.5 documentation page and Confluence REST API [V]:
 
 | Source | Coverage | Access | Notes |
 |---|---|---|---|
-| Open Library `table_of_contents` (edition field) | **{{OL_TOC}}** of {{OL_EDITIONS}} editions (2026-09-30 dump) [V, my count] | Free dump/API | Free-text or structured entries with titles, sometimes page numbers; quality varies; edited by volunteers and imported from MARC 505 |
+| Open Library `table_of_contents` (edition field) | **1,407,705 (2.5%)** of 56,827,250 editions carry the key (2026-09-30 dump; upper bound, since empty arrays count) [V, my count] | Free dump/API | Free-text or structured entries with titles, sometimes page numbers; quality varies; edited by volunteers and imported from MARC 505 |
 | Library of Congress MARC 505 (formatted contents note) | Unknown share of LoC records [I: substantial for multi-author volumes] | Free via MDSConnect (2016 snapshot) | BEAT's machine-generated TOC project enriched 505 fields [V] |
 | LoC BEAT web TOCs | dTOC ≈30,000; ONIX TOC ≈50,000; ONIX descriptions ≈110,000; sample texts ≈17,000 (counts as of ~2005) [V (stale)] | Free web pages linked from LoC catalog | Program page appears frozen since ~2005 |
 | ONIX for Books feeds (publisher → retailer) | Most trade books with active metadata [K] | Licensed (retailer/aggregator agreements) | ONIX 3.0/3.1 standard by EDItEUR [V]; carries descriptions, TOC text, contributor bios, Thema/BISAC subjects [K, high] |
@@ -553,7 +591,7 @@ LLM-era tools can restore (1) with dense spine walls, (2) with multiple overlaid
 
 | Source | Size (date) | TOC? | Subjects/class | Descriptions | Covers | Page-level? | Licence | API rate limits | Bulk dump |
 |---|---|---|---|---|---|---|---|---|---|
-| **Open Library** | {{OL_EDITIONS}} editions; 15.47M authors; 14.73M works with LCC (2026-09/10) [V] | Sparse ({{OL_TOC_PCT}} of editions) [V] | Subjects; LCC (14.7M works); DDC (5.9M) | Yes, on many works/editions ({{OL_DESC_PCT}} of editions) | Yes (Covers API; bulk tars) | Via search-inside (snippets + page numbers) | No new rights asserted (≈public) | 1 req/s; 3 req/s identified; covers by ISBN 100/5 min | **Monthly** (12.6 GB editions gz) |
+| **Open Library** | 56.83M editions / 41.67M works; 15.47M authors; 14.73M works with LCC (2026-09/10) [V] | Sparse (≤2.5% of editions; 1.41M) [V] | Subjects; LCC (14.7M works); DDC (5.9M) | Sparse: 3.6% of editions, 4.7% of works [V] | Yes (Covers API; bulk tars) | Via search-inside (snippets + page numbers) | No new rights asserted (≈public) | 1 req/s; 3 req/s identified; covers by ISBN 100/5 min | **Monthly** (12.6 GB editions gz) |
 | **HathiTrust Hathifiles** | 19.70M volumes / 9.75M bib records (2026-10-01) [V] | No | None in Hathifiles (26 fields incl. OCLC/ISBN/LCCN/lang) [V]; LCC only in full MARC records [K] | No | No | Full-text search shows page hits (UI) [S] | Metadata freely downloadable [V] | babel UI behind Cloudflare [V] | Monthly full + daily updates (1.23 GB gz) |
 | **HTRC Extracted Features 2.5** | 18.73M volumes; 6.87B pages; 3.26T tokens (April 2025 snapshot) [V] | Inferable (TOC-page detection) [I] | Volume metadata (JSON-LD, LoC/VIAF links) | No | No | **Yes:** per-page POS token counts, line/sentence counts, header/body/footer | **CC BY 4.0** | rsync (no API limit stated) | 4.4 TB bz2 |
 | **LoC id.loc.gov vocabularies** | LCSH, LCNAF, LCGFT, … (weekly increments to 2026-10-03) [V] | — | **Is** the subject/name authority | Scope notes | — | — | **Public domain data set** [V] | Not stated | Yes (RDF/JSON-LD) |
@@ -586,7 +624,8 @@ LLM-era tools can restore (1) with dense spine walls, (2) with multiple overlaid
 | HTRC EF 2.5 compressed size | 4.4 TB | 2025 | HTRC docs | V |
 | Mean pages per HathiTrust volume | ≈367 | derived | 6.87B / 18.73M | I |
 | Mean tokens per page | ≈474 | derived | 3.255T / 6.87B | I |
-| Open Library editions | {{OL_EDITIONS}} | dump 2026-09-30 | my count | V |
+| Open Library editions / works | 56,827,250 / 41,666,337 | dump 2026-09-30 | my count | V |
+| OL editions with TOC / description / LCC | 2.5% / 3.6% / 34.4% | dump 2026-09-30 | my count | V |
 | Open Library authors | 15,467,818 | 2026-10-15 | OL API | V |
 | OL works with LCC / DDC | 14,734,568 / 5,855,209 | 2026-10-15 | OL API | V |
 | OL works with public ebook / borrowable | 1,861,679 / 2,907,228 | 2026-10-15 | OL API | V |
@@ -641,6 +680,7 @@ LLM-era tools can restore (1) with dense spine walls, (2) with multiple overlaid
 10. **Google Ngram Viewer got a new dataset (July 2024)**, its first since 2020 [V].
 11. **Open Library's search backend moved toward FastAPI.** It now rejects some broad queries outright (`the` → "not allowed"; wildcard counts → HTTP 500) [V]. Do not rely on full-corpus wildcard queries; use dumps.
 12. **Open Syllabus grew to 32.9M syllabi (v2.14)**, while its free tier stays frozen at 2019 data [V].
+13. **How thin open "inside the book" metadata is.** In the 56.8M-edition OL dump, only 2.5% of editions have a TOC, 3.6% a description and 0.9% a first sentence. Meanwhile 34% have an LCC and 49% subjects [V, my count]. The open commons knows *where a book sits* far better than *what it contains*.
 
 ---
 
