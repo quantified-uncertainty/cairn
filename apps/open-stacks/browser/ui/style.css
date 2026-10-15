@@ -75,12 +75,25 @@ a { color: var(--accent); }
 @keyframes shimmer { to { background-position: 100% 0; } }
 
 /* Page strip: a thin progress line that opens into thumbnails on hover (or when pinned with p). */
-#scrub { flex: none; height: 8px; display: flex; gap: 4px; padding: 0 14px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; position: relative; transition: height .15s ease; background: linear-gradient(var(--line), var(--line)) 14px 3px / calc(100% - 28px) 2px no-repeat; }
-#scrub:hover, #scrub.pinned { height: 92px; padding: 6px 14px 10px; background: none; border-top: 1px solid var(--line); }
-#scrub:not(:hover):not(.pinned) .th { height: 4px; width: 6px; margin-top: 2px; opacity: 0; }
-#scrub:not(:hover):not(.pinned) .th.cur { opacity: 1; background: var(--accent); }
-#scrub:not(:hover):not(.pinned) .th.kp { opacity: .8; background: var(--ink-2); }
-#scrub:not(:hover):not(.pinned) .th > * { display: none; }
+/* Page strip of thumbnails: shown when pinned (p). */
+#scrub { flex: none; display: none; gap: 4px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; position: relative; height: 92px; padding: 6px 14px 4px; border-top: 1px solid var(--line); }
+#scrub.pinned { display: flex; }
+/* Track: the whole item as one bar; the bright part is what is on screen.
+   Hover to look through the item (a page peek, or live columns for posts); click to go there. */
+#track { flex: none; position: relative; height: 16px; margin: 0 14px 2px; cursor: pointer; }
+#track .tr-bar { position: absolute; left: 0; right: 0; top: 7px; height: 3px; background: var(--line); border-radius: 2px; transition: top .12s, height .12s; }
+#track:hover .tr-bar { top: 4px; height: 8px; }
+#track .tr-fill { position: absolute; top: 0; bottom: 0; background: var(--accent); border-radius: 2px; min-width: 4px; }
+#track .tr-marks i { position: absolute; top: 50%; width: 4px; height: 4px; margin: -2px 0 0 -2px; border-radius: 50%; background: var(--ink); opacity: .75; }
+#track .tr-hover { position: absolute; top: 1px; bottom: 1px; width: 2px; margin-left: -1px; background: var(--ink); display: none; pointer-events: none; }
+#track:hover .tr-hover { display: block; }
+#peek { position: fixed; z-index: 45; pointer-events: none; }
+#peek .pk-page { background: var(--paper); box-shadow: 0 14px 40px #000c; overflow: hidden; height: 100%; }
+#peek .pk-page > img, #peek .pk-page > canvas { display: block; width: 100%; height: 100%; object-fit: contain; }
+#peek .pk-page .pk-text { padding: 14px 16px; font: 12.5px/1.45 var(--serif); color: #26211a; overflow: hidden; height: 100%; }
+#peek .pk-label { position: absolute; left: 0; right: 0; bottom: -20px; text-align: center; font: 11px var(--mono); color: var(--ink); text-shadow: 0 1px 2px #000; }
+#peek.textonly .pk-page { display: none; }
+#peek.textonly .pk-label { position: static; background: var(--bg-3); border: 1px solid var(--line); padding: 3px 8px; border-radius: 3px; }
 .th { flex: none; height: 74px; width: 52px; background: var(--paper); opacity: .55; cursor: pointer; position: relative; overflow: hidden; border: 1px solid transparent; }
 .th:hover { opacity: .9; }
 .th.cur { opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }

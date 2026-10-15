@@ -47,7 +47,7 @@ export function analyze(src) {
   while (y1 > y0 && rws[y1] < rmin) y1--;
   while (x0 < x1 && cls[x0] < cmin) x0++;
   while (x1 > x0 && cls[x1] < cmin) x1--;
-  const pad = 0.012;
+  const pad = state.cropPad ?? 0.012; // Settings: crop padding, a fraction of the page
   const box = { x0: Math.max(0, x0 / W - pad), y0: Math.max(0, y0 / H - pad), x1: Math.min(1, (x1 + 1) / W + pad), y1: Math.min(1, (y1 + 1) / H + pad) };
   // Gutter: an ink-free vertical run in the middle third of the box.
   let gutter = null;
@@ -91,8 +91,10 @@ const RENDER_H = Math.min(2200, Math.max(1400, Math.round(screen.height * (devic
 const RENDER_CAP = RENDER_H > 1600 ? 30 : 48;
 // Rendered pages, keyed by item, page and display options.
 const renders = new Map();
+/** The render of a page if it is already made or under way (never starts one). */
+export const cachedRender = (it, k) => renders.get(`${it.id}|${k}|${state.crop}|${state.cols}`) || null;
 export function renderPage(it, k) {
-  const key = `${it.id}|${k}|${state.crop}|${state.cols}`;
+  const key = `${it.id}|${k}|${state.crop}|${state.cols}|${state.cropPad ?? ''}`;
   return lru(renders, key, async () => {
     if (it.kind === 'scan') {
       const im = await loadImg(P(scanUrl(it, k, 1000)));

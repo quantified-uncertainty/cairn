@@ -1,11 +1,11 @@
 // The feed: one item at a time, a few real pages of it filling the stage.
-import { $, h, P, emit, emitQuiet, fmtDate } from './util.js';
+import { $, h, P, emit, emitQuiet, fmtDate, lru } from './util.js';
 import { items, LANES } from './corpus.js';
 import { state, current } from './state.js';
 import { openDoc, isFlow, scanUrl } from './docs.js';
-import { renderPage } from './render.js';
-import { planAround, startOf } from './prefetch.js';
-import { showFlow, dropLive, live } from './flow.js';
+import { renderPage, cachedRender } from './render.js';
+import { planAround, startOf, serverPrefetch } from './prefetch.js';
+import { showFlow, dropLive, live, vpToCol } from './flow.js';
 import { goPage, toggleZoom } from './nav.js';
 
 export async function showFeed() {
@@ -104,16 +104,17 @@ const aspectOf = (it) => aspects.get(it.id) ?? (it.kind === 'scan' ? 0.66 : 0.74
 /** Pages per spread in auto mode: as many as fit at (nearly) full height, 1 to 3,
  *  so a laptop shows two and a large screen three, with little empty space. */
 export function fitPer(it, W, H) {
-  const gap = 10;
+  const gap = state.pageGap ?? 10; // Settings: gap between pages
   return Math.max(1, Math.min(3, Math.floor((W + gap) / (H * aspectOf(it) * 0.8 + gap))));
 }
 
 /** Size panels to a common height that fits the stage, preserving each aspect ratio. */
 export function layoutPanels(els, W, H) {
-  const gap = 10;
+  const gap = state.pageGap ?? 10; // Settings: gap between pages
   const aspects = els.map((e) => Number(e.dataset.aspect) || 0.68);
   const sum = aspects.reduce((a, b) => a + b, 0);
-  const height = Math.min(H, (W - gap * (els.length - 1)) / sum);
+  // Settings 'fit width': pages fill the width and the spread scrolls (features/settings.js).
+  const height = state.fit === 'width' ? (W - gap * (els.length - 1)) / sum : Math.min(H, (W - gap * (els.length - 1)) / sum);
   els.forEach((e, j) => {
     e.style.height = Math.floor(height) + 'px';
     e.style.width = Math.floor(height * aspects[j]) + 'px';
@@ -172,19 +173,112 @@ export function paintScrub(i, s, c) {
     t.classList.toggle('cur', k >= s && k < s + c);
     t.classList.toggle('kp', kp.has(k));
   }
-  box.children[s]?.scrollIntoView({ block: 'nearest', inline: 'center' });
+  if (state.pin) box.children[s]?.scrollIntoView({ block: 'nearest', inline: 'center' });
+  paintTrack(i, s, c, n);
 }
-async function fillThumb(it, t) {
-  const k = Number(t.dataset.k);
-  if (it.kind === 'scan') { t.prepend(h('img', { loading: 'lazy', src: P(scanUrl(it, k, 120)), alt: '' })); return; }
-  const d = await openDoc(it).catch(() => null);
-  if (!d) return;
-  if (d.pdf) {
+
+// ---------- track: the whole item as one bar ----------
+// The bright part is what is on screen; dots are the summary's key points.
+// Hovering shows the page under the pointer (for posts, the columns move
+// there live) and clicking goes there; leaving puts everything back.
+const track = $('#track'), peek = $('#peek');
+let tr = null; // { i, it, n, s }
+let peekK = -1;
+export function paintTrack(i, s, c, n) {
+  const it = items[i];
+  tr = { i, it, n: Math.max(1, n), s };
+  const fill = track.querySelector('.tr-fill');
+  fill.style.left = (100 * s) / tr.n + '%';
+  fill.style.width = (100 * Math.max(1, c)) / tr.n + '%';
+  const kp = state.marks?.get(it.id) || [];
+  track.querySelector('.tr-marks').replaceChildren(...kp.map((p) => h('i', { style: `left:${(100 * (p - 0.5)) / tr.n}%` })));
+}
+// Scrubbing redraws the main spread at the page under the pointer from
+// whatever is fastest: a full render already in memory, else a quick
+// low-resolution one (PDFs) or the small page image (scans).
+const quick = new Map(); // `${id}|${k}` -> Promise<canvas>, low-res PDF pages
+function quickPdf(it, k, H) {
+  return lru(quick, `${it.id}|${k}`, async () => {
+    const d = await openDoc(it);
     const page = await d.pdf.getPage(k + 1);
     const vp0 = page.getViewport({ scale: 1 });
-    const vp = page.getViewport({ scale: 74 * 2 / vp0.height });
+    const vp = page.getViewport({ scale: H / vp0.height });
     const c = h('canvas', { width: Math.floor(vp.width), height: Math.floor(vp.height) });
-    await page.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
-    t.prepend(c);
-  } else t.prepend(h('div', { className: 'tt', textContent: (d.texts?.[k] || '').slice(0, 160) }));
+    const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+    await page.render({ canvasContext: g, viewport: vp }).promise;
+    return c;
+  }, 120);
 }
+let want = null; // the spread the pointer asks for: { k, els }
+async function fillScrub(it, k, el) {
+  const full = cachedRender(it, k);
+  if (full) { const p = await full.catch(() => null); const pnl = p?.find((x) => x.canvas); if (pnl && el.isConnected) { el.replaceChildren(cloneCanvas(pnl.canvas)); el.dataset.aspect = String(pnl.canvas.width / pnl.canvas.height); return; } }
+  if (it.kind === 'scan') {
+    const im = h('img', { src: P(scanUrl(it, k, 200)), alt: '' });
+    el.replaceChildren(im);
+    setTimeout(() => { if (el.isConnected && want?.k <= k) im.src = P(scanUrl(it, k, 400)); }, 180);
+    return;
+  }
+  const c = await quickPdf(it, k, 700).catch(() => null);
+  if (c && el.isConnected) el.replaceChildren(cloneCanvas(c));
+}
+const cloneCanvas = (c) => { const x = h('canvas', { width: c.width, height: c.height }); x.getContext('2d').drawImage(c, 0, 0); return x; };
+function scrubSpread(k) {
+  const { it, n } = tr;
+  const per = state.zoom ? 1 : Math.max(1, state.shown || state.per);
+  const k0 = Math.max(0, Math.min(k, n - per));
+  const spread = $('#spread');
+  const els = [];
+  for (let j = 0; j < per && k0 + j < n; j++) {
+    const el = h('div', { className: 'pg scrubbing' });
+    el.dataset.k = k0 + j; el.dataset.aspect = String(aspectOf(it));
+    el.append(h('span', { className: 'pno', textContent: String(k0 + j + 1) }));
+    els.push(el);
+  }
+  spread.replaceChildren(...els);
+  layoutPanels(els, spread.clientWidth - 24, spread.clientHeight - 8);
+  want = { k: k0, els };
+  els.forEach((el, j) => fillScrub(it, k0 + j, el));
+}
+function placeLabel(x) {
+  const r = track.getBoundingClientRect();
+  peek.style.left = Math.min(innerWidth - 140, Math.max(8, x - 60)) + 'px';
+  peek.style.top = r.top - 30 + 'px';
+}
+track.addEventListener('pointerenter', () => {
+  if (!tr) return;
+  const { it, n } = tr;
+  // Get the whole item's small page images coming for scans.
+  if (it.kind === 'scan') serverPrefetch(Array.from({ length: Math.min(n, 1200) }, (_, k) => scanUrl(it, k, 200)), 50, 'track');
+});
+track.addEventListener('pointermove', (e) => {
+  if (!tr) return;
+  const r = track.getBoundingClientRect();
+  const f = Math.min(0.9999, Math.max(0, (e.clientX - r.left) / r.width));
+  const k = Math.floor(f * tr.n);
+  track.querySelector('.tr-hover').style.left = f * 100 + '%';
+  peek.classList.add('textonly');
+  peek.hidden = false;
+  placeLabel(e.clientX);
+  if (k === peekK) return;
+  peekK = k;
+  peek.querySelector('.pk-label').textContent = `p. ${k + 1} / ${tr.n}`;
+  if (isFlow(tr.it)) {
+    // Posts: move the live columns there.
+    if (live?.id === tr.it.id) live.flow.style.transform = `translateX(${-vpToCol(k) * live.g.pitch}px)`;
+  } else scrubSpread(k);
+});
+// Leaving puts the spread back where you were (renders are cached, so this is instant).
+track.addEventListener('pointerleave', () => {
+  peek.hidden = true;
+  if (peekK < 0 || !tr) return;
+  peekK = -1; want = null;
+  if (isFlow(tr.it)) { if (live?.id === tr.it.id) live.flow.style.transform = `translateX(${-(state.start.get(tr.i) ?? 0) * live.g.pitch}px)`; }
+  else showFeed();
+});
+track.addEventListener('click', () => {
+  if (peekK < 0 || !tr) return;
+  const k = isFlow(tr.it) ? peekK : Math.max(0, Math.min(peekK, tr.n - Math.max(1, state.shown || state.per)));
+  peekK = -1; want = null; peek.hidden = true;
+  goPage(k);
+});

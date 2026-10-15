@@ -15,7 +15,8 @@ export function flowGeom(spread = $('#spread')) {
   const padX = Math.round(font * 1.5), padY = Math.round(font * 1.1);
   const gap = Math.round(font * 2.2);
   const innerW = W - 2 * padX, innerH = H - 2 * padY;
-  let cols = state.zoom ? 1 : state.flowCols || Math.max(1, Math.round((innerW + gap) / (font * 31 + gap)));
+  // state.measure: the column width to aim for, in em (Settings: characters per line).
+  let cols = state.zoom ? 1 : state.flowCols || Math.max(1, Math.round((innerW + gap) / (font * (state.measure || 31) + gap)));
   cols = Math.max(1, Math.min(cols, Math.floor((innerW + gap) / (font * 12 + gap))));
   let colw = Math.floor((innerW - gap * (cols - 1)) / cols);
   if (state.zoom) colw = Math.min(innerW, Math.round(font * 40));

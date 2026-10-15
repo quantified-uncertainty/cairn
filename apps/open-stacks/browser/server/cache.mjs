@@ -361,6 +361,8 @@ export function enqueue(urls, pri = 1, group = 'default') {
   return queue.length;
 }
 export const queueState = () => ({ queue: queue.length, active: bgActive + fgActive, foreground: fgActive });
+/** Drop every queued prefetch (fetches in flight finish); returns how many were dropped. (Settings, routes/85-settings.mjs) */
+export function clearQueue() { const n = queue.length; queue = []; return n; }
 /**
  * Where each URL stands, without counting as an access: states[j] is 'c'
  * (cached), 'p' (queued or in flight) or '-' (neither: failed or never

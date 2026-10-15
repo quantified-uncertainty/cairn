@@ -1081,3 +1081,7 @@ function paintBar() {
   bar.note.hidden = !R.notice;
   progress();
 }
+
+// For the Settings sheet (features/settings.js): the saved voice and speed, and
+// the setters the bar uses (they also retune a reading in progress).
+export { prefs as readAloudPrefs, setRate as setReadRate, setVoice as setReadVoice };

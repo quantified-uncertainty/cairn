@@ -6,7 +6,8 @@ export const state = {
   view: 'feed', lane: store.get('lane', 'all'),
   aff: store.get('aff', { lane: {}, tok: {} }), saved: store.get('saved', []),
   order: [], pos: 0, start: new Map(), hist: new Map(), shown: 0, gen: 0,
-  per: store.get('per', 3), perAuto: store.get('perAuto', true), // auto: fit 1-3 pages to the screen zoom: false, crop: store.get('crop', true), cols: store.get('cols', false),
+  per: store.get('per', 3), perAuto: store.get('perAuto', true), // perAuto: fit 1-3 pages to the screen
+  zoom: false, crop: store.get('crop', true), cols: store.get('cols', false),
   font: store.get('font', 15), flowCols: store.get('flowCols', 0),
   presum: store.get('presum', true), turns: [], panel: store.get('panel', true), panelSide: store.get('panelSide', 'left'),
   pin: store.get('pin', false),

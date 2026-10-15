@@ -16,9 +16,12 @@ import { join } from 'path';
 
 const MOCK = /^(1|true|yes)$/i.test(process.env.STACKS_MOCK_AI || '');
 const MOCK_DELAY = Number(process.env.STACKS_MOCK_DELAY) || 28; // ms per streamed chunk
-const BUDGET = Number.isFinite(parseFloat(process.env.STACKS_DAILY_BUDGET)) ? parseFloat(process.env.STACKS_DAILY_BUDGET) : 3;
+export const ENV_BUDGET = Number.isFinite(parseFloat(process.env.STACKS_DAILY_BUDGET)) ? parseFloat(process.env.STACKS_DAILY_BUDGET) : 3;
+let BUDGET = ENV_BUDGET;
+/** The Settings sheet changes the daily budget at runtime (routes/85-settings.mjs); null goes back to STACKS_DAILY_BUDGET. */
+export const setBudget = (usd) => { BUDGET = Number.isFinite(usd) && usd >= 0 ? usd : ENV_BUDGET; return BUDGET; };
 // USD per million tokens [input, output].
-const PRICES = { 'claude-haiku-5-5': [0.1, 0.5], 'claude-sonnet-5-5': [2, 10], 'claude-opus-5-5': [4, 20], 'claude-fable-5-1': [10, 50] };
+export const PRICES = { 'claude-haiku-5-5': [0.1, 0.5], 'claude-sonnet-5-5': [2, 10], 'claude-opus-5-5': [4, 20], 'claude-fable-5-1': [10, 50] };
 // Models that take the server-side refusal fallback ("default" routing).
 const FALLBACK = new Set(['claude-opus-5-5', 'claude-sonnet-5-5', 'claude-fable-5-1']);
 const price = (m) => PRICES[m] || PRICES['claude-opus-5-5'];
@@ -239,7 +242,7 @@ export default function (app) {
       const msg = spent >= BUDGET
         ? `Daily AI budget reached: $${spent.toFixed(2)} of $${BUDGET.toFixed(2)} spent today.`
         : `Daily AI budget nearly used: $${spent.toFixed(2)} of $${BUDGET.toFixed(2)} spent today, and this call would cost about $${est.toFixed(2)}.`;
-      throw Object.assign(new Error(msg + ' Raise STACKS_DAILY_BUDGET (USD) to continue, or pick a cheaper model.'), { code: 'budget' });
+      throw Object.assign(new Error(msg + ' Raise the budget in Settings (⌘, or Ctrl+,) to continue, or pick a cheaper model.'), { code: 'budget' });
     }
     reserved += est;
     return () => { reserved = Math.max(0, reserved - est); };

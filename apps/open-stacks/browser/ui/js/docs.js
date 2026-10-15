@@ -5,6 +5,8 @@ import { P, PDFJS, h, esc, lru } from './util.js';
 
 let pdfjsP = null;
 export const pdfjs = () => (pdfjsP ||= import(P(PDFJS + 'pdf.min.mjs')).then((m) => { m.GlobalWorkerOptions.workerSrc = P(PDFJS + 'pdf.worker.min.mjs'); return m; }));
+const PDFJS_ROOT = location.origin + P(PDFJS.replace(/build\/$/, ''));
+export const PDF_ASSETS = { standardFontDataUrl: PDFJS_ROOT + 'standard_fonts%2F', cMapUrl: PDFJS_ROOT + 'cmaps%2F', cMapPacked: true };
 export const isFlow = (it) => it.kind === 'html' || it.kind === 'web' || it.kind === 'text';
 export const scanUrl = (it, k, w) => `https://archive.org/download/${it.ia}/page/n${k}_w${w}.jpg`;
 
@@ -48,7 +50,9 @@ export function openDoc(it) {
   return lru(docs, docKey(it), async () => {
     if (it.kind === 'pdf') {
       const [lib, buf] = await Promise.all([pdfjs(), fetch(P(it.url)).then((r) => { if (!r.ok) throw new Error('PDF ' + r.status); return r.arrayBuffer(); })]);
-      const pdf = await lib.getDocument({ data: buf, isEvalSupported: false }).promise;
+      // Standard fonts and character maps let pdf.js draw PDFs that do not embed
+      // their fonts (many reports and older papers) with the right glyphs.
+      const pdf = await lib.getDocument({ data: buf, isEvalSupported: false, ...PDF_ASSETS }).promise;
       return { n: pdf.numPages, pdf, outline: null };
     }
     const r = await fetch(P(it.url));
