@@ -44,8 +44,10 @@ body:has(#scrub:hover) #ra-bar, body:has(#scrub.pinned) #ra-bar { bottom: 104px;
   border-radius: 4px; padding: 6px 10px; font: 12px/1.4 var(--sans); box-shadow: 0 8px 24px #0009; cursor: pointer;
 }
 
-/* Raster pages: text-layer spans (transparent text over the canvas) tinted in place. */
-.hl-tts-sentence { background-color: #e2a54a30 !important; mix-blend-mode: multiply; border-radius: 1px; }
-.hl-tts-word { background-color: #e2a54aa6 !important; mix-blend-mode: multiply; border-radius: 2px; box-shadow: 0 0 0 1px #e2a54aa6; }
+/* Raster pages: text-layer spans (transparent text over the canvas) tinted in
+   place. The layer multiplies onto the page, so a near-solid amber word keeps
+   the printed text dark, like a highlighter pen; the sentence is a wash. */
+.hl-tts-sentence { background-color: rgb(226 165 74 / .2) !important; border-radius: 1px; }
+.hl-tts-word { background-color: rgb(226 165 74 / .92) !important; border-radius: 2px; box-shadow: 0 0 0 1.5px rgb(226 165 74 / .92); }
 
 @media (prefers-reduced-motion: reduce) { #ra-bar.loading .ra-play::after { animation: none; } #ra-bar .ra-prog i { transition: none; } }

@@ -78,16 +78,20 @@ function pageText(it, d, k) {
     : Promise.resolve(norm(d.texts?.[k] || ''));
   return c.pages[k];
 }
-/** Search strings from the caption: runs of plain words (math cut out), normalized. */
+/** Search strings from the caption: runs of words with the math cut out, normalized
+ *  to letters and digits (so spacing, hyphenation and ligatures do not matter). */
 function needles(f) {
   const runs = []; let run = [];
   for (const w of (f.caption || '').split(/\s+/).slice(0, 40)) {
-    if (/[\\^_{}=<>|∑∫√∈≤≥±×]/.test(w) || !/[a-z]/i.test(w)) { if (run.length) runs.push(run); run = []; } else run.push(w);
+    if (/[\\^_{}=<>|∑∫√∈≤≥±×]/.test(w)) { if (run.length) runs.push(run); run = []; } else run.push(w);
   }
   if (run.length) runs.push(run);
-  const out = runs.map((r) => norm(r.join(' ')).slice(0, 40)).filter((s) => s.length >= 14);
+  const out = runs.map((r) => norm(r.join(' ')).slice(0, 40)).filter((s) => s.length >= 14).slice(0, 2);
   if (!out.length) { const best = runs.map((r) => norm(r.join(' '))).sort((a, b) => b.length - a.length)[0]; if (best && best.length >= 8) out.push(best); }
-  return out.slice(0, 2);
+  // The end of the first sentence too, for when the PDF's wording starts differently.
+  const words = (f.caption || '').split(/[.!?]\s/)[0].split(/\s+/);
+  if (words.length > 8) { const tail = norm(words.slice(-6).join(' ')); if (tail.length >= 16 && !out.some((o) => o.includes(tail))) out.push(tail); }
+  return out;
 }
 const memo = new Map();
 const saved = store.get('figpg', {});
@@ -103,18 +107,24 @@ export function findPage(it, f) {
     if (!ns.length || !d.n) return null;
     const est = Math.round((f.at || 0) * (d.n - 1));
     const order = [...Array(d.n).keys()].sort((a, b) => Math.abs(a - est) - Math.abs(b - est) || a - b);
-    const lab = f.n ? new RegExp('(fig|figure|table|tab)' + norm(f.n) + '$') : null;
-    let weak = null;
+    // Best: the caption right after its own label ("Figure 3: …"); then after
+    // some figure label (numbering can differ between the HTML and the PDF);
+    // then anywhere. Pages nearest the figure's place in the HTML come first.
+    const own = f.n ? new RegExp('(fig|figure|table|tab)' + norm(f.n) + '$') : null;
+    const any = /(fig|figure|table|tab)[a-z]?\d+[a-z]?$/;
+    let some = null, weak = null;
     for (const k of order) {
       const t = await pageText(it, d, k);
       for (const nd of ns) {
         for (let at = t.indexOf(nd); at >= 0; at = t.indexOf(nd, at + 1)) {
-          if (lab && lab.test(t.slice(Math.max(0, at - 14), at))) return k; // "Figure 3: <caption>"
+          const before = t.slice(Math.max(0, at - 14), at);
+          if (own && own.test(before)) return k;
+          if (any.test(before)) some ??= k;
           weak ??= k;
         }
       }
     }
-    return weak;
+    return some ?? weak;
   })();
   memo.set(key, p);
   p.then((k) => {
@@ -208,7 +218,7 @@ const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersectin
 io.observe(more);
 
 function build() {
-  R.gen++; R.lane = state.lane; R.loading = false; R.sel = -1;
+  R.gen++; R.lane = state.lane; R.loading = false; R.sel = -1; hoverT = null;
   const ord = state.order;
   const from = Math.max(0, Math.min(state.pos, ord.length));
   R.papers = [...ord.slice(from), ...ord.slice(0, from)].filter((i) => arxivId(items[i]));
@@ -257,8 +267,8 @@ function layoutCols(force) {
 function sizeBox(t) {
   const bh = t.f.table ? R.colW / TABLE_AR : R.colW / figAr(t.f);
   t.box.style.height = bh.toFixed(1) + 'px';
-  if (!t.f.table) t.box.replaceChildren(figArt(t.f, R.colW - 2 * PAD, bh - 2 * PAD, () => drop(t)));
-  else requestAnimationFrame(() => fitTable(t));
+  if (t.f.table) requestAnimationFrame(() => fitTable(t));
+  else if (t.artW !== R.colW) { t.box.replaceChildren(figArt(t.f, R.colW - 2 * PAD, bh - 2 * PAD, () => drop(t))); t.artW = R.colW; }
   return bh;
 }
 function fitTable(t) {
@@ -302,22 +312,38 @@ function makeTile(i, f) {
         h('span', { className: 'yr', textContent: String(yearOf(it)) }))));
   const t = { i, f, el, box };
   el.onclick = () => openFigure(i, f);
-  let warm = null;
-  el.onmouseenter = () => {
-    select(t.k, { scroll: false, pop: false });
-    for (const x of R.byPaper.get(i) || []) x.el.classList.add('kin');
-    popTimer = setTimeout(() => showPop(el, i, f), 280);
-    warm = setTimeout(() => { openDoc(it).catch(() => {}); findPage(it, f).catch(() => {}); }, 220); // so the click lands at once
-  };
-  el.onmouseleave = () => {
-    clearTimeout(popTimer); clearTimeout(warm); hidePop();
-    for (const x of R.byPaper.get(i) || []) x.el.classList.remove('kin');
-  };
+  tileOf.set(el, t);
   if (!R.byPaper.has(i)) R.byPaper.set(i, []);
   R.byPaper.get(i).push(t);
   return t;
 }
 function addTile(t) { t.k = R.tiles.length; R.tiles.push(t); place(t); }
+
+// Hover selects (so z, Enter and o act on what you point at), shows the full
+// caption and warms the paper's PDF. Only real pointer movement counts: Chrome
+// also fires mouse events when tiles scroll under a still pointer, which would
+// steal the keyboard's selection.
+const tileOf = new WeakMap();
+let px = -1, py = -1, hoverT = null, warmHover = null;
+function hoverTile(t) {
+  if (t === hoverT) return;
+  for (const x of (hoverT && R.byPaper.get(hoverT.i)) || []) x.el.classList.remove('kin');
+  hoverT = t;
+  clearTimeout(popTimer); clearTimeout(warmHover); hidePop();
+  if (!t) return;
+  for (const x of R.byPaper.get(t.i) || []) x.el.classList.add('kin');
+  select(t.k, { scroll: false, pop: false });
+  if (!t.f) return;
+  const it = items[t.i];
+  popTimer = setTimeout(() => showPop(t.el, t.i, t.f), 280);
+  warmHover = setTimeout(() => { openDoc(it).catch(() => {}); findPage(it, t.f).catch(() => {}); }, 220); // so the click lands at once
+}
+root.addEventListener('mousemove', (e) => {
+  if (e.clientX === px && e.clientY === py) return;
+  px = e.clientX; py = e.clientY;
+  hoverTile(tileOf.get(e.target.closest('.fg-tile, .fg-moretile')) || null);
+});
+root.addEventListener('mouseleave', () => hoverTile(null));
 
 // A paper shows its first PER_PAPER figures; a small tile holds the rest
 // and expands them in place (Enter or click).
@@ -328,7 +354,7 @@ function moreTile(i, rest) {
     h('span', { className: 'pt', textContent: items[i].t }));
   const t = { i, rest, el };
   el.onclick = () => expand(t);
-  el.onmouseenter = () => select(t.k, { scroll: false, pop: false });
+  tileOf.set(el, t);
   return t;
 }
 function expand(t) {
@@ -416,10 +442,11 @@ function showPop(anchor, i, f, { image = false } = {}) {
   const it = items[i];
   const w = image ? 460 : 400;
   pop.style.width = w + 'px';
-  pop.replaceChildren(
+  pop.replaceChildren(...[
     image && !f.table ? h('div', { className: 'fg-pop-art' }, figArt(f, w - 28, 300)) : null,
     h('div', { className: 'fg-pop-cap' }, h('b', { textContent: f.label }), f.caption || '(no caption)'),
-    h('div', { className: 'fg-pop-meta', textContent: [it.t, it.a, yearOf(it)].filter(Boolean).join(' · ') }));
+    h('div', { className: 'fg-pop-meta', textContent: [it.t, it.a, yearOf(it)].filter(Boolean).join(' · ') }),
+  ].filter(Boolean));
   pop.hidden = false;
   const r = anchor.getBoundingClientRect(); const ph = pop.offsetHeight;
   const left = r.right + 12 + w < innerWidth ? r.right + 12 : Math.max(8, r.left - 12 - w);
@@ -430,7 +457,7 @@ function hidePop() { pop.hidden = true; }
 // setView hides the root before calling hide(), so remember the scroll as it happens.
 let warmT = null;
 root.addEventListener('scroll', () => {
-  hidePop(); clearTimeout(popTimer);
+  hoverTile(null);
   if (!root.hidden) R.scroll = root.scrollTop;
   clearTimeout(warmT); warmT = setTimeout(warmVisible, 300);
 }, { passive: true });

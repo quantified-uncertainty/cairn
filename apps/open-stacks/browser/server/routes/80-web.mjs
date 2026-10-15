@@ -74,14 +74,16 @@ function controller() {
   // so the last views can scroll past it instead of repeating the end.
   var style = document.createElement('style');
   var pad = 0, want = null;
-  var setPad = function (px) { pad = px; style.textContent = 'html{overflow:hidden!important;scrollbar-width:none!important}html::-webkit-scrollbar{display:none}html::after{content:"";display:block;height:' + px + 'px}'; };
+  // No scroll anchoring: a view stays exactly where the app put it when
+  // content above it changes size (the other views see the same change).
+  var setPad = function (px) { pad = px; style.textContent = 'html{overflow:hidden!important;scrollbar-width:none!important;overflow-anchor:none!important}html::-webkit-scrollbar{display:none}html::after{content:"";display:block;height:' + px + 'px}'; };
   setPad(3 * innerHeight);
   (document.head || document.documentElement).appendChild(style);
-  var lastH = -1;
+  var lastH = -1, lastVh = 0;
   var report = function () {
     var h = Math.max(0, se().scrollHeight - pad);
-    if (Math.abs(h - lastH) < 4) return;
-    lastH = h;
+    if (Math.abs(h - lastH) < 4 && innerHeight === lastVh) return;
+    lastH = h; lastVh = innerHeight;
     post({ type: 'metrics', h: h, vh: innerHeight });
   };
   addEventListener('message', function (e) {
@@ -94,19 +96,48 @@ function controller() {
   addEventListener('scroll', function () {
     clearTimeout(settle);
     settle = setTimeout(function () {
-      var y = se().scrollTop;
-      // A scroll the app did not ask for (the page's own script, find in page): re-sync the others.
-      if (want == null || Math.abs(y - want) > 3) post({ type: 'scrolled', y: y });
+      var y = se().scrollTop, max = se().scrollHeight - innerHeight;
+      // A scroll the app did not ask for (the page's own script, find in
+      // page): re-sync the others. A position clamped by a page still
+      // loading is not one.
+      if (want == null || (Math.abs(y - want) > 3 && !(want > max && y >= max - 2))) post({ type: 'scrolled', y: y });
       want = y;
     }, 120);
   }, { passive: true });
+  // Every view loads every image, so all copies have the same layout (lazy
+  // loading would load different images in each view and shift them apart).
+  var eager = function (root) { root.querySelectorAll('img[loading="lazy"], iframe[loading="lazy"]').forEach(function (el) { el.loading = 'eager'; }); };
+  // How wide the text needs to be, when the page does not fit this view
+  // (its text runs past the right edge): the app then shows fewer, wider
+  // views, or scales them down a little.
+  var need = function () {
+    var els = document.querySelectorAll('p, h1, h2, h3, blockquote'), lo = innerWidth, hi = 0;
+    for (var i = 0; i < els.length && i < 800; i++) {
+      var el = els[i];
+      if (el.closest('nav, header, footer, aside, [aria-hidden="true"]') || !el.textContent.trim()) continue;
+      var r = el.getBoundingClientRect();
+      if (!r.width) continue;
+      if (r.right > hi) hi = r.right;
+      if (r.left < lo) lo = r.left;
+    }
+    return hi > innerWidth + 4 ? Math.ceil(hi + Math.max(12, Math.min(lo, 60))) : 0;
+  };
+  var started = false;
   var start = function () {
+    if (started) return;
+    started = true;
+    if (window.MutationObserver) new MutationObserver(function (ms) {
+      ms.forEach(function (m) { m.addedNodes.forEach(function (n) { if (n.nodeType === 1 && (n.tagName === 'IMG' || n.tagName === 'IFRAME' || n.firstElementChild)) { if (n.loading === 'lazy') n.loading = 'eager'; if (n.firstElementChild) eager(n); } }); });
+    }).observe(document.documentElement, { childList: true, subtree: true });
+    if (window.ResizeObserver) new ResizeObserver(report).observe(document.body);
     report();
-    if (window.ResizeObserver && document.body) new ResizeObserver(report).observe(document.body);
     post({ type: 'ready' });
   };
-  if (document.readyState === 'loading') addEventListener('DOMContentLoaded', start); else start();
-  addEventListener('load', report);
+  // Ready as soon as there is a body, so the view shows the page as it loads.
+  (function wait() { if (document.body) start(); else setTimeout(wait, 30); })();
+  addEventListener('DOMContentLoaded', function () { eager(document); report(); });
+  addEventListener('load', function () { report(); setTimeout(function () { report(); post({ type: 'fit', need: need() }); }, 700); });
+  addEventListener('resize', function () { setTimeout(report, 100); });
 
   // An inner scroller (code block, wide table, widget) keeps its own wheel.
   var scrolls = function (el, dx, dy) {

@@ -353,7 +353,7 @@ function showPages(T, L, ks, n, cols) {
   ks.forEach((k, j) => { L.cells[j].dataset.k = k; });
   const done = (j, key, node) => {
     if (gen !== L.gen) return;
-    if (node) { L.cells[j].replaceChildren(node); L.keys[j] = key; if (L.name === 'gl') T.face.classList.add('paged'); }
+    if (node) { L.cells[j].replaceChildren(node); L.keys[j] = key; L.el.classList.add('loaded'); if (L.name === 'gl') T.face.classList.add('paged'); }
     L.cells[j].classList.remove('wait');
     if (++L.filled === ks.length) { L.ready = gen; L.busy = false; L.at = performance.now(); }
   };
@@ -442,7 +442,8 @@ function makeTile(i, canWide) {
   const kind = kindOf(it);
   const wideOk = canWide && kind === 'post' && topShare(it) < 0.12;
   const wide = wideOk && W.size <= 3;
-  const face = h('div', { className: 'face' });
+  const zone = h('div', { className: 'zone' }, h('i'));
+  const face = h('div', { className: 'face' }, zone);
   const pill = h('span', { className: 'pill-slot' });
   const date = it.d ? fmtDate(it) : it.y ? String(it.y) : '';
   const meta = h('div', { className: 'meta' }, h('i', { className: 'dot', title: LANES[it.lane] || '' }),
@@ -450,9 +451,9 @@ function makeTile(i, canWide) {
   const el = h('div', { className: `tile k-${kind}${wide ? ' wide' : ''}`, tabIndex: 0, title: it.t }, face, meta);
   el.style.setProperty('--c', LANE_COLORS[it.lane] || '#7a6f60');
   el.dataset.i = i;
-  const T = { i, it, kind, wide, wideOk, el, face, pill, vis: false, gl: null, sl: null };
+  const T = { i, it, kind, wide, wideOk, el, face, zone, pill, vis: false, gl: null, sl: null };
   T.cv = COVERS[kind](T);
-  face.append(T.cv);
+  face.prepend(T.cv);
   byEl.set(el, T);
   wire(T);
   return T;
@@ -481,8 +482,15 @@ function addTiles(n) {
   paintInfo();
 }
 
-let scrollRaf = false;
-wallEl.addEventListener('scroll', () => { if (!scrollRaf) { scrollRaf = true; requestAnimationFrame(() => { scrollRaf = false; mid = null; }); } }, { passive: true });
+// While the wall is scrolling, tiles passing by get only their covers; page
+// loads and post text wait until scrolling rests, so a fling stays smooth and
+// fetches nothing for tiles that only flashed past.
+let scrollRaf = false, scrolling = false, restT = null;
+wallEl.addEventListener('scroll', () => {
+  if (!scrollRaf) { scrollRaf = true; requestAnimationFrame(() => { scrollRaf = false; mid = null; }); }
+  scrolling = true; clearTimeout(restT);
+  restT = setTimeout(() => { scrolling = false; for (const T of tiles) if (T.vis && T.later) settle(T); schedulePrefetch(); }, 140);
+}, { passive: true });
 const sentinel = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) addTiles(60); }, { root: wallEl, rootMargin: '900px' });
 const io = new IntersectionObserver((es) => {
   for (const e of es) { const T = byEl.get(e.target); if (!T) continue; if (e.isIntersecting) enter(T); else leave(T); }
@@ -493,6 +501,11 @@ function enter(T) {
   if (T.vis) return;
   T.vis = true;
   clearTimeout(T.dropT);
+  if (scrolling) T.later = true; else settle(T);
+}
+/** The work a tile needs once it is in view: verdict, post text and cover details, pages for the mode. */
+function settle(T) {
+  T.later = false;
   verdict(T);
   if (T.kind === 'post') {
     const m = META[T.it.id];
@@ -508,7 +521,7 @@ function enter(T) {
 }
 function leave(T) {
   if (!T.vis) return;
-  T.vis = false;
+  T.vis = false; T.later = false;
   for (const L of [T.gl, T.sl]) if (L) { for (const ld of L.loads) if (ld) ld.im.src = ''; L.loads = []; L.gen++; L.busy = false; L.ks = null; }
   // Free the page renders once the tile has been away for a while.
   T.dropT = setTimeout(() => { if (T.vis) return; for (const L of [T.gl, T.sl]) if (L) { L.el.remove(); } T.gl = T.sl = null; T.face.classList.remove('paged'); }, 6000);
@@ -547,15 +560,16 @@ function ensureN(T) {
   return Promise.resolve();
 }
 function applyAll() {
-  for (const T of tiles) if (T.vis) apply(T); else T.el.dataset.mode = mode();
+  for (const T of tiles) if (T.vis && !T.later) apply(T); else T.el.dataset.mode = mode();
   cpuQ.sweep(); netQ.sweep();
   schedulePrefetch();
 }
 
-// Dragging the slider: posts update every frame (their pages are in memory);
-// page images and PDF renders wait for the hand to pause for a moment, so a
-// fast drag does not start hundreds of downloads.
-let lastInput = 0, applyT = null, rafP = false, lastDir = 1;
+// Dragging the slider: posts update every frame (their pages are in memory),
+// page numbers and position bars too; page images and PDF renders wait until
+// the hand rests for a moment or lets go, so a drag does not start hundreds of
+// downloads for pages nobody stops at.
+let dragging = false, applyT = null, rafP = false, lastDir = 1;
 function setDepth(f, how = 'step') {
   const nf = Math.max(0, Math.min(1, Math.round(f * 100) / 100));
   if (nf !== W.f) lastDir = nf > W.f ? 1 : -1;
@@ -563,11 +577,8 @@ function setDepth(f, how = 'step') {
   if (W.sheet) { W.sheet = false; paintBar(); }
   paintDepth();
   saveW();
-  const now = performance.now();
-  const dragging = how === 'drag' && now - lastInput < 160;
-  lastInput = now;
   clearTimeout(applyT);
-  if (!dragging) { applyAll(); return; }
+  if (!(how === 'drag' && dragging)) { applyAll(); return; }
   if (!rafP) {
     rafP = true;
     requestAnimationFrame(() => {
@@ -577,7 +588,7 @@ function setDepth(f, how = 'step') {
       if (mode() === 'cover') for (const T of tiles) T.el.dataset.mode = 'cover';
     });
   }
-  applyT = setTimeout(applyAll, 140);
+  applyT = setTimeout(applyAll, 250);
 }
 const stepDepth = (d) => setDepth(Math.round((W.f + d * STEP) / STEP) * STEP);
 function toggleSheet() { W.sheet = !W.sheet; saveW(); paintBar(); applyAll(); }
@@ -624,14 +635,16 @@ function wire(T) {
   face.addEventListener('pointerenter', () => {
     T.hover = true;
     if (T.it.kind === 'scan') {
+      // Coarse to fine (middle, quarters, eighths, ...), so a quick scrub finds pages already fetched.
       const n = T.it.n; const S = Math.min(n, 40);
-      serverPrefetch(Array.from({ length: S }, (_, j) => scanUrl(T.it, kAt(n, j / Math.max(1, S - 1)), 200)), 75, 'wall-scrub');
+      serverPrefetch(bisect(S).map((j) => scanUrl(T.it, kAt(n, j / Math.max(1, S - 1)), 200)), 75, 'wall-scrub');
     } else if (!canShow(T.it)) ensureN(T).catch(() => {});
     warmT = setTimeout(() => warm(T), 350);
   });
   face.addEventListener('pointermove', (e) => scrub(T, e));
   face.addEventListener('pointerleave', () => {
     T.hover = false; clearTimeout(warmT);
+    el.classList.remove('scrubbing');
     if (T.sl) { T.sl.el.classList.remove('on'); T.scrubK = null; }
   });
   el.addEventListener('click', (e) => {
@@ -641,11 +654,24 @@ function wire(T) {
   });
   el.addEventListener('focus', () => { clearTimeout(warmT); warmT = setTimeout(() => warm(T), 250); });
 }
+function bisect(S) {
+  const out = [], seen = new Set();
+  for (let step = S; step >= 1; step = Math.floor(step / 2)) for (let j = 0; j < S; j += step) if (!seen.has(j)) { seen.add(j); out.push(j); }
+  for (let j = 0; j < S; j++) if (!seen.has(j)) out.push(j);
+  return out;
+}
+// Only the bottom strip of a tile scrubs (it shows as a faint track on hover), so
+// moving the mouse across the wall never flips pages; the last page scrubbed to
+// stays up, and a click anywhere on the tile opens the item there.
+const zoneH = (h) => Math.max(34, Math.min(72, h * 0.26));
 function scrub(T, e) {
+  const r = T.face.getBoundingClientRect();
+  if (e.clientY < r.bottom - zoneH(r.height)) return;
   if (!canShow(T.it)) return;
   const n = nOf(T.it);
-  const r = T.face.getBoundingClientRect();
   const x = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+  T.el.classList.add('scrubbing');
+  T.zone.firstChild.style.width = x * 100 + '%';
   // Scans snap to the 40 pages prefetched on hover; others go page by page.
   const S = T.it.kind === 'scan' ? Math.min(n, 40) : n;
   const k = kAt(n, Math.round(x * (S - 1)) / Math.max(1, S - 1));
@@ -736,8 +762,11 @@ keyHelp.push(
 // ---------- the toolbar ----------
 const slider = h('input', { type: 'range', min: 0, max: 100, step: 1, value: Math.round(W.f * 100), className: 'depth', title: 'Depth: move every tile through its pages (, and .)' });
 slider.setAttribute('aria-label', 'Depth through every item');
+slider.addEventListener('pointerdown', () => { dragging = true; });
 slider.addEventListener('input', () => setDepth(slider.value / 100, 'drag'));
-slider.addEventListener('change', () => { setDepth(slider.value / 100); slider.blur(); });
+const endDrag = () => { if (!dragging) return; dragging = false; setDepth(slider.value / 100); slider.blur(); };
+slider.addEventListener('change', endDrag);
+window.addEventListener('pointerup', endDrag);
 const readout = h('span', { className: 'ro' });
 const sheetBtn = h('button', { className: 'ghost', title: 'Contact sheets: pages from across each item (g)', onclick: toggleSheet }, h('span', { className: 'gi' }), 'Contact sheet');
 const sizeOut = h('span', { className: 'sz' });
@@ -776,8 +805,23 @@ function paintInfo() {
 // ---------- the view ----------
 export function showWall() {
   paintBar();
-  const same = built && built.order === state.order && built.pos === state.pos && built.lane === state.lane;
-  if (same && tiles.length) { paintInfo(); applyAll(); return; }
+  // Coming back from the feed: if the item you were reading is on the wall, keep
+  // the wall as it was (scroll position included) and put the focus on that item.
+  const here = state.order[state.pos];
+  const keep = built && tiles.length && built.order === state.order && built.lane === state.lane && state.pos >= built.pos && tiles.some((T) => T.i === here);
+  if (keep) {
+    paintInfo(); applyAll();
+    const T = tiles.find((x) => x.i === here);
+    if (T && built.pos !== state.pos) {
+      requestAnimationFrame(() => {
+        T.el.focus({ preventScroll: true });
+        const r = T.el.getBoundingClientRect(), w = wallEl.getBoundingClientRect();
+        if (r.top < w.top + 50 || r.bottom > w.bottom) T.el.scrollIntoView({ block: 'center' });
+      });
+    }
+    built.pos = state.pos;
+    return;
+  }
   for (const T of tiles) { io.unobserve(T.el); clearTimeout(T.dropT); }
   netQ.clear(); cpuQ.clear();
   tiles = []; byEl.clear(); added = 0; colW = 0; mid = null;

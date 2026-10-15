@@ -11,7 +11,7 @@
 import { mkdirSync, existsSync, readFileSync, writeFileSync, createReadStream } from 'fs';
 import { join } from 'path';
 
-const VER = 2; // bump when the parser changes, to re-extract cached lists
+const VER = 5; // bump when the parser changes, to re-extract cached lists
 const SOURCES = (id) => [`https://arxiv.org/html/${id}`, `https://ar5iv.labs.arxiv.org/html/${id}`];
 const ID_RE = /^(?:\d{4}\.\d{4,5}|[a-z-]+(?:\.[A-Z]{2})?\/\d{7})(?:v\d+)?$/;
 const safe = (s) => String(s).replace(/[^\w.-]+/g, '_');
@@ -68,11 +68,20 @@ function* walk(el, stop) {
 const isFig = (el) => el.tag === 'figure';
 
 // ---- caption text ----
-const TEX = [[/\\(?:text|mathrm|mathbf|mathit|mathsf|mathtt|textbf|textit|textsc|emph|operatorname|mathcal|mathbb|boldsymbol|bm)\s*\{([^{}]*)\}/g, '$1'],
-  ...Object.entries({ alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', epsilon: 'ε', varepsilon: 'ε', theta: 'θ', lambda: 'λ', mu: 'μ', pi: 'π', rho: 'ρ', sigma: 'σ', tau: 'τ', phi: 'φ', varphi: 'φ', omega: 'ω', eta: 'η', kappa: 'κ', xi: 'ξ', psi: 'ψ', chi: 'χ', nu: 'ν', zeta: 'ζ', Delta: 'Δ', Gamma: 'Γ', Theta: 'Θ', Lambda: 'Λ', Sigma: 'Σ', Pi: 'Π', Phi: 'Φ', Omega: 'Ω', pm: '±', times: '×', cdot: '·', leq: '≤', le: '≤', geq: '≥', ge: '≥', neq: '≠', approx: '≈', sim: '~', infty: '∞', to: '→', rightarrow: '→', leftarrow: '←', in: '∈', sum: 'Σ', ldots: '…', cdots: '…', dots: '…', log: 'log', exp: 'exp' })
+const TEX = [[/\\(?:text|mathrm|mathbf|mathit|mathsf|mathtt|textbf|textit|textsc|emph|operatorname|mathcal|mathbb|mathscr|mathfrak|boldsymbol|bm)\s*\{([^{}]*)\}/g, '$1'],
+  [/\\frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g, '$1/$2'],
+  ...Object.entries({ hat: '\u0302', tilde: '\u0303', bar: '\u0304', vec: '\u20d7', dot: '\u0307' }).map(([k, v]) => [new RegExp('\\\\' + k + '\\s*\\{([^{}]*)\\}', 'g'), '$1' + v]),
+  ...Object.entries({ alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', epsilon: 'ε', varepsilon: 'ε', theta: 'θ', lambda: 'λ', mu: 'μ', pi: 'π', rho: 'ρ', sigma: 'σ', tau: 'τ', phi: 'φ', varphi: 'φ', omega: 'ω', eta: 'η', kappa: 'κ', xi: 'ξ', psi: 'ψ', chi: 'χ', nu: 'ν', zeta: 'ζ', Delta: 'Δ', Gamma: 'Γ', Theta: 'Θ', Lambda: 'Λ', Sigma: 'Σ', Pi: 'Π', Phi: 'Φ', Omega: 'Ω', pm: '±', times: '×', cdot: '·', leq: '≤', le: '≤', geq: '≥', ge: '≥', neq: '≠', approx: '≈', sim: '~', infty: '∞', to: '→', rightarrow: '→', leftarrow: '←', in: '∈', notin: '∉', sum: 'Σ', prod: 'Π', ldots: '…', cdots: '…', dots: '…', log: 'log', exp: 'exp', setminus: '∖', mid: '|', cup: '∪', cap: '∩', subset: '⊂', subseteq: '⊆', forall: '∀', exists: '∃', nabla: '∇', partial: '∂', ell: 'ℓ', top: '⊤', prime: '′', circ: '∘', star: '⋆', sqrt: '√', langle: '⟨', rangle: '⟩', neg: '¬', wedge: '∧', vee: '∨', Rightarrow: '⇒', leftrightarrow: '↔', propto: '∝', equiv: '≡', ll: '≪', gg: '≫', mapsto: '↦', odot: '⊙', otimes: '⊗', oplus: '⊕', min: 'min', max: 'max', arg: 'arg', quad: ' ', qquad: ' ' })
     .map(([k, v]) => [new RegExp('\\\\' + k + '(?![a-zA-Z])', 'g'), v]),
-  [/\\[,;:! ]/g, ' '], [/\\%/g, '%'], [/\\([&_#$])/g, '$1'], [/\\left|\\right|\\big|\\Big/g, ''], [/[{}]/g, '']];
-const tex = (s) => { for (const [re, to] of TEX) s = s.replace(re, to); return s.trim(); };
+  [/\\[,;:! ]/g, ' '], [/\\%/g, '%'], [/\\([&_#$])/g, '$1'], [/\\(?:left|right|big|Big|bigg|Bigg)\b/g, ''], [/\\([a-zA-Z]+)/g, '$1'], [/[{}]/g, '']];
+const WRAP = TEX[0][0];
+const tex = (s) => {
+  s = s.replace(/\\\{/g, '\u0001').replace(/\\\}/g, '\u0002') // \{ \} are literal braces (sets)
+    .replace(/\\(?:tiny|scriptsize|footnotesize|small|normalsize|large|Large|displaystyle|textstyle|scriptstyle|mathstrut|limits|nolimits)(?![a-zA-Z])/g, '');
+  for (let prev = ''; prev !== s;) { prev = s; s = s.replace(WRAP, ' $1'); } // nested \mathbf{\mathcal{X}}; the space keeps \in\mathbb{N} apart
+  for (const [re, to] of TEX) s = s.replace(re, to);
+  return s.replace(/\u0001/g, '{').replace(/\u0002/g, '}').trim();
+};
 const SKIP_TEXT = (el) => el.tag === 'annotation' || el.tag === 'annotation-xml' || el.tag === 'button' || hasClass(el, 'ltx_note_outer') || hasClass(el, 'ltx_tag');
 function text(el) {
   let out = '';
@@ -118,6 +127,8 @@ function standaloneSvg(src) {
   s = s.replace(/(<foreignObject\b[^>]*>\s*<)([a-zA-Z][\w-]*)/g, '$1$2 xmlns="http://www.w3.org/1999/xhtml"');
   s = s.replace(/<math\b(?![^>]*xmlns)/g, '<math xmlns="http://www.w3.org/1998/Math/MathML"');
   s = s.replace(/<(br|img|hr|wbr|input|col)\b([^>]*?)\/?>/g, '<$1$2/>');
+  // The drawing's units are TeX points; text sized in CSS pt would come out a third too big.
+  s = s.replace(/font-size:\s*([\d.]+)pt/g, 'font-size:$1px');
   // LaTeXML colours text through CSS variables its stylesheet resolves; do the same here.
   const style = '<style>*{font-family:"Times New Roman",serif}[style*="--ltx-fg-color"]{color:var(--ltx-fg-color)}[style*="--ltx-bg-color"]{background:var(--ltx-bg-color)}</style>';
   return s.replace(/^(<svg[^>]*>)/, `$1${style}`);

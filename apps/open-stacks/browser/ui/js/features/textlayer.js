@@ -25,6 +25,7 @@ import { registerTextSource, currentWords, highlight, reveal } from '../text.js'
 import { appendQuote } from '../notes.js';
 import { live } from '../flow.js';
 import { goPage } from '../nav.js';
+import { startOf } from '../prefetch.js';
 
 const LS = 2; // pdf.js layers are laid out at 2x PDF points; panels scale them to fit
 const raster = (it) => !!it && (it.kind === 'pdf' || it.kind === 'scan');
@@ -281,7 +282,15 @@ function loadLabels(it) {
 }
 /** The printed page label of page k of a scan, when the scan has one. */
 export const printedLabel = (it, k) => (it?.kind === 'scan' ? labels.get(it.ia)?.[k] || null : null);
-on('item:shown', ({ it }) => loadLabels(it));
+on('item:shown', ({ it }) => {
+  loadLabels(it);
+  // Have the server fetch the next scans' OCR for their opening pages now, so
+  // their text is ready when the reader gets there.
+  for (const ii of state.order.slice(state.pos + 1, state.pos + 3)) {
+    const x = items[ii];
+    if (x?.kind === 'scan') fetch(`/ocr?ia=${encodeURIComponent(x.ia)}&k=${startOf(ii)}&bg=1`, { priority: 'low' }).catch(() => {});
+  }
+});
 function paintPrinted() {
   const pos = $('#pos'); const i = current(); const it = items[i];
   if (!pos || !it || it.kind !== 'scan') return;
@@ -312,8 +321,8 @@ function fold(T) {
   let s = ''; const map = [];
   for (let i = 0; i < T.length; i++) {
     const c = T[i];
-    if (c === ' ' || c === '\n' || c === '\t' || c === '\r' || c === ' ') { if (s && s[s.length - 1] !== ' ') { s += ' '; map.push(i); } continue; }
-    if (c === '­') continue;
+    if (c === ' ' || c === '\n' || c === '\t' || c === '\r' || c === '\u00a0') { if (s && s[s.length - 1] !== ' ') { s += ' '; map.push(i); } continue; }
+    if (c === '\u00ad') continue;
     if (c === '-' && (T[i + 1] === '\n' || (T[i + 1] === ' ' && T[i + 2] === '\n'))) {
       let j = i + 1; while (j < T.length && /\s/.test(T[j])) j++;
       if (/\p{Ll}/u.test(T[j] || '')) { i = j - 1; continue; }
@@ -484,7 +493,7 @@ function paintFindOn(el, node) {
 // Flow documents: every word is in the DOM, so search and mark them directly.
 const flowModels = new WeakMap();
 async function flowModel() {
-  if (!live) return null;
+  if (!live || live.id !== items[current()]?.id) return null; // not laid out yet
   if (flowModels.has(live)) return flowModels.get(live);
   const L = live; const r = await currentWords();
   if (!r || L !== live) return null;
@@ -590,7 +599,7 @@ function selectionQuote() {
       const w = m.words[j];
       if (prev >= 0) {
         const gap = m.T.slice(m.words[prev].b, w.a);
-        if (j === prev + 1 && gap.includes('\n') && /[-­]$/.test(out) && /^\p{Ll}/u.test(w.t)) out = out.slice(0, -1); // re-join a hyphenated line end
+        if (j === prev + 1 && gap.includes('\n') && /[-\u00ad]$/.test(out) && /^\p{Ll}/u.test(w.t)) out = out.slice(0, -1); // re-join a hyphenated line end
         else out += ' ';
       }
       out += w.t; prev = j;

@@ -413,10 +413,10 @@ async function scanWords(it, k) {
   for (const m of txt.slice(a, b).matchAll(/\S+|\n\s*\n/g)) { if (m[0][0] === '\n') para++; else out.push({ text: m[0], page: k, para }); }
   return out;
 }
-/** The words a text layer draws for page k, if it is on screen. */
+/** The words a text source has for page k (textlayer.js: the pages on screen and the next spread). */
 async function shownWords(k) {
   const got = await currentWords().catch(() => null);
-  const ws = got?.words.filter((w) => w.page === k && (w.el || w.range)) || [];
+  const ws = got?.words.filter((w) => w.page === k) || [];
   return ws.length ? ws : null;
 }
 const waiting = []; // [item id, resolve] until that item's next render
@@ -426,7 +426,7 @@ async function pageWords(r, k) {
   if (r.kind === 'pdf') return pdfWords(r.it, k);
   let ws = await shownWords(k);
   if (!ws && r.layer && current() === r.i && state.view === 'feed') { reveal({ page: k }); await rendered(r.it.id); ws = await shownWords(k); }
-  if (ws) { r.layer = true; return ws.map((w) => ({ text: w.text, page: k, el: w.el, range: w.range })); }
+  if (ws) { r.layer = true; return ws.map((w) => ({ text: w.text, page: k, src: w })); }
   if (!r.approx) { r.approx = true; r.notice = 'No text layer on this scan yet: reading its OCR text by estimate, without highlighting.'; }
   return scanWords(r.it, k);
 }
@@ -467,19 +467,22 @@ function ensureAhead(r) {
   if (r.kind === 'flow' || !r.more || r.pageLoad || r.passages.length - r.index > 4) return;
   r.pageLoad = loadPage(r, r.next).catch((e) => console.warn('read aloud: page', e)).finally(() => { r.pageLoad = null; if (R === r && r.engine === 'gemini' && r.playing) prefetch(r.index); });
 }
-/** Give the reading's words the spans a text layer draws now (after a render). */
+/** Tie the reading's words of the pages a text source has now to its words
+ *  (`src`); their `el` is looked up live, so this holds across re-renders. */
 async function bindShown(r, tries = 0) {
   if (r.kind === 'flow') return;
   const got = await currentWords().catch(() => null);
   if (R !== r) return;
-  const ws = got?.words.filter((w) => w.el || w.range) || [];
+  const ws = got?.words || [];
   if (!ws.length) { if (tries < 2) setTimeout(() => R === r && bindShown(r, tries + 1), 500 * (tries + 1)); return; }
   const byPage = new Map();
   for (const w of ws) { if (!byPage.has(w.page)) byPage.set(w.page, []); byPage.get(w.page).push(w); }
   for (const [k, dws] of byPage) {
     const span = r.spans.get(k); if (!span) continue;
-    const sw = r.words.slice(span[0], span[1]); const m = alignPage(sw, dws);
-    sw.forEach((w, t) => { const d = m[t] >= 0 ? dws[m[t]] : null; w.el = d?.el || null; w.range = d?.range || null; });
+    const sw = r.words.slice(span[0], span[1]);
+    if (sw.length && sw.every((w, t) => w.src === dws[t])) continue; // tied already
+    const m = alignPage(sw, dws);
+    sw.forEach((w, t) => { w.src = m[t] >= 0 ? dws[m[t]] : null; });
   }
   repaint();
 }
@@ -808,10 +811,11 @@ function tick() {
 }
 function repaint() { if (R) { R.lastJ = -1; tick(); } }
 
-const drawn = (w) => (w.range ? w.range.startContainer.isConnected : !!w.el?.isConnected);
+const elOf = (w) => w.el || w.src?.el || null;
+const drawn = (w) => (w.range ? w.range.startContainer.isConnected : !!elOf(w)?.isConnected);
 /** A word's range without its quotes and punctuation. */
 function trimmed(w) {
-  if (!w.range) return w;
+  if (!w.range) return { el: elOf(w) };
   const lead = w.text.match(/^[^\p{L}\p{N}]*/u)[0].length, tail = w.text.match(/[^\p{L}\p{N}]*$/u)[0].length;
   if (lead + tail >= w.text.length || w.range.startContainer !== w.range.endContainer) return w;
   const r = document.createRange();
@@ -827,7 +831,7 @@ function paint() {
   highlight('tts-word', mark ? [mark] : []);
   dodge(mark);
   const [a, b] = p.sents[tok.s]; const ws = r.words.slice(a, b + 1).filter(drawn);
-  let marks = ws.filter((x) => x.el);
+  let marks = ws.filter((x) => !x.range).map((x) => ({ el: elOf(x) }));
   const rs = ws.filter((x) => x.range);
   if (rs.length) { // one range over the sentence, spaces included: an even tint
     try { const s = document.createRange(); s.setStart(rs[0].range.startContainer, rs[0].range.startOffset); s.setEnd(rs.at(-1).range.endContainer, rs.at(-1).range.endOffset); marks = marks.concat({ range: s }); } catch { marks = marks.concat(rs); }
@@ -866,6 +870,7 @@ on('spread:rendered', ({ it, flow }) => {
   if (flow) { const w0 = r.words.find((w) => w.range); if (w0 && !flow.flow.contains(w0.range.startContainer)) rebindFlow(r); else repaint(); }
   else bindShown(r);
 });
+on('textlayer:ready', ({ it }) => { if (R && it?.id === R.it.id) repaint(); }); // a page's spans just arrived
 
 // ---------- keys and the pointer ----------
 function toggle() {
@@ -921,7 +926,14 @@ async function readFromPoint(x, y, target) {
   const pg = target.closest('.pg[data-k]'); if (!pg) return;
   const k = Number(pg.dataset.k);
   const display = (await currentWords().catch(() => null))?.words.filter((w) => w.page === k) || [];
-  const d = display.findIndex((w) => w.el && (w.el === target || w.el.contains(target)));
+  // The span whose box holds the point, nearest its centre: text-layer spans overlap their neighbours.
+  let d = -1, best = Infinity;
+  display.forEach((w, j) => {
+    const r = w.el?.getBoundingClientRect(); if (!r?.width) return;
+    const inside = x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+    const dist = Math.hypot(x - (r.left + r.right) / 2, y - (r.top + r.bottom) / 2) + (inside ? 0 : 1e3);
+    if (dist < best && dist < 1e3 + 30) { best = dist; d = j; }
+  });
   begin({ page: k, d: d >= 0 ? d : null, display });
 }
 // Alt+click a word: read from there. Capture phase, before links (Alt+click downloads one) and zoom.

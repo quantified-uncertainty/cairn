@@ -147,7 +147,7 @@ input.depth:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px #e2a54a5
 .cv.p-journal .ab { border-top: 1px solid #d9d2c3; padding-top: calc(var(--u) * 3); }
 /* A monograph series: the title set in a block of colour. */
 .cv.p-series { padding: 0; gap: 0; background: #f4f0e6; }
-.cv.p-series .hd { padding: calc(var(--u) * 7) calc(var(--u) * 8) 0; background: color-mix(in oklab, var(--c) 92%, #000); color: #fff8ec; opacity: .85; }
+.cv.p-series .hd { padding: calc(var(--u) * 7) calc(var(--u) * 8) 0; background: color-mix(in oklab, var(--c) 92%, #000); color: #fff8ecb8; }
 .cv.p-series .tt { padding: calc(var(--u) * 4) calc(var(--u) * 8) calc(var(--u) * 9); background: color-mix(in oklab, var(--c) 92%, #000); color: #fffaf0; font-weight: 600; }
 .cv.p-series .ab { margin: calc(var(--u) * 6) calc(var(--u) * 8) calc(var(--u) * 8); font-size: calc(var(--u) * 4.3); }
 /* A dark cover, cream type. */
@@ -186,9 +186,12 @@ input.depth:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px #e2a54a5
 .cv { transition: visibility 0s linear 0s; }
 .tile[data-mode="depth"] .face.paged > .cv, .tile[data-mode="sheet"] .face.paged > .cv { visibility: hidden; transition-delay: .15s; }
 .pv.sl { z-index: 4; }
-.pv .rh { flex: none; display: flex; align-items: center; gap: 6px; padding: 0 7px; height: max(15px, 8cqw); background: #e6dfcf; border-top: 3px solid var(--c);
-  font: max(9px, 4.3cqw) / 1 var(--sans); color: #5c5347; }
-.wide .pv .rh { font-size: max(9px, 2.2cqw); height: max(15px, 4.2cqw); }
+.pv .rh { flex: none; display: flex; align-items: center; gap: 6px; padding: 0 7px; height: clamp(15px, 8cqw, 24px); background: #e6dfcf; border-top: 3px solid var(--c);
+  font: clamp(9px, 4.3cqw, 12.5px) / 1 var(--sans); color: #5c5347; }
+.wide .pv .rh { font-size: clamp(9px, 2.2cqw, 12.5px); height: clamp(15px, 4.2cqw, 24px); }
+/* Scrubbing shows the page number and position at once, over the cover; the page itself when it arrives. */
+.pv.sl:not(.loaded) { background: transparent; }
+.pv.sl:not(.loaded) .pb { visibility: hidden; }
 .pv .rt { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; color: #3a332a; }
 .pv .pn { flex: none; font-family: var(--mono); font-size: .92em; }
 .pv .pb { flex: 1; min-height: 0; display: grid; gap: 1px; background: #cfc6b4; }
@@ -204,11 +207,19 @@ input.depth:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px #e2a54a5
 .pv .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: #0000001f; }
 .pv .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .12s ease; }
 .pv.many .bar { display: none; }
-.pv.sl .bar { height: 4px; }
-.pv.sl .bar i { transition: none; }
+.pv.sl .bar { display: none; } /* the scrub strip shows the position */
+
+/* The scrub strip: a faint track along the bottom of a hovered tile. */
+.face .zone { position: absolute; left: 0; right: 0; bottom: 0; height: clamp(34px, 26%, 72px); z-index: 6; pointer-events: none; opacity: 0;
+  background: linear-gradient(transparent, #00000038); transition: opacity .15s ease; }
+.face .zone::before, .face .zone i { content: ""; position: absolute; left: 0; bottom: 0; height: 4px; }
+.face .zone::before { right: 0; background: #ffffff38; }
+.face .zone i { width: 0; background: var(--accent); }
+.tile:hover .face .zone { opacity: 1; }
+.tile:not(.scrubbing) .face .zone i { display: none; }
 
 /* A stable page of a post, set as a small printed page. */
-.mini { position: absolute; inset: 0; padding: 7cqw 7.5cqw; font: max(3px, 4.9cqw) / 1.36 var(--serif); color: #2b261f; overflow: hidden; text-align: justify; hyphens: auto;
+.mini { position: absolute; inset: 0; padding: 7cqw 7.5cqw; font: clamp(3px, 4.9cqw, 13.5px) / 1.36 var(--serif); color: #2b261f; overflow: hidden; text-align: justify; hyphens: auto;
   -webkit-mask-image: linear-gradient(#000 88%, transparent); mask-image: linear-gradient(#000 88%, transparent); }
 .mini h5 { font-size: 1.16em; line-height: 1.15; margin: .55em 0 .3em; text-align: left; color: #1a1611; }
 .mini > :first-child { margin-top: 0; }
