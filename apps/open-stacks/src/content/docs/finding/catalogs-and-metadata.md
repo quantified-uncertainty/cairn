@@ -223,8 +223,8 @@ What metadata alone cannot do: summarize an argument chapter by chapter, judge w
 
 **What follows for a builder.** These are our inferences, not legal advice. The detailed analysis is in [The Legal Map](/building/legal-map/).
 
-- The injunction binds the defendants. Whether a third party who downloads the WorldCat-derived records is exposed has not been decided [I]. But the records are the subject of a deletion order, the court let the contract and trespass claims succeed even while treating catalog data as within copyright's subject matter for preemption, and redistributing them in a public tool would be hard to defend [~85% that it is a bad idea for a public tool].
-- The rest of its metadata is either open elsewhere (it mirrors Open Library) or scraped from services with terms (Google Books). Provenance of book data has become a live legal issue since *Bartz v. Anthropic*, settled with final approval on 2026-07-20 ([settlement site](https://www.anthropiccopyrightsettlement.com/)). R10 recommends not ingesting LibGen, Anna's Archive or Z-Library data, even "just metadata", without legal review.
+- The injunction binds Anna's Archive and those acting "in active concert and participation" with it. Whether an unaffiliated third party who downloads the WorldCat-derived records is exposed has not been decided [I]. A default judgment from one district court carries little precedential weight [I, ~80%]. But the records are under a deletion order, contract and trespass claims survived preemption, and redistributing the records in a public tool would be hard to defend [~85% that doing so is a bad idea].
+- The rest of its metadata is either open elsewhere (it mirrors Open Library) or scraped from services with terms (Google Books). The provenance of book data is now a cost item: *Bartz v. Anthropic*, over books downloaded from pirate libraries, settled with final approval on 2026-07-20 ([settlement site](https://www.anthropiccopyrightsettlement.com/)). R10 recommends not ingesting LibGen, Anna's Archive or Z-Library data, even "just metadata", without legal review.
 - Little is lost by abstaining. The part of its metadata with no open equivalent is mostly the WorldCat-derived records, which is the enjoined part [I, ~70%]. For everything else a discovery tool needs, OL, LoC, HathiTrust, Harvard's CC0 MARC and Wikidata are legal substitutes.
 
 ## What to use, by goal
@@ -234,8 +234,8 @@ What metadata alone cannot do: summarize an argument chapter by chapter, judge w
 | A browsable book catalog with shelf order | OL works and editions dumps; LCC outline; Harvard CC0 MARC to fill LCC and LCSH | \$0; ~20 GB plus the Harvard MARC | Work clustering; malformed and multiple LCCs |
 | To know what is free to read | Hathifiles (monthly plus daily), OL `ebook_access`, Gutenberg catalog, DOAB/OAPEN OAI | \$0 | US-only `pdus`; joins across levels |
 | Papers with summaries and vectors | OpenAlex snapshot; Semantic Scholar abstracts, TLDRs and SPECTER2 | \$0, ~1–2 TB of disk | Licence differences between datasets |
-| TOCs for scholarly books | OpenAlex chapters grouped by `volume.id` (snapshot), or Crossref chapter records grouped by ISBN | \$0 | Only publishers that register chapter DOIs |
-| TOCs for public-domain books | EPUB/PDF structure, else LLM over the first ~15 OCR pages | ~\$600–850 per million volumes on Haiku 5.5 batch [I] | OCR noise; access to bulk OCR |
+| TOCs for scholarly books | OpenAlex chapters grouped by `volume.id` (snapshot), or Crossref chapter records grouped by ISBN | \$0 | Only publishers that register chapter DOIs; OpenAlex links only chapters it can match to a book |
+| TOCs for public-domain books | EPUB/PDF structure, else LLM over the first ~15 OCR pages | ~\$600–1,000 per million volumes on Haiku 5.5 batch [I] | OCR noise; bulk access to the OCR text is unverified |
 | Descriptions for a personal shelf | Google Books API (own key) or ISBNdb | \$0–15/month | Quotas; copyrighted text if republished |
 | Identifier crosswalks | Wikidata dump; OL's Wikidata crosswalk (authors only for now) | \$0; 156.5 GB | Covers only notable works |
 | Semantic neighbours for books | LoC experimental embeddings | \$0; ≈190 GB | Experimental, undocumented fields |
@@ -247,7 +247,9 @@ What metadata alone cannot do: summarize an argument chapter by chapter, judge w
 - **What share of LoC (2016) and Harvard MARC records carry a 505 contents note or a 520 summary?** Streaming Harvard's 12.7M CC0 records and counting tags would settle how much TOC coverage MARC adds beyond OL's 1.4M.
 - **Are R05's Open Library dump field counts right?** The verification pass could not finish re-streaming the 12.6 GB editions file. A second full count (TOC 2.5%, description 3.6%, LCC 34.4%) would firm up this chapter's headline numbers.
 - **What share of scholarly monographs have chapter DOIs in Crossref?** Join Crossref chapter records by ISBN to OL editions with LCC in class Q or H, and report coverage by publisher and decade.
-- **How accurate is LLM TOC extraction from noisy public-domain OCR?** Compare Haiku 5.5 and Sonnet 5.5 extractions against 200 volumes with known TOCs, reporting title and page-number accuracy.
+- **How accurate is LLM TOC extraction from noisy public-domain OCR?** Compare Haiku 5.5 and Sonnet 5.5 extractions against 200 volumes with known TOCs, reporting title and page-number accuracy. Count the input tokens of the first 15 pages with `count_tokens` to replace the word-to-token guess in the cost estimate.
+- **Can an individual get bulk OCR text for HathiTrust's 8.29M full-view volumes, and on what terms?** The TOC-extraction plan depends on it. Ask HathiTrust's research data services, and compare with per-item text downloads from the Internet Archive.
+- **How many of DOAB's 128,285 OAI records are live books?** Harvest the full feed and count records that are not deletion stubs, split by `dc:type` into books and chapters.
 - **Can HTRC running-header features recover chapter titles, not just boundaries?** Test on full-view volumes where the true TOC is known.
 - **How good is Open Library's own work clustering?** Label 500 random edition pairs within and across works and estimate precision and recall. The examples above show both error types but not their rates.
 - **Which fields did LoC embed, and do the "public domain data set" terms explicitly cover the embeddings?** A question to the id.loc.gov team would settle both.
