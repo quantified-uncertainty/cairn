@@ -1,5 +1,7 @@
 // Feeds (D): the typed parts of every item across a lane, as skimmable feeds.
-// Pictures (each item's top graph, or its top two or three), findings,
+// Threads first (a short model-written thread per item, every post anchored to
+// a checked quote: features/threads.js, docs/feeds/threads.md; items without
+// one follow with their pictures), then pictures (each item's top graph, or its top two or three), findings,
 // numbers, tables, equations, definitions, limits, posts' own voice and
 // highlights, laid out as a Pinterest-style Board (one feed, masonry) or
 // TweetDeck-style Columns (one stream per feed, side by side). Rest the
@@ -14,9 +16,9 @@
 // only hook on the main feed is one spread:rendered listener that does a
 // single comparison unless a dive is pending.
 import { $, h, P, on, store, toast, sleep, keymap, keyHelp, registerView } from '../util.js';
-import { items, LANES, LANE_COLORS, byId } from '../corpus.js';
+import { items, LANES, LANE_COLORS, COUNTS, byId } from '../corpus.js';
 import { state, learn } from '../state.js';
-import { openDoc, scanUrl } from '../docs.js';
+import { openDoc, scanUrl, isFlow } from '../docs.js';
 import { setView, setLane, paintSaved } from '../chrome.js';
 import { jumpTo } from '../nav.js';
 import { showFeed } from '../feed.js';
@@ -25,9 +27,11 @@ import { currentWords, highlight, reveal } from '../text.js';
 import { appendQuote } from '../notes.js';
 import { figArt, figuresOf, openFigure, arxivId } from './figures.js';
 import { attachPeek, showPeek, closePeek, pinPeek, peekState, sharpImg } from './peek.js';
+import { laneThreads, threadOf, threadCard, threadCardEl, figSpecOf, renderThreadPeek, renderPostPeek, placeText, threadsInfo } from './threads.js';
 
 // ---------------------------------------------------------------- feeds
 const FEEDS = {
+  threads: { label: 'Threads', kinds: ['arxiv', 'post', 'web', 'scan'], src: 'a short thread per item, written by a model from its whole text (the hook, what was found, how, the figure, what it changes, the caveat and what to read), every post citing a quote found in the source; items without a thread follow with their pictures' },
   pictures: { label: 'Pictures', kinds: ['arxiv', 'post', 'web', 'scan'], src: 'each item’s top graph or picture: figures from arXiv’s HTML papers, post preview and body images, web page images, and plates from old books' },
   findings: { label: 'Findings', kinds: ['arxiv', 'post'], src: 'result sentences (“we find that…”) and lists of contributions in arXiv papers, and claim lists in posts' },
   numbers: { label: 'Numbers', kinds: ['arxiv', 'post', 'web'], src: 'result sentences with a quantity in arXiv papers, and probability statements in posts and wiki pages' },
@@ -40,7 +44,7 @@ const FEEDS = {
 };
 const ORDER = Object.keys(FEEDS);
 const CHIP = { claims: 'Contributions', definition: 'Definition', theorem: 'Theorem', limitation: 'Limitation', question: 'Open question', tldr: 'TL;DR', status: 'Epistemic status', pull: 'Pull', opener: 'Opening', quote: 'Quote' };
-const TYPE_LABEL = { lead: 'Figure', highlight: 'Highlight', finding: 'Finding', claims: 'Contributions', number: 'Number', table: 'Table', equation: 'Equation', definition: 'Definition', theorem: 'Theorem', limitation: 'Limitation', question: 'Open question', tldr: 'TL;DR', status: 'Epistemic status', pull: 'Pull quote', opener: 'Opening', quote: 'Quote', image: 'Picture', figure: 'Figure', plate: 'Plate' };
+const TYPE_LABEL = { thread: 'Thread post', lead: 'Figure', highlight: 'Highlight', finding: 'Finding', claims: 'Contributions', number: 'Number', table: 'Table', equation: 'Equation', definition: 'Definition', theorem: 'Theorem', limitation: 'Limitation', question: 'Open question', tldr: 'TL;DR', status: 'Epistemic status', pull: 'Pull quote', opener: 'Opening', quote: 'Quote', image: 'Picture', figure: 'Figure', plate: 'Plate' };
 const COLS = [240, 300, 380, 480], STREAMS = [400, 480, 560];
 const GAP = 16, PAD = 8, MAX_CARDS = 2000, TABLE_MAX = 460; // text cards are capped in CSS (.fd-main)
 const srcKind = (it) => (it.id.startsWith('arxiv:') ? 'arxiv' : it.kind === 'scan' ? 'scan' : it.kind === 'web' ? 'web' : it.kind === 'html' && /graphql/.test(it.url || '') ? 'post' : 'none');
@@ -49,9 +53,12 @@ const yearOf = (it) => it?.y || String(it?.d || '').slice(0, 4);
 const clampAr = (ar) => Math.max(0.62, Math.min(3.2, ar || 1.6));
 const laneColor = (it) => LANE_COLORS[it?.lane] || '#6b5a3a';
 
-const cfg = { layout: 'board', type: 'pictures', streams: ['pictures', 'findings', 'numbers', 'definitions', 'limits', 'posts'], colMin: 300, streamW: 480, ...store.get('feeds', {}) };
-if (!FEEDS[cfg.type]) cfg.type = 'pictures';
+const cfg = { layout: 'board', type: 'threads', streams: ['threads', 'pictures', 'findings', 'numbers', 'definitions', 'limits', 'posts'], colMin: 300, colMinTh: 380, streamW: 480, ...store.get('feeds', {}) };
+if (!FEEDS[cfg.type]) cfg.type = 'threads';
 cfg.streams = cfg.streams.filter((t) => FEEDS[t]);
+// Once: Threads becomes the Board's feed and the first column for a reader who used Feeds before it existed.
+if (!cfg.th) { cfg.th = 1; cfg.type = 'threads'; if (!cfg.streams.includes('threads')) cfg.streams.unshift('threads'); cfg.colMinTh ||= 380; store.set('feeds', cfg); }
+const colMinOf = (type) => (type === 'threads' ? cfg.colMinTh || 380 : cfg.colMin);
 const saveCfg = () => store.set('feeds', cfg);
 const hidden = new Set(store.get('feeds:hidden', []));
 const hiddenItems = store.get('feeds:hiddenItems', {});
@@ -92,7 +99,7 @@ async function fetchMore(L) {
   L.busy = true; inflight++;
   const t0 = performance.now();
   try {
-    const r = await getFeed(L.type, L.lane, L.next);
+    const r = L.type === 'threads' ? await threadsPage(L) : await getFeed(L.type, L.lane, L.next);
     for (const c of r.cards || []) if (c?.cid && !L.seen.has(c.cid)) { L.seen.add(c.cid); L.cards.push(c); }
     Object.assign(L.leads, r.leads || {});
     L.next = r.next ?? L.next + (r.cards || []).length;
@@ -107,6 +114,36 @@ async function fetchMore(L) {
   for (const s of L.subs) s.onData();
   for (const x of lists.values()) if (x !== L && x.subs.size && !x.busy) for (const s of x.subs) s.pump(); // a freed slot
   paintHead();
+}
+
+// The Threads feed: the lane's threads first (GET /threads.json, features/threads.js), in the
+// order j/k walk the lane (For you, By topic…), then a divider, then the cards of the items
+// without a thread from the Pictures feed (today's cards), page by page.
+const FALLBACK = 'pictures';
+async function threadsPage(L) {
+  if (!L.th) {
+    const ids = await laneThreads(L.lane);
+    const pos = new Map(); state.order.forEach((j, k) => { const id = items[j]?.id; if (id) pos.set(id, k); });
+    const rank = (id) => pos.get(id) ?? 1e7 + byId.get(id);
+    const list = (ids || []).filter((id) => byId.has(id) && threadOf(id)).sort((a, b) => rank(a) - rank(b));
+    L.th = { n: list.length, ids: new Set(ids || []), none: !ids };
+    const lane = L.lane === 'all' ? items.length : COUNTS[L.lane] || items.filter((it) => it.lane === L.lane).length;
+    return { cards: [...list.map((id) => threadCard(id, threadOf(id))), { cid: 'th-div|' + L.lane, id: null, type: 'divider', span: true, lane: L.lane, n: list.length, of: lane, none: !ids }], next: 0, done: false };
+  }
+  const r = await getFeed(FALLBACK, L.lane, L.next);
+  return { ...r, cards: (r.cards || []).filter((c) => !L.th.ids.has(c.id)) };
+}
+function dividerEl(card, W) {
+  const lane = card.lane === 'all' || !LANES[card.lane] ? 'the corpus' : LANES[card.lane];
+  const el = h('article', { className: 'fd-card t-divider' });
+  el.style.width = W + 'px';
+  const cmd = `node threads.mjs${card.lane === 'all' ? '' : ' --lanes ' + card.lane} --dry-run`;
+  el.append(h('div', { className: 'th-div' },
+    h('b', { textContent: card.none ? 'No threads yet. ' : !card.n ? `No thread in ${lane} yet. ` : `${card.n} of ${card.of.toLocaleString()} items in ${lane} have a thread. ` }),
+    card.n ? 'The others follow with their pictures, as in the Pictures feed. ' : 'Every item shows its pictures below, as in the Pictures feed. ',
+    h('code', { textContent: cmd, title: 'Run in apps/open-stacks/browser: it shows the plan and the cost, then (without --dry-run) writes threads with Claude Haiku' }),
+    ' plans threads for them (Claude Haiku, about a third of a cent each).'));
+  return el;
 }
 
 // ---------------------------------------------------------------- images
@@ -188,6 +225,15 @@ async function runInk(pic) {
  *  test for plates. Resolves to the pictures to show ([] for text cards), or
  *  null when the card should not be placed. */
 async function prepare(card) {
+  if (card.type === 'divider') return [];
+  if (card.type === 'thread') {
+    const spec = await figSpecOf(card); // the thread's figure, a page crop, or the image GET /figures has for it
+    if (!spec) return [];
+    if (spec.ar) return [spec]; // a page crop: its shape is known from the box
+    const s = await sizeOf(spec.src);
+    if (!s) return []; // broken: the thread shows without it
+    return [{ ...spec, _w: s.w || 16, _h: s.h || 10 }];
+  }
   const pics = card.pics;
   if (!pics?.length) return card.type === 'lead' ? null : [];
   if (pics.some((p) => p.verify)) {
@@ -340,7 +386,10 @@ function chipOf(card) {
   return CHIP[t] || TYPE_LABEL[t] || t;
 }
 /** The card element for `card` at width W. `ready` is what prepare() gave. */
+const openThreads = new Set(); // thread cards showing every post (this session)
 function renderCard(card, L, W, ready) {
+  if (card.type === 'thread') return threadCardEl(card, W, ready?.[0], { open: openThreads.has(card.cid) });
+  if (card.type === 'divider') return dividerEl(card, W);
   const it = itemOf(card);
   const t = card.type;
   const el = h('article', { className: `fd-card t-${t}` });
@@ -441,7 +490,7 @@ const placeMs = []; // [cards, ms] per placed batch (window.__feeds.placeMs)
 const recOf = new WeakMap(); // card element -> record
 const cardRec = new WeakMap(); // card object -> its latest record
 const kin = new Map(); // item id -> Set of card elements on screen
-const V = { lane: null, away: true, surf: null, sel: null, hoverId: null, surfaces: new Map() };
+const V = { lane: null, away: true, surf: null, sel: null, post: null, hoverId: null, surfaces: new Map() };
 
 function addKin(r) { let s = kin.get(r.card.id); if (!s) kin.set(r.card.id, (s = new Set())); s.add(r.el); }
 function dropKin(r) { kin.get(r.card.id)?.delete(r.el); }
@@ -455,7 +504,7 @@ function makeFeeder(S) {
     const L = S.L;
     while (S.used < L.cards.length && S.count + S.q.length < MAX_CARDS) {
       const card = L.cards[S.used++];
-      if (hidden.has(card.cid) || hiddenItems[S.type]?.includes(card.id) || byId.get(card.id) == null) continue;
+      if (hidden.has(card.cid) || hiddenItems[S.type]?.includes(card.id) || (card.type !== 'divider' && byId.get(card.id) == null)) continue;
       const r = { card, type: S.type, ready: undefined, t: performance.now() };
       S.q.push(r); cardRec.set(card, r);
       prepare(card).then((v) => { r.ready = v; S.kick(); }, () => { r.ready = null; S.kick(); });
@@ -465,9 +514,11 @@ function makeFeeder(S) {
   S.flush = () => {
     if (!S.alive || !S.visible()) return;
     const now = performance.now(); const batch = [];
+    const most = S.type === 'threads' ? 6 : 24; // thread cards are text-heavy: fewer per frame
     let k = 0;
-    while (k < S.q.length && batch.length < 24) {
+    while (k < S.q.length && batch.length < most) {
       const r = S.q[k];
+      if (r.card.span && k > 0) break; // a divider (Threads) waits for every card before it, and holds back those after it
       if (r.ready === undefined) { if (now - r.t < 300) break; k++; continue; } // a slow picture: let the rest go ahead
       S.q.splice(k, 1);
       if (r.ready) batch.push(r);
@@ -497,22 +548,19 @@ function makeBoard(type, lane) {
   B.geom = () => {
     const W = B.el.clientWidth - 36;
     if (W <= 0) return false;
-    const n = Math.max(1, Math.floor((W + GAP) / (cfg.colMin + GAP)));
+    const n = Math.max(1, Math.floor((W + GAP) / (colMinOf(B.type) + GAP)));
     const colW = Math.floor((W - GAP * (n - 1)) / n);
     if (n === B.n && colW === B.colW) return false;
     B.n = n; B.colW = colW; return true;
   };
   B.place = (batch) => {
     if (!B.n) { B.geom(); B.colH = Array(B.n || 1).fill(0); B.n ||= 1; }
-    for (const r of batch) { r.el = renderCard(r.card, B.L, B.colW, r.ready); recOf.set(r.el, r); B.meas.append(r.el); }
+    const full = B.n * B.colW + (B.n - 1) * GAP;
+    for (const r of batch) { r.el = renderCard(r.card, B.L, r.card.span ? full : B.colW, r.ready); recOf.set(r.el, r); B.meas.append(r.el); }
     for (const r of batch) measureRead(r);
     for (const r of batch) {
       measureWrite(r);
-      let c = 0;
-      for (let j = 1; j < B.n; j++) if (B.colH[j] < B.colH[c] - 1) c = j;
-      r.col = c; r.x = c * (B.colW + GAP); r.y = B.colH[c];
-      B.colH[c] += r.hgt + GAP;
-      Object.assign(r.el.style, { left: r.x + 'px', top: r.y + 'px', height: r.hgt + 'px', containIntrinsicSize: `${B.colW}px ${r.hgt}px` });
+      B.put(r);
       r.el.classList.add('placed');
       if (r === V.sel) r.el.classList.add('sel');
       B.mas.append(r.el);
@@ -521,6 +569,36 @@ function makeBoard(type, lane) {
     B.order = null;
     B.edges();
     paintHead();
+  };
+  /** Where card r goes: across the board under every column (a divider), else the shortest column. */
+  B.put = (r) => {
+    if (r.card.span) {
+      const y = Math.max(0, ...B.colH);
+      r.col = -1; r.x = 0; r.y = y;
+      B.colH.fill(y + r.hgt + GAP);
+    } else {
+      let c = 0;
+      for (let j = 1; j < B.n; j++) if (B.colH[j] < B.colH[c] - 1) c = j;
+      r.col = c; r.x = c * (B.colW + GAP); r.y = B.colH[c];
+      B.colH[c] += r.hgt + GAP;
+    }
+    Object.assign(r.el.style, { left: r.x + 'px', top: r.y + 'px', height: r.hgt + 'px', containIntrinsicSize: `${B.colW}px ${r.hgt}px` });
+  };
+  /** One card changed height (a thread opened or closed): render it again and move the cards
+   *  after it. The others keep their elements; relayout() would render every card again. */
+  B.restack = (t) => {
+    if (!B.colW || !B.recs.includes(t)) { B.relayout(); return; }
+    const old = t.el;
+    dropKin(t);
+    t.el = renderCard(t.card, B.L, B.colW, t.ready); recOf.set(t.el, t); B.meas.append(t.el);
+    measureRead(t); measureWrite(t);
+    t.el.classList.add('placed');
+    if (t === V.sel) t.el.classList.add('sel');
+    old.replaceWith(t.el); addKin(t);
+    B.colH = Array(B.n).fill(0);
+    for (const r of B.recs) B.put(r);
+    B.order = null;
+    B.edges();
   };
   B.edges = () => {
     const lo = B.colH.length ? Math.min(...B.colH) : 0, hi = B.colH.length ? Math.max(...B.colH) : 0;
@@ -592,7 +670,7 @@ function makeStream(type, lane, deck) {
       S.list.insertBefore(r.el, S.more);
       S.recs.push(r); S.count++; addKin(r);
     }
-    S.n.textContent = String(S.count);
+    S.n.textContent = S.type === 'threads' && S.L.th ? `${S.L.th.n} thread${S.L.th.n === 1 ? '' : 's'}${S.count > S.L.th.n + 1 ? ` + ${S.count - S.L.th.n - 1}` : ''}` : String(S.count);
     paintHead();
   };
   S.status = () => statusLine(S, S.more);
@@ -609,6 +687,18 @@ function makeStream(type, lane, deck) {
     for (const r of S.recs) { r.el.remove(); dropKin(r); }
     S.recs = []; S.count = 0;
     for (let k = 0; k < keep.length; k += 200) S.place(keep.slice(k, k + 200));
+  };
+  /** One card changed height (a thread opened or closed): render it again in its place. */
+  S.restack = (t) => {
+    if (!S.recs.includes(t)) { S.relayout(); return; }
+    const W = S.w(), old = t.el;
+    dropKin(t);
+    t.el = renderCard(t.card, S.L, W, t.ready); recOf.set(t.el, t); S.meas.append(t.el);
+    measureRead(t); measureWrite(t);
+    Object.assign(t.el.style, { height: t.hgt + 'px', containIntrinsicSize: `${W}px ${t.hgt}px` });
+    t.el.classList.add('placed');
+    if (t === V.sel) t.el.classList.add('sel');
+    old.replaceWith(t.el); addKin(t);
   };
   S.destroy = () => { S.alive = false; S.io.disconnect(); S.L.subs.delete(S); for (const r of S.recs) dropKin(r); S.el.remove(); };
   return S;
@@ -696,34 +786,42 @@ const surfaceOf = (r) => (r?.type && V.surf?.kind === 'deck' ? V.surf.streams.ge
 
 function paintHead() {
   if (state.view !== 'feeds') return;
-  const lane = state.lane === 'all' ? 'All lanes' : LANES[state.lane] || state.lane;
   const board = cfg.layout === 'board';
   const L = board ? listOf(cfg.type, state.lane) : null;
   const surf = V.surf;
-  const count = (t) => { const x = lists.get(t + '|' + state.lane); return x?.cards.length ? (x.done ? String(x.cards.length) : x.cards.length + '+') : ''; };
+  const count = (t) => { const x = lists.get(t + '|' + state.lane); if (t === 'threads') return x?.th ? String(x.th.n) : ''; return x?.cards.length ? (x.done ? String(x.cards.length) : x.cards.length + '+') : ''; };
+  const showTh = board ? cfg.type === 'threads' : cfg.streams.includes('threads');
   const chips = ORDER.map((t) => {
     const on = board ? cfg.type === t : cfg.streams.includes(t);
     return h('button', { className: 'fd-chip-btn' + (on ? ' on' : ''), title: board ? `Show the ${FEEDS[t].label} feed` : `${on ? 'Hide' : 'Show'} the ${FEEDS[t].label} column`, onclick: () => (board ? setType(t) : toggleStream(t)) },
       FEEDS[t].label, h('span', { className: 'n', textContent: count(t) }));
   });
   let stats = '';
-  if (board && L) {
+  if (board && L && cfg.type === 'threads') {
+    const n = L.th?.n ?? 0, others = Math.max(0, (surf?.count ?? 0) - n - (L.th ? 1 : 0));
+    stats = L.th ? `${n} thread${n === 1 ? '' : 's'}` + (others ? ` · then ${others} card${others === 1 ? '' : 's'} of items without one` : '') + (L.pending && !L.done ? ` · reading ${L.pending}…` : '') : 'Loading…';
+  } else if (board && L) {
     const shown = surf?.count ?? 0;
     stats = `${shown} card${shown === 1 ? '' : 's'}` + (L.total ? ` · ${L.walked} of ${L.total} items` : '') + (L.pending && !L.done ? ` · reading ${L.pending}…` : '');
   } else if (surf?.kind === 'deck') {
     let n = 0, p = 0; for (const s of surf.streams.values()) { n += s.count; p += s.L.done ? 0 : s.L.pending; }
     stats = `${n} cards` + (p ? ` · reading ${p}…` : '');
   }
+  // The lane, as a picker (lanes switch for every view, as 0-7 do); with Threads showing, each lane's thread count.
+  const nTh = (l) => (showTh && !threadsInfo.missing && threadsInfo.built ? (l === 'all' ? threadsInfo.n : threadsInfo.lanes[l] || 0) : null);
+  const laneOpt = (l, name) => { const n = nTh(l); return h('option', { value: l, textContent: name + (n != null ? ` · ${n} thread${n === 1 ? '' : 's'}` : ''), selected: l === state.lane }); };
+  const lanePick = h('select', { className: 'fd-lane', title: 'Lane: the feeds show this lane’s items (0-7 switch lanes too)', onchange: (e) => setLane(e.target.value) },
+    laneOpt('all', 'All lanes'), ...Object.keys(LANES).filter((l) => l !== 'local').map((l) => laneOpt(l, LANES[l] || l)));
   head.replaceChildren(
     h('span', { className: 'fd-title', textContent: 'Feeds' }),
-    h('span', { className: 'fd-lane', textContent: lane }),
+    lanePick,
     h('span', { className: 'fd-seg' },
       h('button', { className: board ? 'on' : '', textContent: 'Board', title: 'One feed as a masonry board (c)', onclick: () => setLayout('board') }),
       h('button', { className: board ? '' : 'on', textContent: 'Columns', title: 'Several feeds side by side (c)', onclick: () => setLayout('columns') })),
     h('span', { className: 'fd-chips' }, ...chips),
     h('span', { className: 'fd-stats', textContent: stats }),
     h('span', { className: 'fd-sp' }),
-    h('span', { className: 'fd-hint', textContent: 'hover to peek · Enter open here · q quote · s save · x hide · [ ] feeds · c layout · - = size' }));
+    h('span', { className: 'fd-hint', textContent: showTh && board ? 'hover a post for its page · click it to open there · t all posts · j k threads · q quote · s save · [ ] feeds · - = size' : 'hover to peek · Enter open here · q quote · s save · x hide · [ ] feeds · c layout · - = size' }));
 }
 
 function setType(t) { if (!FEEDS[t]) return; cfg.type = t; cfg.layout = 'board'; saveCfg(); open(); tel('view', t); }
@@ -736,11 +834,13 @@ function toggleStream(t) {
 function setLayout(l) { if (cfg.layout === l) return; cfg.layout = l; saveCfg(); closePeek(); open(); tel('view', l === 'board' ? cfg.type : 'columns'); }
 function density(d) {
   if (cfg.layout === 'board') {
-    const k = Math.max(0, Math.min(COLS.length - 1, COLS.indexOf(cfg.colMin) + d));
-    if (COLS[k] === cfg.colMin) return;
-    cfg.colMin = COLS[k]; saveCfg();
+    const key = cfg.type === 'threads' ? 'colMinTh' : 'colMin'; // thread cards keep their own width
+    const cur = colMinOf(cfg.type);
+    const k = Math.max(0, Math.min(COLS.length - 1, (COLS.indexOf(cur) < 0 ? 2 : COLS.indexOf(cur)) + d));
+    if (COLS[k] === cur) return;
+    cfg[key] = COLS[k]; saveCfg();
     if (V.surf?.kind === 'board' && V.surf.geom()) V.surf.relayout();
-    toast(`Columns ≥ ${cfg.colMin} px`, { icon: 'columns-3', sub: `${V.surf?.n || ''} columns` });
+    toast(`Columns ≥ ${cfg[key]} px`, { icon: 'columns-3', sub: `${V.surf?.n || ''} columns` });
   } else {
     const k = Math.max(0, Math.min(STREAMS.length - 1, (STREAMS.indexOf(cfg.streamW) < 0 ? 1 : STREAMS.indexOf(cfg.streamW)) + d));
     if (STREAMS[k] === cfg.streamW) return;
@@ -815,6 +915,8 @@ root.addEventListener('pointermove', (e) => {
   hx = e.clientX; hy = e.clientY;
   const el = e.target.closest?.('.fd-card');
   const r = el ? recOf.get(el) : null;
+  const pe = r?.card.type === 'thread' ? e.target.closest('.th-post, .th-fig[data-k]') : null;
+  V.post = pe && Number(pe.dataset.k) >= 0 ? { card: r.card, k: Number(pe.dataset.k) } : null;
   const id = r?.card.id ?? null;
   if (id !== V.hoverId) {
     for (const x of (V.hoverId && kin.get(V.hoverId)) || []) x.classList.remove('kin');
@@ -826,31 +928,78 @@ root.addEventListener('pointermove', (e) => {
 }, { passive: true });
 root.addEventListener('pointerleave', () => { for (const x of (V.hoverId && kin.get(V.hoverId)) || []) x.classList.remove('kin'); V.hoverId = null; });
 root.addEventListener('click', (e) => {
-  if (e.target.closest('button, a')) return;
+  const more = e.target.closest('.th-more');
+  if (more) { const r = recOf.get(more.closest('.fd-card')); if (r) toggleThread(r); return; }
+  if (e.target.closest('button, a, select, code')) return;
   const el = e.target.closest('.fd-card'); const r = el && recOf.get(el);
-  if (!r) return;
+  if (!r || r.card.type === 'divider') return;
   if (r.hidden) { undo(r); return; }
+  if (r.card.type === 'thread') {
+    const pe = e.target.closest('.th-post, .th-fig[data-k]');
+    openPost(r.card, pe && Number(pe.dataset.k) >= 0 ? Number(pe.dataset.k) : 0, { feed: r.type });
+    return;
+  }
   openCard(r.card, { pdf: e.shiftKey, feed: r.type });
 });
+/** Show every post of a thread card, or the hook and two again. Cards before it keep their places (masonry is sequential), so the view stays put. */
+function toggleThread(r) {
+  if (!r || r.card.type !== 'thread' || r.hidden) return;
+  const open = !openThreads.has(r.card.cid);
+  if (open) openThreads.add(r.card.cid); else openThreads.delete(r.card.cid);
+  const S = surfaceOf(r);
+  const sc = S?.kind === 'stream' ? S.list : S?.el;
+  const top = sc?.scrollTop;
+  S?.restack?.(r); // only this card is rendered again
+  if (sc) sc.scrollTop = top;
+  tel(open ? 'expand' : 'collapse', r.type, r.card);
+}
+/** Open a thread's item at a post's cited place: the page itself for PDFs and scans, else the passage found by its quote; the quote is lit once there. */
+const postRefs = new WeakMap();
+function postRef(card, k) {
+  let a = postRefs.get(card);
+  if (!a) postRefs.set(card, (a = []));
+  return (a[k] ||= { kind: 'post', type: 'thread', id: card.id, cid: card.cid + '#' + k, th: card.th, k, card });
+}
+function openPost(card, k = 0, { feed } = {}) {
+  const i = byId.get(card.id); if (i == null || !card.th) return;
+  const it = items[i];
+  const p = card.th.posts[k] || card.th.posts[0]; const c = p.cite || {};
+  pinPeek(false); closePeek();
+  tel('open', feed || 'threads', postRef(card, card.th.posts.indexOf(p)));
+  const quote = c.quote || '';
+  if (!isFlow(it) && c.page != null) { // PDFs and scans: the cited page
+    dive = { i, phase: 'mark', quote, n: 0, t: performance.now() };
+    goItem(i, c.page);
+    toast(`Post ${card.th.posts.indexOf(p) + 1} of ${card.th.posts.length}`, { icon: 'quote', sub: placeText(it, c) });
+    return;
+  }
+  viaFind(i, { cid: card.cid + '#' + k, type: 'thread' }, quote); // posts and web pages: the stable page with the quote
+}
 
 // ---------------------------------------------------------------- peek
 let warmT = null;
 const warmedArxiv = new Set();
 attachPeek(root, {
-  selector: '.fd-card',
-  cardOf: (el) => { const r = recOf.get(el); return r && !r.hidden ? r.card : null; },
+  selector: '.th-post, .th-fig[data-k], .fd-card',
+  cardOf: (el) => {
+    if (!el.classList.contains('fd-card')) { // a thread's post, or its figure (the figure post's page)
+      const r = recOf.get(el.closest('.fd-card')), k = Number(el.dataset.k);
+      return r && !r.hidden && r.card.th && k >= 0 ? postRef(r.card, k) : r && !r.hidden ? r.card : null;
+    }
+    const r = recOf.get(el); return r && !r.hidden && r.card.type !== 'divider' ? r.card : null;
+  },
   render: renderPeek,
   onOpen(card) {
     const it = itemOf(card); if (!it) return;
     clearTimeout(warmT);
     // Get the click ready: only the peeked item, never every card on screen.
     if (it.kind === 'pdf') fetch('/prefetch', { method: 'POST', body: JSON.stringify({ urls: [it.url], pri: 50, group: 'feeds-open' }) }).catch(() => {});
-    if (card.id.startsWith('arxiv:') && !warmedArxiv.has(card.id)) { warmedArxiv.add(card.id); fetch('/web/arxiv?id=' + encodeURIComponent(card.id)).catch(() => {}); }
+    if (card.id.startsWith('arxiv:') && card.type !== 'thread' && !warmedArxiv.has(card.id)) { warmedArxiv.add(card.id); fetch('/web/arxiv?id=' + encodeURIComponent(card.id)).catch(() => {}); } // threads open the PDF page
     warmT = setTimeout(() => { if (peekState().card === card) openDoc(it).catch(() => {}); }, 600);
   },
   onClose(card, ms) { clearTimeout(warmT); tel('peek', recFeed(card), card, ms); },
 });
-const recFeed = (card) => cardRec.get(card)?.type || (cfg.layout === 'board' ? cfg.type : ORDER.find((t) => listOf(t, state.lane).seen.has(card.cid)) || 'columns');
+const recFeed = (card) => cardRec.get(card)?.type || (card.type === 'thread' ? 'threads' : cfg.layout === 'board' ? cfg.type : ORDER.find((t) => listOf(t, state.lane).seen.has(card.cid)) || 'columns');
 
 function peekMeta(it) {
   const lane = LANES[it.lane] || it.lane;
@@ -911,6 +1060,8 @@ function figStrip(it, card, body, ctx) {
   });
 }
 function renderPeek(card, body, ctx) {
+  if (card.kind === 'post') { body.onclick = (e) => { if (!e.target.closest('a, button, summary, details')) openPost(card.card, card.k); }; return renderPostPeek(card, body, ctx); }
+  if (card.type === 'thread') { body.onclick = (e) => { const pk = e.target.closest('.th-pk'); if (pk && !e.target.closest('a, button, summary, details')) openPost(card, Number(pk.dataset.k)); }; return renderThreadPeek(card, body, ctx); }
   const it = itemOf(card); if (!it) return;
   body.onclick = (e) => { if (e.target.closest('.pk-fig, .pk-text, .pk-eqrow, .pk-tbl, .pk-pq, .pk-claim') && !e.target.closest('a, button')) openCard(card, { pdf: e.shiftKey }); };
   const L = listOf(recFeed(card), state.lane);
@@ -976,6 +1127,8 @@ function viaFind(i, card, quote) {
 }
 /** Open the card's item at the card's place (spec section 4.6). */
 async function openCard(card, { pdf = false, feed } = {}) {
+  if (card.kind === 'post') return openPost(card.card, card.k, { feed });
+  if (card.type === 'thread') return openPost(card, V.post?.card === card ? V.post.k : 0, { feed });
   const i = byId.get(card.id); if (i == null) return;
   const it = items[i];
   pinPeek(false); closePeek();
@@ -1028,14 +1181,22 @@ function markQuote(d) {
   };
   attempt(0);
 }
+/** What findMark looks for: the quote's first 12 words; when they are not together on screen
+ *  (a quote that runs over a page break, or past a figure), its last 12, then its first 6. */
+function markTargets(quote) {
+  const w = String(quote).split(/\s+/).filter(Boolean);
+  const first = skel(w.slice(0, 12).join(' '));
+  if (first.length < 12) return [];
+  return [first, ...[w.length > 12 ? w.slice(-12) : null, w.length > 6 ? w.slice(0, 6) : null].filter(Boolean).map((x) => skel(x.join(' '))).filter((t) => t.length >= 24)];
+}
 async function findMark(d) {
-  const target = skel(String(d.quote).split(/\s+/).slice(0, 12).join(' '));
-  if (target.length < 12) return true;
+  const targets = markTargets(d.quote);
+  if (!targets.length) return true;
   const r = await currentWords().catch(() => null);
   if (dive !== d) return true;
   const ws = r?.words || [];
   const sk = ws.map((w) => skel(w.text));
-  for (let j = 0; j < ws.length; j++) {
+  for (const target of targets) for (let j = 0; j < ws.length; j++) {
     if (!sk[j] || !target.startsWith(sk[j].slice(0, Math.min(sk[j].length, target.length)))) continue;
     let acc = '', e = j;
     while (e < ws.length && acc.length < target.length) acc += sk[e++];
@@ -1077,6 +1238,12 @@ function showMark(i, run) {
 function quote(r) {
   const card = r.card; const it = itemOf(card); if (!it) return;
   const t = card.type;
+  if (t === 'thread') {
+    const k = V.post?.card === card ? V.post.k : 0, c = card.th.posts[k]?.cite || {};
+    appendQuote(it, c.quote || card.th.posts[0].t, !isFlow(it) && c.page != null ? c.page + 1 : null);
+    tel('quote', r.type, postRef(card, k));
+    return;
+  }
   const p0 = card.pics ? shownPic(card) : null;
   let text = card.loc?.quote || card.text || '';
   if (t === 'table' || t === 'lead' || t === 'plate') text = `${card.label || p0?.label || TYPE_LABEL[t]}: ${card.caption || p0?.caption || ''}`;
@@ -1180,6 +1347,7 @@ const KEYS = {
   ' ': (e) => { const S = activeStream(); const sc = S?.kind === 'stream' ? S.list : S?.el; sc?.scrollBy({ top: (e.shiftKey ? -1 : 1) * sc.clientHeight * 0.85 }); },
   Enter: (e) => { const r = target(); if (r && !r.hidden) openCard(r.card, { pdf: e.shiftKey, feed: r.type }); },
   z: togglePin, Z: togglePin,
+  t: () => { const r = target(); if (r?.card.type === 'thread') toggleThread(r); },
   q: () => { const r = target(); if (r && !r.hidden) quote(r); },
   s: () => { const r = target(); if (r) save(r); },
   x: () => hide(target()), X: () => hideItem(target()), u: () => undo(),
@@ -1210,7 +1378,8 @@ registerView('feeds', {
   hide() { V.away = true; pinPeek(false); closePeek(); V.surf?.hide(); },
 });
 keyHelp.push(
-  { label: 'D', text: 'feeds: each item’s top pictures, findings, numbers, tables, equations, definitions, limits, posts and highlights, as a board or columns', order: 64.5 },
+  { label: 'D', text: 'feeds: a thread per item, then each item’s top pictures, findings, numbers, tables, equations, definitions, limits, posts and highlights, as a board or columns', order: 64.5 },
+  { label: 't', text: 'feeds: a thread’s every post, or the hook and two again (hover a post for its page; click it to open there)', order: 64.55 },
   { label: 'j k ← → ↑ ↓', text: 'feeds: move between cards (hover to peek; z pins the peek)', order: 64.6 },
   { label: 'Enter ⇧Enter', text: 'feeds: open the item at the card’s place (arXiv: the HTML version; Shift: the PDF page)', order: 64.7 },
   { label: 'q s x X u o', text: 'feeds: quote into the note · save · hide card · hide item · undo · original', order: 64.8 },

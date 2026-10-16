@@ -339,7 +339,7 @@ function secAppearance() {
         h('div', { className: 'st-pages' }, h('i'), h('i'))),
       row('Density', 'Spacing of the top bar and the side panel.', seg([['compact', 'Compact'], ['comfortable', 'Comfortable'], ['roomy', 'Roomy']], () => S.density, (v) => setS('density', v))),
       // header.js: the layout of the bars, per screen; Focus; where the position bar sits.
-      row('Header', 'For this screen. Auto is one bar in a window under 1500 × 900 px (a laptop), two above. One bar puts the item’s title and place in the top bar.',
+      row('Header', 'For this screen. Auto is one bar in a window under 1600 × 900 px (a laptop), two above. One bar puts the item’s title and place in the top bar.',
         seg([['auto', 'Auto'], ['two', 'Two bars'], ['one', 'One bar']], () => state.head || 'auto', (v) => setCore('head', v))),
       row('Position bar', 'The line showing where you are in the item (hover it to look through, click to go there).',
         seg([['top', 'Top'], ['bottom', 'Bottom']], () => S.trackPos, (v) => setS('trackPos', v))),

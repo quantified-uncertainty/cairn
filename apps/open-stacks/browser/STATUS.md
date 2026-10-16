@@ -13,7 +13,7 @@ messages and the design notes under `docs/`.
 | Area | What | Where |
 |---|---|---|
 | Reader | spreads, crops (born-digital PDFs are never treated as scanner beds), two-column split, zoom, hold `l`/`h` to riffle and `j`/`k` to skim, wheel and trackpad maps, Back, notes, saves, read-aloud | `feed.js`, `render.js`, `riffle.js`, `nav.js` |
-| Header | two bars, one bar, Focus (no bars), position line at the top or bottom, per-screen layout; links to the original in the item header | `header.js`, `chrome.js` |
+| Header | two bars, one bar, Focus (no bars), position line at the top or bottom, per-screen layout; links to the original in the item header; the views as icons (Reader, Wall, Feeds) and ▾ with every view; small cards on resting over the title, lane, author or site, stack crumb, date and ⚑ | `header.js`, `chrome.js`, `features/headpop.js` |
 | Library (`L`) | the stack j/k walk, in its sort (By topic, For you, Newest, Oldest); stay in a folder or tag; position row with load marks; sections behind `§` | `stack.js`, `features/library.js` |
 | Tags | 362 model-suggested clusters; every corpus item in at least two | `data/tags.json`, `tag-corpus.mjs` |
 | Up Next | the next items as tiles in the empty band under the pages | `features/upnext.js` |
@@ -37,20 +37,36 @@ messages and the design notes under `docs/`.
   command-line tools are present; **never run yet: it can only be tested on
   the Mac**), then poppler (`brew install poppler`), then MuPDF, then none
   (pdf.js as before). `GET /render/state` says which engine runs.
-- **Feed threads**: 32 thread digests written by agents that read the
-  sources, a generator for the rest with Claude Haiku (needs
-  `ANTHROPIC_API_KEY`; `--dry-run` prints the cost first).
+- **Feed threads**: 38 threads (6 exemplars and 32 more) written by agents
+  that read the sources, every quote re-checked against fresh copies; the
+  first feed in Feeds and a Thread section in the side panel; a generator
+  for the rest with Claude Haiku (`node threads.mjs`; needs
+  `ANTHROPIC_API_KEY`; `--dry-run` prints the cost first, about $7.70 for
+  the corpus; tested only in mock mode). Threads are labeled AI-written in
+  the UI. An independent check of 20 of the 38 against fresh sources found
+  21 of 136 posts wrong (7 material, mostly figure posts reading values off
+  a chart; 14 minor: dropped hedges, a page off by one) and fixed them; the
+  other 18 have not had that check, and the quote verifier cannot catch
+  this kind of error, so expect a similar rate from the generator.
+- **Header popovers and the icon view switcher** (`features/headpop.js`,
+  `header.js`): Reader, Wall and Feeds as icons with a ▾ menu of every view;
+  small popovers on the title, lane, author or site, crumb, date and flag
+  after a 350 ms rest; Auto picks one bar on the 14-inch MacBook (window
+  under 1600 px wide). Checked by its builder's 95-check script and an
+  item-switch A/B (no slower); the separate adversarial review was lost to
+  a container restart, and it has not been run in Firefox.
 
 ## Asked for, not done
 
-- Header: view tabs as a few icons plus a menu; hover popovers on the
-  title, lane, author or folder, date and flag.
 - Read-aloud voices: ordering and a local engine (Kokoro) wait on a
   decision about adding that dependency.
 - Google Docs import (export as `.docx` or HTML into a Local folder works
   today), a documented bundle format for agent-written HTML with images
   (`docs/authoring.md`), wiki sources as a Local lane.
 - Metadata indicators (`docs/meta/`): designed, not built.
+- The learning simulation (`test/learn-sim.test.mjs`) runs on the first 1,948
+  corpus items, the set its scenarios were calibrated on; on the whole corpus
+  scenario S4 (drift to forecasting) misses its band. Recalibrate it.
 - Known small bugs: the load-percentage tooltip wording on posts; Back on a
   post that reflowed after a font change can land a page off.
 

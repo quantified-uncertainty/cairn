@@ -30,7 +30,7 @@ const VIEW_ICONS = {
   figures: '<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
   feeds: '<path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/>',
   history: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
-  dashboard: '<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+  dashboard: '<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>', // a gauge: Lucide's layout-dashboard looked like the Wall's grid beside it
 };
 /** A view's icon as SVG markup. */
 export const viewIcon = (name) => `<svg class="vi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${views.get(name)?.icon || VIEW_ICONS[name] || '<rect width="18" height="18" x="3" y="3" rx="2"/>'}</svg>`;
@@ -59,7 +59,7 @@ export function paintLanes() {
   // The chips scroll sideways when they do not fit; keep the current lane in view.
   requestAnimationFrame(showLane);
 }
-function showLane() {
+export function showLane() {
   const el = $('#lanes'), on = el?.querySelector('.on');
   if (!on || el.scrollWidth <= el.clientWidth) return;
   const l = on.offsetLeft - el.firstElementChild.offsetLeft, r = l + on.offsetWidth;

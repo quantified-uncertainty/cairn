@@ -68,8 +68,11 @@ a { color: var(--accent); }
 .hd-menu .mi { display: inline-flex; color: var(--ink-3); }
 .hd-menu .mi .vi { width: 14px; height: 14px; }
 .hd-menu button.on .mi { color: var(--accent); }
-/* Lane chips: shown only while every chip fits (header.js), else the lane picker. */
+/* Lane chips: they scroll sideways when they do not all fit, and give way to the lane
+   picker when even that leaves them too little room (header.js). The status text keeps
+   its width beside them: the chips take the squeeze. */
 #bar > #lanes { flex: 0 1 auto; min-width: 0; }
+#bar[data-lanes="chips"] > #net { flex-shrink: 0; }
 .chips { display: flex; gap: 4px; min-width: 0; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; scroll-padding-inline: 24px; }
 /* faded edges say there is more to scroll to (header.js sets .scrolls if they ever overflow) */
 .chips.scrolls { mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 22px), transparent 100%); }
@@ -103,9 +106,10 @@ a { color: var(--accent); }
    gives way first, down to 12em (the details beside it do not shrink until then:
    their flex-shrink is tiny beside the title's, so their share rounds to 0 px),
    then the authors, the stack crumb and the source links (ellipsis); narrower, the header
-   drops details in this order: the next item's title; the authors (the side panel
-   shows them), the PDF link, the resume chip's age and the printed page numbers;
-   the lane; the source links (container queries below). */
+   drops details in this order: the next item's title; the PDF link, the resume chip's
+   age and the printed page numbers; the authors (cut to 8em below 1180 px, so a laptop
+   still has them to point at for their card; the side panel and the title's card,
+   features/headpop.js, show them in full); the lane; the source links (container queries below). */
 #item-head { order: -2; padding: 6px 16px 2px; display: flex; align-items: baseline; gap: 12px; flex: none; min-width: 0; container: ihead / inline-size; }
 /* At least 12em of the title, or all of a shorter one: the automatic minimum is min(width, content), and overflow: clip (not hidden) keeps it. */
 #item-head h1 { flex: 0 4 content; width: 12em; min-width: auto; font: 500 16px/1.2 var(--serif); margin: 0; overflow: clip; text-overflow: ellipsis; white-space: nowrap; }
@@ -118,11 +122,12 @@ a { color: var(--accent); }
 @container ihead (min-width: 1600px) { #item-head .meta > .au { max-width: 520px; } } /* a 4K screen has room for the authors */
 #item-head .lane { font: 10px var(--mono); text-transform: uppercase; letter-spacing: .07em; color: var(--accent); }
 #item-head .pos { margin-left: auto; flex: none; color: var(--ink-3); font: 11px var(--mono); white-space: nowrap; }
-@container ihead (max-width: 1180px) { #item-head .meta > .au { max-width: 160px; } }
+@container ihead (max-width: 1180px) { #item-head .meta > .au { max-width: 8em; } }
 @container ihead (max-width: 1080px) { #item-head .pos-next { display: none; } }
-@container ihead (max-width: 960px) { #item-head .meta > :is(.au, .src ~ .src), #item-head .mem-chip .mem-dim, #item-head .pos .plabel { display: none; } }
+@container ihead (max-width: 980px) { #item-head .meta > .src ~ .src, #item-head .mem-chip .mem-dim, #item-head .pos .plabel { display: none; } }
 /* and the stack crumb's count (#pos says the same) and the scan download's details (its title says them) */
-@container ihead (max-width: 960px) { #item-head .stk-crumb .sc-n, #item-head #loadpct .lp-x { display: none; } }
+@container ihead (max-width: 980px) { #item-head .stk-crumb .sc-n, #item-head #loadpct .lp-x { display: none; } }
+@container ihead (max-width: 960px) { #item-head .meta > .au { display: none; } }
 @container ihead (max-width: 680px) { #item-head .meta > .lane { display: none; } }
 @container ihead (max-width: 560px) { #item-head .meta > :is(.src, .rs-arch, .wv-chip) { display: none; } }
 #item-head .star { color: var(--accent); }

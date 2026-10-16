@@ -1,0 +1,56 @@
+/* Header popovers (features/headpop.js): one small card under a part of the item
+   header. Fixed, so nothing moves; at most about 360 × 320 px. */
+#hpop { position: fixed; z-index: 46; width: 340px; max-width: calc(100vw - 16px); max-height: 320px; overflow-y: auto; overscroll-behavior: contain;
+  padding: 8px 10px 8px; background: var(--bg-3); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 10px 28px #0008;
+  color: var(--ink-2); font: 12px/1.4 var(--sans); scrollbar-width: thin; }
+#hpop.hp-date, #hpop.hp-flag { width: 300px; }
+#hpop .hp-h { display: flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 600; min-width: 0; }
+#hpop .hp-l { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#hpop .hp-n { margin-left: auto; flex: none; font: 400 10px var(--mono); color: var(--ink-3); }
+#hpop .hp-i { flex: none; display: inline-flex; color: var(--ink-3); }
+#hpop .hp-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+#hpop .hp-t { display: flex; gap: 6px; align-items: baseline; font: 500 14px/1.3 var(--serif); color: var(--ink); }
+#hpop .hp-t .ticon { flex: none; color: var(--ink-3); position: relative; top: 1px; }
+#hpop .hp-by { margin-top: 2px; color: var(--ink-2); font-size: 11.5px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+#hpop .hp-k { font: 10px/1.5 var(--mono); color: var(--ink-3); margin-top: 3px; }
+#hpop .hp-k2 { font-size: 11.5px; color: var(--ink-3); margin-top: 3px; }
+#hpop .hp-d { margin-top: 6px; color: var(--ink-2); font: 12.5px/1.45 var(--serif); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; overflow: hidden; }
+#hpop .hp-d b { font: 600 9.5px var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); }
+#hpop code { font: 11px var(--mono); color: var(--ink); }
+#hpop .hp-p { margin-top: 7px; display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--ink-3); }
+#hpop .hp-p > span { flex: none; }
+#hpop .hp-bar { flex: 1; min-width: 30px; height: 3px; border-radius: 2px; background: linear-gradient(90deg, var(--accent) var(--f), var(--line) var(--f)); }
+#hpop .hp-links { margin-top: 6px; display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+#hpop .hp-a { color: var(--accent); text-decoration: none; font-size: 12px; }
+#hpop .hp-a:hover { text-decoration: underline; }
+#hpop .hp-hint { color: var(--ink-3); font-size: 10.5px; margin-left: auto; }
+#hpop .hp-sec { margin: 8px 0 1px; font: 600 9.5px var(--mono); text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); }
+#hpop .hp-rows { display: flex; flex-direction: column; margin-top: 5px; }
+#hpop .hp-sec + .hp-rows { margin-top: 1px; }
+#hpop .hp-row { display: flex; align-items: center; gap: 6px; width: 100%; height: 22px; padding: 0 5px; margin: 0; border: 0; border-radius: 3px; background: none; text-align: left; color: var(--ink-2); font: 12px/1 var(--serif); cursor: pointer; min-width: 0; }
+#hpop .hp-row:hover, #hpop .hp-row:focus-visible { background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink); outline: none; }
+#hpop .hp-row:focus-visible { box-shadow: inset 0 0 0 1px var(--accent); }
+#hpop .hp-row .ticon, #hpop .hp-row .hp-i { flex: none; display: inline-flex; color: var(--ink-3); }
+#hpop .hp-row .t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#hpop .hp-row .y { flex: none; font: 10px var(--mono); color: var(--ink-3); }
+#hpop .hp-row.before { opacity: .62; }
+#hpop .hp-row.here, #hpop .hp-frow.here .hp-row { color: var(--accent); cursor: default; }
+#hpop .hp-frow.here .hp-row { cursor: pointer; }
+#hpop .hp-row.here :is(.ticon, .y), #hpop .hp-frow.here .hp-row :is(.hp-i, .y) { color: var(--accent); }
+#hpop .hp-frow { display: flex; align-items: center; gap: 2px; }
+#hpop .hp-frow .hp-row { flex: 1; }
+#hpop .hp-stay { flex: none; width: 22px; height: 22px; padding: 0; display: grid; place-items: center; border: 0; border-radius: 3px; background: none; color: var(--ink-3); opacity: .55; }
+#hpop .hp-frow:hover .hp-stay, #hpop .hp-stay:focus-visible { opacity: 1; }
+#hpop .hp-stay:hover { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+#hpop .hp-f { color: var(--ink-3); font-size: 10.5px; margin: 2px 0 0 5px; }
+#hpop .hp-acts { display: flex; align-items: center; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+#hpop .hp-b { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 4px; background: none; color: var(--ink-2); font: 11.5px var(--sans); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#hpop .hp-b:hover { color: var(--ink); border-color: var(--ink-3); }
+#hpop .hp-b svg { flex: none; }
+#hpop .hp-b kbd { font-size: 10px; padding: 0 3px; }
+/* The parts: a hint that they open something, and a focus ring that the header's clip keeps. */
+#item-head .meta > :is(.lane, .au, .dt) { cursor: default; border-radius: 2px; }
+#item-head .meta > :is(.lane, .au, .dt)[aria-expanded="true"], #item-head > h1[aria-expanded="true"] a, #item-head .sc-t[aria-expanded="true"] { text-decoration: underline dotted; text-decoration-color: var(--ink-3); text-underline-offset: 3px; }
+#item-head > .meta > :is(.lane, .au, .dt):focus-visible, #item-head > h1:focus-visible { outline: 1px solid var(--accent); outline-offset: 1px; }
+@media (prefers-reduced-motion: no-preference) { #hpop:not([hidden]) { animation: hp-in .1s ease-out; } }
+@keyframes hp-in { from { opacity: 0; transform: translateY(-3px); } }

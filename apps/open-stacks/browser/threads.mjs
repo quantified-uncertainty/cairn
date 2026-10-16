@@ -242,14 +242,19 @@ export function docText(D, cap = CAP) {
 }
 
 // ----------------------------------------------------------- verification ----
-/** Page (0-based) of a piece of text in the PDF page texts, or null. Tries the whole, then either half (a quote across a page break). */
+/** Page (0-based) where a piece of text starts in the PDF page texts, or null. A quote that runs over a page
+ *  break (a running head or page number in between) is placed by its longest prefix found, at least 24 letters. */
 export function pageOfText(D, text) {
   if (!D.pages?.length) return null;
   if (!D._pix) { let sk = ''; const at = []; for (const t of D.pages) { at.push(sk.length); sk += skel(t); } D._pix = { sk, at }; }
   const q = skel(text);
   if (q.length < 12) return null;
   let i = D._pix.sk.indexOf(q);
-  if (i < 0 && q.length >= 30) { const h = Math.floor(q.length / 2); i = D._pix.sk.indexOf(q.slice(0, h)); if (i < 0) i = D._pix.sk.indexOf(q.slice(-h)); }
+  if (i < 0 && q.length > 24) {
+    let lo = 24, hi = q.length - 1; // the longest prefix found: found(L) implies found(L - 1)
+    if (D._pix.sk.indexOf(q.slice(0, lo)) >= 0) { while (lo < hi) { const mid = Math.ceil((lo + hi) / 2); if (D._pix.sk.indexOf(q.slice(0, mid)) >= 0) lo = mid; else hi = mid - 1; } i = D._pix.sk.indexOf(q.slice(0, lo)); }
+    else { const tail = q.slice(-24); i = D._pix.sk.indexOf(tail); } // the start is garbled (math, ligatures): the end's page
+  }
   if (i < 0) return null;
   let k = 0; while (k + 1 < D._pix.at.length && D._pix.at[k + 1] <= i) k++;
   return k;
@@ -305,8 +310,10 @@ export function numbersIn(t) {
   }
   return out;
 }
-const numText = (full) => ws(full).replace(/,/g, '').replace(/−/g, '-').replace(/ /g, '');
-const numIn = (n, src) => new RegExp('(?<![\\d.])' + n.replace(/^-/, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\d]|\\.\\d)').test(src);
+// Two forms of the text: thousands separators (commas) removed with every space kept, so a table's "48.0 21.0"
+// does not run together; and with spaces before three digits joined too ("10 000"). A number may be in either.
+const numText = (full) => { const a = ws(full).replace(/(\d),(?=\d{3}(?!\d))/g, '$1').replace(/−/g, '-'); return [a, a.replace(/(\d)[ \u2009\u202f](?=\d{3}(?!\d))/g, '$1')]; };
+const numIn = (n, srcs) => { const re = new RegExp('(?<![\\d.])' + n.replace(/^-/, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\d]|\\.\\d)'); return srcs.some((s) => re.test(s)); };
 const NUMW = ['half', 'halve', 'third', 'quarter', 'tenth', 'twice', 'double', 'triple', 'dozen', 'hundred', 'thousand', 'million', 'billion'];
 const NUMW_VAL = { half: /\b(?:50 ?%|50 percent|fifty percent|0\.5)\b/i, tenth: /\b(?:10 ?%|10 percent|0\.1)\b/i, quarter: /\b(?:25 ?%|0\.25)/i, third: /\b(?:33 ?%|1\/3)/i, twice: /\b(?:2 ?x|2×|two times)/i, double: /\b(?:2 ?x|2×|two times)/i };
 const QUOTED = /(?:(?<=[\s(])|^)['‘“"]([^'’”"]+?)['’”"](?=[\s,.;:)]|$)/g;
@@ -337,6 +344,8 @@ function figureOf(D, ref) {
 /**
  * Check a thread against its source (docs/feeds/threads.md section 4) and give the stored form.
  * `raw`: the model's answer ({posts, tags}) or a stored thread (its places are re-derived).
+ * A quote is looked for in the block its loc names, then in every block, then anywhere in the
+ * document's full text (match 'full': table cells, footnotes, chart labels).
  * mode 'strict' (written by a model or an agent): a post whose quote, a number, a number word or a
  * quoted phrase is not found, or whose figure does not resolve, is dropped; 'quotes' (re-checking
  * hand-checked threads, whose checks saw text this fetch may lack): only a post whose quote is found
@@ -367,12 +376,14 @@ export function verifyThread(D, raw, { mode = 'strict', keep = null } = {}) {
       cite = { quote: hit.quote, ...placeOf(D, hit.b, hit.quote), ok: true, match: hit.match };
       if (claimed && hit.b.m !== claimed && !(D.kind === 'scan' && claimed.split(/\s/)[0] === hit.b.m)) flag(`quote found in ${hit.b.m}, not ${claimed}`);
     } else {
-      const m = !strict && inFull(D, quote);
+      // Not in a block, but in the document: a table cell, a footnote (the blocks leave notes out), a chart's labels.
+      const m = inFull(D, quote);
       if (!m) return drop('quote not found');
       cite = { quote, ...(c.loc ? { loc: c.loc } : {}), ...(c.sec ? { sec: c.sec } : {}), ...(Number.isInteger(c.page) ? { page: c.page } : {}), ok: true, match: 'full' };
       if (D.kind === 'arxiv') { const k = pageOfText(D, quote); if (k != null) cite.page = k; }
     }
     if (Number.isInteger(c.page) && cite.page != null && c.page !== cite.page) flag(`page ${c.page + 1} → ${cite.page + 1}, where the quote is`);
+    if (cite.page == null && Number.isInteger(c.page) && D.kind === 'arxiv') { cite.page = c.page; flag(`page ${c.page + 1} kept: the quote was not found in the PDF text`); }
     if (c.label && !cite.label && cite.page === c.page) cite.label = String(c.label);
     // 5. figures
     if (kind === 'figure' || (c.fig && String(c.fig).trim())) {

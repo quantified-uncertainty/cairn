@@ -24,7 +24,8 @@
 // same element wherever it sits, and #bar's children are placed by CSS
 // `order` (style.css), whatever order they were added in. A fit pass makes the
 // bar fit its width, giving up, in order: the lane chips (for a lane picker:
-// chips are shown only when every one of them fits, never cut), the status
+// chips that do not all fit scroll sideways, the current one kept in view
+// (chrome.js), down to CHIPS_MIN px of them), the status
 // text, button labels, then the tools used less often (into ⋯). It runs on resizes, layout changes and changes to the
 // bar's own buttons, never on a page turn or an item change: the item header
 // takes what is left and drops its own details by width (container queries).
@@ -36,11 +37,12 @@
 import { $, h, on, emit, store, registerKey, keymap, views, toast } from './util.js';
 import { items, LANES, COUNTS, LANE_COLORS } from './corpus.js';
 import { state, current, saveScreenPref, isScreenPref, screenKey } from './state.js';
-import { setView, setLane, refresh, applyChrome, KEY_VIEWS, viewIcon, viewList } from './chrome.js';
+import { setView, setLane, refresh, applyChrome, KEY_VIEWS, viewIcon, viewList, showLane } from './chrome.js';
 import { live } from './flow.js';
 
 const AUTO_W = 1600, AUTO_H = 900; // Auto: one bar below either (CSS px); a 14-inch MacBook is 1512 wide
 const EDGE = 4; // Focus: the pointer this close to the top edge shows the header
+const CHIPS_MIN = 320; // two bars: lane chips that do not all fit scroll sideways while they get this much (CSS px), else the picker
 const R = document.documentElement, bar = $('#bar'), stage = $('#stage');
 const svg = (d, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const CARET = svg('<path d="m6 9 6 6 6-6"/>', 'caret');
@@ -150,7 +152,7 @@ function setConfig(c) {
 function fits(c) {
   if (bar.scrollWidth > bar.clientWidth + 1) return false;
   const l = $('#lanes'), n = $('#net');
-  if (c.lanes === 'chips' && l && l.scrollWidth > l.clientWidth + 1) return false; // chips only when all of them show
+  if (c.lanes === 'chips' && l && l.scrollWidth > l.clientWidth + 1 && l.clientWidth < CHIPS_MIN) return false; // chips scroll sideways, but not in a sliver
   if (c.net && n?.parentNode === bar && n.scrollWidth > n.clientWidth + 1) return false; // the status squeezed: hide it instead
   return true;
 }
@@ -168,7 +170,9 @@ export function fit(force = false) {
   for (; L <= st.length; L++) { const c = config(mode, L); setConfig(c); if (L === st.length || fits(c)) break; }
   bar.dataset.fit = String(L);
   sortKids();
-  const l = $('#lanes'); l?.classList.toggle('scrolls', bar.dataset.lanes === 'chips' && l.scrollWidth > l.clientWidth + 1);
+  const l = $('#lanes'), scrolls = bar.dataset.lanes === 'chips' && !!l && l.scrollWidth > l.clientWidth + 1;
+  l?.classList.toggle('scrolls', scrolls);
+  if (scrolls) showLane(); // the current lane in view (the chips may just have come back from the picker)
   barH = bar.offsetHeight || barH;
   R.style.setProperty('--bar-h', barH + 'px');
   mo.takeRecords(); watchKids(); ao.takeRecords();

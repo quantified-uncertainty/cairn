@@ -18,12 +18,12 @@ import { firstAuthor, firstAuthorName, localDay, dateAt } from './learn.mjs';
 
 export const GEN = 1;
 /** Types in the order jobs are written and picked. */
-export const TYPES = ['flag', 'fix-item', 'discover', 'follow-author', 'grow-lane', 'media', 'metadata', 'tag'];
+export const TYPES = ['flag', 'fix-item', 'discover', 'follow-author', 'grow-lane', 'media', 'metadata', 'tag', 'thread'];
 export const PRIORITIES = ['high', 'normal', 'low'];
 export const STATUSES = ['open', 'done', 'dropped', 'dismissed'];
-export const CAPS = { total: 30, discover: 4, 'follow-author': 3, 'grow-lane': 2, 'fix-item': 3, media: 2, tag: 2, metadata: 2 };
-export const COOL = { discover: 14, 'follow-author': 30, 'grow-lane': 21, 'fix-item': 14, media: 14, tag: 14, metadata: 30 };
-export const BATCH = { 'fix-item': 10, media: 20, tag: 60, metadata: 40 };
+export const CAPS = { total: 30, discover: 4, 'follow-author': 3, 'grow-lane': 2, 'fix-item': 3, media: 2, tag: 2, metadata: 2, thread: 1 };
+export const COOL = { discover: 14, 'follow-author': 30, 'grow-lane': 21, 'fix-item': 14, media: 14, tag: 14, metadata: 30, thread: 7 };
+export const BATCH = { 'fix-item': 10, media: 20, tag: 60, metadata: 40, thread: 25 };
 export const SOURCES = ['arxiv', 'semantic-scholar', 'openalex', 'lesswrong', 'alignment-forum', 'eaforum', 'internet-archive', 'quri', 'publisher', 'author-site', 'wayback', 'manual', 'other'];
 export const FLAG_KINDS = { open: "Doesn't open or wrong file", garbled: 'Pages missing or garbled', images: 'Images broken', meta: 'Wrong title, author or date', place: 'Wrong lane or folder', duplicate: 'Duplicate', other: 'Other' };
 const KEY_ORDER = ['id', 'type', 'title', 'priority', 'status', 'created', 'done', 'by', 'key', 'target', 'inputs', 'wants', 'output', 'acceptance', 'result', 'gen'];
@@ -237,6 +237,17 @@ These items have no tags. Give each one 1 to 4 tags from \`data/tags.json\`: add
 ${inputs.map(lineOf).join('\n')}
 
 ${FINISH(id, title, false)}`;
+    case 'thread': return `## What to do
+
+Write a thread for each item below and add it to \`data/threads.json\` under the item's id, in the format and by the rules of \`docs/feeds/threads.md\` (sections 2 and 3): 4 to 7 posts, the hook first, then what was found, how, the figure, what it changes, the caveat and what to read. Read the whole source first. Every post cites one place with a quote of at most 25 words copied exactly from the source, and every number in a post must be in the source. Set \`model\` to the model that wrote it and \`written\` to today's date.
+
+Then check them against their sources: \`node threads.mjs verify --ids <the ids>\` fetches each source, finds every quote again, sets pages and \`checks\`, and drops the posts that fail. (With an API key, \`node threads.mjs --ids <the ids>\` has Claude Haiku write them instead; it prints the cost first.)
+
+## Items
+
+${inputs.map(lineOf).join('\n')}
+
+${FINISH(id, title, false)}`;
     case 'metadata': return `## What to do
 
 These items lack an author or a date. Find each from the item's own page or file (the title page, arXiv, the publisher, the Internet Archive's metadata). Record it in \`data/overrides.json\` (\`a\`, \`y\`, \`d\`) with \`why\`, \`fixed\` and \`job: "${id}"\`. When a field cannot be found, set \`unknown: ["a"]\` (or \`["y"]\`) with \`why\` (README section 7).
@@ -275,13 +286,14 @@ const ACCEPT = {
   'fix-item': (j) => [`every listed item has an entry with job ${j.id} in data/overrides.json: a working open copy, or drop: true with why`, 'new URLs are on open hosts and answer (check --live)', 'corpus.json rebuilt with node build-corpus.mjs --merge'],
   media: (j) => [`every listed image has an entry with job ${j.id} in data/media-fixes.json: from (an open host or web.archive.org), or gone: true with why`, 'every from URL answers with an image (check --live)'],
   tag: () => ['every listed item is in at least one tag in data/tags.json', 'every tag has id, label, kind and desc'],
+  thread: () => ['every listed item has a thread in data/threads.json: 4 to 7 posts, the hook first', 'every quote was found again in the source by node threads.mjs verify (cite.ok, checks.at)'],
   metadata: (j) => [`every listed item has an entry with job ${j.id} in data/overrides.json: the missing fields, or unknown with why`, 'corpus.json rebuilt with node build-corpus.mjs --merge'],
   flag: () => ['the cause is found and fixed in the data files, or described in the Result', 'every data file touched still validates', 'done with --note'],
 };
 ACCEPT['follow-author'] = ACCEPT.discover; ACCEPT['grow-lane'] = ACCEPT.discover;
 const OUTPUT = {
   discover: (j) => [`data/lanes/${j.target.lane}.added.json`, 'corpus.json'], 'follow-author': (j) => [`data/lanes/${j.target.lane}.added.json`, 'corpus.json'], 'grow-lane': (j) => [`data/lanes/${j.target.lane}.added.json`, 'corpus.json'],
-  'fix-item': () => ['data/overrides.json', 'corpus.json'], media: () => ['data/media-fixes.json'], tag: () => ['data/tags.json'], metadata: () => ['data/overrides.json', 'corpus.json'],
+  'fix-item': () => ['data/overrides.json', 'corpus.json'], media: () => ['data/media-fixes.json'], tag: () => ['data/tags.json'], metadata: () => ['data/overrides.json', 'corpus.json'], thread: () => ['data/threads.json'],
   flag: () => ['data/overrides.json', 'data/media-fixes.json', 'corpus.json'],
 };
 /** Fill in a job's id-dependent parts: output, acceptance, body. */
@@ -459,6 +471,23 @@ export function candidates(ctx) {
     }
   }
 
+  // thread: items with no thread yet, once data/threads.json exists (docs/feeds/threads.md; threads.mjs verifies them).
+  if (ctx.threads && ctx.threads.items && typeof ctx.threads.items === 'object') {
+    const have = new Set(Object.keys(ctx.threads.items));
+    const skip = new Set([...closedIds('thread', COOL.thread), ...openIds('thread')]);
+    const byLane = new Map();
+    for (const it of items) {
+      if (have.has(it.id) || skip.has(it.id) || it.kind === 'text' || (!it.url && !it.ia)) continue;
+      if (!byLane.has(it.lane)) byLane.set(it.lane, []);
+      byLane.get(it.lane).push(pub(it));
+    }
+    for (const [l, list] of byLane) {
+      const ins = list.slice(0, BATCH.thread);
+      out.push({ type: 'thread', key: `thread:${l}`, priority: 'low', rank: ins.length, title: `Write threads for ${ins.length} item${ins.length > 1 ? 's' : ''} in ${lanes[l] || l}`,
+        target: { lane: l, laneName: lanes[l] || l, label: lanes[l] || l }, inputs: ins, wants: { all: true, count: ins.length }, more: list.slice(BATCH.thread) });
+    }
+  }
+
   // metadata: items with no author, or no date.
   {
     const ov = ctx.overrides?.items || {};
@@ -483,7 +512,7 @@ export function candidates(ctx) {
 
   // Cool-downs for discover-like keys: a closed job inside the window, or (discover) no seed beyond the last job's.
   for (const c of out) {
-    if (!COOL[c.type] || ['fix-item', 'media', 'tag', 'metadata'].includes(c.type)) continue;
+    if (!COOL[c.type] || ['fix-item', 'media', 'tag', 'metadata', 'thread'].includes(c.type)) continue;
     const recent = recentClosed(c.key, COOL[c.type]);
     if (recent.length) { c.cool = `cool-down until ${localDay(dateAt(recent.map((j) => j.done).sort().at(-1)) + COOL[c.type] * DAY)}`; continue; }
     if (c.type === 'discover') {
@@ -712,7 +741,9 @@ export function loadData(root) {
   if (!media || typeof media.images !== 'object' || Array.isArray(media.images)) errors.push('data/media-fixes.json must be {"v": 1, "images": {"<url>": {…}}}');
   const tags = rd(process.env.STACKS_TAGS ? relative(root, resolve(process.env.STACKS_TAGS)) : 'data/tags.json', null);
   if (tags && !Array.isArray(tags.tags)) errors.push('data/tags.json must be {"tags": [...]}');
-  return { corpus, lanes, overrides: overrides || { items: {} }, media: media || { images: {} }, tags, errors };
+  const threads = rd(process.env.STACKS_THREADS ? relative(root, resolve(process.env.STACKS_THREADS)) : 'data/threads.json', null);
+  if (threads && (typeof threads.items !== 'object' || Array.isArray(threads.items))) errors.push('data/threads.json must be {"items": {"<id>": {posts…}}}');
+  return { corpus, lanes, overrides: overrides || { items: {} }, media: media || { images: {} }, tags, threads, errors };
 }
 export function loadHosts(dir, root) {
   for (const f of [join(dir, 'hosts.json'), join(root, 'jobs', 'hosts.json')]) if (existsSync(f)) { const h = readJson(f, null); if (h) return h; }
@@ -917,6 +948,22 @@ export async function checkJob(id, { root, dir, live = false, fetchImpl, now = D
       out.changed = (job.inputs || []).map((x) => x.id);
     }
     files.add(process.env.STACKS_TAGS ? relative(root, resolve(process.env.STACKS_TAGS)) : 'data/tags.json');
+  } else if (job.type === 'thread') {
+    const th = data.threads?.items || {};
+    let bad = 0;
+    for (const x of job.inputs || []) {
+      const t = th[x.id];
+      const why = !t ? 'no thread in data/threads.json'
+        : !Array.isArray(t.posts) || t.posts.length < 4 || t.posts.length > 7 ? '4 to 7 posts needed'
+          : t.posts[0]?.kind !== 'hook' ? 'the hook must come first'
+            : !t.checks?.at ? 'not verified yet (node threads.mjs verify --ids …)'
+              : t.posts.some((p) => !p.cite?.quote || p.cite.ok !== true) ? 'a post whose quote was not found in the source'
+                : !t.model ? 'no model' : '';
+      if (why) { bad++; say(false, `${x.id}: ${why}`); }
+    }
+    if (!bad) say(true, `every listed item has a verified thread`);
+    out.changed = (job.inputs || []).map((x) => x.id);
+    files.add(process.env.STACKS_THREADS ? relative(root, resolve(process.env.STACKS_THREADS)) : 'data/threads.json');
   } else if (job.type === 'flag') {
     const ov = data.overrides.items || {}, im = data.media.images || {};
     for (const [k, o] of Object.entries(ov)) if (o.job === id) { out.changed.push(k); files.add('data/overrides.json'); files.add('corpus.json'); for (const f of ['url', 'page', 'pdf']) if (o[f]) liveUrls.push({ url: o[f], kind: 'page' }); }

@@ -84,6 +84,7 @@ export default function (app) {
       const ctx = {
         profile: app.learn?.profile || null, index: app.learn?.index || null, items: app.learn?.items || readJson(join(app.HERE, 'corpus.json'), { items: [] }).items,
         lanes: app.learn?.lanes || {}, rescue: rescue?.S || { docs: {}, imgs: {} }, errors, tags: readJson(tagsFile(), null),
+        threads: readJson(process.env.STACKS_THREADS ? resolve(process.env.STACKS_THREADS) : dataFile('threads.json'), null),
         overrides: readJson(dataFile('overrides.json'), { items: {} }), mediaFixes: readJson(dataFile('media-fixes.json'), { images: {} }),
       };
       const r = J.refresh(ROOT, ctx, state, { caps, now: Date.now() });
