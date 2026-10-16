@@ -108,7 +108,7 @@ node warm.mjs --items 1000 --pages 1      # fetch every PDF and post not on disk
 node augment-batch.mjs --all              # plans, prints the count and cost, asks, submits; results within 24 h
 ```
 
-Raise the daily AI budget in Settings (`,`) › AI and cost above the estimate first ($10 does it): the batch is cut to what is left of today's budget, and the plan says how many items did not fit and how many have no text yet. PDFs need poppler's `pdftotext` (`brew install poppler`). The first plan reads every item's text and can take half an hour; `--dry` plans without sending. The server keeps polling if you stop the script, and `node augment-batch.mjs --status` lists batches.
+Raise the daily AI budget in Settings (`,`) › AI and cost above the estimate first ($10 does it): the batch is cut to what is left of today's budget, and the plan says how many items did not fit and how many have no text yet. PDFs need poppler's `pdftotext` (`brew install poppler`). The first plan reads every item's text, which took 36 minutes in a test, mostly fetching the scans' OCR from the Internet Archive (kept after that); `--dry` plans without sending. The server keeps polling if you stop the script, and `node augment-batch.mjs --status` lists batches.
 
 ## Threads
 
