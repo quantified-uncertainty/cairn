@@ -99,10 +99,17 @@ export async function refresh() {
   }
   if (!LANES.local && (j.items.length || LOCAL.roots.length)) LANES.local = j.label || 'Local';
   const ci = current(), cur = items[ci], was = cur && { url: cur.url, kind: cur.kind };
+  // Where each file sits in the tree (it.ord, it.path): a file saved again in Newest first, or the
+  // order in a folder changed in Settings, moves files without adding any.
+  const place = (it) => `${it.ord}|${(it.path || []).join('/')}`;
+  const placed = new Map(); for (const [id, i] of byId) if (id.startsWith('local:')) placed.set(i, place(items[i]));
   const { added, changed } = mergeItems([...j.items, ...gone]);
   if (!added.length && !changed.length) return;
   paintLanes();
-  if (added.length && !state.scope && (state.lane === 'local' || state.lane === 'all')) { buildOrder(true); emit('stack:changed', { stack: stack() }); }
+  // j/k walk the order the Library draws (state.js topicRank, from it.ord): build it again when
+  // files came or moved, so the next item is still the next row there.
+  const moved = state.sort !== 'ranked' && changed.some((i) => placed.get(i) !== place(items[i]));
+  if (((added.length && !state.scope) || moved) && (state.lane === 'local' || state.lane === 'all')) { buildOrder(true); emit('stack:changed', { stack: stack() }); }
   // The file on screen changed (saved again, or arrived from iCloud): show it as it is now.
   if (cur && current() === ci && was && (cur.url !== was.url || cur.kind !== was.kind) && state.view === 'feed') {
     state.start.set(ci, 0); state.hist.set(ci, []);
