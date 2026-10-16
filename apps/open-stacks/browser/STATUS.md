@@ -38,7 +38,13 @@ messages and the design notes under `docs/`.
   Engines: Quartz (a Swift helper compiled on first run when the Xcode
   command-line tools are present; **never run yet: it can only be tested on
   the Mac**), then poppler (`brew install poppler`), then MuPDF, then none
-  (pdf.js as before). `GET /render/state` says which engine runs.
+  (pdf.js as before). `GET /render/state` says which engine runs, and
+  `bin/stacks status` says it in a line, with why Quartz is not used.
+- **"Wrong?" on summaries and reading guides** (`features/aitrust.js`,
+  `routes/31-aitrust.mjs`): the report goes to `CACHE/ai-errors.jsonl`
+  and the item's AI fields are dimmed until a new output is made.
+  Checked by its builder in headless Chromium against a mock-AI server;
+  nothing reads the reports yet (a prompt or model choice could).
 - **Feed threads**: 38 threads (6 exemplars and 32 more) written by agents
   that read the sources, every quote re-checked against fresh copies; the
   first feed in Feeds and a Thread section in the side panel; a generator
@@ -66,10 +72,11 @@ messages and the design notes under `docs/`.
 
 - Read-aloud voices: ordering and a local engine (Kokoro) wait on a
   decision about adding that dependency.
-- Google Docs import (export as a web page into a Local folder, renamed to
-  `<name>.stack`, works today: `docs/authoring.md`), wiki sources as a
-  Local lane. Bundles have been checked only in headless Chromium, not in
-  Firefox.
+- Google Docs import inside the app (no Drive connection; today a Docs
+  web-page export unzipped into a Local folder is a bundle as it is, and
+  many Docs come in as the zip of Word files Drive downloads:
+  `docs/authoring.md`), wiki sources as a Local lane. Bundles have been
+  checked only in headless Chromium, not in Firefox.
 - Metadata indicators (`docs/meta/`): designed, not built.
 - The learning simulation (`test/learn-sim.test.mjs`) runs on the first 1,948
   corpus items, the set its scenarios were calibrated on; on the whole corpus

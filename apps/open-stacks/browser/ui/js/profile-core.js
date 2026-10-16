@@ -9,7 +9,7 @@
 
 export const SCHEMA = 1;
 /** Analysis generation: bump whenever an algorithm below changes, so stored profiles recompile lazily. */
-export const GEN = 3; // 2: born-digital pages are not scanner beds; full-bleed pages show whole; shared crops never cut ink. 3: a thin strip alone in a side margin (arXiv's stamp, line numbers) is not part of the ink box
+export const GEN = 4; // 2: born-digital pages are not scanner beds; full-bleed pages show whole; shared crops never cut ink. 3: a thin strip alone in a side margin (arXiv's stamp, line numbers) is not part of the ink box. 4: running heads and feet (the same band on most pages) are left out of the ink box
 /** Display hints both layers may give (analysis here, the augmentation from the model). */
 export const HINTS = {
   'one-up': 'One page at a time reads best (slides, landscape reports).',
@@ -47,8 +47,10 @@ const ar = (p) => (p.w > 0 && p.h > 0 ? p.w / p.h : 0.75);
  * scan: the page is a scan (dark scanner-bed bands at the borders are stepped past).
  * A born-digital page (scan false) whose edges are not white paper — a dark page,
  * full-bleed art, colour bands — is shown whole: its edges are the design.
+ * bands (born-digital pages only, for the compilers): also `bands: {top, bot, both}`,
+ * the page's first and last bands (see bandsOf) and its ink box without them.
  */
-export function analyzeLum(lum, W, H, { scan = true } = {}) {
+export function analyzeLum(lum, W, H, { scan = true, bands = false } = {}) {
   const N = W * H;
   if (!scan) {
     const m = Math.max(1, Math.round(Math.min(W, H) * 0.02));
@@ -84,6 +86,7 @@ export function analyzeLum(lum, W, H, { scan = true } = {}) {
   const rmin = Math.max(1, W * 0.004), cmin = Math.max(1, H * 0.004);
   while (y0 < y1 && rws[y0] < rmin) y0++;
   while (y1 > y0 && rws[y1] < rmin) y1--;
+  const xa = x0, xb = x1; // the columns before trimming, for bandsOf
   while (x0 < x1 && cls[x0] < cmin) x0++;
   while (x1 > x0 && cls[x1] < cmin) x1--;
   if (!scan) [x0, x1] = dropMarginStrips(cls, x0, x1, W, cmin);
@@ -99,11 +102,50 @@ export function analyzeLum(lum, W, H, { scan = true } = {}) {
     }
     if (best >= Math.max(2, bw * 0.012)) gut = r4(at / W);
   }
-  return {
+  const out = {
     blank: false,
     ink: [r4(x0 / W), r4(y0 / H), r4(Math.min(1, (x1 + 1) / W)), r4(Math.min(1, (y1 + 1) / H))],
     gut, dens: r4(inBox / Math.max(1, (x1 - x0 + 1) * (y1 - y0 + 1))),
   };
+  if (bands && !scan) out.bands = bandsOf(lum, W, H, thr, rws, rmin, cmin, xa, xb, y0, y1);
+  return out;
+}
+/** Born-digital pages: the page's first and last bands, the candidates for a running head
+ *  and a running foot (finalize decides with runningBands). A band is the first (last) run
+ *  of ink rows, gaps inside it under 1.5% of the page (a rule just under a header's text
+ *  belongs to it), then a clear gap of at least 1.5% before the rest of the page, and at
+ *  most 6% of the page high. Each is {y0, y1, next | prev (where the rest starts or ends),
+ *  ink (the ink box without the band), tight?}; `both` is the ink box without either. Fractions.
+ *  Rows are the ones analyzeLum counted (rws: ink pixels per row inside the margins). */
+function bandsOf(lum, W, H, thr, rws, rmin, cmin, xa, xb, y0, y1) {
+  const tall = Math.round(H * 0.06);
+  const run = (from, step, end, gap) => {
+    const inside = (y) => (step > 0 ? y <= end : y >= end);
+    let y = from, last = from, g = 0;
+    for (; inside(y); y += step) { if (rws[y] >= rmin) { last = y; g = 0; } else if (++g >= gap) break; }
+    if (g < gap || Math.abs(last - from) + 1 > tall) return null; // no clear gap, or too tall to be a band
+    while (inside(y) && rws[y] < rmin) y += step;
+    return inside(y) ? { a: Math.min(from, last), b: Math.max(from, last), rest: y } : null;
+  };
+  // The ink box of rows ya..yb: columns trimmed and margin strips dropped as analyzeLum does.
+  const boxOf = (ya, yb) => {
+    const c = new Uint16Array(W);
+    for (let y = ya; y <= yb; y++) for (let x = xa; x <= xb; x++) if (lum[y * W + x] < thr) c[x]++;
+    let a = xa, b = xb;
+    while (a < b && c[a] < cmin) a++;
+    while (b > a && c[b] < cmin) b--;
+    [a, b] = dropMarginStrips(c, a, b, W, cmin);
+    return [r4(a / W), r4(ya / H), r4(Math.min(1, (b + 1) / W)), r4(Math.min(1, (yb + 1) / H))];
+  };
+  // Failing a clear gap, a narrower one (1%: a figure set close under the header) gives a
+  // `tight` band, which runningBands takes only when it has the running band's shape.
+  const gap = Math.max(3, Math.round(H * 0.015)), narrow = Math.max(2, Math.round(H * 0.01));
+  const find = (from, step, end) => { const r = run(from, step, end, gap); if (r) return r; const n = narrow < gap ? run(from, step, end, narrow) : null; return n && { ...n, tight: true }; };
+  const t = find(y0, 1, y1), b = find(y1, -1, y0);
+  const top = t ? { y0: r4(t.a / H), y1: r4((t.b + 1) / H), next: r4(t.rest / H), ink: boxOf(t.rest, y1), ...(t.tight ? { tight: true } : {}) } : null;
+  const bot = b ? { y0: r4(b.a / H), y1: r4((b.b + 1) / H), prev: r4((b.rest + 1) / H), ink: boxOf(y0, b.rest), ...(b.tight ? { tight: true } : {}) } : null;
+  const both = t && b && t.rest < b.rest ? boxOf(t.rest, b.rest) : null;
+  return { top, bot, both };
 }
 /** Born-digital pages: a thin strip of ink alone in a side margin, as arXiv's vertical
  *  "arXiv:…v1 [cs.AI] 28 Nov 2025" stamp or a review copy's line numbers, is not part of what
@@ -208,6 +250,32 @@ export function headsOf(lines, k, body = 0) {
   }
   return out;
 }
+/**
+ * The text in a page's bands (analyzeLum with bands: true), for runningBands: lines
+ * [{t, x, y0, y1}] in fractions of the page, y down (pdf.js items through the viewport,
+ * pdftotext -bbox-layout lines). A line that reaches into a band (±0.4%) or lies beyond
+ * it, toward the page's edge, with its middle on the band's side of the gap, is that
+ * band's: a thin page number or rule may show on the grid as one row, or not at all.
+ * Each band gets `t` (its lines left to right, top to bottom) and `ty` (the top of its
+ * first line), and keeps neither when no line is in it. Changes `bands` in place.
+ */
+export function bandTexts(bands, lines) {
+  if (!bands) return bands;
+  for (const b of [bands.top, bands.bot]) {
+    if (!b) continue;
+    const e = 0.004, top = b === bands.top;
+    const ls = (lines || []).filter((l) => {
+      if (!l?.t || !Number.isFinite(l.y0) || !Number.isFinite(l.y1)) return false;
+      const m = (l.y0 + l.y1) / 2;
+      return top ? l.y0 <= b.y1 + e && m < b.next : l.y1 >= b.y0 - e && m > b.prev;
+    }).sort((a, c) => (Math.abs(a.y0 - c.y0) < 0.005 ? a.x - c.x : a.y0 - c.y0));
+    const t = ls.map((l) => String(l.t)).join(' ').replace(/\s+/g, ' ').trim();
+    if (t) { b.t = t.slice(0, 200); b.ty = r4(Math.min(...ls.map((l) => l.y0))); }
+  }
+  return bands;
+}
+/** What has to match for a band to repeat: letters, digits as # (page numbers), roman page numbers at either end as #. */
+export const bandKey = (t) => String(t || '').toLowerCase().trim().replace(/^[ivxlc]+(?=\s|$)|(?<=\s)[ivxlc]+$/g, '#').replace(/\d+/g, '#').replace(/[^\p{L}#]+/gu, '');
 /** Fraction of a page's lines that look like index entries ("Entropy, 12, 40–42"). */
 export const indexFrac = (texts) => { const ls = texts.filter((t) => t.trim()); return ls.length < 5 ? 0 : ls.filter((t) => INDEX_LINE.test(t.trim())).length / ls.length; };
 export { words as countWords };
@@ -271,6 +339,68 @@ export function rangesOf(pages) {
 
 // ------------------------------------------------------ 5.4 crop groups ----
 const GROUP_ROLES = new Set(['body', 'refs', 'appendix', 'index']);
+const RUN_AT = 0.005; // "the same place": within half a percent of the page height
+
+/**
+ * Running heads and feet (born-digital PDFs): which pages' first (last) band repeats,
+ * so the crop leaves it out. pages: [{k, w, h, ink, blank, role, bands}], bands from
+ * analyzeLum and bandTexts. Looked at in three scopes, every page, the even pages and
+ * the odd pages (journals alternate), over the portrait pages that are not blank and
+ * have a crop-group role:
+ *   - the slot: the place (the band's text top, ±0.5%) where the most bands of the
+ *     scope are; it counts only when at least half the scope's pages have one there;
+ *   - a band in the slot is running when its text (bandKey: digits as #, so page
+ *     numbers match) is that of another band in the slot (a paper's one running head;
+ *     a book's chapter head on the pages of its chapter), or when the slot holds at
+ *     least 3/4 of the scope and the band has the slot's shape (its outer edge, and its
+ *     inner edge or the start of the rest of the page, within 0.5% of the slot's: a
+ *     book's section head, the same line and rule with other words), except on the
+ *     first page, whose own header (a journal's) may sit just where the running head does.
+ * A tight band (a figure set close under the header) counts only with its outer and
+ * inner edges within 0.5% of the slot's. A page's own header (a first page's), section
+ * titles, figures that reach the top, and a header on only some pages are not in a
+ * slot, or not repeated. Bands with no text are never running (scanned PDFs, a rule alone).
+ * Returns {head: Map k → band, foot: Map k → band}.
+ */
+export function runningBands(pages) {
+  const elig = pages.filter((p) => !p.blank && p.ink && p.bands && p.w <= p.h && GROUP_ROLES.has(p.role ?? 'body'));
+  const first = pages.find((p) => !p.blank)?.k; // its own header may sit where the running head does
+  const out = { head: new Map(), foot: new Map() };
+  for (const [side, name] of [['top', 'head'], ['bot', 'foot']]) {
+    for (const scope of ['all', 0, 1]) {
+      const S = scope === 'all' ? elig : elig.filter((p) => p.k % 2 === scope);
+      if (S.length < 3) continue;
+      const bs = [];
+      for (const p of S) {
+        const b = p.bands[side], key = b?.t ? bandKey(b.t) : '';
+        if (b && key && key.length <= 120 && Number.isFinite(b.ty)) bs.push({ p, b, key });
+      }
+      bs.sort((a, c) => a.b.ty - c.b.ty);
+      let slot = [];
+      for (let i = 0, j = 0; i < bs.length; i++) {
+        while (bs[i].b.ty - bs[j].b.ty > 2 * RUN_AT) j++;
+        if (i - j + 1 > slot.length) slot = bs.slice(j, i + 1);
+      }
+      if (slot.length < Math.max(3, Math.ceil(0.5 * S.length))) continue;
+      const count = new Map();
+      for (const x of slot) count.set(x.key, (count.get(x.key) || 0) + 1);
+      const strong = slot.length >= 0.75 * S.length;
+      // The shape: the band's outer edge, and its inner edge or where the rest of the page
+      // starts (ends), so a rule a little higher on one page, or a figure that starts lower,
+      // does not count; a band that took in more of the page moves both.
+      const [o, i, r] = side === 'top' ? ['y0', 'y1', 'next'] : ['y1', 'y0', 'prev'];
+      const m = (f) => median(slot.map((x) => x.b[f]));
+      const mo = m(o), mi = m(i), mr = m(r), near = (x, f, v) => Math.abs(x.b[f] - v) <= RUN_AT;
+      for (const x of slot) {
+        // A tight band (only a narrow gap under it) counts only with both its edges where the slot's are.
+        if (x.b.tight ? !(near(x, o, mo) && near(x, i, mi)) : false) continue;
+        const shaped = strong && x.p.k !== first && near(x, o, mo) && (near(x, i, mi) || near(x, r, mr));
+        if (count.get(x.key) >= 2 || shaped) out[name].set(x.p.k, x.b);
+      }
+    }
+  }
+  return out;
+}
 
 /**
  * One crop box shared by the body pages (recto and verso for scans with enough
@@ -491,6 +621,21 @@ export function finalize(raw) {
   const n = pages.length;
   const roles = pageRoles(pages, raw.heads || [], kind, raw.ixf || []);
   pages.forEach((p, k) => { p.role = roles[k]; });
+  // Running heads and feet are left out of the ink box before the crop groups are
+  // found, so the shared box leaves them out and cropOf does not take them back in.
+  if (kind === 'pdf') {
+    const rb = (raw.pages || []).map((p) => (p?.bands && typeof p.bands === 'object' ? p.bands : null));
+    const R = runningBands(pages.map((p, k) => ({ ...p, bands: rb[k] })));
+    for (const p of pages) {
+      const b = rb[p.k], h = R.head.get(p.k), f = R.foot.get(p.k);
+      if (!h && !f) continue;
+      const ink = h && f ? b.both : h ? b.top.ink : b.bot.ink;
+      if (!isBox(ink)) continue; // a page that is nothing but its head and foot keeps them
+      p.ink = ink.map(r4);
+      if (h) p.head = [r4(h.y0), r4(h.y1)];
+      if (f) p.foot = [r4(f.y0), r4(f.y1)];
+    }
+  }
   const pair = pairOf(pages, kind);
   const G = cropGroups(pages, kind, pair);
   pages.forEach((p, k) => { p.cg = G.cg[k]; if (G.crop[k]) p.crop = G.crop[k]; });
@@ -519,6 +664,7 @@ export function finalize(raw) {
 
 // -------------------------------------------------------------- validate ----
 const isBox = (b) => Array.isArray(b) && b.length === 4 && b.every((v) => typeof v === 'number' && v >= 0 && v <= 1) && b[0] < b[2] && b[1] < b[3];
+const isSpan = (s) => Array.isArray(s) && s.length === 2 && s.every((v) => typeof v === 'number' && v >= 0 && v <= 1) && s[0] < s[1];
 const KINDS = new Set(['pdf', 'scan', 'html', 'web', 'text']);
 const ROLES = new Set(['cover', 'front', 'toc', 'body', 'refs', 'appendix', 'index', 'blank']);
 const CGS = new Set(['body', 'recto', 'verso', 'land', 'own']);
@@ -542,6 +688,9 @@ export function validate(P) {
     if (p.cg === 'own' && !p.blank && !p.crop) return `pages[${j}] own without crop`;
     if (!ROLES.has(p.role)) return `pages[${j}].role`;
     if (p.gut != null && !(p.gut > 0 && p.gut < 1)) return `pages[${j}].gut`;
+    for (const f of ['head', 'foot']) if (p[f] != null && !isSpan(p[f])) return `pages[${j}].${f}`;
+    if (p.head && p.ink && p.head[1] > p.ink[1]) return `pages[${j}].head overlaps ink`;
+    if (p.foot && p.ink && p.foot[0] < p.ink[3]) return `pages[${j}].foot overlaps ink`;
     for (const f of p.fig || []) if (!isBox(f.b)) return `pages[${j}].fig`;
   }
   for (const [g, b] of Object.entries(P.crop?.groups || {})) if (!CGS.has(g) || !isBox(b)) return `crop.groups.${g}`;

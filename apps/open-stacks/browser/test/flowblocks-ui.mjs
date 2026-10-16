@@ -12,7 +12,8 @@
 // for the light and the dark paper, a title bar kept as data-title; Mermaid drawn as an SVG image
 // with its box reserved, a broken source left as code with its note; a wide table marked, its
 // wide view across the spread opening and closing with Esc (still in the Reader); a table taller
-// than a column continuing in the next one; no page errors. The only network is mermaid from
+// than a column continuing in the next one; a table of long URLs kept inside its column; "&" in a
+// diagram label; a Pygments line-number table and tab indentation; no page errors. The only network is mermaid from
 // cdn.jsdelivr.net, through the server's cache. Uses the global Playwright
 // (/opt/node22/lib/node_modules) and Chromium from PLAYWRIGHT_CHROMIUM_EXECUTABLE.
 import { createRequire } from 'module';
@@ -49,7 +50,7 @@ ${words(60)}.
 
 \`\`\`mermaid
 graph LR
-  A[First step] --> B[Second step]
+  A[First step] --> B[Second & last step]
   B --> C{Choice}
   C -->|yes| D[Done]
   C -->|no| A
@@ -68,6 +69,10 @@ def total(rows, flags):
 \`\`\`
 
 Inline \`code()\` in a sentence.
+
+| Key | Address |
+|---|---|
+| a | https://example.org/a/very/long/path/without/any/spaces/that/goes/on/and/on/and/on/index.html |
 
 | Harm mode | Channel | Probability | Basis | Damage |
 |---|---|---|---|---|
@@ -98,7 +103,9 @@ function html() {
   ].join('')}</code></pre><div class="copy"><button data-code="import numpy as np">Copy</button></div></figure></div>`;
   const shiki = `<pre class="astro-code" style="background-color:#fff"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">const</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> x = </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">1</span></span>\n<span class="line"><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D">// done</span></span></code></pre>`;
   const hljs = `<pre><code class="hljs language-js"><span class="hljs-keyword">let</span> y = <span class="hljs-number">2</span>;\n<span class="hljs-comment">// hljs</span></code></pre>`;
-  return `<!doctype html><html><head><title>${HTML_T}</title></head><body><article><h1>${HTML_T}</h1><p>${words(60)}.</p>${ec}<p>${words(40)}.</p>${shiki}<p>${words(30)}.</p>${hljs}<pre class="mermaid">graph TD
+  const linenos = `<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1\n2</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>\n<span class="nb">print</span>(os)\n</pre></div></td></tr></table></div>`;
+  const tabs = `<pre>func main() {\n\tif x {\n\t\ty()\n\t}\n}</pre>`;
+  return `<!doctype html><html><head><title>${HTML_T}</title></head><body><article><h1>${HTML_T}</h1><p>${words(60)}.</p>${ec}<p>${words(40)}.</p>${shiki}<p>${words(30)}.</p>${hljs}${linenos}${tabs}<pre class="mermaid">graph TD
   P[Plan] --> Q[Act]</pre><p>${words(60)}.</p></article></body></html>`;
 }
 function writeFiles(folder) {
@@ -182,6 +189,8 @@ try {
         fig: fig ? { w: fig.style.getPropertyValue('--w'), r: fig.style.getPropertyValue('--r'), src: fig.getAttribute('src').slice(0, 26), box: Math.round(fig.getBoundingClientRect().height) } : null,
         failed: !!f.querySelector('pre.wv-mermaid.wv-dg-fail'), wide: !!f.querySelector('table.wt-wide caption .wt-open'),
         tall: tall ? { cls: tall.className, frags: tall.getClientRects().length } : null,
+        amp: fig ? (() => { const u = fig.getAttribute('src'), d = new DOMParser().parseFromString(decodeURIComponent(u.slice(u.indexOf(',') + 1)), 'image/svg+xml'); return [...d.querySelectorAll('text')].map((t) => t.textContent).join(' '); })() : null,
+        url: (() => { const t = [...f.querySelectorAll('table')].find((x) => /example\.org/.test(x.textContent)); return t ? { cls: t.className, over: Math.round(t.getBoundingClientRect().width - f.querySelector('p').getBoundingClientRect().width) } : null; })(),
         inline: (() => { const c = [...f.querySelectorAll('p code')][0]; return c ? getComputedStyle(c).hyphens : null; })(),
       };
     });
@@ -195,6 +204,8 @@ try {
     check('a Mermaid block that does not parse stays as its source, with the note', r.failed);
     check('the wide table is marked, with the wide-view control in its caption', r.wide);
     check('a table taller than a column continues in the next column', r.tall && r.tall.frags > 1, JSON.stringify(r.tall));
+    check('a diagram label with "&" shows "&", not "&amp;" (mermaid escapes it twice without HTML labels)', /Second & last/.test(r.amp || ''), r.amp);
+    check('a table of long URLs gets fixed widths and stays in its column', r.url?.cls.includes('wt-fixed') && r.url.over <= 1, JSON.stringify(r.url));
     // The wide view.
     await show(page, 'table.wt-wide');
     const b = await page.evaluate(() => { const x = document.querySelector('#spread .flow table.wt-wide .wt-open').getBoundingClientRect(); return [x.left + x.width / 2, x.top + x.height / 2]; });
@@ -225,6 +236,8 @@ try {
         ec: !!ec, lines: ec?.querySelectorAll('.wv-ln').length, copy: !!f.querySelector('.copy, button[data-code]'), kw: kw ? [getComputedStyle(kw).color, kw.style.getPropertyValue('--cl'), kw.style.getPropertyValue('--cd')] : null,
         sh: sh ? [getComputedStyle(sh).color, sh.style.getPropertyValue('--cl'), sh.style.getPropertyValue('--cd')] : null, hl: hl ? getComputedStyle(hl).color : null,
         mm: !!f.querySelector('figure.wv-diagram'),
+        linenos: [...f.querySelector('pre.wv-code[data-hl="pyg"]')?.querySelectorAll('.wv-ln') || []].map((l) => l.textContent.trim()).join('|'),
+        tabs: [...f.querySelectorAll('pre.wv-code')].find((p) => /func main/.test(p.textContent))?.textContent.split('\n').slice(1, 3).join('|'),
       };
     });
     const hex = (c) => { const m = /rgb\((\d+), (\d+), (\d+)\)/.exec(c || ''); return m ? '#' + m.slice(1).map((v) => (+v).toString(16).padStart(2, '0')).join('') : c; };
@@ -234,6 +247,8 @@ try {
     check(`${paper}: Shiki --shiki-light / --shiki-dark colours`, r.sh && hex(r.sh[0]) === want(r.sh), JSON.stringify(r.sh));
     check(`${paper}: highlight.js classes get the paper's palette`, !!r.hl && r.hl !== 'rgb(0, 0, 0)', r.hl);
     check(`${paper}: <pre class="mermaid"> in an HTML file is drawn`, r.mm);
+    check(`${paper}: a Pygments line-number table keeps its code, not the numbers`, r.linenos === 'import os|print(os)', r.linenos);
+    check(`${paper}: tab indentation becomes 4 spaces a level (a tab stop would land 2ch off under the hanging indent)`, r.tabs === '    if x {|        y()', JSON.stringify(r.tabs));
     await page.screenshot({ path: join(SHOTS, `html-code-${paper}.jpg`), type: 'jpeg', quality: 60 });
     check(`no page errors (HTML, ${paper})`, !errs.length, errs.join(' | '));
     await ctx.close();

@@ -20,11 +20,11 @@
 //    span columns in the layout itself.
 //
 // All of it runs once per document, when it is prepared; nothing runs on page turns.
-import { $, h, P, on } from '../util.js';
+import { $, h, P, on, emit } from '../util.js';
 import { flowFilters, flowAfter } from '../docs.js';
 import { state, current } from '../state.js';
 import { items } from '../corpus.js';
-import { live, flowGeom } from '../flow.js';
+import { live, flowGeom, elToCol } from '../flow.js';
 
 /** Per document: what was found and what it cost (ms), newest last; for tests and benchmarks. */
 export const blockTimes = [];
@@ -68,7 +68,7 @@ function readable(col, dark) {
 
 // ---------------------------------------------------------------- code
 const SKIP = '.gutter, .ln, .line-numbers-rows, .hljs-ln-numbers, .linenos, .lineno, .line-number, .copy, button, script, style, .sr-only, .ec-section > summary';
-const LINE_TAGS = /^(DIV|P|LI)$/;
+const LINE_TAGS = /^(DIV|P|LI|TR)$/; // TR: a table of lines (highlight.js line numbers, GitHub)
 const isLineEl = (el) => el.classList.contains('ec-line') || LINE_TAGS.test(el.tagName);
 
 /** The colours, font style and highlighter classes of one token element, or null. */
@@ -179,6 +179,15 @@ function codeBlock(doc, lines, { lang, title, fam }) {
   const code = doc.createElement('code');
   const { light, dark } = slotsFor(lines);
   for (const ln of lines) {
+    // Tabs become spaces to the next multiple of 4: a tab stop is measured from the content edge,
+    // which the hanging indent moves, so a tab would indent by 2ch, two by 6ch.
+    let col = 0;
+    ln.runs = ln.runs.map(([t, tok]) => {
+      if (!t.includes('\t')) { col += t.length; return [t, tok]; }
+      let o = '';
+      for (const c of t) { if (c === '\t') { const n = 4 - (col % 4); o += ' '.repeat(n); col += n; } else { o += c; col++; } }
+      return [o, tok];
+    });
     const L = doc.createElement('span'); L.className = 'wv-ln' + (ln.cls ? ' wv-' + ln.cls : '');
     const lead = /^[ \t]*/.exec(ln.runs.map(([t]) => t).join(''))[0].replace(/\t/g, '    ').length;
     if (lead) L.dataset.i = Math.min(lead, 40);
@@ -200,7 +209,7 @@ function codeBlock(doc, lines, { lang, title, fam }) {
 }
 function mermaidBlock(doc, src) {
   const pre = doc.createElement('pre'); pre.className = 'wv-mermaid';
-  pre.textContent = src.replace(/ /g, ' ').trim();
+  pre.textContent = src.replace(/\u00a0/g, ' ').trim();
   return pre;
 }
 
@@ -223,6 +232,8 @@ export function prepCode(doc) {
   }
   for (const pre of [...pres]) {
     if (!pre.isConnected || pre.matches('.wv-code, .wv-mermaid') || pre.closest('.wv-code, .wv-mermaid, math, svg')) continue;
+    // A line-number gutter's own <pre> (Pygments' td.linenos, Rouge's) goes with the code beside it.
+    if (pre.closest('td.linenos, .linenodiv, td.gutter, td.rouge-gutter, pre.lineno')) continue;
     const code = pre.querySelector(':scope > code') || (pre.children.length === 1 && pre.firstElementChild.tagName === 'CODE' ? pre.firstElementChild : null) || pre;
     const lang = langOf(pre, code);
     // Pygments' line-number tables and Expressive Code's frame go with the block.
@@ -257,7 +268,7 @@ const COL_CAP = 28; // characters: a column wraps comfortably at about this widt
 /** Estimated natural and narrowest widths of a table, in em of its own text, from its cells' text
  *  (no layout): a column wraps at about COL_CAP characters and can shrink to its longest word. */
 export function tableWidthEm(t) {
-  const W = [], M = [], A = [], N = [];
+  const W = [], M = [], R = [], A = [], N = [];
   let rows = 0;
   for (const tr of t.rows) {
     if (++rows > 80) break;
@@ -266,17 +277,18 @@ export function tableWidthEm(t) {
       const span = Math.max(1, cell.colSpan || 1);
       if (span === 1) {
         const txt = cell.textContent.replace(/\s+/g, ' ').trim();
-        // A line can break after a hyphen, a dash or a slash as well as at a space.
-        const word = txt.split(/ |(?<=[-‐–—/])/).reduce((m, w) => Math.max(m, w.length), 0);
+        // A line can break after a hyphen or a dash as well as at a space (not inside a URL or a path).
+        const word = txt.split(/ |(?<=[-‐–—])/).reduce((m, w) => Math.max(m, w.length), 0);
         W[c] = Math.max(W[c] || 0, Math.min(Math.max(txt.length, 3), COL_CAP), Math.min(word, 40));
         M[c] = Math.max(M[c] || 0, Math.min(word, 40));
+        R[c] = Math.max(R[c] || 0, word); // uncapped: whether the words fit at all
         A[c] = (A[c] || 0) + txt.length; N[c] = (N[c] || 0) + 1;
       }
       c += span;
     }
-    for (let k = 0; k < c; k++) { W[k] ??= 3; M[k] ??= 3; }
+    for (let k = 0; k < c; k++) { W[k] ??= 3; M[k] ??= 3; R[k] ??= 3; }
   }
-  return { nat: W.reduce((s, w) => s + w * 0.5 + 0.9, 0), min: M.reduce((s, w) => s + w * 0.52 + 0.9, 0), floor: M.map((w) => w * 0.52 + 0.9), mean: W.map((_, k) => (A[k] || 0) / (N[k] || 1)) };
+  return { nat: W.reduce((s, w) => s + w * 0.5 + 0.9, 0), min: R.reduce((s, w) => s + w * 0.52 + 0.9, 0), floor: M.map((w) => w * 0.52 + 0.9), mean: W.map((_, k) => (A[k] || 0) / (N[k] || 1)) };
 }
 const TABLE_EM = 0.85, WIDE_EM = 0.78; // .flow table font-size (style.css), a wide one's (flowblocks.css)
 const colEm = () => state.measure || 31;
@@ -367,7 +379,19 @@ function openWide(btn) {
   ov = h('div', { id: 'wt-ov' }, sheet);
   ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', label);
   Object.assign(ov.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
-  ov.addEventListener('click', (e) => { if (e.target === ov || e.target.closest('.wt-x')) closeWide(); });
+  ov.addEventListener('click', (e) => {
+    // A footnote or section link in the copy goes to its target in the pages, as it would there.
+    const a = e.target.closest('a[href^="#"]');
+    if (a) {
+      e.preventDefault();
+      const id = decodeURIComponent(a.getAttribute('href').slice(1));
+      const t = id && live?.flow.querySelector(`[id="${CSS.escape(id)}"], [name="${CSS.escape(id)}"]`);
+      closeWide();
+      if (t) emit('flow:jump', { col: elToCol(t), el: t });
+      return;
+    }
+    if (e.target === ov || e.target.closest('.wt-x')) closeWide();
+  });
   ov.addEventListener('wheel', (e) => e.stopPropagation(), { passive: true });
   back = btn;
   document.body.append(ov);
@@ -441,6 +465,7 @@ function renderSvg(M, src, theme) {
   chain = run.catch(() => {});
   return run;
 }
+const ENT = { amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'", '#x27': "'" };
 /** SVG text → an inert <img> (no scripts, no outside requests, no text in the page) with its box. */
 function diagramFig(doc, svg, dark, src) {
   const sd = new DOMParser().parseFromString(svg, 'image/svg+xml');
@@ -451,6 +476,17 @@ function diagramFig(doc, svg, dark, src) {
   if (!(w > 0 && hh > 0)) throw new Error('no size');
   for (const el of [...root.querySelectorAll('script, foreignObject iframe, a[href^="javascript"]')]) el.remove();
   for (const st of root.querySelectorAll('style')) st.textContent = st.textContent.replace(/@import[^;]*;/g, '').replace(/url\(\s*['"]?(?!#)[^)]*\)/g, 'none');
+  // Without HTML labels mermaid (11.4) escapes label text twice: "a & b" would show as "a &amp; b".
+  const tw = sd.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  for (let t = tw.nextNode(); t; t = tw.nextNode()) if (t.data.includes('&') && t.parentNode.nodeName !== 'style') t.data = t.data.replace(/&(amp|lt|gt|quot|#39|#x27);/g, (_, k) => ENT[k]);
+  // A box with its own fill (style X fill:…, classDef) keeps the theme's text colour, light on Dark
+  // paper: its label gets near-black or near-white, whichever reads on it, unless the diagram set one.
+  for (const n of root.querySelectorAll('g.node, g.cluster')) {
+    const f = parseColor(/(?:^|;)\s*fill\s*:\s*([^;!]+)/.exec(n.querySelector('rect, polygon, path, circle, ellipse')?.getAttribute('style') || '')?.[1]);
+    if (!f) continue;
+    const ink = contrast(f, [26, 22, 17]) >= contrast(f, [244, 239, 228]) ? '#1a1611' : '#f4efe4';
+    for (const t of n.querySelectorAll('text')) if (t.closest('g.node, g.cluster') === n && !/fill|color/.test((t.getAttribute('style') || '') + (t.closest('g.label')?.getAttribute('style') || ''))) t.setAttribute('style', `fill:${ink} !important;${t.getAttribute('style') || ''}`);
+  }
   root.setAttribute('width', String(Math.round(w))); root.setAttribute('height', String(Math.round(hh)));
   root.removeAttribute('style');
   const img = doc.createElement('img');
@@ -461,8 +497,10 @@ function diagramFig(doc, svg, dark, src) {
   const fig = doc.createElement('figure');
   fig.className = 'wv-diagram ' + (dark ? 'dk' : 'lt');
   fig.append(img);
-  // Wider than about 1.3 columns at its own size: it gets the wide view too.
-  if (w > 1.3 * colEm() * (state.font || 15)) { fig.classList.add('wt-wide'); const cap = doc.createElement('figcaption'); cap.className = 'wt-cap'; cap.append(flagBtn(doc, 'diagram')); fig.append(cap); }
+  // Wider than about 1.3 columns at its own size, or so tall that the figure height cap (--flow-img-h,
+  // 42vh by default) shows it at under about 70 % (its labels unreadable): it gets the wide view too.
+  const wide = w > 1.3 * colEm() * (state.font || 15), tall = !wide && hh > 1.4 * 0.42 * innerHeight;
+  if (wide || tall) { fig.classList.add('wt-wide'); fig.classList.toggle('wt-tall', tall); const cap = doc.createElement('figcaption'); cap.className = 'wt-cap'; const btn = flagBtn(doc, 'diagram'); if (tall) btn.setAttribute('aria-label', 'Diagram: view it full size'); cap.append(btn); fig.append(cap); }
   return fig;
 }
 const isCurrent = (it) => items[current()] === it;

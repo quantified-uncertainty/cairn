@@ -1,0 +1,26 @@
+/* "Wrong?" on AI output (features/aitrust.js): the link in the footnote of the summary and the
+   reading guide, its form, the banner on a summary or guide marked wrong, and the dimming of the
+   item's AI fields (panel sections and margin notes) while it shows. */
+
+.ai-note .ait-wrong { color: var(--ink-3); }
+.ai-note .ait-wrong:hover { color: var(--bad); }
+
+.ait-form { display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
+.ait-form textarea { width: 100%; box-sizing: border-box; resize: vertical; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 3px; padding: 6px 8px; font: 12.5px/1.35 var(--sans); }
+.ait-form textarea::placeholder { color: var(--ink-3); }
+.ait-form textarea:focus { outline: none; border-color: var(--ink-3); }
+.ait-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
+.ait-btn { font: 11px var(--sans); padding: 1px 8px; }
+.ait-hint { font: 10px var(--mono); color: var(--ink-3); }
+
+.ait-banner { margin-top: 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; padding: 5px 8px; border-radius: 4px; border-left: 2px solid var(--bad); background: color-mix(in srgb, var(--bad) 10%, transparent); }
+.ait-msg { flex: 1 1 100%; font: 11.5px/1.4 var(--sans); color: var(--ink-2); }
+
+/* Low trust: the AI text fades (the banner, the form and the panel's controls do not); hover to read it. */
+.ait-low .sum > :not(.ait-banner):not(.ait-form),
+.ait-low .aug > :not(.ait-banner):not(.ait-form),
+.ait-low .aug-secs, .ait-low .aug-gloss { opacity: .45; transition: opacity .15s; }
+.ait-low .sum:hover > :not(.ait-banner):not(.ait-form),
+.ait-low .aug:hover > :not(.ait-banner):not(.ait-form),
+.ait-low .aug-secs:hover, .ait-low .aug-gloss:hover { opacity: .7; }
+html.ait-low .aug-mk { opacity: .4; }

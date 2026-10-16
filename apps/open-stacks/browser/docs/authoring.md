@@ -25,11 +25,13 @@ The cost of a flow document (Markdown, HTML, EPUB) in the browser is layout, and
 
 **From LaTeX**: `pandoc paper.tex -s --mathml -o index.html` in a folder named `Paper.stack`, with the figures beside it as PNG, JPEG or SVG (a browser cannot show a PDF or EPS figure in a page; convert them first, for example `pdftocairo -png -singlefile fig.pdf fig`). Pandoc writes the figure paths as they are in the `.tex`, so keep them relative.
 
-**From Google Docs**: File › Download › Web page (`.html`, zipped). Unzip it into a Local folder and rename the folder to end in `.stack` (or rename the `.html` inside to `index.html`). Without that, the reader sees a folder holding one web page and a separate gallery of its `images/`.
+**From Google Docs, one document**: File › Download › Web page (`.html`, zipped), then unzip it into a Local folder (double-click the zip in Finder). The folder that makes, one `.html` file beside an `images/` folder and nothing else, is read as a bundle as it is: one item with its pictures, titled from the page's title or first heading, else the folder's name. File › Download › EPUB Publication (`.epub`) also keeps the pictures.
+
+**From Google Docs, many at once** (download now, read later): in Google Drive in the browser, select the documents (⌘-click, or ⌘A in a folder) and choose Download. Drive converts each Doc to Word (`.docx`) and hands you one zip; unzip it into a Local folder. On a Mac each Word file opens as a flowing document (converted by `textutil`: text, headings and lists, no pictures), and folders in the zip stay folders in the Library. For a whole Drive, Google Takeout (Drive › Multiple formats › Documents: DOCX, or PDF to keep layout and pictures) gives the same kind of zip. The zip itself can stay beside its unpacked folder (it is left out); the Local lane does not open zips. The `.gdoc` files Google Drive for desktop puts on a Mac are links to the web, not documents, and are left out too.
 
 ## The bundle
 
-A folder is one item, not a folder of the Library, when its name ends in `.stack` (any case) or it has an `index.md` or `index.html` at its top. A configured Local folder itself is never a bundle, only folders inside it.
+A folder is one item, not a folder of the Library, when its name ends in `.stack` (any case), it has an `index.md` or `index.html` at its top, or it holds only one HTML file and an `images/` folder (a Google Docs export, above). A configured Local folder itself is never a bundle, only folders inside it.
 
 ```
 Field Report.stack/            one item in the folder above it

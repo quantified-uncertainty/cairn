@@ -222,3 +222,22 @@ test('bundles keep the Local lane’s safety: no way out of the folder, no links
   const empty = await find('Empty');
   assert.match(await (await get(empty.url)).text(), /without an index\.md or index\.html/);
 });
+
+test('a Google Docs web-page export, unzipped (one .html beside images/), is one bundle; anything more stays a folder', async (t) => {
+  assert.deepEqual(bundleOf('Trip Notes', ['TripNotes.html', '.DS_Store'], ['images']), { index: 'TripNotes.html', itype: 'html', cover: null, sidecar: null });
+  assert.equal(bundleOf('Trip Notes', ['TripNotes.html'], []), null, 'no images/ folder: an ordinary folder');
+  assert.equal(bundleOf('two', ['a.html', 'b.html'], ['images']), null, 'two pages: a folder');
+  assert.equal(bundleOf('mixed', ['page.html', 'paper.pdf'], ['images']), null, 'another file beside it: a folder');
+  assert.equal(bundleOf('more', ['page.html'], ['images', 'drafts']), null, 'another subfolder: a folder');
+  const d = mkdtempSync(join(tmpdir(), 'stacks-local-gdocs-'));
+  t.after(() => rmSync(d, { recursive: true, force: true }));
+  const doc = join(d, 'Shelf', 'Trip Notes');
+  mkdirSync(join(doc, 'images'), { recursive: true });
+  writeFileSync(join(doc, 'TripNotes.html'), '<html><head><meta content="text/html; charset=UTF-8" http-equiv="content-type"></head><body><p>Day one.</p><p><img src="images/image1.png"></p><p>Day two, with more words than a line.</p></body></html>');
+  writeFileSync(join(doc, 'images', 'image1.png'), PNG); writeFileSync(join(doc, 'images', 'image2.png'), PNG);
+  const ix = new LocalIndex({ dirs: [join(d, 'Shelf')], cacheDir: join(d, 'cache'), tools: { pdfinfo: false, mdls: false, textutil: false, brctl: false } });
+  await ix.scan(); await ix.settled();
+  assert.equal(ix.items.length, 1, 'one item, not a page and a gallery');
+  const [it] = ix.items;
+  assert.equal(it.t, 'Trip Notes'); assert.equal(it.ext, 'bundle'); assert.deepEqual(it.path, ['Shelf']);
+});

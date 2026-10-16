@@ -438,13 +438,18 @@ export function htmlDoc(buf, url) {
 export const STACK_DIR = /\.stack$/i;
 const INDEX_ORDER = ['index.md', 'index.markdown', 'index.html', 'index.htm', 'index.xhtml'];
 const COVER = /^cover\.(jpe?g|png|webp|avif|gif)$/i;
-/** bundleOf(folderName, fileNames) → null (an ordinary folder) | {index: name | null, itype: 'md' | 'html' | null, cover: name | null, sidecar: name | null}.
+/** bundleOf(folderName, fileNames, subfolderNames?) → null (an ordinary folder) | {index: name | null, itype: 'md' | 'html' | null, cover: name | null, sidecar: name | null}.
  *  index.md comes before index.html (an HTML file beside it is usually made from it); a .stack folder
- *  without an index file takes its first Markdown or HTML file. */
-export function bundleOf(dirName, names) {
+ *  without an index file takes its first Markdown or HTML file. A folder holding only one HTML file
+ *  and an images/ folder (Google Docs' "Web page (.html, zipped)" export, unzipped) is a bundle too. */
+export function bundleOf(dirName, names, dirs = []) {
   const low = new Map(names.filter((n) => !n.startsWith('.')).map((n) => [n.toLowerCase(), n]));
   let index = INDEX_ORDER.map((n) => low.get(n)).find(Boolean) || null;
-  if (!index && !STACK_DIR.test(dirName)) return null;
+  if (!index && !STACK_DIR.test(dirName)) {
+    const files = [...low.values()], subs = dirs.filter((d) => !d.startsWith('.') && d !== '__MACOSX');
+    if (files.length !== 1 || TYPES[extname(files[0]).slice(1).toLowerCase()] !== 'html' || subs.length !== 1 || subs[0].toLowerCase() !== 'images') return null;
+    index = files[0];
+  }
   if (!index) index = [...low.values()].filter((n) => ['md', 'html'].includes(TYPES[extname(n).slice(1).toLowerCase()])).sort(natural)[0] || null;
   return {
     index, itype: index ? TYPES[extname(index).slice(1).toLowerCase()] : null,
@@ -807,7 +812,7 @@ export class LocalIndex {
         let list;
         try { list = await readdir(abs, { withFileTypes: true }); } catch (e) { if (!rel) { root.ok = false; root.error = why(e); } else skip('unreadable folder'); return { n: 0, newest: 0, here: [], subs: [] }; }
         // A bundle (a subfolder, never a configured folder itself): one item in the folder above; what is inside is its own.
-        const bu = rel ? bundleOf(basename(rel), list.filter((d) => d.isFile()).map((d) => d.name)) : null;
+        const bu = rel ? bundleOf(basename(rel), list.filter((d) => d.isFile()).map((d) => d.name), list.filter((d) => d.isDirectory()).map((d) => d.name)) : null;
         if (bu) {
           if (files >= this.maxFiles) { root.truncated = true; return { n: 0, newest: 0, here: [], subs: [] }; }
           const st = async (n) => (n ? lstat(join(abs, n)).catch(() => null) : null);

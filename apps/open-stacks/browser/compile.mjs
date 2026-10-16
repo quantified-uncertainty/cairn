@@ -147,6 +147,21 @@ export function pgmLum(buf) {
   for (let i = 0; i < W * H; i++) lum[i] = cnt[i] ? (lum[i] / cnt[i]) * (255 / max) : 255;
   return { lum, W, H };
 }
+const unent = (s) => s.replace(/&(amp|lt|gt|quot|apos|#(\d+)|#x([0-9a-f]+));/gi, (m, e, d, h) => (d ? String.fromCodePoint(Number(d)) : h ? String.fromCodePoint(parseInt(h, 16)) : { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" }[e.toLowerCase()]));
+/** Text lines with their places from `pdftotext -bbox-layout`, per page: [{t, x, y0, y1}]
+ *  in fractions of the page, y down (what bandTexts reads). */
+export function bboxLines(xml) {
+  const out = [];
+  for (const pm of String(xml).matchAll(/<page width="([\d.]+)" height="([\d.]+)">([\s\S]*?)<\/page>/g)) {
+    const pw = Number(pm[1]) || 1, ph = Number(pm[2]) || 1, lines = [];
+    for (const lm of pm[3].matchAll(/<line xMin="([\d.-]+)" yMin="([\d.-]+)" xMax="[\d.-]+" yMax="([\d.-]+)">([\s\S]*?)<\/line>/g)) {
+      const t = [...lm[4].matchAll(/<word[^>]*>([\s\S]*?)<\/word>/g)].map((w) => unent(w[1])).join(' ').trim();
+      if (t) lines.push({ t, x: Number(lm[1]) / pw, y0: Number(lm[2]) / ph, y1: Number(lm[3]) / ph });
+    }
+    out.push(lines);
+  }
+  return out;
+}
 function pdfinfo(file, n) {
   const out = execFileSync('pdfinfo', ['-f', '1', '-l', String(n), file], { maxBuffer: 64e6 }).toString();
   const pages = [];
@@ -169,10 +184,14 @@ async function popplerItem(it) {
     execFileSync('pdftoppm', ['-gray', '-scale-to-y', '400', '-scale-to-x', '-1', file, join(dir, 'p')], { maxBuffer: 64e6 });
     const pgms = readdirSync(dir).filter((f) => /^p-\d+\.pgm$/.test(f)).sort((a, b) => Number(a.match(/\d+/)[0]) - Number(b.match(/\d+/)[0]));
     const text = execFileSync('pdftotext', ['-enc', 'UTF-8', file, '-'], { maxBuffer: 256e6 }).toString().split('\f');
+    // Where each line is, for the running heads and feet (bandTexts).
+    let placed = [];
+    try { placed = bboxLines(execFileSync('pdftotext', ['-enc', 'UTF-8', '-bbox-layout', file, '-'], { maxBuffer: 1e9 }).toString()); } catch { /* none: no running bands */ }
     const pages = [], heads = [], ixf = [];
     for (let k = 0; k < n; k++) {
       const { lum, W, H } = pgmLum(readFileSync(join(dir, pgms[k])));
-      const a = core.analyzeLum(lum, W, H, { scan: false }); // PDFs
+      const a = core.analyzeLum(lum, W, H, { scan: false, bands: true }); // PDFs
+      if (a.bands) core.bandTexts(a.bands, placed[k] || []);
       const t = text[k] || '';
       const lines = t.split('\n').map((l) => ({ t: l.trim() })).filter((l) => l.t);
       heads.push(...core.headsOf(lines, k, 0));

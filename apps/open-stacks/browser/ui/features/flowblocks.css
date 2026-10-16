@@ -86,6 +86,7 @@ html:not([data-st-paper="dark"]) .flow figure.wv-diagram.dk img.wv-dgimg { backg
 .flow table .wt-open { font-size: 1.05em; }
 .flow .wt-open.wt-tbl::after { content: "⤢ Wide table · view it across the screen"; }
 .flow .wt-open.wt-dgm::after { content: "⤢ Wide diagram · view it across the screen"; }
+.flow figure.wt-tall .wt-open.wt-dgm::after { content: "⤢ Diagram · view it full size"; }
 .flow .wt-open:hover { background: color-mix(in srgb, var(--paper-link, #7a4f12) 10%, transparent); }
 .flow .wt-open:focus-visible { outline: 2px solid var(--paper-link, #7a4f12); outline-offset: 1px; }
 .flow caption:not(.wt-cap) > .wt-open { float: right; margin: 0 0 .2em .6em; }
@@ -98,12 +99,12 @@ html:not([data-st-paper="dark"]) .flow figure.wv-diagram.dk img.wv-dgimg { backg
 #wt-ov .wt-k { margin-left: auto; }
 #wt-ov .wt-x { border: 0; background: none; color: var(--paper-ink-2, #4a4236); font-size: 16px; line-height: 1; padding: 3px 8px; cursor: pointer; }
 #wt-ov .wt-x:hover { color: var(--paper-ink, #26211a); }
-#wt-ov .wt-body { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: .9em 1.4em 1.2em; }
-#wt-ov .wt-flow { transition: none; will-change: auto; text-align: left; hyphens: manual; -webkit-hyphens: manual; }
+#wt-ov .wt-body { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; }
+#wt-ov .wt-flow { transition: none; will-change: auto; text-align: left; hyphens: manual; -webkit-hyphens: manual; padding: .9em 1.4em 1.2em; }
 #wt-ov .wt-flow > :first-child { margin: 0; }
 #wt-ov .wt-flow table { display: table; table-layout: auto; width: max-content; max-width: 100%; overflow: visible; font-size: .9em; margin: 0 auto; }
 #wt-ov .wt-flow table > colgroup { display: none; }
 #wt-ov .wt-flow table :is(td, th) { vertical-align: top; overflow-wrap: normal; hyphens: manual; -webkit-hyphens: manual; padding: 3px 8px; }
-#wt-ov .wt-flow thead th { position: sticky; top: -.9em; background: var(--paper); box-shadow: inset 0 -1px 0 var(--paper-rule, #d8cfbd); }
+#wt-ov .wt-flow thead th { position: sticky; top: 0; background: var(--paper); box-shadow: inset 0 -1px 0 var(--paper-rule, #d8cfbd); }
 #wt-ov .wt-flow figure { margin: 0; }
 #wt-ov .wt-dg img.wv-dgimg { width: auto; max-width: 100%; max-height: none; }

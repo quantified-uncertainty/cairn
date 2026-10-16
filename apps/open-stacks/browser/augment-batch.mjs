@@ -3,15 +3,20 @@
  * Reading guides for many items at once, through the Message Batches API at
  * half price (docs/profiles/spec.md, section 8.6).
  *
- *   node augment-batch.mjs [--lanes ai-safety,llm] [--ids id1,id2] [--limit 500]
+ *   node augment-batch.mjs [--lanes ai-safety,llm] [--ids id1,id2] [--limit 500 | --all]
  *                          [--model claude-haiku-5-5] [--max-usd 2] [--dry] [--yes]
  *                          [--status] [--watch <batchId>] [--no-wait] [--port 4747]
+ *
+ *   node augment-batch.mjs --all --dry    # the whole corpus: how many, what it costs, what is left out
  *
  * It prints how many items it would send and what that should cost, and asks
  * before submitting (--yes skips the question, --dry only prints). The batch
  * is cut to fit --max-usd (default: what is left of today's AI budget, which
  * Settings or STACKS_DAILY_BUDGET sets) and its estimate is reserved against
- * that budget. Results usually arrive within an hour (at most 24 hours).
+ * that budget, so a batch over what is left of it is refused: the plan says
+ * so and how high to raise it. --all lifts the 500-item limit. Items whose
+ * text is not on disk yet are left out ("no_text"); the plan says how to
+ * fetch them. Results usually arrive within an hour (at most 24 hours).
  *
  * With a server running on --port, the server does the work and keeps polling
  * even if this script stops; batch state lives in CACHE/augment/batches/, so
@@ -21,19 +26,20 @@
  * STACKS_MOCK_AI=1 (standalone) answers every item at once, without the API.
  */
 import { createInterface } from 'readline';
+import { request } from 'http';
 
 const argv = process.argv.slice(2);
 const flag = (k) => argv.includes('--' + k);
 const opt = (k, d = null) => { const j = argv.indexOf('--' + k); return j >= 0 && argv[j + 1] && !argv[j + 1].startsWith('--') ? argv[j + 1] : d; };
 const list = (k) => (opt(k) ? opt(k).split(',').map((s) => s.trim()).filter(Boolean) : undefined);
 if (flag('help') || flag('h')) {
-  console.log('node augment-batch.mjs [--lanes a,b] [--ids x,y] [--limit 500] [--model m] [--max-usd 2] [--dry] [--yes] [--verbose]\n                        [--status] [--watch <batchId>] [--no-wait] [--port 4747]   (see the comment at the top of this file)');
+  console.log('node augment-batch.mjs [--lanes a,b] [--ids x,y] [--limit 500 | --all] [--model m] [--max-usd 2] [--dry] [--yes] [--verbose]\n                        [--status] [--watch <batchId>] [--no-wait] [--port 4747]   (see the comment at the top of this file)');
   process.exit(0);
 }
 
 const port = Number(opt('port', process.env.STACKS_PORT || 4747));
 const base = `http://127.0.0.1:${port}`;
-const req = { ids: list('ids'), lanes: list('lanes'), limit: Number(opt('limit', 500)), model: opt('model') || undefined, maxUsd: opt('max-usd') != null ? Number(opt('max-usd')) : undefined };
+const req = { ids: list('ids'), lanes: list('lanes'), limit: flag('all') ? 100000 : Number(opt('limit', 500)), model: opt('model') || undefined, maxUsd: opt('max-usd') != null ? Number(opt('max-usd')) : undefined };
 const usd = (x) => '$' + Number(x || 0).toFixed(x < 0.1 ? 4 : 2);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -42,12 +48,20 @@ async function backend() {
   try {
     const r = await fetch(base + '/status', { signal: AbortSignal.timeout(1500) });
     if (r.ok && (await r.json()).augment) {
-      const call = async (method, path, body) => {
-        const res = await fetch(base + path, { method, ...(body && { body: JSON.stringify(body) }) });
-        const j = await res.json().catch(() => ({}));
-        if (!res.ok) throw Object.assign(new Error(j.error || 'HTTP ' + res.status), { code: j.code });
-        return j;
-      };
+      // node:http, not fetch: fetch gives up after 300 s without response headers, and planning the
+      // whole corpus reads every item's text first (a scan's OCR comes from the Internet Archive).
+      const call = (method, path, body) => new Promise((ok, fail) => {
+        const data = body ? JSON.stringify(body) : null;
+        const rq = request(base + path, { method, headers: data ? { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data) } : {} }, (res) => {
+          let s = ''; res.setEncoding('utf8');
+          res.on('data', (c) => (s += c)).on('error', fail).on('end', () => {
+            let j = {}; try { j = JSON.parse(s); } catch { /* not JSON */ }
+            if (res.statusCode >= 400) fail(Object.assign(new Error(j.error || 'HTTP ' + res.statusCode), { code: j.code })); else ok(j);
+          });
+        });
+        rq.on('error', fail);
+        rq.end(data || undefined);
+      });
       return {
         where: `the server on port ${port}`,
         submit: (b) => call('POST', '/augment/batch', b),
@@ -105,12 +119,27 @@ if (flag('status')) {
 }
 if (opt('watch')) { await watch(B, opt('watch')); process.exit(0); }
 
+console.log(`Planning: reading each item's text${req.ids ? '' : ' (for the whole corpus that takes a while the first time; scans\' OCR is fetched once)'}…`);
 const plan = await B.submit({ ...req, dry: true });
 const why = {};
 for (const s of plan.skipped || []) why[s.why] = (why[s.why] || 0) + 1;
 console.log(`\n${plan.n} item${plan.n === 1 ? '' : 's'} to send, estimated ${usd(plan.est)} at batch prices (cap ${usd(plan.cap)}).`);
 if (Object.keys(why).length) console.log('Left out: ' + Object.entries(why).map(([w, n]) => `${n} ${w}`).join(', ') + (flag('verbose') ? '' : ' (--verbose lists them)'));
 if (flag('verbose')) for (const s of plan.skipped || []) console.log(`  ${s.id}  ${s.why}`);
+const where = B.standalone ? '(STACKS_DAILY_BUDGET=N before the command, with no server running)' : 'in Settings (,) › AI and cost';
+if (why['over max-usd']) {
+  console.log(`${why['over max-usd']} more did not fit under ${usd(plan.cap)}, ${opt('max-usd') != null ? 'the --max-usd you gave: raise it' : `what is left of today's AI budget: raise the daily budget ${where}`} to send them too.`);
+}
+if (why.no_text) {
+  console.log(`${why.no_text} have no text on disk yet. ${B.standalone ? 'Start the server first (bin/stacks): scans\' text comes through it. Then ' : 'To fetch them, '}`
+    + '`node warm.mjs --items 1000 --pages 1` brings every PDF and post into the cache (PDFs also need poppler\'s pdftotext: brew install poppler); then run this again.');
+}
+if (plan.left != null && plan.n && plan.est > plan.left) {
+  const need = Math.ceil(plan.budget - plan.left + plan.est);
+  console.log(`That is more than today's AI budget has left (${usd(plan.left)} of ${usd(plan.budget)}), so it would be refused. Raise the daily budget to $${need} or more `
+    + (B.standalone ? `(STACKS_DAILY_BUDGET=${need} node augment-batch.mjs …)` : 'in Settings (,) › AI and cost') + ', or pass a lower --max-usd to send fewer items.');
+  if (!flag('dry')) process.exit(1);
+}
 if (!plan.n || flag('dry')) process.exit(0);
 if (!flag('yes')) {
   const a = await ask(`Submit ${plan.n} requests for about ${usd(plan.est)}? [y/N] `);

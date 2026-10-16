@@ -209,7 +209,7 @@ class Job {
     const raw = {
       id: it.id, kind: it.kind, by: BATCH ? 'playwright' : 'browser', at: new Date().toISOString(), ms: performance.now() - this.t0,
       src: it.kind === 'scan' ? { ia: it.ia } : { url: it.url, size: this.size },
-      pages: this.pages.map((p, k) => ({ w: p.w, h: p.h, rot: p.rot, ink: p.ink, blank: p.blank, gut: p.gut, dens: p.dens, words: p.words, lab: p.lab, ...(figs?.[k] ? { fig: figs[k] } : {}) })),
+      pages: this.pages.map((p, k) => ({ w: p.w, h: p.h, rot: p.rot, ink: p.ink, blank: p.blank, gut: p.gut, dens: p.dens, words: p.words, lab: p.lab, bands: p.bands, ...(figs?.[k] ? { fig: figs[k] } : {}) })),
       heads, ixf, outline: this.outline || [],
       labels: this.labels ? (it.kind === 'scan' ? 'ia' : 'pdf') : null,
       ...(figs ? { figures: figs.reduce((s, f) => s + (f?.length || 0), 0) } : {}),
@@ -283,10 +283,15 @@ async function pdfPage(pdf, k, keep) {
   S.task = page.render({ canvasContext: g, viewport: vp });
   try { await S.task.promise; } finally { S.task = null; }
   const { lum, W, H, c: small } = lumOf(c, c.width, c.height);
-  const a = core.analyzeLum(lum, W, H, { scan: false });
+  const a = core.analyzeLum(lum, W, H, { scan: false, bands: true });
   const tc = await tcP;
   const fontOf = (name) => { try { if (!page.commonObjs.has(name)) return null; const f = page.commonObjs.get(name); return f ? { name: f.name, bold: f.bold, black: f.black } : null; } catch { return null; } };
   const lines = tc ? core.textLines(tc.items, fontOf) : [];
+  // Each line's place (baseline to cap height, through the viewport) for the running heads and feet.
+  if (a.bands) {
+    const at = (x, y) => vp1.convertToViewportPoint(x, y);
+    core.bandTexts(a.bands, lines.map((l) => { const [x, yb] = at(l.x, l.y), [, yt] = at(l.x, l.y + 0.75 * l.size); return { t: l.t, x: x / vp1.width, y0: Math.min(yb, yt) / vp1.height, y1: Math.max(yb, yt) / vp1.height }; }));
+  }
   const words = tc ? tc.items.reduce((s, x) => s + core.countWords(x.str || ''), 0) : -1;
   page.cleanup();
   return { w: +vp1.width.toFixed(2), h: +vp1.height.toFixed(2), rot: page.rotate || 0, ...a, words, lines, text: lines.map((l) => l.t).join(' '), keep: keep ? small : null };

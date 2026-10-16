@@ -232,7 +232,9 @@ interface Page {
   k: number;
   w: number; h: number;        // page size (section 2)
   rot?: 90 | 180 | 270;        // the PDF's /Rotate, when not 0
-  ink: Box | null;             // unpadded ink box; null when blank
+  ink: Box | null;             // unpadded ink box; null when blank; without the running head and foot (head, foot)
+  head?: [number, number];     // PDFs: the running head left out of ink, [y0, y1] (section 5.4, step 0)
+  foot?: [number, number];     // PDFs: the running foot (a page number, a repeated footer) left out of ink
   blank: boolean;
   gut: number | null;          // two-column gutter, x as a fraction of the page
   dens: number;                // ink fraction inside the ink box, 0-1
@@ -313,7 +315,7 @@ An example, with illustrative values and the arrays cut short. The display image
 
 ## 5. Analysis: how each field is computed
 
-All pure computation lives in **`ui/js/profile-core.js`**: no DOM, no imports, so the browser loads it as an ES module and Node imports it from `compile.mjs`, `server/profile.mjs` and the tests. It exports `SCHEMA`, `GEN`, `HINTS`, `budgetFor`, `analyzeLum`, `pageRoles`, `cropGroups`, `cropOf`, `layoutOf`, `spreadStarts`, `snapStart`, `spreadAt`, `tocFromHeads`, `hintsOf`, `finalize`, `validate`, `toBox`, `toArr`. `render.js`'s `analyze()` is refactored to call `analyzeLum`, so the feed without a profile and the compiler give identical boxes.
+All pure computation lives in **`ui/js/profile-core.js`**: no DOM, no imports, so the browser loads it as an ES module and Node imports it from `compile.mjs`, `server/profile.mjs` and the tests. It exports `SCHEMA`, `GEN`, `HINTS`, `budgetFor`, `analyzeLum`, `bandTexts`, `bandKey`, `pageRoles`, `runningBands`, `cropGroups`, `cropOf`, `layoutOf`, `spreadStarts`, `snapStart`, `spreadAt`, `tocFromHeads`, `hintsOf`, `finalize`, `validate`, `toBox`, `toArr`. `render.js`'s `analyze()` is refactored to call `analyzeLum`, so the feed without a profile and the compiler give identical boxes.
 
 ### 5.1 Ink, blank pages and gutters: `analyzeLum(lum, W, H)`
 
@@ -325,6 +327,7 @@ Input: the page's luminance (0-255) on a grid 240 px wide. It is the existing al
 - The **ink box** trims rows and columns with less than 0.4% ink. It is returned **unpadded**.
 - The **gutter** is the longest ink-free vertical run in the middle third (38-62%) of the box, if at least `max(2 px, 1.2% of the box width)`.
 - `dens` is ink pixels over the ink box's area.
+- **Bands** (born-digital pages, `analyzeLum(lum, W, H, {scan: false, bands: true})`, asked for by the compilers only, so the feed's own analysis costs nothing more): `bands: {top, bot, both}`. `top` is the first run of ink rows of the ink box, its inner gaps under 1.5% of the page (a rule just under a header's text belongs to it), followed by a clear gap of at least 1.5% and then more ink, and at most 6% of the page high: `{y0, y1, next, ink}`, where `next` is where the rest of the page starts and `ink` the ink box without the band (columns trimmed again, margin strips dropped again). Failing a 1.5% gap, a 1% gap gives a band marked `tight` (a figure set close under the header). `bot` is the same from the bottom (`prev`: where the rest ends); `both` is the ink box without either. They are the candidates for a running head and foot; section 5.4 decides.
 
 Sources of the grid:
 
@@ -338,6 +341,7 @@ Sources of the grid:
 
 - **PDFs, in the browser:** `page.getTextContent()`. `words` counts `\S+` runs. A line's size is `hypot(transform[2], transform[3])`; the **body size** is the median size weighted by characters over the document. **Heading candidates** are lines that are the first or second line of a block, up to 90 characters, and either at least 1.15 × the body size or in a font whose name matches `/Bold|Black|Semibold|Heavy/`, and that start with a numbering pattern (`/^(\d+(\.\d+){0,2}|[A-H](\.\d+)*|[IVX]+)\.?\s+\p{Lu}/u`) or are one of Abstract, Introduction, Background, Related Work, Method(s), Results, Discussion, Conclusion(s), Limitations, References, Bibliography, Acknowledg(e)ments, Appendix.
 - **PDFs, poppler:** `pdftotext -layout file.pdf -` splits pages at form feeds (`\f`). Heading candidates come from the same patterns on short lines, without sizes.
+- **Band text** (PDFs): `bandTexts(bands, lines)` gives each band of section 5.1 the text in it, from the page's lines with their places (`{t, x, y0, y1}`, fractions of the page, y down): pdf.js lines through the page's viewport (baseline to 0.75 × the size above it), or `pdftotext -bbox-layout` lines for poppler. A line belongs to a band when it reaches into the band (±0.4%) or lies beyond it toward the page's edge, with its middle on the band's side of the gap (a thin page number or rule may not show on the grid at all). The band gets `t` (its lines, left to right, top to bottom) and `ty` (the top of its first line). `bandKey(t)` is what must match for two bands to repeat: letters, digits as `#` (page numbers), a roman numeral at either end as `#`, everything else dropped.
 - **Scans:** `GET /ocr/text?ia=` (already served by `50-ocr.mjs`) gives each page's text; `words` from it. Printed labels from `GET /ocr/labels?ia=`.
 - **Flow documents:** `prepareFlow()`'s `texts` (stable pages) and `outline`.
 - `text.layer` is `pdf` when at least 30% of a PDF's pages have 30 or more words, `none` for a PDF below that, `ocr` for scans, `html` for flow documents.
@@ -361,6 +365,11 @@ Applied in this order; the first rule that matches sets a page's role:
 
 Goal: body pages share one crop box, so a spread's pages have the same shape and the same text size; pages that would lose ink under that box get their own; landscape pages form their own group.
 
+0. **Running heads and feet** (PDFs; `runningBands(pages)`, in `finalize` before the groups): a page's top (bottom) band of section 5.1 is left out of its ink box when it repeats, so the group box leaves it out and `cropOf`'s rule of never cutting a page's ink does not take it back in. It is looked at in three scopes, all pages, the even pages and the odd pages (journals alternate: "PROPER LOCAL SCORING RULES 3" on odd pages, the authors on even ones), each over the portrait, non-blank pages with a group role:
+   - the **slot** is the place (the band text's top, ±0.5% of the page height) where the most bands of the scope are; it counts only when at least half the scope's pages have a band there;
+   - a band in the slot is **running** when its `bandKey` is that of another band in the slot (a paper's one running head; a book's chapter head on the pages of its chapter), or, except on the first page, when the slot holds at least 3/4 of the scope and the band has its shape: the outer edge, and the inner edge or the start of the rest of the page, within 0.5% of the slot's medians (a book's section head seen on one page: the same line and rule, other words). A `tight` band counts only with both its edges within 0.5% of the slot's.
+   - Never running: a band with no text (scanned PDFs, a rule alone), a page's own header (a first page's journal line, a conference footer), section titles, figures that reach the top, a header on only some pages (none of these is in a slot, or repeated), landscape pages, and scans (their OCR text has no places, and geometry alone is too risky).
+   - A running page's `ink` becomes the band's `ink` (or `both`), and `head` / `foot` record the bands left out. A page that is nothing but its head and foot keeps them.
 1. **Candidates:** pages that are not blank, whose role is `body`, `refs`, `appendix` or `index`, whose `w / h` is within 4% of the median `w / h` of such pages, and whose `dens` is under 0.6 (not a full-bleed image).
 2. **Groups:**
    - PDFs: one group, `body`.
@@ -474,7 +483,7 @@ node compile.mjs [--lanes ai-safety,llm] [--items 200] [--ids id1,id2] [--engine
 - It talks to a running server (`--port`) so budgets, the index and eviction apply; if none answers on `/status`, it starts `node server.mjs --port <free port>` as a child for the run.
 - Items come in the reader's order first (`CACHE/warm-hint.json`, as `planWarm()` uses it), then by relevance; `--ids` overrides. Items with a current profile (`gen === GEN`, same `src.sha1`) are skipped unless `--force`.
 - **`--engine playwright`** (chosen by `auto` when `playwright` resolves): headless Chromium opens `http://127.0.0.1:<port>/?compile=batch`, waits for `window.__stacksCompile`, and calls `__stacksCompile(id, {assets})` for each item, `--jobs` pages at a time. Same code, same output as the browser. `--assets full` adds display images for pages with priority 50 or more (section 6.4) at `--height`.
-- **`--engine poppler`** (chosen by `auto` when `pdftoppm` is on the PATH): PDFs only. Fetch the PDF through `/proxy` (so it lands in the cache); `pdfinfo -f 1 -l <n>` for page sizes and rotation; `pdftoppm -gray -scale-to-y 400 -scale-to-x -1` for analysis; `pdftotext -layout` for words, headings and `text.txt`; `pdftoppm -jpeg -jpegopt quality=80 -r <dpi> -x -y -W -H -f k -l k` for cropped display images of priority 50 and up. No sprite, no thumbnails, no figures (`figures: null`), `by: 'poppler'`. The browser fills in the rest later.
+- **`--engine poppler`** (chosen by `auto` when `pdftoppm` is on the PATH): PDFs only. Fetch the PDF through `/proxy` (so it lands in the cache); `pdfinfo -f 1 -l <n>` for page sizes and rotation; `pdftoppm -gray -scale-to-y 400 -scale-to-x -1` for analysis; `pdftotext -layout` for words, headings and `text.txt`; `pdftotext -bbox-layout` for the places of the lines in the running heads and feet (section 5.2); `pdftoppm -jpeg -jpegopt quality=80 -r <dpi> -x -y -W -H -f k -l k` for cropped display images of priority 50 and up. No sprite, no thumbnails, no figures (`figures: null`), `by: 'poppler'`. The browser fills in the rest later.
 - **Neither available:** print "Nothing to do: the app compiles in idle time. Optional: npm i -g playwright && npx playwright install chromium, or brew install poppler." and exit 0.
 - Expected speed (measured parts): poppler analysis 16-42 ms a page on text papers, display images 134 ms a page; with 3 jobs, the 777 PDFs (about 23,000 pages) take roughly 15-30 minutes plus downloads (arXiv allows 2 requests a second, so 677 arXiv PDFs need at least 6 minutes on a cold cache).
 
@@ -506,7 +515,7 @@ All routes are on the loopback server (`HOST` 127.0.0.1). `id` is a corpus item 
 
 **`POST /profile`** (JSON, up to 4 MB): an analysis upload.
 - Body: a `Profile` without `rev`, `pid`, `assets` and `stale` (the server sets them), plus optional `"force": true`.
-- The server validates with `validate()` from `profile-core.js` (types, `n` matching `pages.length` for rasters, every `k` in range, boxes inside `[0, 1]` with `x0 < x1` and `y0 < y1`), recomputes `pid`, computes `src.sha1` from its own cached copy of the source when it has one, adds LaTeXML sections (section 5.6), and merges: the upload replaces the stored analysis unless the stored one has a higher `gen`, or the same `gen` and a higher-ranked `by` (409 `{"error": "older", "have": {"gen", "by"}}` unless `force`). Assets are kept; display images whose `box` no longer contains `cropOf(k)` at the default pad are dropped.
+- The server validates with `validate()` from `profile-core.js` (types, `n` matching `pages.length` for rasters, every `k` in range, boxes inside `[0, 1]` with `x0 < x1` and `y0 < y1`, `head` and `foot` spans in `[0, 1]` outside the ink box), recomputes `pid`, computes `src.sha1` from its own cached copy of the source when it has one, adds LaTeXML sections (section 5.6), and merges: the upload replaces the stored analysis unless the stored one has a higher `gen`, or the same `gen` and a higher-ranked `by` (409 `{"error": "older", "have": {"gen", "by"}}` unless `force`). Assets are kept; display images whose `box` no longer contains `cropOf(k)` at the default pad are dropped.
 - 200: `{"ok": true, "rev", "profile"}`. 400: `{"error": "invalid", "detail"}`.
 
 **`POST /profile/text?id=`** (`text/plain; charset=utf-8`, up to 3 MB): replaces `text.txt`. 200: `{"ok": true, "chars", "bytes"}`. 404 when there is no profile yet.
@@ -862,6 +871,7 @@ Numbers are checked two ways: in this container with `test/profile-bench.mjs` (P
 | C9 | No tools | `compile.mjs --engine auto` with neither Playwright nor poppler prints its message and exits 0 |
 | C10 | Eviction | with a small `STACKS_CACHE_MAX`, `heavy` groups go before any `core`; `profile.json` stays valid after each removal; no 500s from `/profile` routes while evicting |
 | C11 | API contract | a script covers every status code in section 7.1: 400 bad id, 404 none, 409 older, 409 budget, 413, 415, 304 with `If-None-Match`, and `immutable` only when `v` matches |
+| C12 | Running heads and feet | a header repeated on every page (ICLR), alternating per parity (Annals), page-number footers and a book's chapter and section heads are left out of the crop; a first page's own header, a header on a few pages, section titles, a figure at the top and scans are not (`test/profile-core.test.mjs`, synthetic pages) |
 
 ### 11.3 Augmentation quality (B)
 

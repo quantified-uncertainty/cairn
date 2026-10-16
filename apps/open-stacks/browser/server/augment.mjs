@@ -663,11 +663,12 @@ export function createAugmenter(app) {
       try { P = await prepare({ id: it.id }, it, model); } catch (e) { skipped.push({ id: it.id, why: e.code || e.message }); continue; }
       chosen.push({ it, P, est: est(model, P.chars) * 0.5 });
     }
-    const sp = ai.spendInfo();
-    const cap = Number.isFinite(Number(maxUsd)) && maxUsd !== null && maxUsd !== '' ? Number(maxUsd) : Math.max(0, sp.budget - sp.today);
+    const sp = ai.spendInfo(), left = Math.max(0, sp.budget - sp.today);
+    const cap = Number.isFinite(Number(maxUsd)) && maxUsd !== null && maxUsd !== '' ? Number(maxUsd) : left;
     let sum = 0; const fit = [];
     for (const c of chosen) { if (sum + c.est > cap) { skipped.push({ id: c.it.id, why: 'over max-usd' }); continue; } sum += c.est; fit.push(c); }
-    const res = { batch: null, n: fit.length, est: +sum.toFixed(4), cap: +cap.toFixed(4), skipped };
+    // left: today's budget not yet spent; a submit whose estimate is over it is refused (reserve, below).
+    const res = { batch: null, n: fit.length, est: +sum.toFixed(4), cap: +cap.toFixed(4), left: +left.toFixed(4), budget: sp.budget, skipped };
     if (dry || !fit.length) return res;
     // Reserve the estimate now, at its half price, against today's budget.
     const [pi] = PRICES[model] || PRICES['claude-opus-5-5'];

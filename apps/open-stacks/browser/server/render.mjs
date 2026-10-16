@@ -439,7 +439,8 @@ export function createService({ dir, cache, workers = defaultWorkers(), max = 6 
         native.findEngines({ dir, only: ['quartz'], build: true }).then((b) => {
           report.quartz = b.report.quartz;
           if (b.engines.length) { chain.unshift(b.engines[0]); log('render: Quartz helper built and tested; using quartz'); pump(); }
-        }).catch((e) => { report.quartz = { ok: false, why: String(e.message || e) }; });
+          else log(`render: Quartz helper not used (${b.report.quartz?.why || 'unknown'}); ${chain[0]?.name || 'pdf.js in the browser'} draws PDF pages`);
+        }).catch((e) => { report.quartz = { ok: false, why: String(e.message || e) }; log(`render: Quartz helper not used (${report.quartz.why})`); });
       } else report.quartz = q.report.quartz;
     }
     detecting = false;
