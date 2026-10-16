@@ -3,7 +3,7 @@
 import { items } from './corpus.js';
 import { state } from './state.js';
 import { openDoc, peekDoc, isFlow, scanUrl } from './docs.js';
-import { renderPage, SCAN_W } from './render.js';
+import { renderPage, SCAN_W, RENDER_H, serverRender, serverCount } from './render.js';
 import { on } from './util.js';
 import { profileOf, loadProfiles, snapStart, spreadAt, preloadSprite, cropKey } from './profile.js';
 
@@ -78,7 +78,7 @@ export function planAround(i, s) {
   // they are on disk.
   const render = (ii, k, pri) => {
     if (ii === i && it.kind === 'scan' && pri < 80 && !isOnDisk(it, k)) return;
-    tasks.push({ key: `r|${items[ii].id}|${k}|${state.crop}|${state.cols}`, pri, fn: () => renderPage(items[ii], k) });
+    tasks.push({ key: `r|${items[ii].id}|${k}|${state.crop}|${state.cols}`, pri, fn: () => renderPage(items[ii], k, { lane: 'near' }) });
   };
   const n = it.n || null;
   const pf = profileOf(it);
@@ -123,10 +123,11 @@ export function planAround(i, s) {
     else if (x.kind === 'scan' || x.n) for (let j = 0; j < state.per; j++) render(ii, s0 + j, 65 - d * 5 - j * 0.1);
     // Not opened yet: open it, then render its first spread, so moving to it
     // shows decoded pages rather than a spinner.
+    // With the render server on, its page count stands in for the parse (server/routes/16-render.mjs).
     else tasks.push({ key: `o|${x.id}`, pri: 64 - d * 5, fn: async () => {
-      const d2 = await openDoc(x); x.n ||= d2.n;
+      if (!(await serverCount(x))) { const d2 = await openDoc(x); x.n ||= d2.n; }
       const s1 = startOf(ii);
-      for (let j = 0; j < state.per && s1 + j < x.n; j++) await renderPage(x, s1 + j);
+      for (let j = 0; j < state.per && s1 + j < x.n; j++) await renderPage(x, s1 + j, { lane: 'near' });
     } });
   });
   plan(tasks);
@@ -166,6 +167,28 @@ export function planAround(i, s) {
   serverPrefetch(nextItems, 55, 'next-items');
   serverPrefetch(mid, 40, 'mid');
   serverPrefetch(laterItems, 35, 'later-items');
+  sendHint();
+}
+
+// The render server works ahead of the reader (server/render.mjs): where you are and the next PDFs
+// in the stack, sent as a hint that replaces its plan, at most every 150 ms while you move. Its reply
+// carries page counts of PDFs on its disk, so they need no pdf.js parse to be shown.
+const isWebPdf = (x) => x && x.kind === 'pdf' && /^https?:\/\//.test(x.url || '');
+let hintT = null;
+export function sendHint() {
+  if (!serverRender.on) return;
+  clearTimeout(hintT);
+  hintT = setTimeout(() => {
+    const i = state.order[state.pos], it = items[i];
+    if (!it || state.view !== 'feed') return;
+    const open = isWebPdf(it) ? { u: it.url, k: state.start.get(i) ?? startOf(i), n: it.n || undefined, per: Math.max(1, state.shown || state.per) } : null;
+    const next = [], byUrl = new Map();
+    for (const ii of state.order.slice(state.pos + 1, state.pos + 13)) { const x = items[ii]; if (!isWebPdf(x)) continue; next.push({ u: x.url, k: startOf(ii) }); byUrl.set(x.url, x); }
+    if (open) byUrl.set(it.url, it);
+    fetch('/render/hint', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ open, next, w: RENDER_H }) })
+      .then((r) => r.json()).then((j) => { for (const [u, n] of Object.entries(j.n || {})) { const x = byUrl.get(u); if (x && n > 0) x.n ||= n; } })
+      .catch(() => {});
+  }, 150);
 }
 
 // The profile of the current item, or of one of the next three, arrived or

@@ -397,7 +397,9 @@ export function createService({ dir, cache, workers = defaultWorkers(), max = 6 
     for (const j of [...jobs.values()]) if (j.sha === sha && j.state !== 'running') drop(j);
     bad.delete(sha);
     for (const k of [...bad.keys()]) if (k.startsWith(sha + ':')) bad.delete(k);
-    return dropDoc(sha);
+    const d = docs.get(sha); if (!d) return 0;
+    let n = 0; for (const name of [...d.files.keys()]) n += dropFile(sha, name); // info.json stays: the page count
+    return n;
   }
   function summary() {
     const q = (l) => queues[l].length;

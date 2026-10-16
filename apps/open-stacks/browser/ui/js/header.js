@@ -90,6 +90,7 @@ function apply(relayout = true) {
   }
   // Focus hides the side panel without storing that: leaving it brings back the stored choice.
   if (foc && !was && state.panel) { state.panel = false; applyChrome(); }
+  if (foc && !was && bar.contains(document.activeElement)) document.activeElement.blur(); // the bar is hidden now
   if (!foc && was) { const p = store.get('panel', true); if (p !== state.panel) { state.panel = p; applyChrome(); } }
   shown = { head, focus: foc };
   paintFocusBtn();
@@ -164,12 +165,24 @@ export function fit(force = false) {
   let L = 0;
   for (; L <= st.length; L++) { const c = config(mode, L); setConfig(c); if (L === st.length || fits(c)) break; }
   bar.dataset.fit = String(L);
+  sortKids();
   const l = $('#lanes'); l?.classList.toggle('scrolls', bar.dataset.lanes === 'chips' && l.scrollWidth > l.clientWidth + 1);
   barH = bar.offsetHeight || barH;
   R.style.setProperty('--bar-h', barH + 'px');
   mo.takeRecords(); watchKids(); ao.takeRecords();
 }
 export function fitSoon() { if (!fitQ) fitQ = requestAnimationFrame(fit); }
+/** Put the bar's children in the order they are shown (CSS `order`), so Tab goes
+ *  left to right: the item header moved in, or a button back from ⋯, lands last
+ *  in the DOM otherwise. Moves nothing when the order is already right. */
+function sortKids() {
+  const kids = [...bar.children].filter((n) => n !== more);
+  const by = kids.map((n, j) => [Number(getComputedStyle(n).order) || 0, j, n]).sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  if (by.every(([, , n], j) => n === kids[j])) return;
+  const f = document.activeElement;
+  for (const [, , n] of by) bar.insertBefore(n, more);
+  if (f && f !== document.activeElement && bar.contains(f)) f.focus({ preventScroll: true });
+}
 // What changes the bar's width: buttons a feature adds, shows or hides, and their counts.
 // Not the item header (it absorbs), and not the status text (it shrinks).
 const mo = new MutationObserver(fitSoon), ao = new MutationObserver(fitSoon);
@@ -203,8 +216,12 @@ function paintLanePick() {
   lanePick.title = `Lane: ${label}${d >= 0 && d < 10 ? ` (key ${d})` : ''} · click for the others · 0–9 switch lanes`;
 }
 
-let menu = null; // { el, anchor }
-function openMenu(anchor, rows, label) {
+let menu = null; // { el, anchor, byKey }
+// Esc gives focus back to the button only when the menu was opened from the keyboard
+// (a click's detail is 0 then): after a mouse click, Space and Enter go back to the
+// page (next page, zoom) instead of opening the menu again.
+const giveBack = (anchor, byKey) => { if (byKey && anchor.isConnected) anchor.focus(); else if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur?.(); };
+function openMenu(anchor, rows, label, byKey = false) {
   closeMenu(); closeMore();
   const el = h('div', { className: 'hd-menu' });
   el.setAttribute('role', 'menu'); el.setAttribute('aria-label', label);
@@ -214,13 +231,13 @@ function openMenu(anchor, rows, label) {
     b.onclick = () => { closeMenu(); r.act(); };
     el.append(b);
   }
-  menuKeys(el, () => { closeMenu(); anchor.focus(); });
+  menuKeys(el, () => { closeMenu(); giveBack(anchor, byKey); });
   document.body.append(el);
   const a = anchor.getBoundingClientRect();
   el.style.left = Math.round(Math.max(6, Math.min(a.left, innerWidth - el.offsetWidth - 6))) + 'px';
   el.style.top = Math.round(a.bottom + 4) + 'px';
   anchor.setAttribute('aria-expanded', 'true'); anchor.classList.add('open');
-  menu = { el, anchor };
+  menu = { el, anchor, byKey };
   (el.querySelector('.on') || el.firstElementChild)?.focus({ preventScroll: true });
 }
 function closeMenu() {
@@ -245,18 +262,19 @@ function menuKeys(el, esc) {
     e.stopPropagation();
   });
 }
-viewPick.onclick = () => (menu?.anchor === viewPick ? closeMenu() : openMenu(viewPick, viewList().map(([name, v]) => ({
+viewPick.onclick = (e) => (menu?.anchor === viewPick ? closeMenu() : openMenu(viewPick, viewList().map(([name, v]) => ({
   on: name === state.view, act: () => setView(name), title: v.key ? `${v.label} (${v.key})` : v.label,
   kids: [h('span', { className: 'mt', textContent: v.label }), v.key ? h('kbd', { textContent: v.key }) : null],
-})), 'Views'));
-lanePick.onclick = () => (menu?.anchor === lanePick ? closeMenu() : openMenu(lanePick, laneList().map(([k, label, c], d) => ({
+})), 'Views', e.detail === 0));
+lanePick.onclick = (e) => (menu?.anchor === lanePick ? closeMenu() : openMenu(lanePick, laneList().map(([k, label, c], d) => ({
   on: k === state.lane, act: () => { if (k !== state.lane) setLane(k); },
   kids: [dot(k), h('span', { className: 'mt', textContent: label }), h('span', { className: 'n', textContent: String(c) }), d < 10 ? h('kbd', { textContent: String(d) }) : null],
-})), 'Lanes'));
+})), 'Lanes', e.detail === 0));
 
 // ---------- the ⋯ menu: the bar's own buttons, moved into it by fit() ----------
-function openMore() {
-  closeMenu();
+let moreByKey = false;
+function openMore(byKey = false) {
+  closeMenu(); moreByKey = byKey;
   more.style.right = Math.round(bar.getBoundingClientRect().right - moreBtn.getBoundingClientRect().right) + 'px';
   more.hidden = false; moreBtn.setAttribute('aria-expanded', 'true'); moreBtn.classList.add('open');
   [...more.querySelectorAll(':scope > button')].find((b) => !b.hidden && b.offsetParent)?.focus({ preventScroll: true });
@@ -266,10 +284,24 @@ function closeMore() {
   more.hidden = true; moreBtn.setAttribute('aria-expanded', 'false'); moreBtn.classList.remove('open');
   if (fitLater) fitSoon();
 }
-moreBtn.onclick = () => (more.hidden ? openMore() : closeMore());
-menuKeys(more, () => { closeMore(); moreBtn.focus(); });
-// A choice closes it; the wheel button opens its own menu beside it, so that one stays.
-more.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b && b.parentNode === more && b.id !== 'wheel-btn') closeMore(); });
+moreBtn.onclick = (e) => (more.hidden ? openMore(e.detail === 0) : closeMore());
+menuKeys(more, () => { closeMore(); giveBack(moreBtn, moreByKey); });
+// A choice closes it. The wheel button opens its own menu (nav.js wheelMenu), placed
+// under its button: from ⋯ that would sit under this menu, so it goes under ⋯ instead.
+more.addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b || b.parentNode !== more) return;
+  const byKey = moreByKey;
+  closeMore();
+  if (b.id === 'wheel-btn') { const m = $('#wheel-menu'); if (m) { placeWheel(m); if (byKey) m.querySelector('button.on, button')?.focus({ preventScroll: true }); } }
+});
+function placeWheel(m) {
+  const r = moreBtn.getBoundingClientRect();
+  m.style.left = Math.round(Math.max(8, r.right - m.offsetWidth)) + 'px';
+  m.style.top = Math.round(r.bottom + 4) + 'px';
+}
+// Its rows repaint it (a new element each time): keep it there while the wheel button is in ⋯.
+new MutationObserver(() => { const m = document.getElementById('wheel-menu'); if (m && !m._hd && $('#wheel-btn')?.parentNode === more) { m._hd = true; placeWheel(m); } })
+  .observe(document.body, { childList: true });
 document.addEventListener('pointerdown', (e) => {
   const t = e.target;
   if (menu && !menu.el.contains(t) && !menu.anchor.contains(t)) closeMenu();
@@ -279,8 +311,15 @@ document.addEventListener('pointerdown', (e) => {
 addEventListener('keydown', (e) => {
   if (e.key !== 'Escape' || (!menu && more.hidden)) return;
   e.preventDefault(); e.stopPropagation();
-  const a = menu ? menu.anchor : moreBtn; closeMenu(); closeMore(); if (a.isConnected) a.focus();
+  const [a, byKey] = menu ? [menu.anchor, menu.byKey] : [moreBtn, moreByKey]; closeMenu(); closeMore(); giveBack(a, byKey);
 }, true);
+// Enter and Space on a button reached with the keyboard press that button; the page's
+// own keys (Enter zooms, Space turns the page: chrome.js) do not hear them. After a
+// mouse click the button is not :focus-visible, so Space still turns the page.
+for (const el of [bar, $('#item-head')]) el?.addEventListener('keydown', (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey || !(e.key === 'Enter' || e.key === ' ')) return;
+  if (e.target.matches?.(e.key === ' ' ? 'button:focus-visible' : ':is(button, a[href]):focus-visible')) e.stopPropagation();
+});
 
 // ---------------------------------------------------------------- Focus
 let fsOurs = false; // the browser went full screen because Focus asked
@@ -314,20 +353,22 @@ focusBtn.onclick = (e) => { e.currentTarget.blur(); setFocus(!focusOn(), { gestu
 // menu, a sheet or keyboard focus holds it.
 let peekBy = null, peekAt = null, hideT = 0, lastXY = null;
 const isOpen = (s) => { const el = document.querySelector(s); return !!el && !el.hidden; };
-const held = () => !!menu || !more.hidden || !!$('#wheel-menu') || !!bar.querySelector(':focus-visible')
-  || isOpen('#st') || isOpen('#saved') || isOpen('#xp');
+// Keyboard focus in the bar holds it until the pointer goes well below (then the focus goes too).
+const held = () => !!menu || !more.hidden || !!$('#wheel-menu') || isOpen('#st') || isOpen('#saved') || isOpen('#xp');
 function setPeek(on, by = null) {
   clearTimeout(hideT); hideT = 0;
   if (on && !focusOn()) on = false;
   peekBy = on ? by : null; peekAt = on ? lastXY : null;
   if (on === R.classList.contains('head-peek')) return;
   R.classList.toggle('head-peek', on);
-  if (!on) { closeMenu(); closeMore(); }
+  // Hidden, the bar keeps no keyboard focus (Space and Enter would press a button no one sees).
+  if (!on) { closeMenu(); closeMore(); if (bar.contains(document.activeElement)) document.activeElement.blur(); }
   emit('header:changed', headState());
 }
 addEventListener('pointermove', (e) => {
-  if (!R.classList.contains('focus') || e.pointerType === 'touch') return;
-  lastXY = [e.clientX, e.clientY];
+  if (e.pointerType === 'touch') return;
+  lastXY = [e.clientX, e.clientY]; // also outside Focus: where the pointer rests when d shows the bars
+  if (!R.classList.contains('focus')) return;
   const y = e.clientY;
   if (!R.classList.contains('head-peek')) { if (y <= EDGE) setPeek(true, 'pointer'); return; }
   if (y <= barH + 18 + 30) { clearTimeout(hideT); hideT = 0; return; } // on the bar, the track, or just under them

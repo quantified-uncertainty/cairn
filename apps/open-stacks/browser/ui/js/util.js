@@ -11,7 +11,7 @@ export const P = (u) => (/^\/local\//.test(u) ? u : '/proxy?u=' + encodeURICompo
 // this way set crossOrigin 'anonymous' (the proxy answers with Access-Control-Allow-Origin),
 // so canvases they are drawn on can still be read. stacks2:shard = false turns it off.
 const ALT = { localhost: '127.0.0.1', '127.0.0.1': 'localhost' }[location.hostname];
-const SHARD = ALT && (() => { try { return localStorage.getItem('stacks2:shard') !== 'false'; } catch { return true; } })() ? `${location.protocol}//${ALT}:${location.port}` : '';
+export const SHARD = ALT && (() => { try { return localStorage.getItem('stacks2:shard') !== 'false'; } catch { return true; } })() ? `${location.protocol}//${ALT}:${location.port}` : '';
 /** A proxied image (or a background fetch of one) from the second origin; P() for everything else. */
 export const PI = (u) => { const p = P(u); return SHARD && p.startsWith('/proxy') ? SHARD + p : p; };
 export const $ = (s, root = document) => root.querySelector(s);
@@ -33,7 +33,7 @@ export const css = (text) => document.head.append(h('style', { textContent: text
 export function lru(map, key, make, cap) {
   if (map.has(key)) { const v = map.get(key); map.delete(key); map.set(key, v); return v; }
   const v = make();
-  if (v && v.catch) v.catch(() => map.delete(key));
+  if (v && v.catch) v.catch(() => { if (map.get(key) === v) map.delete(key); }); // not a newer entry under the same key
   map.set(key, v);
   while (map.size > cap) {
     const [k, old] = map.entries().next().value;

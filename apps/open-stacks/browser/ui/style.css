@@ -82,27 +82,34 @@ a { color: var(--accent); }
 #panel-btn.on { background: none; color: var(--accent); border-color: var(--line); }
 #main.panel-right ~ * #panel-btn .pi, body:has(#main.panel-right) #panel-btn .pi { background: linear-gradient(270deg, currentColor 0 5px, transparent 5px); }
 #wheel-btn { font: 11px var(--mono); }
+#bar > #wheel-btn:empty { display: none; } /* until nav.js paints it: no empty box on the first paint */
+#bar > #st-btn svg { width: 15px; height: 15px; display: block; } /* the gear before settings.css arrives */
 
 /* The item header (feed.js paintHead; features add to .meta and before #pos): over
    the pages with two bars, inside #bar with one (header.js moves it). The title
-   gives way first, down to 12em, then the authors (ellipsis); narrower, the header
+   gives way first, down to 12em (the details beside it do not shrink until then:
+   their flex-shrink is tiny beside the title's, so their share rounds to 0 px),
+   then the authors, the stack crumb and the source links (ellipsis); narrower, the header
    drops details in this order: the next item's title; the authors (the side panel
    shows them), the PDF link, the resume chip's age and the printed page numbers;
    the lane; the source links (container queries below). */
 #item-head { order: -2; padding: 6px 16px 2px; display: flex; align-items: baseline; gap: 12px; flex: none; min-width: 0; container: ihead / inline-size; }
 /* At least 12em of the title, or all of a shorter one: the automatic minimum is min(width, content), and overflow: clip (not hidden) keeps it. */
 #item-head h1 { flex: 0 4 content; width: 12em; min-width: auto; font: 500 16px/1.2 var(--serif); margin: 0; overflow: clip; text-overflow: ellipsis; white-space: nowrap; }
-#item-head .meta { flex: 0 1 auto; color: var(--ink-2); display: flex; gap: 10px; align-items: baseline; white-space: nowrap; min-width: 0; font-size: 12px; overflow: clip; overflow-clip-margin: 4px; }
+#item-head .meta { flex: 0 .000001 auto; color: var(--ink-2); display: flex; gap: 10px; align-items: baseline; white-space: nowrap; min-width: 0; font-size: 12px; overflow: clip; overflow-clip-margin: 4px; }
 #item-head .meta > * { flex: none; }
-#item-head .meta > :is(.au, .rs-arch) { flex: 0 1 auto; min-width: 2.5em; overflow: hidden; text-overflow: ellipsis; }
+#item-head .meta > :is(.au, .rs-arch, .src) { flex: 0 1 auto; min-width: 2.5em; overflow: hidden; text-overflow: ellipsis; }
 #item-head .meta > .stk-crumb { flex: 0 1 auto; }
 #item-head .meta > .au { flex-shrink: 6; }
 #item-head .au { max-width: 260px; }
+@container ihead (min-width: 1600px) { #item-head .meta > .au { max-width: 520px; } } /* a 4K screen has room for the authors */
 #item-head .lane { font: 10px var(--mono); text-transform: uppercase; letter-spacing: .07em; color: var(--accent); }
 #item-head .pos { margin-left: auto; flex: none; color: var(--ink-3); font: 11px var(--mono); white-space: nowrap; }
 @container ihead (max-width: 1180px) { #item-head .meta > .au { max-width: 160px; } }
 @container ihead (max-width: 1080px) { #item-head .pos-next { display: none; } }
 @container ihead (max-width: 960px) { #item-head .meta > :is(.au, .src ~ .src), #item-head .mem-chip .mem-dim, #item-head .pos .plabel { display: none; } }
+/* and the stack crumb's count (#pos says the same) and the scan download's details (its title says them) */
+@container ihead (max-width: 960px) { #item-head .stk-crumb .sc-n, #item-head #loadpct .lp-x { display: none; } }
 @container ihead (max-width: 680px) { #item-head .meta > .lane { display: none; } }
 @container ihead (max-width: 560px) { #item-head .meta > :is(.src, .rs-arch, .wv-chip) { display: none; } }
 #item-head .star { color: var(--accent); }
@@ -358,6 +365,7 @@ html[data-head="one"] #bar::before { display: none; }
 #bar.narrow > #item-head { min-width: 220px; }
 #bar > #item-head h1 { font-size: 15px; }
 #bar > #item-head .meta { font-size: 11.5px; gap: 8px; }
+#bar > #item-head #loadpct .lp-x { display: none; } /* a scan's download: "21%", details in its title */
 
 /* Panels that open under the bar start where it ends. */
 :root[data-head] :is(#saved, #xp) { top: var(--bar-h, 37px); }

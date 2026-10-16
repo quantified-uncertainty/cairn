@@ -148,7 +148,9 @@ function popplerEngine(tool, version) {
       // -cropbox: the crop box, as pdf.js shows it (without it poppler renders the media box). -r from the
       // displayed size (-scale-to-y applies before /Rotate), and the rectangle given exactly: with -r alone
       // poppler rounds some pages up a pixel (Appendix C).
-      const args = ['-cropbox', '-jpeg', '-jpegopt', `quality=${QUALITY}`, '-r', String(+(72 * f.s).toFixed(5)),
+      // Annotations hidden: hyperref's coloured link boxes, which pdf.js does not draw on its canvas
+      // either (Quartz's drawPDFPage draws page content only, too). pdftocairo has no such flag.
+      const args = [...(tool === 'pdftoppm' ? ['-hide-annotations'] : []), '-cropbox', '-jpeg', '-jpegopt', `quality=${QUALITY}`, '-r', String(+(72 * f.s).toFixed(5)),
         '-x', '0', '-y', '0', '-W', String(f.W), '-H', String(f.H), '-f', String(k + 1), '-l', String(k + 1), '-singlefile', file, prefix];
       const r = await run(tool, args, { timeout, lane });
       if (r.code !== 0 || !existsSync(prefix + '.jpg')) {

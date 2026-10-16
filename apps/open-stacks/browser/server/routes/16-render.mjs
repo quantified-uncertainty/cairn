@@ -81,10 +81,13 @@ export default function (app) {
     reply(res, 200, { ok: true, engine: svc.engine, ...r });
   });
 
-  app.route('GET', '/render/state', (req, res, url) => {
+  app.route('GET', '/render/state', async (req, res, url) => {
     const u = url.searchParams.get('u');
     if (!u) return reply(res, 200, { engine: svc.engine, pending: svc.pending, workers: svc.W, classes: CLASSES });
     if (!/^https?:\/\//.test(u) || !app.cache.allowed(u)) return reply(res, 403, { error: 'host not allowed' });
+    // The page count of a PDF on disk the service has not looked at yet (pdfinfo: a few ms), so the
+    // browser need not parse it with pdf.js to know it.
+    if (svc.engine && !svc.infoNow(u) && app.cache.cached(u)) await Promise.race([svc.infoOf(u).catch(() => null), sleep(500)]);
     reply(res, 200, svc.stateOf(u, url.searchParams.get('w')));
   });
 

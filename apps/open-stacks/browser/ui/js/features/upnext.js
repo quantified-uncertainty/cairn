@@ -91,7 +91,8 @@ function tile(i, role) {
   const p = progressOf?.(items[i].id);
   const done = !!p?.done, frac = !done && p?.frac > 0.02 ? p.frac : 0;
   el.classList.toggle('read', done);
-  el.querySelector('.un-rd').textContent = done ? '✓ read' : frac ? Math.round(frac * 100) + '%' : '';
+  // "read", not a bare percentage: the Library beside it shows a book's share on disk as "55%".
+  el.querySelector('.un-rd').textContent = done ? '✓ read' : frac ? Math.round(frac * 100) + '% read' : '';
   let bar = el.querySelector('.un-bar');
   if (frac) { if (!bar) el.firstChild.append(bar = h('i', { className: 'un-bar' })); bar.style.width = (frac * 100).toFixed(1) + '%'; } else bar?.remove();
   return el;

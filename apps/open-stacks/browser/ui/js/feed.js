@@ -456,7 +456,8 @@ function paintLoaded() {
     const eta = rate > 0.05 ? (n2 - have) / rate : null;
     const fmt = (x) => (x < 90 ? `${Math.round(x)} s` : `${Math.round(x / 60)} min`);
     pctEl.hidden = loaded.pct >= 100;
-    pctEl.textContent = `${loaded.pct}% · ${ahead >= n2 - s0 ? 'rest ready' : ahead + ' ready ahead'}${eta ? ' · ~' + fmt(eta) : ''}`;
+    // The details in their own span: a narrow header (one bar) shows the percentage alone (style.css).
+    pctEl.replaceChildren(`${loaded.pct}%`, h('span', { className: 'lp-x', textContent: ` · ${ahead >= n2 - s0 ? 'rest ready' : ahead + ' ready ahead'}${eta ? ' · ~' + fmt(eta) : ''}` }));
     const { p50 } = sourceSpeed(tr?.it || {});
     pctEl.title = `${have} of ${n2} pages are on your disk. ${ahead} pages after these are ready to turn to instantly.`
       + ` The rest come from the Internet Archive${p50 ? `, about ${p50.toFixed(1)} s a page` : ''}${rate ? `; downloading ${rate.toFixed(1)} pages a second in the background` : ''}${eta ? `, about ${fmt(eta)} to go` : ''}.`;
