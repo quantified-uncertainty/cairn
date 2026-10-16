@@ -29,6 +29,25 @@ test('analyzeLum finds the ink box, blank pages and gutters', () => {
   assert.ok(g.gut > 0.47 && g.gut < 0.53, String(g.gut));
 });
 
+test('analyzeLum leaves out a thin strip alone in a side margin on born-digital pages', () => {
+  const W = 240, H = 310;
+  const withStrip = (x0, x1, y0 = 0.3, y1 = 0.75) => {
+    const lum = page(W, H, [0.15, 0.1, 0.85, 0.9]);
+    for (let y = Math.round(H * y0); y < Math.round(H * y1); y++) for (let x = Math.round(W * x0); x < Math.round(W * x1); x++) lum[y * W + x] = 20;
+    return lum;
+  };
+  const arxiv = core.analyzeLum(withStrip(0.04, 0.07), W, H, { scan: false }); // arXiv's stamp
+  assert.ok(Math.abs(arxiv.ink[0] - 0.15) < 0.01, JSON.stringify(arxiv.ink));
+  const right = core.analyzeLum(withStrip(0.93, 0.96), W, H, { scan: false });
+  assert.ok(Math.abs(right.ink[2] - 0.85) < 0.01, JSON.stringify(right.ink));
+  const near = core.analyzeLum(withStrip(0.12, 0.14), W, H, { scan: false }); // too close to the text: kept
+  assert.ok(near.ink[0] < 0.13, JSON.stringify(near.ink));
+  const wide = core.analyzeLum(withStrip(0.02, 0.09), W, H, { scan: false }); // too wide to be a stamp: kept
+  assert.ok(wide.ink[0] < 0.05, JSON.stringify(wide.ink));
+  const scan = core.analyzeLum(withStrip(0.04, 0.07), W, H); // scans keep marginal notes
+  assert.ok(scan.ink[0] < 0.08, JSON.stringify(scan.ink));
+});
+
 function raw(n, opts = {}) {
   const pages = [];
   for (let k = 0; k < n; k++) {

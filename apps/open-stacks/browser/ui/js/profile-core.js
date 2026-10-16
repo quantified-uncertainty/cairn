@@ -9,7 +9,7 @@
 
 export const SCHEMA = 1;
 /** Analysis generation: bump whenever an algorithm below changes, so stored profiles recompile lazily. */
-export const GEN = 2; // 2: born-digital pages are not scanner beds; full-bleed pages show whole; shared crops never cut ink
+export const GEN = 3; // 2: born-digital pages are not scanner beds; full-bleed pages show whole; shared crops never cut ink. 3: a thin strip alone in a side margin (arXiv's stamp, line numbers) is not part of the ink box
 /** Display hints both layers may give (analysis here, the augmentation from the model). */
 export const HINTS = {
   'one-up': 'One page at a time reads best (slides, landscape reports).',
@@ -86,6 +86,7 @@ export function analyzeLum(lum, W, H, { scan = true } = {}) {
   while (y1 > y0 && rws[y1] < rmin) y1--;
   while (x0 < x1 && cls[x0] < cmin) x0++;
   while (x1 > x0 && cls[x1] < cmin) x1--;
+  if (!scan) [x0, x1] = dropMarginStrips(cls, x0, x1, W, cmin);
   let inBox = 0;
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (lum[y * W + x] < thr) inBox++;
   // Gutter: an ink-free vertical run in the middle third of the box.
@@ -103,6 +104,25 @@ export function analyzeLum(lum, W, H, { scan = true } = {}) {
     ink: [r4(x0 / W), r4(y0 / H), r4(Math.min(1, (x1 + 1) / W)), r4(Math.min(1, (y1 + 1) / H))],
     gut, dens: r4(inBox / Math.max(1, (x1 - x0 + 1) * (y1 - y0 + 1))),
   };
+}
+/** Born-digital pages: a thin strip of ink alone in a side margin, as arXiv's vertical
+ *  "arXiv:…v1 [cs.AI] 28 Nov 2025" stamp or a review copy's line numbers, is not part of what
+ *  is read. Left in the ink box it keeps a wide margin on that page and gives it its own crop.
+ *  A strip at most 5% of the page wide, then at least 2.5% with no ink, with at least half the
+ *  page wide still beyond it, is dropped (either side). */
+function dropMarginStrips(cls, x0, x1, W, cmin) {
+  const maxStrip = W * 0.05, minGap = Math.max(2, W * 0.025);
+  const strip = (from, step, end) => {
+    let x = from;
+    while ((step > 0 ? x <= end : x >= end) && cls[x] >= cmin) x += step; // the strip
+    const sw = Math.abs(x - from);
+    let g = 0;
+    while ((step > 0 ? x <= end : x >= end) && cls[x] < cmin) { x += step; g++; } // the gap after it
+    return sw > 0 && sw <= maxStrip && g >= minGap && Math.abs(end - x) >= W * 0.5 ? x : null;
+  };
+  const l = strip(x0, 1, x1); if (l != null) x0 = l;
+  const r = strip(x1, -1, x0); if (r != null) x1 = r;
+  return [x0, x1];
 }
 /** Pad an unpadded box (array) by `pad` on every side, clamped to the page; returns an object box. */
 export const padBox = (a, pad = DEFAULT_PAD) => (a ? { x0: clamp01(a[0] - pad), y0: clamp01(a[1] - pad), x1: clamp01(a[2] + pad), y1: clamp01(a[3] + pad) } : null);
