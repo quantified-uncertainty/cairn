@@ -209,7 +209,7 @@ function applySections() {
 const REPEAT = {
   off: [],
   pages: ['l', 'h', 'ArrowRight', 'ArrowLeft'],
-  items: ['l', 'h', 'ArrowRight', 'ArrowLeft', 'j', 'k', 'ArrowDown', 'ArrowUp', ' ', 'PageDown', '[', ']', '+', '=', '-'],
+  items: ['l', 'h', 'ArrowRight', 'ArrowLeft', 'j', 'k', 'ArrowDown', 'ArrowUp', ' ', 'PageDown', '[', ']', '+', '=', '-', '_'],
 };
 const repOrig = new Map(); // binding -> its own repeat flag
 function applyRepeat() {
@@ -391,7 +391,7 @@ function secPages() {
     id: 'pages', title: 'Pages', note: 'PDFs and scans',
     keys: ['cropPad', 'pageGap', 'fit', 'lowres'], core: ['per', 'perAuto', 'crop', 'cols'],
     rows: [
-      row('Pages per spread', ['Fit shows 1 to 3, whatever fills the screen; ', kb('+'), ' ', kb('-'), ' ', kb('='), ' change it.'],
+      row('Pages per spread', ['Fit shows 1 to 3, whatever fills the screen; ', kb('+'), ' ', kb('-'), ' ', kb('\\'), ' change it.'],
         seg([['fit', 'Fit'], ...[1, 2, 3, 4, 5, 6].map((n) => [n, String(n)])], () => (state.perAuto ? 'fit' : state.per), (v) => {
           if (v === 'fit') setCore('perAuto', true); else { setCore('perAuto', false, true); setCore('per', v); }
         })),

@@ -169,7 +169,15 @@ function schedule(it) {
 // have no profile text: every page of a PDF (up to 300), one page per idle slice.
 const texts = new Map(); // id -> Promise<string|null>
 let lastNav = 0;
-on('nav', () => { lastNav = performance.now(); });
+on('nav', () => { lastNav = performance.now(); clearNotes(); });
+on('item:skim', clearNotes);
+/** Any move (a turn, a page, an item, a jump) takes the margin notes away at once: on a post they sit
+ *  in the text, which does not move with the turn, and were only replaced when the spread settled,
+ *  a second or two later. They come back for the new pages on 'spread:settled'. */
+function clearNotes() {
+  notesGen++; pending.clear(); clearTimeout(notesT); closePop();
+  for (const m of document.querySelectorAll('.aug-mk')) m.remove();
+}
 const idle = () => new Promise((r) => (window.requestIdleCallback ? requestIdleCallback(() => r(), { timeout: 1500 }) : setTimeout(r, 40)));
 function textFor(it) {
   if (it.kind === 'scan' || profileOf(it)?.assets?.text) return Promise.resolve(null);

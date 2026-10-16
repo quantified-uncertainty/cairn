@@ -209,11 +209,16 @@ export function moreLikeThis() {
 function setPer(d) {
   const i = current();
   if (flowHere(items[i])) {
-    const cols = d === 0 ? 0 : Math.max(1, Math.min(8, (state.flowCols || live.g.cols) + d));
+    const cols = d === 0 ? 0 : Math.max(1, Math.min(8, (state.flowCols || live?.g?.cols || 1) + d));
     state.flowCols = cols; saveScreenPref('flowCols');
-    if (cols) toast(`${cols} column${cols > 1 ? 's' : ''}`, { icon: 'columns-3', sub: 'Press = to fit the screen' }); else toast('Columns fit the screen', { icon: 'maximize' });
+    if (cols) toast(`${cols} column${cols > 1 ? 's' : ''}`, { icon: 'columns-3', sub: 'Press \\ to fit the screen' }); else toast('Columns fit the screen', { icon: 'maximize' });
   } else if (d === 0) { state.perAuto = true; saveScreenPref('perAuto'); toast('Pages fit the screen', { icon: 'maximize' }); }
-  else { state.perAuto = false; state.per = Math.max(1, Math.min(8, state.per + d)); saveScreenPref('perAuto'); saveScreenPref('per'); toast(`${state.per} page${state.per > 1 ? 's' : ''}`, { icon: 'columns-3', sub: 'Press = to fit the screen' }); }
+  else {
+    // From what is on screen: in Fit, + adds a page to the pages shown, not to an older count.
+    const now = state.perAuto ? state.shown || state.per : state.per;
+    state.perAuto = false; state.per = Math.max(1, Math.min(8, now + d)); saveScreenPref('perAuto'); saveScreenPref('per');
+    toast(`${state.per} page${state.per > 1 ? 's' : ''}`, { icon: 'columns-3', sub: 'Press \\ to fit the screen' });
+  }
   state.hist.set(i, []); showFeed();
 }
 function setFont(d) {
@@ -385,9 +390,12 @@ K('End', goEnd);
 K('g', () => { const it = items[current()]; const v = Number(window.prompt(`Go to page (1-${it.n})`)); if (v >= 1) goPage(v - 1); });
 K('s', toggleSave, ['s x m', 'save / less like this / more like this'], 30);
 K('x', lessLikeThis); K('m', moreLikeThis);
-K('+', () => setPer(1), ['+ - =', 'more / fewer pages or columns; = fits pages to the screen'], 20);
-K('=', () => setPer(0));
+// = is the + key without Shift, so it adds too; fitting to the screen is \\, which no one presses by accident.
+K('+', () => setPer(1), ['+ - \\', 'more / fewer pages or columns (= adds too); \\ fits them to the screen'], 20);
+K('=', () => setPer(1));
 K('-', () => setPer(-1));
+K('_', () => setPer(-1));
+K('\\', () => setPer(0));
 K(']', () => setFont(1), ['[ ]', 'smaller / larger text (posts and web pages)'], 21);
 K('[', () => setFont(-1));
 K('c', () => { state.cols = !state.cols; store.set('cols', state.cols); showFeed(); }, ['c C', 'split two-column pages / crop margins'], 22);
