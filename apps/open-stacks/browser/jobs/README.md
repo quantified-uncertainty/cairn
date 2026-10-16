@@ -184,6 +184,8 @@ Send a `User-Agent` that names the tool, e.g. `OpenStacksBrowser/0.3 jobs (https
 
 Fields it may set: `t`, `a`, `y`, `d`, `url`, `page`, `pdf`, `kind`, `n`, `ia`, `tags`, `lane`, or `drop: true`; plus `why`, `fixed`, `job`, and for metadata jobs `unknown: ["a"]`.
 
+**Writing material for the reader** (a digest, notes, a reading guide, a report: when a job or the person who sent you asks for one): write it as a bundle, a folder `<Title>.stack/` with `index.md` (front matter: title, authors, date, source, summary, tags), pictures in `assets/` by relative path and an optional `cover.jpg`, into the Local folder that person names. It appears in the reader's Local lane within seconds. Never write it into this repository or the cache folder. Formats, speed, pictures and math: `docs/authoring.md`.
+
 ## 8. Rebuild cheaply
 
 `node build-corpus.mjs --merge` appends every lane-file item not yet in `corpus.json`, applies `data/overrides.json`, and places what changed in the library tree. It makes no network requests and takes about a second. It folds in every `*.added.json`, other agents' too; that is expected. Items in the curated lane files (`data/lanes/*.json` without `.added`) wait for the full build: when `--merge` reports some "not in corpus.json yet", leave them out of your job.

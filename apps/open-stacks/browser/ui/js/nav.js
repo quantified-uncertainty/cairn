@@ -6,14 +6,18 @@ import { state, current, buildOrder, learn, saveScreenPref } from './state.js';
 import { isFlow } from './docs.js';
 import { startOf, randomTarget } from './prefetch.js';
 import { showFeed, paintHead } from './feed.js';
-import { live, vpToCol, elToCol } from './flow.js';
+import { live, vpToCol, elToCol, colPos } from './flow.js';
 import { setView, paintSaved } from './chrome.js';
 import { attachWheel } from './gesture.js';
 
-/** Say where we are just before a move or judgment, so that Back (features/back.js) can return here exactly. */
+/** Say where we are just before a move or judgment, so that Back (features/back.js) can return here exactly.
+ *  A flow document's columns move when its text reflows, so it also gets the text there: `at` for
+ *  `s`, `hat` for each column in `hist` (flow.js colPos; array reads, no layout). */
 export function before(label, extra) {
   const i = current(); if (i == null) return;
-  emit('nav:before', { label, i, pos: state.pos, s: state.start.get(i), hist: [...(state.hist.get(i) || [])], zoom: state.zoom, ...extra });
+  const s = state.start.get(i), hist = [...(state.hist.get(i) || [])];
+  const flow = isFlow(items[i]) && live?.id === items[i].id ? { at: colPos(s), hat: hist.map((c) => colPos(c)) } : null;
+  emit('nav:before', { label, i, pos: state.pos, s, hist, zoom: state.zoom, ...flow, ...extra });
 }
 const judged = () => ({ order: state.order.slice(), aff: structuredClone(state.aff), saved: state.saved.slice() });
 
@@ -365,11 +369,14 @@ function pageLeft(e) {
 K(['l', 'ArrowRight'], pageRight, ['l h', 'turn pages (→ ←); at the end or start, press twice for the next or previous item'], 11);
 K(['h', 'ArrowLeft'], pageLeft);
 K(['z', 'Enter'], () => toggleZoom(), ['z Esc', 'zoom to one page or column / up a level: unzoom, then the wall'], 12);
+/** Hooks fn() → true when an Esc with nothing left to close should not leave the Reader for the
+ *  Wall (features/headpop.js: a card just closed by itself, or the pointer is on the header). */
+export const escHolds = [];
 K('Escape', () => {
   if ($('#wheel-menu')) $('#wheel-menu').remove();
   else if (state.zoom) toggleZoom(false);
   else if (!$('#saved').hidden) $('#saved').hidden = true;
-  else setView('wall');
+  else if (!escHolds.some((fn) => fn())) setView('wall');
 });
 K('r', randomSpot, ['r', 'best pages, then random spots'], 13);
 K('t', () => goPage(0), ['t g', 'first page / go to page'], 14);

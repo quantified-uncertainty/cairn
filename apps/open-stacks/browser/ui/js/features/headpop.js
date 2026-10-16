@@ -33,6 +33,7 @@ import { state, current, SORTERS, score } from '../state.js';
 import { stayIn, leave, goTo, folderStack } from '../stack.js';
 import { itemIcon, typeOf, TYPES } from '../icons.js';
 import { summaries } from '../summary.js';
+import { escHolds } from '../nav.js';
 
 const REST_MS = 350, SWITCH_MS = 180, CLOSE_MS = 220, NEAR = 4, ROWS = 8;
 const head = $('#item-head');
@@ -79,6 +80,7 @@ let rest = null, restT = 0, closeT = 0, last = [NaN, NaN], moved = false, quietT
 // The kind of part a card was sent away from (Esc, l, j, Space, the wheel, a click on the part) while the
 // pointer stayed on it: not again until the pointer leaves that part, so a twitch does not bring it back.
 let dismissed = null;
+let shutAt = -Infinity; // when a card last closed (performance.now()), for Esc: escHolds below
 const busy = () => state.view !== 'feed' || document.hidden || !!$('.hd-menu') || !!$('#wheel-menu') || ($('#more') && !$('#more').hidden)
   || !!document.querySelector('#flag-dlg:not([hidden]), #st:not([hidden]), #keys:not([hidden])') || performance.now() < quietTill;
 function cancelRest() { clearTimeout(restT); restT = 0; rest = null; }
@@ -126,7 +128,7 @@ function focusIn() { btns()[0]?.focus({ preventScroll: true }); }
 // and any other key closes it and goes on to do what it does.
 function onKey(e) {
   if (!open) return;
-  if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); hide(true); return; }
+  if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); hide(true); shutAt = -Infinity; return; }
   if (/^(Shift|Control|Alt|Meta|CapsLock|Fn)$/.test(e.key)) return;
   if ((e.metaKey || e.ctrlKey) && /^c$/i.test(e.key)) return; // copying text selected in the card keeps it
   const inPop = pop.contains(e.target);
@@ -192,7 +194,7 @@ function show(part, byKey) {
 function hide(back = false) {
   keepOpen(); cancelRest();
   if (!open) return;
-  const { part, kind, byKey } = open; open = null;
+  const { part, kind, byKey } = open; open = null; shutAt = performance.now();
   // Closed while the pointer is still on its part (a key, the wheel, a click): dismissed. (After an item
   // change the part is a new element: the pointer is then still on the header.)
   dismissed = (part.isConnected ? part : head).matches(':hover') ? kind : null;
@@ -204,6 +206,10 @@ function hide(back = false) {
   if (part.isConnected && byKey && (back || had)) (part.matches('h1') ? part.querySelector('a') || part : part).focus({ preventScroll: true });
   else if (had) document.activeElement?.blur?.();
 }
+// An Esc meant for a card that has just closed by itself (the pointer left it, a wheel, an item
+// change), or pressed with the pointer on the header, does nothing rather than leave the Reader
+// for the Wall (nav.js escHolds). One that closes a card is not counted: a second Esc goes on.
+escHolds.push(() => performance.now() - shutAt < 500 || !!document.querySelector('#bar:hover, #item-head:hover'));
 // Anything that moves closes it.
 for (const ev of ['item:shown', 'item:skim', 'nav', 'view:changed', 'header:changed', 'stack:changed', 'overview']) on(ev, () => { cancelRest(); if (open) hide(); });
 addEventListener('resize', () => { if (open) hide(); });

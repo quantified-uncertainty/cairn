@@ -55,18 +55,27 @@ function measure(L) {
   const restore = atRest(flow);
   L.n = Math.max(1, Math.round((port.scrollWidth + g.gap) / g.pitch));
   const fr = flow.getBoundingClientRect();
-  const first = [], last = [], vpCol = [];
+  const first = [], last = [], vpCol = [], top = [];
+  const colOf = (r) => Math.max(0, Math.floor((r.left - fr.left + g.gap / 2) / g.pitch));
+  let j = -1;
   for (const b of flow.querySelectorAll('[data-vp]')) {
-    const r = b.getClientRects()[0]; if (!r) continue;
-    const c = Math.max(0, Math.floor((r.left - fr.left + g.gap / 2) / g.pitch));
+    j++;
+    const rs = b.getClientRects(), r = rs[0]; if (!r) continue;
+    const c = colOf(r);
     const vp = Number(b.dataset.vp);
     if (first[c] == null) first[c] = vp;
     last[c] = vp;
     if (vpCol[vp] == null) vpCol[vp] = c;
+    // The text at the top of each column, in units that survive a reflow: the first block
+    // fragment in it, as the block's index plus the share of the block's height above it (colPos).
+    if (rs.length === 1) { if (top[c] == null) top[c] = j; continue; }
+    let H = 0, above = 0;
+    for (const x of rs) H += x.height;
+    for (const x of rs) { const cx = colOf(x); if (top[cx] == null) top[cx] = j + (H ? above / H : 0); above += x.height; }
   }
   const running = []; let run = 0;
-  for (let c = 0; c < L.n; c++) { if (last[c] != null) run = last[c]; running[c] = run; }
-  Object.assign(L, { first, running, vpCol });
+  for (let c = 0; c < L.n; c++) { if (last[c] != null) run = last[c]; running[c] = run; if (top[c] == null) top[c] = c ? top[c - 1] : 0; }
+  Object.assign(L, { first, running, vpCol, top });
   restore();
 }
 
@@ -170,6 +179,18 @@ export function flowRange(s) {
 }
 /** The column where a stable page starts. */
 export const vpToCol = (vp) => live?.vpCol[vp] ?? live?.vpCol.findIndex((c, j) => j >= vp && c != null) ?? 0;
+/** Where the text at the top of column s is, in a form that outlives the layout (a block's
+ *  index plus the share of it above that point), or null. Back keeps it (nav.js before()). */
+export const colPos = (s, L = live) => L?.top?.[Math.max(0, Math.min(s ?? 0, L.n - 1))] ?? null;
+/** The column of the layout on screen that holds text position x (colPos): the same column
+ *  in the same layout; after a reflow (text size, column width), the one with that text. */
+export function posCol(x) {
+  const t = live?.top; if (!t?.length || x == null) return null;
+  let c = 0;
+  while (c + 1 < t.length && t[c + 1] <= x + 1e-6) c++;
+  while (c > 0 && t[c - 1] === t[c]) c--; // a column with no text of its own carries the one before
+  return c;
+}
 /** The column that contains an element of the flow. */
 export function elToCol(el) {
   const L = live; if (!L) return 0;

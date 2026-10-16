@@ -8,8 +8,8 @@
 //                                 on a Mac), a folder of pictures or sound, or a page that says
 //                                 why the file cannot be shown (not downloaded from iCloud, a zip…)
 //   GET  /local/epub/<id>/<path>  a file inside an EPUB (its pictures)
-//   GET  /local/rel/<id>/<path>   a file beside a document (a Markdown file's pictures), inside
-//                                 the configured folders only
+//   GET  /local/rel/<id>/<path>   a file beside a document (a Markdown file's pictures, a bundle's
+//                                 assets), inside the configured folders only
 //   GET  /local/settings          the folders and what was found; POST {dirs, order, autoAI}
 //   POST /local/rescan, POST /local/reveal {id} (show the file in Finder)
 //
@@ -184,14 +184,26 @@ export default async function (app) {
     if (req.method !== 'GET' && req.method !== 'HEAD') return fail(res, 405, 'GET only');
     const x = itemFrom(m);
     if (!x || x.gone) return fail(res, 404, 'not found');
-    let parts; try { parts = m[2].split('/').map(decodeURIComponent); } catch { return fail(res, 400, 'bad path'); }
-    let base = baseOf(x);
-    if (parts[0] === '~') { base = x.e.root.dir; parts = parts.slice(1); } // relative to the folder you configured (a link up and over: ../other/x.png)
-    if (!parts.length || parts.some((p) => !p || p === '.' || p === '..' || p.startsWith('.') || p.includes('\0') || p.includes('\\'))) return fail(res, 404, 'not found');
-    const real = within(resolve(base, ...parts));
+    const real = relFile(x, m[2]);
+    if (real === undefined) return fail(res, 400, 'bad path');
     if (!real) return fail(res, 404, 'not found');
     sendFile(req, res, real, L.mimeOf(real));
   });
+  /** The file a /local/rel path (what follows the id) names: its realpath inside a configured folder,
+   *  null when there is none, undefined when the path does not decode. */
+  function relFile(x, rest) {
+    let parts; try { parts = rest.split('/').map(decodeURIComponent); } catch { return undefined; }
+    let base = baseOf(x);
+    if (parts[0] === '~') { base = x.e.root.dir; parts = parts.slice(1); } // relative to the folder you configured (a link up and over: ../other/x.png)
+    if (!parts.length || parts.some((p) => !p || p === '.' || p === '..' || p.startsWith('.') || p.includes('\0') || p.includes('\\'))) return null;
+    return within(resolve(base, ...parts));
+  }
+  /** [w, h] of a picture a document links through /local/rel (its header only), for width/height. */
+  const relSize = (x) => (src) => {
+    const m = /^\/local\/rel\/(local:[0-9a-f]{20})\/([^?#]+)/.exec(src);
+    const f = m && m[1] === x.it.id ? relFile(x, m[2]) : null;
+    return f ? L.imageSize(f) : null;
+  };
 
   app.route('GET', /^\/local\/epub\/(local(?::|%3A)[0-9a-f]{20})\/(.+)$/i, async (req, res, url, m) => {
     if (!guard(req, res)) return;
@@ -263,18 +275,21 @@ export default async function (app) {
     // In iCloud only: macOS fetches it on the first read. Read it here without blocking, so the EPUB reader's
     // synchronous reads below do not hold up the whole server while it downloads.
     if (e.cloud === 'evicted' && e.type === 'epub' && !existsSync(cachePath(x))) await readFile(e.abs);
-    switch (e.type) {
+    // A bundle (docs/authoring.md): its index file, with pictures from inside its folder.
+    const bundle = e.kind === 'bundle' ? ' lc-bundle' : '';
+    if (bundle && !e.abs) return page(it.t, note([`<b>${L.esc(e.name)}</b> is a bundle without an index.md or index.html at its top, so there is nothing to show yet.`]));
+    switch (bundle ? e.itype : e.type) {
       case 'md': {
         const buf = await readFile(e.abs);
         if (buf.length > DOC_MAX) throw new Error('too large to show');
         const r = L.mdToHtml(L.decodeText(buf), { url: (v, img) => relUrl(x, v, img) });
-        return page(it.t, `<article class="lc-md">${r.html}</article>`);
+        return page(it.t, `<article class="lc-md${bundle}">${L.sizeImages(r.html, relSize(x))}</article>`);
       }
       case 'html': {
         const buf = await readFile(e.abs);
         if (buf.length > DOC_MAX) throw new Error('too large to show');
         const r = L.htmlDoc(buf, (v, img) => relUrl(x, v, img));
-        return page(it.t, `<article class="lc-html">${r.html}</article>`);
+        return page(it.t, `<article class="lc-html${bundle}">${L.sizeImages(r.html, relSize(x))}</article>`);
       }
       case 'txt': {
         const t = L.decodeText((await readFile(e.abs)).subarray(0, DOC_MAX));
@@ -308,7 +323,7 @@ export default async function (app) {
   app.route('GET', /^\/local\/doc\/(local(?::|%3A)[0-9a-f]{20})$/i, async (req, res, url, m) => {
     if (!guard(req, res)) return;
     const x = itemFrom(m);
-    if (!x || (!x.gone && x.e.kind === 'file' && !x.e.stubAbs && !within(x.e.abs))) return fail(res, 404, 'not found');
+    if (!x || (!x.gone && ((x.e.kind === 'file' && !x.e.stubAbs) || (x.e.kind === 'bundle' && x.e.abs)) && !within(x.e.abs))) return fail(res, 404, 'not found');
     let html;
     try { html = await docOf(x); } catch (e) { html = page(x.it.t, note([`This file could not be read: ${L.esc(e.message)}`])); }
     const buf = Buffer.from(html, 'utf-8');

@@ -22,7 +22,7 @@ messages and the design notes under `docs/`.
 | Learning | reading time and judgments reweight For you; explanations; boost, mute, ignore | `server/learn.mjs`, `features/learn.js` |
 | Dashboard (`Y`) | new items, reading, what it learned, how ranking moved, agent jobs | `features/dashboard.js` |
 | Agent jobs | the app writes job files; an outside agent (Claude Code) does them by `jobs/README.md`; `node jobs.mjs check --live` guards sources | `server/jobs.mjs`, `jobs.mjs`, `jobs/` |
-| Local folders | your own folders read in place (PDF, EPUB, Markdown, HTML, text, Word on a Mac, pictures, sound); iCloud placeholders | `server/local.mjs`, `features/local.js` |
+| Local folders | your own folders read in place (PDF, EPUB, Markdown, HTML, text, Word on a Mac, pictures, sound); iCloud placeholders; bundles (a `*.stack` folder or one with `index.md`/`index.html`: one item, pictures from inside it, metadata, cover; the format for agent-written material, `docs/authoring.md`) | `server/local.mjs`, `features/local.js` |
 | Widgets | an interactive component on a web page is replaced by a note and a link to the live page | `docs.js` `markWidgets` |
 | Corpus | 2,628 items in 11 lanes, including Technical books and the full DeepMind safety and Forecasting lanes (merged offline 16 October and tagged) | `corpus.json`, `data/lanes/` |
 | Speed | disk cache and warm-up of every lane's opening spreads; `/ready` load marks; page images from a second origin (127.0.0.1 beside localhost) so they never take the app's six connections | `server/cache.mjs`, `routes/60-warm.mjs`, `util.js` `PI` |
@@ -57,23 +57,25 @@ messages and the design notes under `docs/`.
   under 1600 px wide). Checked by its builder's 95-check script and an
   item-switch A/B (no slower), then by a separate reviewer at four window
   sizes (fixed: authors hidden or cut at laptop widths, a dismissed card
-  reopening on a pointer twitch). Left: keyboard focus on a header part is
-  lost on a page turn (the header is rebuilt), and Esc with nothing open
-  goes to the Wall.
+  reopening on a pointer twitch; Esc no longer leaves for the Wall just
+  after a card closed by itself or while the pointer is on the header).
+  Left: keyboard focus on a header part is lost on a page turn (the header
+  is rebuilt).
 
 ## Asked for, not done
 
 - Read-aloud voices: ordering and a local engine (Kokoro) wait on a
   decision about adding that dependency.
-- Google Docs import (export as `.docx` or HTML into a Local folder works
-  today), a documented bundle format for agent-written HTML with images
-  (`docs/authoring.md`), wiki sources as a Local lane.
+- Google Docs import (export as a web page into a Local folder, renamed to
+  `<name>.stack`, works today: `docs/authoring.md`), wiki sources as a
+  Local lane. Bundles have been checked only in headless Chromium, not in
+  Firefox.
 - Metadata indicators (`docs/meta/`): designed, not built.
 - The learning simulation (`test/learn-sim.test.mjs`) runs on the first 1,948
   corpus items, the set its scenarios were calibrated on; on the whole corpus
   scenario S4 (drift to forecasting) misses its band. Recalibrate it.
-- Known small bugs: the load-percentage tooltip wording on posts; Back on a
-  post that reflowed after a font change can land a page off.
+- PDFs in Local folders are drawn by pdf.js in the browser; the server
+  renders only web PDFs (`routes/16-render.mjs`).
 
 ## Moving the browser to its own directory or repository
 

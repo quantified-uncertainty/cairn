@@ -4,6 +4,8 @@
 .flow .lc-gallery figure { margin: 0 0 1em; break-inside: avoid; }
 .flow .lc-gallery img { max-height: 76vh; max-width: 100%; }
 .flow .lc-gallery figcaption { font: 11px var(--mono); color: var(--paper-ink-3, #5d5446); text-align: center; overflow-wrap: anywhere; }
+/* A picture whose size the server read from the file (a bundle's, a Markdown file's): its box is kept before it loads. */
+.flow img.lc-sized { width: min(100%, var(--w), calc(var(--flow-img-h, 42vh) * var(--r))); height: auto; aspect-ratio: auto var(--r); object-fit: contain; }
 /* A folder of sound files. */
 .flow .lc-playlist { padding-left: 1.4em; }
 .flow .lc-playlist li { margin-bottom: .7em; break-inside: avoid; }

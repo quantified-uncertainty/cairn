@@ -16,12 +16,15 @@ import { items } from '../corpus.js';
 import { state, current } from '../state.js';
 import { showFeed } from '../feed.js';
 import { paintSaved, paintLanes } from '../chrome.js';
+import { live, colPos, posCol } from '../flow.js';
+import { reopeners } from '../prefetch.js';
 
 const MAX = 100;
 // The 'nav:before' labels are identifiers (other modules match them); these read better in the notice.
 const SAY = { 'last spread': 'go to the end', jump: 'random spot', 'link jump': 'followed link', unzoom: 'zoom out', sort: 'sort change', 'leave stack': 'left the stack' };
 const stack = [];
 let restoring = false, tick = false, seen = null;
+let want = null; // { i, at, hat, s, hist }: a flow document Back is taking to a place in its text (undo)
 
 /** The snapshot is where the feed is now (a move that went nowhere, like Home on the first page). */
 const here = (s) => !s.order && !s.aff && !s.saved && s.lane == null && s.i === current() && s.pos === state.pos && s.zoom === state.zoom
@@ -36,14 +39,23 @@ function push(snap) {
 }
 // A move made outside the feed (a lane switch on the wall) is what changes the
 // item the feed shows next, so that change is not recorded a second time.
-on('nav:before', (snap) => { push(snap); if (state.view !== 'feed') seen = null; });
+on('nav:before', (snap) => { want = null; push(snap); if (state.view !== 'feed') seen = null; });
 
 // Where the feed is now, for item changes that come without 'nav:before'.
-on('spread:rendered', ({ i }) => {
+on('spread:rendered', ({ i, flow }) => {
   if (state.view !== 'feed' || restoring) return;
-  seen = { label: 'item change', i, pos: state.pos, s: state.start.get(i), hist: [...(state.hist.get(i) || [])], zoom: state.zoom };
+  const s = state.start.get(i), hist = [...(state.hist.get(i) || [])];
+  seen = { label: 'item change', i, pos: state.pos, s, hist, zoom: state.zoom, ...(flow ? { at: colPos(s, flow), hat: hist.map((c) => colPos(c, flow)) } : null) };
 });
-on('item:shown', ({ i }) => { if (seen && seen.i !== i) { push(seen); seen = null; } }); // once: the next place is set when it renders
+on('item:shown', ({ i }) => { if (want && want.i !== i) want = null; if (seen && seen.i !== i) { push(seen); seen = null; } }); // once: the next place is set when it renders
+// Ahead of memory.js's "where you left it": the column that holds the text Back returns to, in the
+// layout just measured (the very column when nothing reflowed), and the turn history with it.
+reopeners.unshift((i, it) => {
+  if (!want || want.i !== i || live?.id !== it.id) return null;
+  const w = want; want = null;
+  state.hist.set(i, w.hist.map((c, k) => posCol(w.hat[k]) ?? c));
+  return posCol(w.at) ?? w.s ?? null;
+});
 
 export function undo() {
   const snap = stack.pop();
@@ -57,7 +69,11 @@ export function undo() {
     let pos = state.order[snap.pos] === snap.i ? snap.pos : state.order.indexOf(snap.i);
     if (pos < 0) { pos = Math.min(state.pos + 1, state.order.length); state.order.splice(pos, 0, snap.i); }
     state.pos = pos;
-    if (snap.s == null) state.start.delete(snap.i); else state.start.set(snap.i, snap.s);
+    // A flow document goes back to the text it showed (snap.at), not to the column number, which
+    // a reflow since (text size, column width, the window) has moved: flow.js asks the reopener
+    // below for its column once the layout is measured.
+    want = snap.at != null ? { i: snap.i, at: snap.at, hat: snap.hat || [], s: snap.s, hist: snap.hist } : null;
+    if (snap.s == null || want) state.start.delete(snap.i); else state.start.set(snap.i, snap.s);
     state.hist.set(snap.i, snap.hist);
     state.zoom = snap.zoom; state.pendingVp = null;
     if (snap.lane != null) paintLanes();

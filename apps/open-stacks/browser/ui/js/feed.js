@@ -448,7 +448,16 @@ function paintLoaded() {
   const stops = []; let j = 0;
   while (j < n) { let e = j; while (e < n && bits[e] === bits[j]) e++; if (bits[j] === '1') stops.push(`transparent ${(100 * j) / n}%, var(--ink-3) ${(100 * j) / n}% ${(100 * e) / n}%, transparent ${(100 * e) / n}%`); j = e; }
   el.style.background = stops.length ? `linear-gradient(90deg, ${stops.join(', ')})` : 'none';
-  if (pctEl) {
+  const it = tr?.it;
+  if (pctEl && it && it.kind !== 'scan') {
+    // One file, on disk whole once it opens: no pages to fetch, and a flow document's pages are
+    // laid out here (its columns are not the stable pages the band counts).
+    const what = it.lane === 'local' ? 'file' : it.kind === 'web' ? 'web page' : it.kind === 'text' ? 'text' : 'post';
+    pctEl.hidden = loaded.pct >= 100;
+    pctEl.replaceChildren('on disk');
+    pctEl.title = isFlow(it) ? `The whole ${what} is on your disk: it loads in one piece and is laid out into pages here, so every page turns at once.`
+      : `The whole PDF is on your disk${it.n ? `, all ${it.n} pages` : ''}: no page is fetched again.`;
+  } else if (pctEl) {
     const have = [...bits].filter((b) => b === '1').length, n2 = bits.length;
     const s0 = tr ? (state.start.get(tr.i) ?? 0) + Math.max(1, state.shown || 1) : 0;
     let ahead = 0; while (s0 + ahead < n2 && bits[s0 + ahead] === '1') ahead++;
@@ -467,7 +476,11 @@ async function pollLoaded() {
   clearTimeout(pollT);
   const t = tr; if (!t) return;
   const it = t.it;
-  if (it.kind !== 'scan') { if (loaded?.id !== it.id) { loaded = { id: it.id, bits: '1'.repeat(Math.min(t.n, 1500)), pct: 100 }; paintLoaded(); } return; }
+  if (it.kind !== 'scan') {
+    if (loaded?.id !== it.id) { loaded = { id: it.id, bits: '1'.repeat(Math.min(t.n, 1500)), pct: 100 }; paintLoaded(); }
+    else if (document.getElementById('loadpct')?.title === '') paintLoaded(); // paintHead made the chip afresh
+    return;
+  }
   const urls = Array.from({ length: Math.min(t.n, 1500) }, (_, k) => scanUrl(it, k, SCAN_W));
   try {
     const bits = await (await fetch('/cached', { method: 'POST', body: JSON.stringify({ urls }) })).text();

@@ -5,7 +5,8 @@
 // live under the cache folder, CACHE/local/. server/routes/17-local.mjs serves it.
 //
 // Pure parts, imported by the tests: parseDirs, openZip, mdToHtml, epubBook,
-// htmlDoc, cleanTitle, goodTitle, parsePdfinfo, parseMdls, sniffPdf, classify,
+// htmlDoc, frontMatter, bundleOf, bundleMeta, imageSize(Of), sizeImages, cleanTitle,
+// goodTitle, parsePdfinfo, parseMdls, sniffPdf, classify,
 // planFolder, and LocalIndex (the scan, the metadata queue and the items).
 //
 // Item ids are 'local:' + the first 20 hex digits of sha1('<folder name>/<path inside it>'),
@@ -204,16 +205,35 @@ function splitRow(l) {
   return cells;
 }
 
+/** YAML-ish front matter: {data, body}. `key: value`, `key: [a, b]` and block lists
+ *  (`key:` then `- a` lines) are read; lists become arrays, keys lower case. */
+export function frontMatter(src) {
+  const text = String(src ?? '').replace(/^﻿/, '').replace(/\r\n?/g, '\n');
+  const fm = /^---[ \t]*\n([\s\S]*?)\n(?:---|\.\.\.)[ \t]*(?:\n|$)/.exec(text);
+  if (!fm) return { data: {}, body: text };
+  const data = {}, unq = (s) => s.trim().replace(/^(["'])(.*)\1$/, '$2');
+  let list = null;
+  for (const line of fm[1].split('\n')) {
+    const item = list && /^\s*-\s+(.*)$/.exec(line);
+    if (item) { list.push(unq(item[1])); continue; }
+    const m = /^([A-Za-z_][\w-]*)\s*:\s*(.*)$/.exec(line);
+    if (!m) continue;
+    const k = m[1].toLowerCase(), v = m[2].trim();
+    list = null;
+    if (!v) { data[k] = list = []; continue; }
+    const arr = /^\[(.*)\]$/.exec(v);
+    data[k] = arr ? arr[1].split(',').map(unq).filter(Boolean) : unq(v);
+  }
+  return { data, body: text.slice(fm[0].length) };
+}
+
 /** mdToHtml(src, {url(u, isImage) → u}) → {html, title, meta} */
 export function mdToHtml(src, opts = {}) {
   const ctx = { url: opts.url || ((u) => u), refs: new Map(), heads: [], ids: new Map() };
-  let text = String(src ?? '').replace(/^﻿/, '').replace(/\r\n?/g, '\n').replace(/\t/g, '    ');
+  const { data, body } = frontMatter(src);
+  let text = body.replace(/\t/g, '    ');
   const meta = {};
-  const fm = /^---[ \t]*\n([\s\S]*?)\n(?:---|\.\.\.)[ \t]*(?:\n|$)/.exec(text);
-  if (fm) {
-    for (const line of fm[1].split('\n')) { const m = /^([A-Za-z_][\w-]*)\s*:\s*(.*)$/.exec(line); if (m) meta[m[1].toLowerCase()] = m[2].trim().replace(/^(["'])(.*)\1$/, '$2'); }
-    text = text.slice(fm[0].length);
-  }
+  for (const [k, v] of Object.entries(data)) meta[k] = Array.isArray(v) ? v.join(', ') : v;
   // Link reference definitions (outside code fences).
   const lines = [];
   let fence = null;
@@ -339,7 +359,12 @@ function mdInline(s, ctx) {
   const link = (href, title, inner) => `<a href="${attr(ctx.url(href, false))}"${title ? ` title="${attr(title)}"` : ''}>${inner}</a>`;
   const img = (src, alt, title) => `<img src="${attr(ctx.url(src, true))}" alt="${attr(alt)}"${title ? ` title="${attr(title)}"` : ''}>`;
   const ref = (k) => ctx.refs.get(String(k).trim().toLowerCase().replace(/\s+/g, ' '));
-  s = s.replace(/\\([\\`*_{}[\]()#+\-.!|~<>])/g, (_, c) => keep(esc(c)));
+  // TeX math, as pandoc reads it: $$display$$, \[display\], \(inline\), and $inline$ (no space
+  // inside the dollars, no digit after the closing one, so "$5 and $10" stays text). The reader
+  // renders span.math-tex with KaTeX (features/webview.js); without it the TeX stays readable.
+  s = s.replace(/\$\$([\s\S]+?)\$\$|\\\[([\s\S]+?)\\\]|\\\(([\s\S]+?)\\\)|(?<![\\$\w])\$(?=[^\s$])((?:[^$\\]|\\[\s\S])+?)(?<=[^\s\\])\$(?![\d$])/g,
+    (_, d1, d2, i1, i2) => keep(`<span class="math-tex">${esc(d1 ?? d2 ? `\\[${(d1 ?? d2).trim()}\\]` : `\\(${(i1 ?? i2).trim()}\\)`)}</span>`));
+  s = s.replace(/\\([\\`*_{}[\]()#+\-.!|~<>$])/g, (_, c) => keep(esc(c)));
   s = s.replace(/(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/g, (_, b, c) => keep(`<code>${esc(c.replace(/\n/g, ' ').replace(/^ ([\s\S]*) $/, '$1'))}</code>`));
   s = s.replace(/<((?:https?|mailto|ftp):[^\s<>]+)>/gi, (_, u) => keep(link(u, null, esc(u))));
   s = s.replace(new RegExp(`<(/?)(${INLINE_TAGS})\\s*/?>`, 'gi'), (_, sl, t) => keep(`<${sl}${t.toLowerCase()}>`));
@@ -402,6 +427,160 @@ export function htmlDoc(buf, url) {
   if (Buffer.isBuffer(buf) && !/^(iso-8859-1|latin-?1|windows-1252|us-ascii|ascii)$/.test(cs || '')) raw = decodeText(buf);
   const title = textOf(/<title\b[^>]*>([\s\S]*?)<\/title>/i.exec(raw)?.[1] || '') || textOf(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i.exec(raw)?.[1] || '') || null;
   return { html: cleanHtml(bodyOf(raw), url), title };
+}
+
+// ------------------------------------------------------------------ bundles ----
+// A folder that is one document (docs/authoring.md): named "*.stack", or holding an
+// index.md / index.html at its top. Its text is the index file, its pictures come from
+// inside it through /local/rel, its subfolders are not Library folders, and its facts
+// come from front matter or the HTML head, with stack.json beside the index on top.
+
+export const STACK_DIR = /\.stack$/i;
+const INDEX_ORDER = ['index.md', 'index.markdown', 'index.html', 'index.htm', 'index.xhtml'];
+const COVER = /^cover\.(jpe?g|png|webp|avif|gif)$/i;
+/** bundleOf(folderName, fileNames) → null (an ordinary folder) | {index: name | null, itype: 'md' | 'html' | null, cover: name | null, sidecar: name | null}.
+ *  index.md comes before index.html (an HTML file beside it is usually made from it); a .stack folder
+ *  without an index file takes its first Markdown or HTML file. */
+export function bundleOf(dirName, names) {
+  const low = new Map(names.filter((n) => !n.startsWith('.')).map((n) => [n.toLowerCase(), n]));
+  let index = INDEX_ORDER.map((n) => low.get(n)).find(Boolean) || null;
+  if (!index && !STACK_DIR.test(dirName)) return null;
+  if (!index) index = [...low.values()].filter((n) => ['md', 'html'].includes(TYPES[extname(n).slice(1).toLowerCase()])).sort(natural)[0] || null;
+  return {
+    index, itype: index ? TYPES[extname(index).slice(1).toLowerCase()] : null,
+    cover: [...low.values()].filter((n) => COVER.test(n)).sort()[0] || null,
+    sidecar: low.get('stack.json') || null,
+  };
+}
+/** A path inside a bundle as written in stack.json ("images/cover.jpg"), or null: relative, no dot segments. */
+export const safeRel = (p) => (typeof p === 'string' && p && !/^[\\/]|^[a-z][a-z0-9+.-]*:|\\|\0/i.test(p) && p.split('/').every((s) => s && !s.startsWith('.')) ? p : null);
+const metaTags = (head) => {
+  const out = {};
+  for (const m of String(head).matchAll(/<meta\b[^>]*>/gi)) {
+    const k = (attrOf(m[0], 'name') || attrOf(m[0], 'property') || '').toLowerCase(), v = attrOf(m[0], 'content');
+    if (k && v != null) (out[k] ||= []).push(v.trim());
+  }
+  return out;
+};
+/** A bundle's facts: {title, author, year, date, url, summary, tags, cover} from the index file's
+ *  head (Markdown front matter, or <title>, <meta name="author|date|dcterms.date|description|keywords">,
+ *  <link rel="canonical">) and stack.json (same field names; it wins). */
+export function bundleMeta({ text = '', type = null, sidecar = null } = {}) {
+  const f = {};
+  const list = (v) => (Array.isArray(v) ? v : v == null || v === '' ? [] : String(v).split(type === 'html' ? /\s*,\s*/ : /\s*[;,]\s*|\s+and\s+/)).map((x) => String(x).trim()).filter(Boolean);
+  if (type === 'md') {
+    const { data } = frontMatter(text);
+    const m = mdToHtml(text.length < 64 * 1024 ? text : text.slice(0, text.lastIndexOf('\n')));
+    Object.assign(f, { title: m.title, authors: list(data.authors ?? data.author), date: data.date, url: data.source ?? data.url, summary: data.summary ?? data.description ?? data.abstract, tags: list(data.tags ?? data.keywords) });
+  } else if (type === 'html') {
+    const head = /<head\b[\s\S]*?(?:<\/head>|<body\b)/i.exec(text)?.[0] || text.slice(0, 16384);
+    const mt = metaTags(head);
+    const canon = [...head.matchAll(/<link\b[^>]*>/gi)].map((m) => m[0]).find((t) => /\srel\s*=\s*["']?canonical\b/i.test(t));
+    Object.assign(f, {
+      title: htmlDoc(text).title, authors: (mt.author || mt['dc.creator'] || mt.citation_author || []).flatMap((a) => list(a)),
+      date: (mt.date || mt['dcterms.date'] || mt['dc.date'] || mt.citation_date || mt['article:published_time'] || [])[0],
+      url: canon ? attrOf(canon, 'href') : null, summary: (mt.description || mt['og:description'] || [])[0], tags: (mt.keywords || []).flatMap((k) => list(k)),
+    });
+  }
+  let side = null;
+  if (sidecar != null) { try { side = JSON.parse(Buffer.isBuffer(sidecar) ? decodeText(sidecar) : String(sidecar)); } catch { side = null; } }
+  if (side && typeof side === 'object' && !Array.isArray(side)) {
+    const str = (v) => (typeof v === 'string' || typeof v === 'number' ? String(v) : null);
+    if (str(side.title)) f.title = str(side.title);
+    if (side.authors != null || side.author != null) f.authors = list(side.authors ?? side.author).filter((a) => typeof a === 'string' || typeof a === 'number');
+    if (str(side.date)) f.date = str(side.date);
+    if (str(side.source ?? side.url)) f.url = str(side.source ?? side.url);
+    if (str(side.summary ?? side.description)) f.summary = str(side.summary ?? side.description);
+    if (side.tags != null) f.tags = list(side.tags);
+    if (safeRel(side.cover)) f.cover = side.cover;
+  }
+  const date = String(f.date ?? '').trim();
+  const day = /^(\d{4}-\d{2}-\d{2})\b/.exec(date)?.[1];
+  const tags = [...new Set((f.tags || []).map((t) => String(t).toLowerCase().trim().replace(/\s+/g, '-')).filter((t) => t && t.length <= 60))].slice(0, 20);
+  return {
+    title: f.title ? decodeEnt(String(f.title)).trim() || null : null,
+    author: (f.authors || []).map(String).join(', ') || null,
+    year: yearOf(date), date: day && !Number.isNaN(Date.parse(day)) ? day : null,
+    url: /^https?:\/\/\S+$/i.test(String(f.url ?? '').trim()) ? String(f.url).trim() : null,
+    summary: f.summary ? decodeEnt(String(f.summary)).replace(/\s+/g, ' ').trim().slice(0, 1200) || null : null,
+    tags, cover: f.cover || null,
+  };
+}
+
+/** Pixel size of an image from its first bytes: PNG, JPEG (EXIF rotation applied), GIF, WebP,
+ *  AVIF, BMP and SVG (width/height or viewBox). read(len, pos) → Buffer. → [w, h] | null */
+export function imageSizeOf(read) {
+  const b = read(64, 0);
+  if (b.length < 24) return /<svg/i.test(b.toString('latin1')) ? svgSize(read(8192, 0).toString('utf-8')) : null;
+  if (b.readUInt32BE(0) === 0x89504e47) return [b.readUInt32BE(16), b.readUInt32BE(20)];
+  if (b.toString('latin1', 0, 4) === 'GIF8') return [b.readUInt16LE(6), b.readUInt16LE(8)];
+  if (b.toString('latin1', 0, 2) === 'BM') return [b.readInt32LE(18), Math.abs(b.readInt32LE(22))];
+  if (b.toString('latin1', 0, 4) === 'RIFF' && b.toString('latin1', 8, 12) === 'WEBP') {
+    const c = b.toString('latin1', 12, 16);
+    if (c === 'VP8 ') return [b.readUInt16LE(26) & 0x3fff, b.readUInt16LE(28) & 0x3fff];
+    if (c === 'VP8L') return [1 + (((b[22] & 0x3f) << 8) | b[21]), 1 + (((b[24] & 0x0f) << 10) | (b[23] << 2) | ((b[22] & 0xc0) >> 6))];
+    if (c === 'VP8X') return [1 + b.readUIntLE(24, 3), 1 + b.readUIntLE(27, 3)];
+    return null;
+  }
+  if (b.toString('latin1', 4, 8) === 'ftyp') { // AVIF / HEIF: the 'ispe' property
+    const s = read(65536, 0); const k = s.indexOf('ispe');
+    return k > 0 && k + 16 <= s.length ? [s.readUInt32BE(k + 8), s.readUInt32BE(k + 12)] : null;
+  }
+  if (b[0] === 0xff && b[1] === 0xd8) {
+    let pos = 2, turn = false;
+    for (let n = 0; n < 400; n++) {
+      const m = read(4, pos);
+      if (m.length < 4 || m[0] !== 0xff) return null;
+      const mk = m[1], len = m.readUInt16BE(2);
+      if (mk === 0xff) { pos++; continue; }
+      if (mk === 0xe1) { const x = read(Math.min(len, 65536), pos + 4); turn = exifTurned(x); }
+      if ((mk >= 0xc0 && mk <= 0xcf) && mk !== 0xc4 && mk !== 0xc8 && mk !== 0xcc) {
+        const f = read(9, pos); if (f.length < 9) return null; // FF Cn, length, precision, height, width
+        const hh = f.readUInt16BE(5), w = f.readUInt16BE(7);
+        return turn ? [hh, w] : [w, hh];
+      }
+      pos += 2 + len;
+    }
+    return null;
+  }
+  const t = read(8192, 0).toString('utf-8');
+  return /<svg\b/i.test(t) ? svgSize(t) : null;
+}
+/** EXIF orientation 5-8: the picture is shown turned a quarter, width and height swap. */
+function exifTurned(x) {
+  if (x.toString('latin1', 0, 6) !== 'Exif\0\0') return false;
+  const t = x.subarray(6), le = t.toString('latin1', 0, 2) === 'II';
+  const u16 = (o) => (le ? t.readUInt16LE(o) : t.readUInt16BE(o)), u32 = (o) => (le ? t.readUInt32LE(o) : t.readUInt32BE(o));
+  try {
+    const ifd = u32(4), n = u16(ifd);
+    for (let k = 0; k < n; k++) { const e = ifd + 2 + 12 * k; if (u16(e) === 0x0112) return u16(e + 8) >= 5 && u16(e + 8) <= 8; }
+  } catch { /* cut short */ }
+  return false;
+}
+function svgSize(t) {
+  const tag = /<svg\b[^>]*>/i.exec(t)?.[0]; if (!tag) return null;
+  const px = (v) => { const m = /^\s*([\d.]+)\s*(px)?\s*$/.exec(v || ''); return m ? Number(m[1]) : NaN; };
+  const w = px(attrOf(tag, 'width')), hh = px(attrOf(tag, 'height'));
+  if (w > 0 && hh > 0) return [Math.round(w), Math.round(hh)];
+  const vb = (attrOf(tag, 'viewBox') || '').trim().split(/[\s,]+/).map(Number);
+  return vb.length === 4 && vb[2] > 0 && vb[3] > 0 ? [Math.round(vb[2]), Math.round(vb[3])] : null;
+}
+/** imageSize(file) → [w, h] | null (reads the header only). */
+export function imageSize(file) {
+  let fd; try { fd = openSync(file, 'r'); } catch { return null; }
+  try { const s = imageSizeOf((len, pos) => readFully(fd, len, pos)); return s && s[0] > 0 && s[1] > 0 && s[0] < 1e5 && s[1] < 1e5 ? s : null; } catch { return null; } finally { closeSync(fd); }
+}
+/** width and height on each <img> that has neither, from sizeOf(src) → [w, h] | null; at most max lookups,
+ *  so the reader keeps each picture's box before it loads and the pages do not move. */
+export function sizeImages(html, sizeOf, max = 400) {
+  let n = 0;
+  return String(html).replace(/<img\b[^>]*>/gi, (tag) => {
+    if (/\s(width|height)\s*=/i.test(tag) || n >= max) return tag;
+    const src = attrOf(tag, 'src'); if (!src) return tag;
+    n++;
+    const s = sizeOf(src);
+    return s ? tag.replace(/\s*\/?>$/, (end) => ` width="${s[0]}" height="${s[1]}"${end}`) : tag;
+  });
 }
 
 // ------------------------------------------------------------------- EPUB ----
@@ -575,7 +754,7 @@ export function planFolder(files, subdirs = []) {
 // ------------------------------------------------------------------ the index ----
 
 const TOOL = (cmd, args = ['-v']) => { try { const r = spawnSync(cmd, args, { stdio: 'ignore', timeout: 3000 }); return !(r.error && r.error.code === 'ENOENT'); } catch { return false; } };
-const KIND_LABEL = { pdf: 'PDF', epub: 'EPUB', md: 'Markdown', html: 'web page', txt: 'text', word: 'Word document', image: 'image', audio: 'audio', archive: 'archive', comic: 'comic book archive', kindle: 'Kindle book', djvu: 'DjVu', pages: 'Pages document' };
+const KIND_LABEL = { pdf: 'PDF', epub: 'EPUB', md: 'Markdown', html: 'web page', txt: 'text', word: 'Word document', image: 'image', audio: 'audio', archive: 'archive', comic: 'comic book archive', kindle: 'Kindle book', djvu: 'DjVu', pages: 'Pages document', bundle: 'bundle' };
 export const sizeText = (b) => (b >= 1e9 ? (b / 1e9).toFixed(1) + ' GB' : b >= 1e6 ? Math.round(b / 1e6) + ' MB' : b >= 1e3 ? Math.round(b / 1e3) + ' KB' : b + ' bytes');
 const shq = (p) => `'${String(p).replace(/'/g, `'\\''`)}'`;
 const run = (cmd, args, ms = 15000) => new Promise((res) => execFile(cmd, args, { timeout: ms, maxBuffer: 4 * 1024 * 1024, encoding: 'utf-8' }, (e, out) => res(e && !out ? null : out)));
@@ -627,6 +806,24 @@ export class LocalIndex {
       const walk = async (abs, rel, depth) => {
         let list;
         try { list = await readdir(abs, { withFileTypes: true }); } catch (e) { if (!rel) { root.ok = false; root.error = why(e); } else skip('unreadable folder'); return { n: 0, newest: 0, here: [], subs: [] }; }
+        // A bundle (a subfolder, never a configured folder itself): one item in the folder above; what is inside is its own.
+        const bu = rel ? bundleOf(basename(rel), list.filter((d) => d.isFile()).map((d) => d.name)) : null;
+        if (bu) {
+          if (files >= this.maxFiles) { root.truncated = true; return { n: 0, newest: 0, here: [], subs: [] }; }
+          const st = async (n) => (n ? lstat(join(abs, n)).catch(() => null) : null);
+          const [ist, cst, sst] = [await st(bu.index), await st(bu.cover), await st(bu.sidecar)];
+          if (bu.index && !ist) bu.index = null;
+          files++;
+          const mtimeMs = Math.max(0, ...[ist, cst, sst].filter(Boolean).map((s) => s.mtimeMs));
+          const cloud = ist && this.platform === 'darwin' && ist.size > 4096 && ist.blocks === 0 ? 'evicted' : null;
+          const e = {
+            root, dirRel: rel, depth, kind: 'bundle', type: 'bundle', itype: bu.index ? bu.itype : null, ext: 'bundle', up: true,
+            dir: abs, abs: bu.index ? join(abs, bu.index) : null, rel: rel + '/#bundle', name: basename(rel), size: ist?.size || 0,
+            mtimeMs: mtimeMs || (await lstat(abs).catch(() => ({ mtimeMs: 0 }))).mtimeMs, birthtimeMs: ist?.birthtimeMs || 0, files: [], cloud,
+            cover: cst ? bu.cover : null, sidecar: sst ? join(abs, bu.sidecar) : null, sideSize: sst?.size || 0,
+          };
+          return { n: 1, newest: e.mtimeMs, here: [e], subs: [] };
+        }
         const fileRows = [], dirs = [];
         for (const d of list) {
           const name = d.name;
@@ -683,8 +880,8 @@ export class LocalIndex {
     this.pump();
   }
   // |2: titles read again after the reader learned UTF-16 and Latin-1 text (bump when readMeta changes).
-  metaKey(e) { return `${e.abs}|${e.size}|${Math.round(e.mtimeMs)}|2`; }
-  needsMeta(e) { return e.kind === 'file' && !e.stubAbs && ['pdf', 'epub', 'md', 'html', 'txt', 'word'].includes(e.type); }
+  metaKey(e) { return `${e.abs || e.dir}|${e.size}${e.kind === 'bundle' ? '+' + (e.sideSize || 0) : ''}|${Math.round(e.mtimeMs)}|2`; }
+  needsMeta(e) { return e.kind === 'bundle' ? !!(e.abs || e.sidecar) : e.kind === 'file' && !e.stubAbs && ['pdf', 'epub', 'md', 'html', 'txt', 'word'].includes(e.type); }
   pump() {
     while (this.working < 3 && this.queue.length) {
       const e = this.queue.shift();
@@ -721,6 +918,12 @@ export class LocalIndex {
   }
   async readMeta(e) {
     const f = e.abs;
+    if (e.kind === 'bundle') {
+      let text = '', sidecar = null;
+      if (f && !e.cloud) { const fd = openSync(f, 'r'); try { text = decodeText(readFully(fd, 64 * 1024, 0)); } finally { closeSync(fd); } }
+      if (e.sidecar) { const fd = openSync(e.sidecar, 'r'); try { sidecar = readFully(fd, 256 * 1024, 0); } finally { closeSync(fd); } }
+      return bundleMeta({ text, type: e.itype, sidecar });
+    }
     if (e.type === 'pdf') {
       // A file iCloud has not downloaded is never read here (that would download it): Spotlight knows its facts.
       if (e.cloud && this.tools.mdls) return parseMdls(await run('mdls', ['-name', 'kMDItemTitle', '-name', 'kMDItemAuthors', '-name', 'kMDItemNumberOfPages', '-name', 'kMDItemContentCreationDate', f]) || '');
@@ -780,7 +983,7 @@ export class LocalIndex {
     const dir = e.up ? (posix.dirname(e.dirRel) === '.' ? '' : posix.dirname(e.dirRel)) : e.dirRel;
     const sub = dir ? dir.split('/') : [];
     const id = idOf(root.name, e.rel);
-    const m = (e.kind === 'file' && this.meta.get(this.metaKey(e))) || {};
+    const m = ((e.kind === 'file' || e.kind === 'bundle') && this.meta.get(this.metaKey(e))) || {};
     const ver = Math.round(e.mtimeMs).toString(36) + e.size.toString(36);
     const fileUrl = `/local/file/${id}?v=${ver}`, docUrl = `/local/doc/${id}?v=${ver}`;
     let kind = 'html', url = docUrl, page = e.kind === 'file' && !e.stubAbs ? fileUrl : undefined;
@@ -812,6 +1015,15 @@ export class LocalIndex {
       ...(e.files.length > 1 ? { count: e.files.length } : {}),
       ...(e.cloud ? { cloud: e.cloud } : {}),
     };
+    if (e.kind === 'bundle') {
+      // The source it was made from is the "original" (the header's link); a stated date wins over the file's.
+      if (m.url) it.page = m.url;
+      if (m.date) it.d = m.date;
+      if (m.summary) it.ab = m.summary;
+      if (m.tags?.length) it.tags = m.tags;
+      const cover = m.cover || e.cover;
+      if (cover) it.cover = `/local/rel/${id}/${cover.split('/').map(encodeURIComponent).join('/')}?v=${ver}`;
+    }
     return it;
   }
   /** {e, it, gone?} for an id, or null. */

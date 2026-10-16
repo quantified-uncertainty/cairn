@@ -180,3 +180,66 @@ export function makeFolder(dir, { links = true } = {}) {
   if (links) { try { symlinkSync('/etc', join(dir, 'escape')); } catch { /* no symlinks here */ } }
   return dir;
 }
+
+/** Words for a document long enough to take several pages. */
+const prose = (k, n) => Array.from({ length: n }, (_, j) => `bundle${k}w${j}`).join(' ');
+/**
+ * Bundles (docs/authoring.md): folders that are one document each.
+ *   Field Report.stack/  index.md (front matter, figures in assets/ and images/deep/, TeX), cover.png,
+ *                        notes/draft.md and assets/ (two pictures: a gallery anywhere else)
+ *   site-export/         index.html (head metadata, a script, handlers, MathML, a pandoc math span),
+ *                        images/{chart.png, b.png}, stack.json (a new title, tags, the cover)
+ *   Loose.stack/         article.md only (no index file)
+ *   Empty.stack/         a picture only
+ *   plain/               notes.md (an ordinary folder, for contrast)
+ */
+export function makeBundles(dir, { links = true } = {}) {
+  const rep = join(dir, 'Field Report.stack');
+  put(join(rep, 'index.md'), `---
+title: "A Field Report on Synthetic Stacks"
+authors:
+  - Ada Example
+  - Bo Sample
+date: 2025-07-14
+source: https://example.org/field-report
+summary: What happens when a folder is one document.
+tags: [Synthetic Testing, bundles]
+---
+
+# A Field Report on Synthetic Stacks
+
+Opening paragraph of the field report. ${prose(0, 60)}
+
+![Figure 1: a wide checkerboard](assets/fig-1.png)
+
+Inline math $a^2 + b^2 = c^2$ and a price of $5 and $10 that stays text.
+
+$$\\int_0^1 x\\,dx = \\tfrac12$$
+
+${Array.from({ length: 14 }, (_, k) => `## Section ${k + 1}\n\n${prose(k + 1, 170)}.\n\n${k === 3 ? '![Figure 2: a square](assets/fig-2.png)\n\n' : ''}${k === 8 ? '![Figure 3: from a subfolder](images/deep/fig-3.png)\n\n' : ''}`).join('')}
+Closing paragraph of the field report.
+`);
+  put(join(rep, 'cover.png'), makePng(120, 160));
+  put(join(rep, 'assets', 'fig-1.png'), makePng(640, 360));
+  put(join(rep, 'assets', 'fig-2.png'), makePng(400, 400, [40, 90, 200]));
+  put(join(rep, 'images', 'deep', 'fig-3.png'), makePng(300, 200, [30, 150, 60]));
+  put(join(rep, 'notes', 'draft.md'), '# A Draft Inside The Bundle\n\nNot a Library item.\n');
+  const site = join(dir, 'site-export');
+  put(join(site, 'index.html'), `<!doctype html><html><head><meta charset="utf-8"><title>An Exported Site Page</title>
+<meta name="author" content="Cy Writer"><meta name="author" content="Di Editor"><meta name="dcterms.date" content="2024-11-02">
+<meta name="description" content="A page exported with its pictures."><meta name="keywords" content="exports, html">
+<link rel="canonical" href="https://example.org/exported"><script>window.bad = 1</script><style>p { color: red }</style></head>
+<body><h1>An Exported Site Page</h1><p>First paragraph of the exported page.</p>
+<figure><img src="images/chart.png" alt="A chart" onerror="alert(1)"><figcaption>Figure 1. A chart.</figcaption></figure>
+<p><a href="javascript:alert(2)">bad link</a> <a href="#sec">inside</a> <a href="https://example.org/">outside</a></p>
+<p>MathML: <math><mi>x</mi><mo>=</mo><mn>2</mn></math> and <span class="math inline">\\(y^2\\)</span>.</p>
+<p><img src="images/b.png" alt="A second picture" width="50" height="25"></p></body></html>`);
+  put(join(site, 'images', 'chart.png'), makePng(800, 500));
+  put(join(site, 'images', 'b.png'), makePng(64, 32));
+  put(join(site, 'stack.json'), JSON.stringify({ title: 'The Exported Site, Retitled', tags: ['Forecasting', 'AI Safety'], cover: 'images/chart.png' }));
+  put(join(dir, 'Loose.stack', 'article.md'), '# The Loose Article\n\nA bundle without an index file.\n');
+  put(join(dir, 'Empty.stack', 'only.png'), PNG);
+  put(join(dir, 'plain', 'notes.md'), '# Plain Notes\n\nAn ordinary folder.\n');
+  if (links) { try { symlinkSync('/etc/hostname', join(rep, 'assets', 'escape.png')); } catch { /* no symlinks here */ } }
+  return dir;
+}

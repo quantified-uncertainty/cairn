@@ -48,7 +48,7 @@ const isPost = (it) => it.kind === 'html' && /lesswrong|alignmentforum|effective
 function kindOf(it) {
   if (it.kind === 'scan' || (it.kind === 'pdf' && iaOf(it))) return 'book';
   if (it.kind === 'pdf') return 'paper';
-  return isPost(it) ? 'post' : 'cloth';
+  return isPost(it) || it.cover ? 'post' : 'cloth'; // it.cover: a Local bundle's cover picture (docs/authoring.md)
 }
 const nOf = (it) => digested(it)?.n || it.n || META[it.id]?.n || 0;
 /** Can this tile show pages right now? Posts need their text in memory; PDFs and scans only a page count. */
@@ -270,7 +270,7 @@ on('summary:updated', ({ id, summary }) => { for (const T of tiles) if (T.it.id 
 const div = (cls, text) => h('div', { className: cls, textContent: text || '' });
 function coverPost(T) {
   const { it } = T; const m = META[it.id] || {};
-  const lead = T.lead ?? m.lead;
+  const lead = it.cover && T.lead !== '' ? it.cover : T.lead ?? m.lead;
   const style = lead ? 'photo' : ['paper', 'ink', 'tint'][hash(it.id) % 3];
   const line = it.hook || (style === 'paper' || style === 'photo' ? m.first || m.pull : m.pull || m.first) || '';
   const quote = !it.hook && line && line === m.pull;

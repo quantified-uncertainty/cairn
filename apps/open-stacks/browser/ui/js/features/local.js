@@ -43,6 +43,17 @@ export function localHtml(src, it = null) {
       else if (/^(href|src|xlink:href|poster|action|data|background|values|to|from|by)$/.test(n) && /^(javascript|vbscript|data:(?!image\/))/i.test(a.value.replace(/[\u0000- ]/g, ''))) el.removeAttribute(a.name);
     }
   }
+  // Pictures with a size (the server reads it from the file): their box is kept before they load,
+  // as features/webview.js does for web pages, so the pages do not move (prepareFlow drops width and height).
+  for (const img of doc.body.querySelectorAll('img[width][height]')) {
+    const w = parseFloat(img.getAttribute('width')), hh = parseFloat(img.getAttribute('height'));
+    if (!(w > 8 && hh > 8) || /%/.test(img.getAttribute('width') + img.getAttribute('height'))) continue;
+    img.style.setProperty('--w', w + 'px'); img.style.setProperty('--r', String(w / hh));
+    img.classList.add('lc-sized');
+  }
+  // TeX math as pandoc writes it (--katex, --mathjax: span.math.inline / .display holding \(…\) or \[…\]):
+  // features/webview.js renders span.math-tex with KaTeX. MathML needs nothing: the browser draws it.
+  for (const m of doc.body.querySelectorAll('span.math.inline, span.math.display')) if (/^\s*\\[([]/.test(m.textContent) && !m.children.length) m.className = 'math-tex';
   // A document's own first heading that repeats its title (shown above it already) goes.
   const first = doc.body.querySelector('article > :first-child');
   if (it && first && /^H[12]$/.test(first.tagName) && first.textContent.trim().toLowerCase() === String(it.t || '').trim().toLowerCase()) first.remove();
@@ -112,14 +123,16 @@ async function reveal(it) {
   } catch (e) { toast('Could not show it', { icon: 'circle-alert', kind: 'bad', sub: e.message }); }
 }
 const SIZE = (b) => (b >= 1e9 ? (b / 1e9).toFixed(1) + ' GB' : b >= 1e6 ? Math.round(b / 1e6) + ' MB' : Math.max(1, Math.round(b / 1e3)) + ' KB');
-const KIND = { pdf: 'PDF', epub: 'EPUB', md: 'Markdown', markdown: 'Markdown', html: 'web page', htm: 'web page', txt: 'text', gallery: 'pictures', playlist: 'sound', zip: 'zip archive' };
+const KIND = { pdf: 'PDF', epub: 'EPUB', md: 'Markdown', markdown: 'Markdown', html: 'web page', htm: 'web page', txt: 'text', gallery: 'pictures', playlist: 'sound', zip: 'zip archive', bundle: 'bundle' };
 registerWhyLine((it) => {
   if (!isLocal(it)) return null;
   const mac = info ? info.platform === 'darwin' : /Mac/.test(navigator.platform);
   const what = [KIND[it.ext] || (it.ext ? it.ext.toUpperCase() : 'file') + (it.count ? '' : ' file'), it.count ? `${it.count} files` : null, it.size ? SIZE(it.size) : null].filter(Boolean).join(', ');
   const el = h('div', { className: 'lc-why' }, h('span', { className: 'lc-what', textContent: what }));
   if (!it.gone) el.append(h('button', { type: 'button', className: 'lc-btn', textContent: mac ? 'Show in Finder' : 'Show in folder', title: 'Open the folder it is in', onclick: () => reveal(it) }));
-  if (it.page) el.append(h('a', { className: 'lc-btn', href: it.page, target: '_blank', rel: 'noopener', textContent: 'The file ↗', title: 'The file itself, in a new tab' }));
+  if (it.page) el.append(/^https?:/.test(it.page) // a bundle's source (docs/authoring.md)
+    ? h('a', { className: 'lc-btn', href: it.page, target: '_blank', rel: 'noopener', textContent: 'The source ↗', title: 'Where this was made from, in a new tab' })
+    : h('a', { className: 'lc-btn', href: it.page, target: '_blank', rel: 'noopener', textContent: 'The file ↗', title: 'The file itself, in a new tab' }));
   const cmd = /brctl download (.+)$/.exec(it.why || '')?.[1];
   if (cmd) el.append(h('button', { type: 'button', className: 'lc-btn', textContent: 'Copy the command', title: 'brctl download … (paste it into Terminal)', onclick: async () => { try { await navigator.clipboard.writeText('brctl download ' + cmd.replace(/\)$/, '')); toast('Copied', { icon: 'circle-check', kind: 'ok', sub: 'Paste it into Terminal' }); } catch { toast('Could not copy', { icon: 'circle-alert', kind: 'bad' }); } } }));
   if (it.private) el.append(h('span', { className: 'lc-ai', textContent: 'AI only on request', title: 'Summaries and reading guides of your own files are made only when you ask (a), because they send the text to Claude. Settings › Local folders changes it.' }));

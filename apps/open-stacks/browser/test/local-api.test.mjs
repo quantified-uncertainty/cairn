@@ -103,7 +103,7 @@ test('documents: EPUB with its pictures, Markdown with its pictures, a gallery, 
   const page = await find('A Local Page');
   html = await (await get(page.url)).text();
   assert.ok(!/window\.bad|onmouseover|javascript:/.test(html), 'scripts, handlers and javascript: links are gone');
-  assert.match(html, new RegExp(`<img src="/local/rel/${page.id}/Papers/pics/dot.png">`));
+  assert.match(html, new RegExp(`<img src="/local/rel/${page.id}/Papers/pics/dot.png" width="16" height="16">`), 'a picture keeps its box: width and height from the file');
   r = await get(page.url);
   assert.match(r.headers.get('content-security-policy') || '', /sandbox/, 'opened directly, a document runs in a sandbox');
 });
