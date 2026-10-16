@@ -285,7 +285,7 @@ export function paintPos(it, s, c, n, flow = false) {
   const last = flow ? !!live && (state.start.get(current()) ?? 0) + live.g.cols >= live.n : s + c >= n;
   const nx = last ? items[state.order[state.pos + 1]] : null;
   const next = !last ? '' : nx ? ` · ▸ next: ${nx.t.length > 48 ? nx.t.slice(0, 46) + '…' : nx.t}` : ' · end of lane';
-  el.textContent = `${state.pos + 1}/${state.order.length} · ${unit} ${s + 1}–${Math.min(n, s + c)} of ${n}${state.zoom ? ' · zoom' : ''}`;
+  el.textContent = `${state.pos + 1}/${state.order.length} · ${unit} ${s + 1}–${Math.min(n, s + c)} of ${n}${state.zoom ? ' · zoom' : ''}${!flow && state.crop === false ? ' · uncropped (C)' : ''}`;
   if (next) el.append(h('span', { className: 'pos-next', textContent: next })); // its own span: a narrow header drops it (style.css)
   el.title = nx ? `Space goes on to: ${nx.t}` : '';
 }

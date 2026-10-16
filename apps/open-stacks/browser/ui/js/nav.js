@@ -391,7 +391,20 @@ K('-', () => setPer(-1));
 K(']', () => setFont(1), ['[ ]', 'smaller / larger text (posts and web pages)'], 21);
 K('[', () => setFont(-1));
 K('c', () => { state.cols = !state.cols; store.set('cols', state.cols); showFeed(); }, ['c C', 'split two-column pages / crop margins'], 22);
-K('C', () => { state.crop = !state.crop; store.set('crop', state.crop); showFeed(); });
+K('C', () => {
+  state.crop = !state.crop; store.set('crop', state.crop); showFeed();
+  // Said out loud: a stray Shift+c used to turn cropping off without a word, and it stays off.
+  toast(state.crop ? 'Margins cropped' : 'Whole pages', { icon: 'maximize', kind: 'mode', sub: state.crop ? 'C shows whole pages' : 'no cropping, on every document · C crops again' });
+});
+// Cropping was often turned off while it over-cropped stylized PDFs (fixed 16 October 2026, profiles
+// GEN 2 and 3), and nothing showed it was off: turn it back on once, and say so.
+if (!store.get('cropBack1', false)) {
+  store.set('cropBack1', true);
+  if (state.crop === false) {
+    state.crop = true; store.set('crop', true);
+    setTimeout(() => toast('Margins cropped again', { icon: 'maximize', kind: 'mode', sub: 'cropping was off; the over-cropping is fixed · C shows whole pages' }), 2500);
+  }
+}
 K('W', toggleWheel, ['W', 'mouse wheel: continue → items → pages (or middle-click)'], 23);
 K('o', () => { const it = items[current()]; window.open(it.page || it.url, '_blank', 'noopener'); }, ['o', 'open the original'], 40);
 
