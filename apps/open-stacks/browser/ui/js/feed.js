@@ -272,7 +272,7 @@ export function paintHead(it) {
     h('div', { className: 'meta' },
       h('span', { className: 'lane', textContent: LANES[it.lane] || it.lane }),
       it.a ? h('span', { className: 'au', textContent: it.a }) : null,
-      fmtDate(it) ? h('span', { textContent: fmtDate(it) }) : null,
+      fmtDate(it) ? h('span', { className: 'dt', textContent: fmtDate(it) }) : null,
       ...sourceLinks(it),
       saved ? h('span', { className: 'star', textContent: '★' }) : null),
     h('span', { className: 'pos', id: 'pos' }),

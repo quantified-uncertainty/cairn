@@ -3,17 +3,20 @@
 //
 //   Two bars  the top bar, then the item header over the pages (feed.js paintHead).
 //   One bar   the item header moves into the top bar, between the lane picker
-//             and the tools; views and lanes become pickers, and the tools used
-//             less often go into the ⋯ menu.
+//             and the tools; lanes become a picker, and the tools used less
+//             often go into the ⋯ menu.
 //   Focus     (d) no bars and no side panel: the pages, and the position bar as
 //             a thin line at the very top. Pointing at the top edge, or d again,
 //             shows the one-bar header over the pages (they do not move); Esc
 //             leaves. Settings › Appearance can make it go full screen as well.
 //
+// In every layout the views are a few icons (Reader, Wall, Feeds: chrome.js
+// KEY_VIEWS, the current one marked) and ▾ (#view-pick) with every view.
+//
 // Settings › Appearance › Header picks Auto, Two bars or One bar. Auto is one
-// bar in a window narrower than 1500 or lower than 900 CSS px (a laptop: a
-// 14-inch MacBook at 100 % leaves about 1512 × 880 for the page, at 120 %
-// about 1260 × 790), two bars above. The choice and Focus are kept per screen
+// bar in a window narrower than 1600 or lower than 900 CSS px (a laptop: a
+// 14-inch MacBook at 100 % is 1512 wide and leaves about 1512 × 880 for the
+// page, at 120 % about 1260 × 790), two bars above. The choice and Focus are kept per screen
 // (state.head, state.focus: state.js SCREEN_PREFS). Views other than the
 // Reader have no item header: they get the top bar alone.
 //
@@ -22,8 +25,7 @@
 // `order` (style.css), whatever order they were added in. A fit pass makes the
 // bar fit its width, giving up, in order: the lane chips (for a lane picker:
 // chips are shown only when every one of them fits, never cut), the status
-// text, the view tabs (for a view picker), button labels, then the tools used
-// less often (into ⋯). It runs on resizes, layout changes and changes to the
+// text, button labels, then the tools used less often (into ⋯). It runs on resizes, layout changes and changes to the
 // bar's own buttons, never on a page turn or an item change: the item header
 // takes what is left and drops its own details by width (container queries).
 //
@@ -34,10 +36,10 @@
 import { $, h, on, emit, store, registerKey, keymap, views, toast } from './util.js';
 import { items, LANES, COUNTS, LANE_COLORS } from './corpus.js';
 import { state, current, saveScreenPref, isScreenPref, screenKey } from './state.js';
-import { setView, setLane, refresh, applyChrome } from './chrome.js';
+import { setView, setLane, refresh, applyChrome, KEY_VIEWS, viewIcon, viewList } from './chrome.js';
 import { live } from './flow.js';
 
-const AUTO_W = 1500, AUTO_H = 900; // Auto: one bar below either (CSS px)
+const AUTO_W = 1600, AUTO_H = 900; // Auto: one bar below either (CSS px); a 14-inch MacBook is 1512 wide
 const EDGE = 4; // Focus: the pointer this close to the top edge shows the header
 const R = document.documentElement, bar = $('#bar'), stage = $('#stage');
 const svg = (d, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
@@ -118,7 +120,7 @@ function keepFlowPlace() {
 
 // ---------------------------------------------------------------- fitting the bar
 // Steps given up in order when the bar does not fit (cumulative).
-const STEPS = { two: ['chips', 'net', 'tabs', 'labels', 'tools', 'all'], one: ['new', 'labels', 'narrow', 'all'] };
+const STEPS = { two: ['chips', 'net', 'labels', 'tools', 'all'], one: ['new', 'labels', 'narrow', 'all'] };
 const ONE_MORE = ['wheel-btn', 'saved-btn', 'xp-btn', 'keys-btn', 'net']; // one bar: always in ⋯
 const TOOLS = ['wheel-btn', 'xp-btn', 'net'], REST = ['saved-btn', 'keys-btn', 'new-chip'];
 // Known children; anything else a feature adds stays in the bar with two bars and goes into ⋯ with one.
@@ -128,14 +130,14 @@ const ST_HIDE = { 'wheel-btn': 'wheel', 'search-btn': 'search', 'saved-btn': 'sa
 function config(mode, L) {
   const st = STEPS[mode], has = (s) => { const j = st.indexOf(s); return j >= 0 && j < L; };
   if (mode === 'one') {
-    return { lanes: 'pick', views: 'pick', net: true, compact: has('labels'), narrow: has('narrow'), extras: true,
+    return { lanes: 'pick', net: true, compact: has('labels'), narrow: has('narrow'), extras: true,
       ovf: new Set([...ONE_MORE, ...(has('new') ? ['new-chip'] : []), ...(has('all') ? ['ra-pill'] : [])]) };
   }
-  return { lanes: has('chips') ? 'pick' : 'chips', views: has('tabs') ? 'pick' : 'tabs', net: !has('net'), compact: has('labels'), narrow: false,
+  return { lanes: has('chips') ? 'pick' : 'chips', net: !has('net'), compact: has('labels'), narrow: false,
     extras: has('tools'), ovf: new Set([...(has('tools') ? TOOLS : []), ...(has('all') ? REST : [])]) };
 }
 function setConfig(c) {
-  bar.dataset.lanes = c.lanes; bar.dataset.views = c.views;
+  bar.dataset.lanes = c.lanes;
   bar.classList.toggle('no-net', !c.net); bar.classList.toggle('compact', c.compact); bar.classList.toggle('narrow', c.narrow);
   for (const n of [...bar.children, ...more.children]) {
     if (n === more || n.id === 'item-head') continue;
@@ -202,12 +204,14 @@ document.fonts?.ready.then(fitSoon);
 // ---------------------------------------------------------------- pickers
 const laneList = () => [['all', 'All', items.length], ...Object.entries(LANES).map(([k, v]) => [k, v, COUNTS[k] || 0]).filter(([, , c]) => c)];
 const dot = (k) => h('i', { className: 'hd-dot', style: k === 'all' ? '' : `--c:${LANE_COLORS[k] || 'var(--ink-3)'}` });
-const viewList = () => [...views.entries()].sort((a, b) => (a[1].order ?? 50) - (b[1].order ?? 50));
+/** ▾ after the view icons: every view. A view without an icon of its own (Figures, History,
+ *  Dashboard) shows its icon here while it is the current one, marked like the icons. */
 function paintViewPick() {
-  const v = views.get(state.view);
-  viewPick.replaceChildren(h('span', { className: 'pk-t', textContent: v?.label || state.view }));
-  viewPick.insertAdjacentHTML('beforeend', CARET);
-  viewPick.title = 'View: ' + viewList().map(([, x]) => (x.key ? `${x.label} (${x.key})` : x.label)).join(' · ');
+  const v = views.get(state.view), other = !KEY_VIEWS.includes(state.view);
+  viewPick.innerHTML = (other ? viewIcon(state.view) : '') + CARET;
+  viewPick.classList.toggle('on', other);
+  viewPick.title = (other ? `${v?.label || state.view} · ` : '') + 'All views: ' + viewList().map(([, x]) => (x.key ? `${x.label} (${x.key})` : x.label)).join(' · ');
+  viewPick.setAttribute('aria-label', other ? `View: ${v?.label || state.view}; all views` : 'All views');
 }
 function paintLanePick() {
   const all = laneList(), d = all.findIndex(([k]) => k === state.lane), [k, label, c] = all[Math.max(0, d)];
@@ -264,7 +268,7 @@ function menuKeys(el, esc) {
 }
 viewPick.onclick = (e) => (menu?.anchor === viewPick ? closeMenu() : openMenu(viewPick, viewList().map(([name, v]) => ({
   on: name === state.view, act: () => setView(name), title: v.key ? `${v.label} (${v.key})` : v.label,
-  kids: [h('span', { className: 'mt', textContent: v.label }), v.key ? h('kbd', { textContent: v.key }) : null],
+  kids: [h('span', { className: 'mi', innerHTML: viewIcon(name) }), h('span', { className: 'mt', textContent: v.label }), v.key ? h('kbd', { textContent: v.key }) : null],
 })), 'Views', e.detail === 0));
 lanePick.onclick = (e) => (menu?.anchor === lanePick ? closeMenu() : openMenu(lanePick, laneList().map(([k, label, c], d) => ({
   on: k === state.lane, act: () => { if (k !== state.lane) setLane(k); },
@@ -354,7 +358,7 @@ focusBtn.onclick = (e) => { e.currentTarget.blur(); setFocus(!focusOn(), { gestu
 let peekBy = null, peekAt = null, hideT = 0, lastXY = null;
 const isOpen = (s) => { const el = document.querySelector(s); return !!el && !el.hidden; };
 // Keyboard focus in the bar holds it until the pointer goes well below (then the focus goes too).
-const held = () => !!menu || !more.hidden || !!$('#wheel-menu') || isOpen('#st') || isOpen('#saved') || isOpen('#xp');
+const held = () => !!menu || !more.hidden || !!$('#wheel-menu') || isOpen('#st') || isOpen('#saved') || isOpen('#xp') || isOpen('#hpop');
 function setPeek(on, by = null) {
   clearTimeout(hideT); hideT = 0;
   if (on && !focusOn()) on = false;
@@ -400,7 +404,7 @@ addEventListener('resize', () => {
   // Auto crosses its threshold: the classes now, the stage when chrome.js lays it out (150 ms).
   if (headMode() !== shown.head) apply(false); else fitSoon();
 });
-on('view:changed', () => { apply(true); paintFocusBtn(); });
+on('view:changed', () => { apply(true); paintFocusBtn(); paintViewPick(); });
 on('settings:changed', ({ key }) => {
   if (key === 'head' || key === '*') apply(true);
   if (key === 'density' || key === 'hide' || key === '*') fitSoon();

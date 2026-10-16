@@ -579,6 +579,15 @@ on('item:skim', ({ i }) => followSoon(i)); // holding j/k (riffle.js)
 on('stack:changed', () => { topKey = ''; mk = {}; followSoon(current()); });
 on('nav', (d) => { if (d.type === 'back') { topKey = ''; mk = {}; followSoon(current()); } });
 on('stack:show', () => { if (!showing()) setMode(true); const n = stackNode(); if (n) revealNode(n); else follow(current(), true); });
+// Browse a lane or one of its folders (features/headpop.js): the Library opens on it, the folder
+// open, without changing the stack. Only the tree (By topic) has folders: false otherwise.
+on('library:show', (d = {}) => {
+  if (!showing()) setMode(true);
+  const t = build(), n = d.path?.length ? t.byFid.get([d.lane, ...d.path].join('/')) : t.byKey.get(d.lane);
+  if (!n || flat) { d.shown = false; return; }
+  userOpen.add(n.key); userClosed.delete(n.key); fClosed.delete(n.key);
+  revealNode(n); d.shown = true;
+});
 on('view:changed', () => { if (showing()) follow(current()); });
 on('memory:updated', ({ id } = {}) => { prog.delete(byId.get(id)); readN.clear(); elVer++; if (showing()) paint(); });
 // Items added or changed (features/local.js: a file appeared in your folder): the tree is built again.

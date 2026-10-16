@@ -31,14 +31,14 @@ kbd { font: 11px var(--mono); border: 1px solid var(--line); border-bottom-width
 a { color: var(--accent); }
 
 /* The top bar. header.js lays it out (two bars, one bar, Focus) and fits it to the
-   window (data-lanes, data-views, .no-net, .compact, .narrow, the ⋯ menu). Its
+   window (data-lanes, .no-net, .compact, .narrow, the ⋯ menu). Its
    children are placed by `order`, so a feature may add a button anywhere: one
    this list does not know lands just before the tools on the right. */
 #bar { position: relative; display: flex; align-items: center; gap: 8px; padding: 5px 14px; min-height: 37px; border-bottom: 1px solid var(--line); background: var(--bg); flex: none; }
 #bar > * { order: 45; flex: none; }
 #bar::before { content: ""; order: 35; flex: 1 1 0; min-width: 0; } /* the spring: the tools sit on the right */
 #bar > #panel-btn { order: 0; }
-#bar > #views, #bar > #view-pick { order: 10; }
+#bar > #views { order: 10; }
 #bar > #new-chip { order: 15; }
 #bar > #lanes, #bar > #lane-pick { order: 20; }
 #bar > #item-head { order: 30; }
@@ -54,7 +54,20 @@ a { color: var(--accent); }
 #bar > #net { order: 60; flex: 0 1 auto; min-width: 0; }
 .brand { font: 600 15px var(--serif); display: flex; align-items: center; gap: 8px; }
 .mark { width: 14px; height: 16px; background: linear-gradient(90deg, var(--accent) 0 3px, transparent 3px 5px, var(--ink-2) 5px 8px, transparent 8px 10px, var(--ink-3) 10px 14px); }
-.views { display: flex; gap: 4px; }
+/* The view switcher (chrome.js paintViews), in every layout: a few views as icons,
+   the current one marked, and ▾ (#view-pick, header.js) with every view. */
+.views { display: flex; align-items: center; gap: 1px; padding: 1px; border: 1px solid var(--line); border-radius: 5px; }
+.views > button { display: inline-flex; align-items: center; justify-content: center; gap: 1px; height: 23px; min-width: 27px; padding: 0 5px; border: 0; border-radius: 4px; color: var(--ink-2); background: none; }
+.views > button:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.views > button.on, #bar .views > #view-pick.on { color: var(--accent); background: color-mix(in srgb, var(--accent) 15%, transparent); }
+.views > button.open { color: var(--ink); background: var(--bg-3); }
+.views .vi { width: 15px; height: 15px; flex: none; display: block; }
+#bar .views > #view-pick { min-width: 0; padding: 0 3px; color: var(--ink-3); border: 0; }
+#bar .views > #view-pick.on { padding: 0 3px 0 5px; }
+#bar .views > #view-pick .caret { width: 11px; height: 11px; color: inherit; }
+.hd-menu .mi { display: inline-flex; color: var(--ink-3); }
+.hd-menu .mi .vi { width: 14px; height: 14px; }
+.hd-menu button.on .mi { color: var(--accent); }
 /* Lane chips: shown only while every chip fits (header.js), else the lane picker. */
 #bar > #lanes { flex: 0 1 auto; min-width: 0; }
 .chips { display: flex; gap: 4px; min-width: 0; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; scroll-padding-inline: 24px; }
@@ -329,7 +342,7 @@ html:not([data-st-track="bottom"]) #track { order: -1; margin: 1px 14px 0; }
 #bar .pick .n { color: var(--ink-3); font: 10px var(--mono); }
 #lane-pick { border-radius: 99px; padding: 2px 8px 2px 9px; }
 #bar[data-lanes="pick"] > #lanes, #bar:not([data-lanes="pick"]) > #lane-pick,
-#bar[data-views="pick"] > #views, #bar:not([data-views="pick"]) > #view-pick, #bar.no-net > #net { display: none; }
+#bar.no-net > #net { display: none; }
 .hd-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--c, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 30%, transparent); }
 .hd-menu, #more { z-index: 44; min-width: 200px; padding: 4px; display: flex; flex-direction: column; gap: 1px; background: var(--bg-3); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 12px 32px #0009; }
 .hd-menu { position: fixed; max-height: calc(100vh - 60px); overflow-y: auto; }

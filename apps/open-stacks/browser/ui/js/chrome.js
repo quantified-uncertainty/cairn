@@ -19,12 +19,29 @@ export function setView(v) {
 }
 export const refresh = () => views.get(state.view)?.show?.();
 
+// The view switcher, in every header layout: the views used most as icon buttons
+// (the current one marked), then ▾ (#view-pick, header.js) with every view and its
+// key. Line icons from Lucide (ISC licence, lucide.dev); a view may bring its own
+// (registerView {icon: '<path …/>'}).
+export const KEY_VIEWS = ['feed', 'wall', 'feeds'];
+const VIEW_ICONS = {
+  feed: '<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
+  wall: '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  figures: '<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
+  feeds: '<path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/>',
+  history: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
+  dashboard: '<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+};
+/** A view's icon as SVG markup. */
+export const viewIcon = (name) => `<svg class="vi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${views.get(name)?.icon || VIEW_ICONS[name] || '<rect width="18" height="18" x="3" y="3" rx="2"/>'}</svg>`;
+export const viewList = () => [...views.entries()].sort((a, b) => (a[1].order ?? 50) - (b[1].order ?? 50));
 function paintViews() {
-  const list = [...views.entries()].sort((a, b) => (a[1].order ?? 50) - (b[1].order ?? 50));
-  $('#views').replaceChildren(...list.map(([name, v]) => h('button', {
-    className: state.view === name ? 'on' : '', title: v.key ? `${v.label} (${v.key})` : v.label,
-    onclick: () => setView(name), textContent: v.label,
-  })));
+  const btns = viewList().filter(([name]) => KEY_VIEWS.includes(name)).map(([name, v]) => {
+    const b = h('button', { type: 'button', className: 'vw' + (state.view === name ? ' on' : ''), title: v.key ? `${v.label} (${v.key})` : v.label, innerHTML: viewIcon(name), onclick: () => setView(name) });
+    b.setAttribute('aria-label', v.label); b.setAttribute('aria-pressed', String(state.view === name));
+    return b;
+  });
+  $('#views').replaceChildren(...btns, $('#view-pick') || '');
 }
 on('views:changed', () => {
   paintViews();
@@ -95,7 +112,7 @@ registerKey('I', swapPanel, { view: null });
 registerKey('p', () => { state.pin = !state.pin; store.set('pin', state.pin); applyChrome(); if (state.view === 'feed') showFeed(); }, { help: ['p', 'pin the page strip'], order: 51 });
 registerKey('b', () => { $('#saved').hidden = !$('#saved').hidden; }, { view: null, help: ['b', 'saved items and note export'], order: 61 });
 registerKey('?', toggleKeys, { view: null });
-keyHelp.push({ label: 'f w', text: 'feed / wall (other views have their own keys)', order: 62 }, { label: '0 1 … 9', text: 'lanes', order: 63 });
+keyHelp.push({ label: 'f w D', text: 'Reader / Wall / Feeds (the icons at the top left; ▾ beside them lists every view and its key)', order: 62 }, { label: '0 1 … 9', text: 'lanes', order: 63 });
 
 document.addEventListener('keydown', (e) => {
   if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable || e.metaKey || e.ctrlKey || e.altKey) return;
