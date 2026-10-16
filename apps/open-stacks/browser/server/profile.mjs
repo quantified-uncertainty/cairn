@@ -19,7 +19,7 @@
 import { createHash } from 'crypto';
 import { existsSync, readFileSync, writeFileSync, renameSync, mkdirSync, readdirSync, rmSync, unlinkSync, statSync, createReadStream } from 'fs';
 import { join } from 'path';
-import { CACHE, HERE } from './config.mjs';
+import { CACHE, HERE, enrichFile } from './config.mjs';
 import * as cache from './cache.mjs';
 import { SCHEMA, GEN, budgetFor, validate, cropOf } from '../ui/js/profile-core.js';
 
@@ -38,7 +38,7 @@ function corpusMap() {
   const now = Date.now();
   if (corpus && now - corpusCheck < 5000) return corpus;
   corpusCheck = now;
-  const files = ['corpus.json', 'enrich.json'].map((f) => join(HERE, f));
+  const files = [join(HERE, 'corpus.json'), enrichFile()];
   let m = 0; for (const f of files) try { m += statSync(f).mtimeMs; } catch { /* optional */ }
   if (corpus && m === corpusMtime) return corpus;
   corpusMtime = m;

@@ -2,21 +2,24 @@
 // With a profile (profile.js), the crop, blank pages and gutters come from it,
 // and a stored display image stands in for a pdf.js render when it is sharp
 // enough: decoded and cropped off the main thread (createImageBitmap).
-import { P, PI, SHARD, lru, emit, store } from './util.js';
+import { P, PI, SHARD, lru, emit, store, freeCanvas } from './util.js';
 import { state } from './state.js';
 import { openDoc, scanUrl } from './docs.js';
 import { analyzeLum } from './profile-core.js';
 import { profileOf, cropOf, displayFor, assetUrl, assetMissing, cropKey } from './profile.js';
 
-const imgs = new Map();
-export function loadImg(src) {
-  return lru(imgs, src, () => new Promise((res, rej) => {
-    const im = new Image(); im.decoding = 'async';
-    if (/^https?:/.test(src)) im.crossOrigin = 'anonymous'; // a page image from the second origin (util.js PI)
-    im.onload = () => im.decode().then(() => res(im), () => res(im));
-    im.onerror = () => rej(new Error('image unavailable'));
-    im.src = src;
-  }), 60);
+// Page images (scans, stored display images) are kept as their compressed bytes and decoded for
+// each use into an ImageBitmap (off the main thread), which the caller closes once its crops are
+// cut. Loaded as <img>, every page left its decoded pixels in Firefox's image cache: in Firefox
+// 158, 90 s of reading scans held 1.2 GB there (3 MB a page), most of it for pages long gone.
+const imgs = new Map(); // src -> Promise<Blob>
+/** fn(page image), the image closed when fn is done with it (the panels are copies or new bitmaps). */
+const withImg = async (src, fn) => { const im = await loadImg(src); try { return await fn(im); } finally { im.close?.(); } };
+/** A page image as a new ImageBitmap; close() it when done. */
+export async function loadImg(src) {
+  const blob = await lru(imgs, src, () => fetch(src, /^https?:/.test(src) ? { credentials: 'omit' } : {}) // the second origin (util.js PI)
+    .then((r) => { if (!r.ok) throw new Error('image unavailable'); return r.blob(); }), 60);
+  try { return await createImageBitmap(blob); } catch { imgs.delete(src); throw new Error('image unavailable'); }
 }
 
 /** Find the ink box, whether the page is blank, and a two-column gutter. */
@@ -28,6 +31,7 @@ export function analyze(src, { scan = true } = {}) {
   const lum = new Float32Array(W * H);
   for (let i = 0; i < W * H; i++) lum[i] = 0.3 * px[i * 4] + 0.59 * px[i * 4 + 1] + 0.11 * px[i * 4 + 2];
   // The algorithm lives in profile-core.js, so the feed and the compiler find the same boxes.
+  freeCanvas(c);
   const a = analyzeLum(lum, W, H, { scan });
   if (a.blank) return { blank: true };
   const pad = state.cropPad ?? 0.012; // Settings: crop padding, a fraction of the page
@@ -116,7 +120,7 @@ function panelsBox(src, k, box, gutter, extra = {}) {
 function bitmapCanvas(bm) {
   const c = document.createElement('canvas'); c.width = bm.width; c.height = bm.height;
   const ctx = c.getContext('bitmaprenderer');
-  if (ctx) ctx.transferFromImageBitmap(bm); else { c.getContext('2d').drawImage(bm, 0, 0); bm.close?.(); }
+  if (ctx) { ctx.transferFromImageBitmap(bm); c._bmr = ctx; } else { c.getContext('2d').drawImage(bm, 0, 0); bm.close?.(); }
   return c;
 }
 // A crop shown through 'bitmaprenderer' costs no copy, but a browser may show the whole bitmap
@@ -155,7 +159,7 @@ export const cropPath = async () => ((await (fastCrop ||= probeFastCrop())) ? 'b
  *  page for scans); each crop is an ImageBitmap shown without a copy. Images come
  *  through loadImg, so a page seen again is in the browser's memory cache. */
 async function panelsFromImage(im, k, ibox, box, gutter, extra) {
-  const iw = im.naturalWidth, ih = im.naturalHeight;
+  const iw = im.naturalWidth || im.width, ih = im.naturalHeight || im.height;
   const fw = iw / (ibox[2] - ibox[0]), fh = ih / (ibox[3] - ibox[1]);
   const rect = (b) => {
     const sx = Math.max(0, Math.round((b.x0 - ibox[0]) * fw)), sy = Math.max(0, Math.round((b.y0 - ibox[1]) * fh));
@@ -175,13 +179,32 @@ const renders = new Map();
 /** The render of a page if it is already made or under way (never starts one). */
 export const cachedRender = (it, k) => renders.get(keyOf(it, k)) || null;
 // Finished renders, so a spread whose pages are all ready can be shown in the
-// same frame as the key press (no placeholders, no await).
+// same frame as the key press (no placeholders, no await): the resolved value
+// of each entry in `renders`, and only those.
 const done = new Map();
+// Pages the cache lets go of give their canvas memory back (util.js freeCanvas): a page at the
+// screen's height is 10 to 30 MB, and the garbage collector frees them too late while pages fly
+// by (in Firefox, minutes of scrolling ended in "This page is slowing down Firefox" and a crash).
+// A canvas is emptied a few seconds after its render leaves the cache, when it is not on the page
+// (a spread being put up may be about to show it); one still on the page waits for a later sweep.
+const letGo = new Set();
+let sweepT = 0;
+function evicted(p, key) {
+  done.delete(key);
+  p.then((panels) => { for (const x of panels || []) if (x?.canvas) letGo.add(x.canvas); if (letGo.size && !sweepT) sweepT = setTimeout(sweep, 4000); }, () => {});
+}
+function sweep() {
+  sweepT = 0;
+  const live = new Set();
+  for (const panels of done.values()) for (const x of panels || []) if (x?.canvas) live.add(x.canvas);
+  for (const c of letGo) if (live.has(c)) letGo.delete(c); else if (!c.isConnected) { freeCanvas(c); letGo.delete(c); }
+  if (letGo.size) sweepT = setTimeout(sweep, 4000);
+}
 // cropKey: renders made before an item's profile arrived (each page cropped to its
 // own ink) are not mixed with ones cropped to the profile's shared box.
 const keyOf = (it, k) => `${it.id}|${k}|${state.crop}|${state.cols}|${state.cropPad ?? ''}|${cropKey(profileOf(it))}`;
 /** Forget every render in memory (the benchmark measures cold paths with it). */
-export function dropRenders() { renders.clear(); done.clear(); imgs.clear(); scanCuts.clear(); }
+export function dropRenders() { for (const [k, p] of renders) evicted(p, k); renders.clear(); done.clear(); imgs.clear(); scanCuts.clear(); }
 export const renderedNow = (it, k) => { const key = keyOf(it, k); return renders.has(key) ? done.get(key) || null : null; };
 /** A page's panels. lane 'near' (prefetch.js) asks the render server at background priority and waits
  *  longer for it; a later foreground call for the same page does not wait behind that request. */
@@ -193,7 +216,7 @@ export function renderPage(it, k, { lane = 'fg' } = {}) {
   const p = renderPage1(it, k, key, lane);
   if (!p._watched) {
     p._watched = true;
-    p.then((v) => { done.set(key, v); if (done.size > 400) done.delete(done.keys().next().value); }, () => {});
+    p.then((v) => { if (renders.get(key) === p) done.set(key, v); }, () => {});
   }
   return p;
 }
@@ -205,13 +228,12 @@ function renderPage1(it, k, key, lane = 'fg') {
       const d = displayFor(pf, k, RENDER_H);
       if (d) {
         try {
-          const im = await loadImg(assetUrl(pf, 'display', k));
-          return await panelsFromImage(im, k, d.box, cropOf(pf, k), pg.gut, { pdfScale: d.w / (d.box[2] - d.box[0]) / pg.w, src: 'asset' });
+          return await withImg(assetUrl(pf, 'display', k), (im) => panelsFromImage(im, k, d.box, cropOf(pf, k), pg.gut, { pdfScale: d.w / (d.box[2] - d.box[0]) / pg.w, src: 'asset' }));
         } catch { assetMissing(pf, 'display', k); /* gone (evicted): render instead */ }
       }
-      if (it.kind === 'scan') return panelsFromImage(await loadImg(PI(scanUrl(it, k, SCAN_W))), k, [0, 0, 1, 1], state.crop ? cropOf(pf, k) : FULL, pg.gut, { src: 'scan' });
+      if (it.kind === 'scan') return withImg(PI(scanUrl(it, k, SCAN_W)), (im) => panelsFromImage(im, k, [0, 0, 1, 1], state.crop ? cropOf(pf, k) : FULL, pg.gut, { src: 'scan' }));
     }
-    if (it.kind === 'scan') return scanPanels(it, k, await loadImg(PI(scanUrl(it, k, SCAN_W))), { src: 'scan' });
+    if (it.kind === 'scan') return withImg(PI(scanUrl(it, k, SCAN_W)), (im) => scanPanels(it, k, im, { src: 'scan' }));
     if (onServer(it) && !(it.n && k >= it.n)) {
       const p = await serverPage(it, k, pf, pg, lane, key);
       const lost = lane !== 'fg' && taken.delete(key); // a foreground call took this page over
@@ -228,9 +250,10 @@ function renderPage1(it, k, key, lane = 'fg') {
     const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
     await page.render({ canvasContext: g, viewport: vp }).promise;
     // With a profile the crop is known: no ink analysis (getImageData) on the main thread.
-    if (pg) return panelsBox(c, k, state.crop ? cropOf(pf, k) : FULL, pg.gut, { pdfScale: scale, src: 'pdfjs' });
-    return panelsFrom(c, k, { pdfScale: scale, src: 'pdfjs' });
-  }, RENDER_CAP);
+    const out = pg ? panelsBox(c, k, state.crop ? cropOf(pf, k) : FULL, pg.gut, { pdfScale: scale, src: 'pdfjs' }) : panelsFrom(c, k, { pdfScale: scale, src: 'pdfjs' });
+    if (!out.some((x) => x.canvas === c)) freeCanvas(c); // the whole page, once its crops are cut
+    return out;
+  }, RENDER_CAP, evicted);
 }
 
 // ---- Pages rendered on the server (docs/performance/prerender.md; server/routes/16-render.mjs) ----

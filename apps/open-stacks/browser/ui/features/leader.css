@@ -1,0 +1,16 @@
+/* The leader key's card (features/leader.js): the second keys as the home row, low over the pages. */
+#leader { position: fixed; z-index: 60; left: 50%; bottom: clamp(70px, 14vh, 160px); transform: translateX(-50%); max-width: calc(100vw - 32px);
+  background: var(--bg-3); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 10px 28px #0009; padding: 8px 12px 10px;
+  font-size: 12px; color: var(--ink-2); transition: opacity .12s ease-out; }
+#leader:not(.show) { opacity: 0; pointer-events: none; }
+#leader .ld-h { display: flex; align-items: baseline; gap: 4px; margin-bottom: 6px; color: var(--ink-3); }
+#leader .ld-x { margin-left: auto; padding-left: 16px; font-size: 11px; }
+#leader .ld-hands { display: flex; gap: 22px; }
+#leader .ld-half { display: grid; gap: 3px; min-width: 0; }
+#leader .ld-k { display: flex; gap: 8px; align-items: baseline; white-space: nowrap; }
+#leader .ld-k.off { opacity: .35; }
+#leader .ld-k span { overflow: hidden; text-overflow: ellipsis; }
+#leader kbd { font: 600 12px var(--mono); color: var(--accent); min-width: 1.1em; text-align: center; }
+#leader .ld-sink { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; border: 0; padding: 0; }
+@media (max-width: 520px) { #leader .ld-hands { flex-direction: column; gap: 3px; } }
+@media (prefers-reduced-motion: reduce) { #leader { transition: none; } }

@@ -1,21 +1,23 @@
 // The feed: one item at a time, a few real pages of it filling the stage.
-import { $, h, P, PI, on, emit, emitQuiet, fmtDate, lru } from './util.js';
+import { $, h, P, PI, on, emit, emitQuiet, fmtDate, lru, evictCanvas } from './util.js';
 import { items, LANES } from './corpus.js';
 import { state, current } from './state.js';
 import { openDoc, isFlow, scanUrl } from './docs.js';
 import { renderPage, cachedRender, renderedNow, previewScan, SCAN_W } from './render.js';
 import { planAround, startOf, serverPrefetch, onDisk } from './prefetch.js';
 import { showFlow, dropLive, live, vpToCol, flowRange } from './flow.js';
-import { goPage, toggleZoom } from './nav.js';
+import { goPage, toggleZoom, clickHolds } from './nav.js';
 import { itemIcon } from './icons.js';
 import { profileOf, loadProfile, snapStart, spreadAt, cropOf, pageAspect, itemAspect, spriteCell, spriteAspect, assetUrl } from './profile.js';
+import { soon as shapeSoon, guess as shapeGuess, learn as learnShape } from './shapes.js';
 
 // An item's profile, if the server has one: asked once per item (a loopback
 // GET of a few ms; planAround usually has it already), never waited on long.
 const profileSoon = (it) => {
   const P = profileOf(it);
   if (P !== undefined || !(it.kind === 'pdf' || it.kind === 'scan')) return P ?? null;
-  return Promise.race([loadProfile(it), new Promise((r) => setTimeout(r, 60))]).then(() => profileOf(it) ?? null);
+  // Its page shapes too (shapes.js), in the same wait, for placeholders if there is no profile.
+  return Promise.race([Promise.all([loadProfile(it), shapeSoon(it, startOf(current()))]), new Promise((r) => setTimeout(r, 60))]).then(() => profileOf(it) ?? null);
 };
 
 export async function showFeed() {
@@ -80,7 +82,7 @@ export async function showFeed() {
   const slots = []; let k = s;
   while (slots.length < per && k < n) { const kk = k++; slots.push({ el: h('div', { className: 'pg loading' }), k: kk, p: renderPage(it, kk) }); }
   spread.replaceChildren(...slots.map((x) => x.el));
-  for (const x of slots) x.el.dataset.aspect = String(hint);
+  for (const x of slots) x.el.dataset.aspect = String(aspects.get(it.id) ?? shapeGuess(it, x.k) ?? hint); // shapes.js: the page's own size, cut as the lane's pages are
   // Placeholders take the shape the pages are expected to have, so the
   // spread does not jump when they arrive.
   layoutPanels(slots.map((x) => x.el), boxW, boxH);
@@ -198,7 +200,7 @@ function finish(i, it, s, n, results, slots, boxW, boxH) {
       else if (pnl.err) { el.className = 'pg err'; el.textContent = pnl.err; el.dataset.aspect = '0.68'; }
       else { el.append(pnl.canvas); el.dataset.aspect = String(pnl.aspect ?? pnl.canvas.width / pnl.canvas.height); }
       el.append(h('span', { className: 'pno', textContent: String(Number(el.dataset.k) + 1) + (pnl.part || '') }));
-      el.onclick = (e) => { if (!state.zoom && !e.target.closest('.tl, a') && !getSelection().toString()) toggleZoom(true, Number(el.dataset.k)); };
+      el.onclick = (e) => { if (!state.zoom && !e.target.closest('.tl, a') && !getSelection().toString() && !clickHolds.some((f) => f(e))) toggleZoom(true, Number(el.dataset.k)); };
       els.push(el);
     }
   });
@@ -206,6 +208,7 @@ function finish(i, it, s, n, results, slots, boxW, boxH) {
   // pages fit, lay the spread out again (once, when the item first opens).
   const asp = els.filter((e) => e._pnl?.canvas).map((e) => Number(e.dataset.aspect) * (e._pnl.part ? 2 : 1)).sort((a, b) => a - b);
   if (asp.length && !profileOf(it)) {
+    learnShape(it, results); // shapes.js: how this lane's pages are cut, for the next item's placeholders
     const first = !aspects.has(it.id);
     aspects.set(it.id, asp[Math.floor(asp.length / 2)]);
     if (first && state.perAuto && !state.zoom && fitPer(it, boxW, boxH) !== state.per) { showFeed(); return; }
@@ -229,7 +232,7 @@ function showError(e) {
 const aspects = new Map();
 // A profile knows the shape before anything is drawn; a shape already learned on
 // this visit wins, so the number of pages does not change when a profile arrives.
-const aspectOf = (it) => aspects.get(it.id) ?? (itemAspect(profileOf(it)) || (it.kind === 'scan' ? 0.66 : 0.74));
+const aspectOf = (it) => aspects.get(it.id) ?? (itemAspect(profileOf(it)) || shapeGuess(it) || (it.kind === 'scan' ? 0.66 : 0.74));
 /** Pages per spread in auto mode: as many as fit at (nearly) full height, 1 to 3,
  *  so a laptop shows two and a large screen three, with little empty space. */
 export function fitPer(it, W, H) {
@@ -538,7 +541,7 @@ function quickPdf(it, k, H) {
     const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
     await page.render({ canvasContext: g, viewport: vp }).promise;
     return c;
-  }, 120);
+  }, 120, evictCanvas);
 }
 let want = null; // the spread the pointer asks for: { k, els }
 async function fillScrub(it, k, el) {

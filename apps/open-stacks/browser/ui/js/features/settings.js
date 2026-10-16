@@ -39,7 +39,7 @@ const DEF = {
 // Reset puts these values back.
 const CORE = { font: 15, per: 3, perAuto: true, crop: true, cols: false, flowCols: 0, pin: false, panel: true, panelSide: 'left', presum: true, wheelMouse: 'continue', wheelPad: 'continue', wheelDevice: 'auto', head: 'auto' };
 // Read straight from the store by summary.js (upnext: by features/upnext.js).
-const STORE = { autoSum: true, sumDelay: 5000, summodel: 'claude-haiku-5-5', upnext: true };
+const STORE = { autoSum: true, sumDelay: 5000, summodel: 'claude-haiku-5-5', upnext: true, tapzones: true, leaderRow: 'colemak-dh' };
 const RA_DEF = { rate: 1.5, engine: 'browser', browserVoice: '', geminiVoice: 'Kore' };
 const TUNE_DEF = { rate: 14, stroke: 40 };
 
@@ -409,7 +409,7 @@ function secPages() {
 function secNav() {
   return {
     id: 'nav', title: 'Navigation and input',
-    keys: ['middle', 'repeat'], core: ['wheelMouse', 'wheelPad', 'wheelDevice', 'pin'], tune: true, store: ['upnext'],
+    keys: ['middle', 'repeat'], core: ['wheelMouse', 'wheelPad', 'wheelDevice', 'pin'], tune: true, store: ['upnext', 'tapzones', 'leaderRow'],
     rows: [
       row('Mouse wheel', ['Continue: down Advances (next spread, then next item), up goes Back. ', kb('W'), ' cycles.'],
         seg([['continue', 'Continue'], ['items', 'Items'], ['pages', 'Pages']], () => state.wheelMouse, (v) => setCore('wheelMouse', v))),
@@ -423,6 +423,10 @@ function secNav() {
         ...slider([16, 120, 4], () => tune.stroke, (v) => setTune('stroke', v), (v) => v + ' px')),
       row('Middle click', 'On the pages.',
         seg([['wheel', 'Cycle wheel mode'], ['advance', 'Next page'], ['back', 'Go back'], ['zoom', 'Zoom'], ['none', 'Nothing']], () => S.middle, (v) => setS('middle', v))),
+      row('Tap zones', 'A click on the left or right fifth of the pages, or beside them, turns back or forward (on the first page, left goes Back); the middle still zooms. Never on text you select, a link, a margin note or a figure.',
+        ...tog(() => store.get('tapzones', true) !== false, (v) => { store.set('tapzones', v); emit('settings:changed', { key: 'tapzones', value: v }); }, ['On', 'Off'])),
+      row('Leader key', [kb("'"), ' (or F19) then one home-row letter reaches the rarer commands; a card lists them. Which letters:'],
+        seg([['colemak-dh', 'Colemak-DH (a r s t g · m n e i o)'], ['qwerty', 'QWERTY (a s d f g · h j k l ;)']], () => store.get('leaderRow', 'colemak-dh'), (v) => { store.set('leaderRow', v); emit('settings:changed', { key: 'leaderRow', value: v }); })),
       row('Holding a key', 'Off: one press, one step. Otherwise a held key repeats.',
         seg([['off', 'One step'], ['pages', 'Repeat page turns'], ['items', 'Repeat turns and items']], () => S.repeat, (v) => setS('repeat', v))),
       row('Page strip', ['Keep the thumbnails open under the pages. ', kb('p')], ...tog(() => state.pin, (v) => setCore('pin', v), ['Pinned', 'Hidden'])),

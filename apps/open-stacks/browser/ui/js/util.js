@@ -30,7 +30,7 @@ export const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '
 export const css = (text) => document.head.append(h('style', { textContent: text }));
 
 /** Least-recently-used cache of promises; destroys evicted pdf.js documents. */
-export function lru(map, key, make, cap) {
+export function lru(map, key, make, cap, onEvict = null) {
   if (map.has(key)) { const v = map.get(key); map.delete(key); map.set(key, v); return v; }
   const v = make();
   if (v && v.catch) v.catch(() => { if (map.get(key) === v) map.delete(key); }); // not a newer entry under the same key
@@ -39,9 +39,20 @@ export function lru(map, key, make, cap) {
     const [k, old] = map.entries().next().value;
     map.delete(k);
     if (old && old.then) old.then((d) => d?.pdf?.destroy?.()).catch(() => {});
+    onEvict?.(old, k);
   }
   return v;
 }
+/** Give a canvas's pixels back now. A canvas keeps its memory until the garbage collector
+ *  runs, which while pages fly by (hundreds of screen-height pages) can be gigabytes. */
+export function freeCanvas(c) {
+  if (!c?.width) return;
+  try { c._bmr?.transferFromImageBitmap(null); } catch { /* a 2D canvas */ } // render.js bitmapCanvas
+  c.width = 0; c.height = 0;
+}
+/** lru's onEvict for a cache of Promise<canvas>: the canvas is emptied a few seconds after it
+ *  leaves the cache (a caller may be about to copy it), unless it is on the page then. */
+export const evictCanvas = (p) => Promise.resolve(p).then((c) => { if (c?.getContext) setTimeout(() => { if (!c.isConnected) freeCanvas(c); }, 4000); }, () => {});
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 /** [year, month, day?] as strings: from it.d (corpus.js fills it from new-style arXiv
@@ -95,8 +106,13 @@ export function emitQuiet(name, detail, ms) {
 // Key auto-repeat is ignored (one press, one step) unless the binding says { repeat: true }.
 export const keymap = new Map();
 export const keyHelp = [];
+// A key may mean one thing in one view and another in another ('.': the wall's depth,
+// the Reader's save and next): a binding for another view stays behind it, in `else`.
 export function registerKey(keys, fn, { help, view = 'feed', order = 50, repeat = false } = {}) {
-  for (const k of [].concat(keys)) keymap.set(k, { fn, view, repeat });
+  for (const k of [].concat(keys)) {
+    const old = keymap.get(k);
+    keymap.set(k, { fn, view, repeat, else: !old || !view ? null : old.view && old.view !== view ? old : old.else || null });
+  }
   if (help) keyHelp.push({ label: help[0], text: help[1], order });
 }
 

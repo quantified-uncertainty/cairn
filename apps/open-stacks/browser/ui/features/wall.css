@@ -161,6 +161,34 @@ input.depth:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px #e2a54a5
 .cv.p-mono .ab { color: #b7ad9a; }
 .cv.p-mono .pp { color: #847b6c; }
 
+/* Papers, Settings › Wall › Paper covers › Top figure (wall.js showFig): the paper's
+   top figure, or a collage of its top two or three, on a white plate over a title
+   label. It lies over the typeset cover, transparent until its images are decoded
+   and drawn into canvases; then the typeset cover stops painting (.figd). */
+.cv.p-fig { padding: 0; gap: 0; opacity: 0; transition: opacity .22s ease; background: #fbfaf5; }
+.cv.p-fig.shown { opacity: 1; }
+#grid .face.figd > .cv:not(.p-fig) { visibility: hidden; }
+.p-fig .fg { flex: 1; min-height: 0; margin: calc(var(--u) * 5) calc(var(--u) * 5) 0; display: grid; gap: max(1px, calc(var(--u) * .7)); background: #e9e4d8; }
+.p-fig .fc { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: #fff; container-type: size; display: grid; place-items: center; }
+.p-fig .fc > img, .p-fig .fc > canvas { position: absolute; inset: calc(var(--u) * 2.5); width: calc(100% - var(--u) * 5); height: calc(100% - var(--u) * 5); object-fit: contain; display: block; }
+.p-fig .fg.g3t > :first-child { grid-column: 1 / -1; }
+.p-fig .fg.g3l > :first-child { grid-row: 1 / -1; }
+.p-fig .fa { aspect-ratio: var(--ar); width: min(calc(100cqw - var(--u) * 5), calc((100cqh - var(--u) * 5) * var(--ar))); }
+.p-fig .fa .fr, .p-fig .fa .fcol { display: flex; width: 100%; height: 100%; }
+.p-fig .fa .fcol { flex-direction: column; }
+.p-fig .fa .fp { position: relative; flex: none; width: 100%; height: 100%; }
+.p-fig .fa .fr > .fp, .p-fig .fa .fr > .fcol { height: 100%; }
+.p-fig .fa .fcol > .fp, .p-fig .fa .fcol > .fr { width: 100%; }
+.p-fig .fa .fp > img, .p-fig .fa .fp > canvas { position: absolute; inset: 1px; width: calc(100% - 2px); height: calc(100% - 2px); object-fit: contain; display: block; }
+.p-fig .lb { flex: none; padding: calc(var(--u) * 4) calc(var(--u) * 7) calc(var(--u) * 6); display: flex; flex-direction: column; gap: calc(var(--u) * 1.8); }
+.p-fig .lb .hd { font: 600 calc(var(--u) * 3.6) / 1.2 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--c); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.p-fig .lb .tt { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; line-height: 1.1; }
+.p-fig .lb .t-xl { font-size: calc(var(--u) * 10.5); line-height: 1.02; }
+.p-fig .lb .t-l { font-size: calc(var(--u) * 9); }
+.p-fig .lb .t-m { font-size: calc(var(--u) * 7.6); }
+.p-fig .lb .t-s { font-size: calc(var(--u) * 6.6); }
+.p-fig .lb .t-xs { font-size: calc(var(--u) * 5.9); }
+
 /* Books: the cover scan, a spine, and a library label. */
 .cv.book { background: #3a3128; }
 .cv.book .cov { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -236,5 +264,6 @@ input.depth:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px #e2a54a5
 @media (prefers-reduced-motion: reduce) {
   #grid .face, .pv .bar i { transition: none; }
   .cv.fresh { animation: none; }
+  .cv.p-fig { transition: none; }
   .pv .cell.wait::after { animation: none; }
 }

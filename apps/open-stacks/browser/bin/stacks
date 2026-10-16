@@ -7,6 +7,7 @@
 #   bin/stacks stop         stop the server this script started
 #   bin/stacks status       is it running? which PDF engine, summaries on or off (--json: all of /status)
 #   bin/stacks log          follow the server log
+#   bin/stacks overnight    the whole-corpus compile and AI passes (node overnight.mjs; --help)
 #
 # The server log and pid live in the cache folder ($STACKS_CACHE or ~/.cache/open-stacks).
 set -euo pipefail
@@ -16,6 +17,7 @@ PORT="${STACKS_PORT:-4747}"
 OPEN=1
 JSON=0
 CMD=start
+ARGS=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --port) PORT="$2"; shift 2 ;;
@@ -23,7 +25,8 @@ while [ $# -gt 0 ]; do
     --no-open) OPEN=0; shift ;;
     --json) JSON=1; shift ;;
     start|stop|status|log) CMD="$1"; shift ;;
-    -h|--help) sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    overnight) CMD=overnight; shift; ARGS=("$@"); break ;;
+    -h|--help) sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "unknown option: $1" >&2; exit 2 ;;
   esac
 done
@@ -81,6 +84,10 @@ open_url() {
 }
 
 case "$CMD" in
+  overnight)
+    find_node || { echo "Node.js 20+ not found. Install it from https://nodejs.org (or: brew install node) and try again." >&2; exit 1; }
+    cd "$DIR"
+    exec node overnight.mjs ${ARGS[@]+"${ARGS[@]}"} --port "$PORT" ;;
   status)
     if up; then echo "running on $URL"; summary; else echo "not running on port $PORT"; exit 1; fi ;;
   log)

@@ -26,7 +26,18 @@ function urlFor(i, view = state.view) {
 }
 const entry = (i) => ({ id: i != null ? items[i].id : null, p: i != null ? pageOf(i) : 0, view: state.view, lane: state.lane });
 
+// A page turn's new URL is written when turning stops (and not at all when it is the same):
+// Firefox refuses History calls past about a hundred in ten seconds, and its session store
+// copies every change. Its entry and URL are taken at the turn, written up to 600 ms later.
+let pend = null;
+function flush() {
+  if (!pend) return;
+  const { i, st, u } = pend; clearTimeout(pend.t); pend = null;
+  if (restoring || history.state?.id !== items[i].id || u === location.pathname + location.search) return;
+  history.replaceState(st, '', u);
+}
 on('item:settled', ({ i }) => {
+  flush();
   if (restoring || i !== current()) return;
   if (history.state?.id === items[i].id) return;
   history.pushState(entry(i), '', urlFor(i));
@@ -34,9 +45,11 @@ on('item:settled', ({ i }) => {
 });
 on('spread:settled', ({ i }) => {
   if (restoring || i !== current() || history.state?.id !== items[i].id) return;
-  history.replaceState(entry(i), '', urlFor(i));
+  clearTimeout(pend?.t);
+  pend = { i, st: entry(i), u: urlFor(i), t: setTimeout(flush, 600) };
 });
 on('view:changed', ({ view }) => {
+  flush();
   if (restoring || !booted || history.state?.view === view) return; // boot's setView('feed') must not replace the URL routeBoot reads
   history.pushState({ ...entry(current()), view }, '', urlFor(current(), view));
 });

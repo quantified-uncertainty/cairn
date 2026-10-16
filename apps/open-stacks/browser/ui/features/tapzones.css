@@ -1,0 +1,6 @@
+/* Tap zones (features/tapzones.js): a faint chevron at the edge of the pages while the pointer is in a zone. */
+.tz-cue { position: fixed; z-index: 5; width: 28px; height: 44px; display: grid; place-items: center; pointer-events: none;
+  color: var(--ink-2); opacity: 0; transition: opacity .15s ease-out; border-radius: 6px; }
+.tz-cue.on { opacity: .55; background: color-mix(in srgb, var(--bg-3) 70%, transparent); }
+.tz-cue svg { width: 20px; height: 20px; }
+@media (prefers-reduced-motion: reduce) { .tz-cue { transition: none; } }

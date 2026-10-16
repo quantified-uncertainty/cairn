@@ -189,13 +189,27 @@ export function toggleZoom(on, k) {
 on('spread:rendered', ({ i, flow }) => {
   if (flow && state.pendingVp != null) { const vp = state.pendingVp; state.pendingVp = null; const c = vpToCol(vp); if (c !== state.start.get(i)) { state.start.set(i, c); showFeed(); } }
 });
+const paintSaves = (it) => { store.set('saved', state.saved); $('#saved-n').textContent = state.saved.length; paintSaved(); paintHead(it); };
 export function toggleSave() {
   const it = items[current()];
   const k = state.saved.indexOf(it.id);
   before(k >= 0 ? 'unsave' : 'save', judged());
   if (k >= 0) state.saved.splice(k, 1); else { state.saved.unshift(it.id); learn(it, 1); buildOrder(); }
-  store.set('saved', state.saved); $('#saved-n').textContent = state.saved.length; paintSaved(); paintHead(it);
+  paintSaves(it);
   if (k >= 0) toast('Removed from saved', { icon: 'star-off', kind: 'edge' }); else toast('Saved', { icon: 'star', kind: 'ok' });
+}
+/** . : save the item and go on to the next one in the stack. One 'nav:before' covers both
+ *  (back.js keeps one entry per action), so one Back unsaves it and returns here. An item
+ *  already saved stays saved: . never unsaves. */
+export function saveAndNext() {
+  const it = items[current()]; if (!it) return;
+  const was = state.saved.includes(it.id);
+  if (!was) { before('save and next', judged()); state.saved.unshift(it.id); learn(it, 1); buildOrder(); paintSaves(it); }
+  if (!go(state.pos + 1)) {
+    if (was) laneEnd(); else toast('Saved', { icon: 'star', kind: 'ok', sub: inStack() ? `Last in ${inStack()}` : 'Last item in this lane' });
+    return;
+  }
+  toast(was ? 'Already saved' : 'Saved', { icon: 'star', kind: 'ok', sub: `Next: ${brief(items[current()]?.t || '')} · ⌫ goes back${was ? '' : ' and unsaves'}` });
 }
 export function lessLikeThis() {
   before('less like this', judged()); learn(items[current()], -1); buildOrder(); go(state.pos + 1);
@@ -312,7 +326,7 @@ export function paintWheel() {
   const all = (says, more) => says + (more ? ' · ' + more : '');
   if (f?.nodeType === 3) f.textContent = `${mName.replace(/^Wheel: (.*)/, 'Mouse wheel ($1)')} — ${all(mSays, mMore)}. W or a middle click switches continue → items → pages. `
     + `${pName.replace(/^Trackpad: (.*)/, 'Trackpad ($1)')} — ${all(pSays, pMore)}; one step per stroke. At the end of a document the wheel stops: pause, then scroll again to go on. `
-    + 'Pinch out to zoom into a page, pinch in to zoom back out. Click a page to zoom.';
+    + 'Pinch out to zoom into a page, pinch in to zoom back out. Click a page to zoom; a click on the outer fifth of the pages, or beside them, turns back or forward (tap zones: Settings › Navigation).';
 }
 /** The wheel button: the map for each device, and whether to detect the device. */
 export function wheelMenu() {
@@ -377,6 +391,8 @@ function pageLeft(e) {
 K(['l', 'ArrowRight'], pageRight, ['l h', 'turn pages (→ ←); at the end or start, press twice for the next or previous item'], 11);
 K(['h', 'ArrowLeft'], pageLeft);
 K(['z', 'Enter'], () => toggleZoom(), ['z Esc', 'zoom to one page or column / up a level: unzoom, then the wall'], 12);
+/** Hooks fn(e) → true when a click on a page is not a zoom (features/tapzones.js: it turns the page). */
+export const clickHolds = [];
 /** Hooks fn() → true when an Esc with nothing left to close should not leave the Reader for the
  *  Wall (features/headpop.js: a card just closed by itself, or the pointer is on the header). */
 export const escHolds = [];
@@ -393,6 +409,8 @@ K('End', goEnd);
 K('g', () => { const it = items[current()]; const v = Number(window.prompt(`Go to page (1-${it.n})`)); if (v >= 1) goPage(v - 1); });
 K('s', toggleSave, ['s x m', 'save / less like this / more like this'], 30);
 K('x', lessLikeThis); K('m', moreLikeThis);
+// . is free in the Reader (the wall's . moves its tiles through their pages; util.js keeps both).
+K('.', saveAndNext, ['.', 'save and go on to the next item (s only saves; Back undoes both at once)'], 30.5);
 // = is the + key without Shift, so it adds too; fitting to the screen is \\, which no one presses by accident.
 K('+', () => setPer(1), ['+ - \\', 'more / fewer pages or columns (= adds too); \\ fits them to the screen'], 20);
 K('=', () => setPer(1));

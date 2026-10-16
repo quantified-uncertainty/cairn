@@ -16,7 +16,7 @@
 // import cache.mjs itself (warm.mjs may talk to a running server instead).
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
-import { HERE, CACHE } from '../config.mjs';
+import { HERE, CACHE, enrichFile } from '../config.mjs';
 
 const MB = 1024 * 1024;
 const PER = 3; // pages per spread, as in the UI's default
@@ -29,7 +29,7 @@ const coverUrl = (it) => `https://archive.org/services/img/${it.ia}`;
 export function loadCorpus() {
   const { items = [] } = JSON.parse(readFileSync(join(HERE, 'corpus.json'), 'utf-8'));
   try {
-    const e = JSON.parse(readFileSync(join(HERE, 'enrich.json'), 'utf-8')).items || {};
+    const e = JSON.parse(readFileSync(enrichFile(), 'utf-8')).items || {};
     for (const it of items) if (e[it.id]) Object.assign(it, e[it.id]);
   } catch { /* no enrichment */ }
   return items;

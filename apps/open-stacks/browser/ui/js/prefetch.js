@@ -6,6 +6,7 @@ import { openDoc, peekDoc, isFlow, scanUrl } from './docs.js';
 import { renderPage, SCAN_W, RENDER_H, serverRender, serverCount } from './render.js';
 import { on } from './util.js';
 import { profileOf, loadProfiles, snapStart, spreadAt, preloadSprite, cropKey } from './profile.js';
+import { ask as askShapes } from './shapes.js';
 
 // A small client-side scheduler: tasks run 4 at a time, highest priority
 // first, and every navigation replaces the plan with one centred on where
@@ -134,6 +135,7 @@ export function planAround(i, s) {
   // The next items' profiles, in one request (when they arrive, 'profile:updated'
   // below plans again, so their first spreads are prepared the profile's way).
   loadProfiles(state.order.slice(state.pos + 1, state.pos + 11).map((ii) => items[ii]).filter((x) => x && !isFlow(x))).catch(() => {});
+  askShapes([[it, s], ...state.order.slice(state.pos + 1, state.pos + 11).map((ii) => [items[ii], startOf(ii)])]); // shapes.js: page sizes for placeholders while there is no profile
   // The server works further ahead, into its disk cache, in priority bands:
   // sharp pages near you, then the next few items' first spreads, then sharp
   // pages further out, then the later items. Once you stay on a scan, the

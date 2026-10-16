@@ -6,7 +6,7 @@
 // from across each item. Heavy work (page images, pdf.js renders, post text)
 // happens only for tiles near the viewport, nearest first, and is dropped as
 // soon as it is no longer wanted.
-import { $, h, P, PI, on, store, lru, fmtDate, registerView, registerKey, keyHelp } from './util.js';
+import { $, h, P, PI, on, store, lru, fmtDate, registerView, registerKey, keyHelp, evictCanvas } from './util.js';
 import { items, LANES, LANE_COLORS, laneMax } from './corpus.js';
 import { itemIcon } from './icons.js';
 import { state } from './state.js';
@@ -19,8 +19,9 @@ import { summaries } from './summary.js';
 // ---------- settings ----------
 const SIZES = [130, 160, 200, 250, 310, 380]; // tile widths (px), - and + step through them
 const STEP = 0.05;                              // , and . move the depth by 5%
-const W = { size: 2, sheet: false, f: 0, ...store.get('wall', {}) };
-const saveW = () => store.set('wall', { size: W.size, sheet: W.sheet, f: W.f });
+// pc: paper covers, 'figure' (the paper's top figure, below) or 'page' (the typeset title page).
+const W = { size: 2, sheet: false, f: 0, pc: 'figure', ...store.get('wall', {}) };
+const saveW = () => store.set('wall', { size: W.size, sheet: W.sheet, f: W.f, pc: W.pc });
 const DPR = Math.min(2, window.devicePixelRatio || 1);
 const STALE = new Error('stale');
 // Where the time goes (wallStats().perf): [count, total ms] per kind of work.
@@ -245,7 +246,7 @@ async function renderThumb(d, it, k, w, job, cancellable = true) {
     perf.render[0]++; perf.render[1] += performance.now() - t0;
     return c;
   };
-  return lru(thumbs, key, make, 260);
+  return lru(thumbs, key, make, 260, evictCanvas);
 }
 /** A cached render, or a copy of it when it is already on screen elsewhere. */
 const useCanvas = (c) => { if (!c.isConnected) return c; const x = document.createElement('canvas'); x.width = c.width; x.height = c.height; x.getContext('2d').drawImage(c, 0, 0); return x; };
@@ -322,6 +323,188 @@ function coverCloth(T) {
     h('div', { className: 'fr' }, div('tt ' + tsize(it.t), it.t), h('div', { className: 'rule' }), div('au', cleanAu(it.a)), div('src', it.src || '')));
 }
 const COVERS = { post: coverPost, paper: coverPaper, book: coverBook, cloth: coverCloth };
+
+// ---------- paper covers: the top figure (Settings › Wall › Paper covers) ----------
+// An arXiv paper's tile shows the top of its Pictures lead (GET /extract/leads,
+// routes/68-wallfigs.mjs: GET /extract's lead, ranked by score or picked in the
+// highlights file) over its title, or the top two or three as a collage when the
+// figures are small. The typeset cover stays underneath until every image has
+// loaded and decoded, so a paper with no figure, one still being extracted or one
+// whose image fails keeps it, and nothing moves (the tile's shape is fixed by CSS).
+// Asked for only when a tile settles near the viewport, a batch per request (the
+// server answers from its extract cache on disk and builds the rest in the
+// background); answers are kept in store 'wallFigs' (the last 1,500 papers, 30 days)
+// so a cover seen once comes back without asking. Images the disk cache has come
+// through the proxy; the rest straight from arXiv, as the Feeds cards load them.
+const FIG_DAYS = 30, day = () => Math.floor(Date.now() / 864e5);
+const FIGS = store.get('wallFigs', {}); // id -> {show, pics, t} or {t}: nothing to lead with
+let figsT = null;
+function setFigs(id, v) {
+  delete FIGS[id]; FIGS[id] = { ...(v || {}), t: day() };
+  clearTimeout(figsT);
+  figsT = setTimeout(() => {
+    const keys = Object.keys(FIGS);
+    for (const k of keys.slice(0, Math.max(0, keys.length - 1500))) delete FIGS[k];
+    (window.requestIdleCallback || setTimeout)(() => store.set('wallFigs', FIGS));
+  }, 2000);
+}
+const figOk = (T) => T.kind === 'paper' && W.pc === 'figure' && /^arxiv:/.test(T.it.id);
+const figNo = new Set();   // this session: a failed answer or image; not asked again
+const figWant = new Set(); // ids of settled tiles waiting for an answer
+let figBusy = false, figT = null;
+/** A settled paper tile: its figure cover from what is known, or ask the server. */
+function figFor(T) {
+  if (!figOk(T) || T.fig || figNo.has(T.it.id)) return;
+  const v = FIGS[T.it.id];
+  if (v && day() - (v.t || 0) <= FIG_DAYS) { if (v.pics) showFig(T, v); return; }
+  figWant.add(T.it.id);
+  if (!figBusy) { clearTimeout(figT); figT = setTimeout(pullFigs, 60); }
+}
+async function pullFigs(wait = 0) {
+  if (figBusy) return;
+  // The 40 nearest the middle of the screen (the server takes 60); the rest wait for the next round.
+  const mid = centre();
+  const want = tiles.filter((T) => T.vis && figWant.has(T.it.id)).sort((a, b) => Math.abs(a.idx - mid) - Math.abs(b.idx - mid));
+  figWant.clear(); // tiles that left are asked about again when they settle
+  for (const T of want.slice(40)) figWant.add(T.it.id);
+  const vis = new Map(want.slice(0, 40).map((T) => [T.it.id, T]));
+  if (!vis.size || W.pc !== 'figure') return;
+  figBusy = true;
+  let r = null;
+  try { r = await (await fetch(`/extract/leads?build=1&wait=${wait}&ids=` + [...vis.keys()].map(encodeURIComponent).join(','))).json(); } catch { /* the server is away */ }
+  figBusy = false;
+  if (!r || r.error) { for (const id of vis.keys()) figNo.add(id); return; }
+  for (const [id, v] of Object.entries(r.leads || {})) { setFigs(id, v); const T = vis.get(id); if (v && T?.vis) showFig(T, FIGS[id]); }
+  for (const id of r.failed || []) figNo.add(id);
+  // Still being extracted: ask again while their tiles are in view (the server holds
+  // the request until one is done, at most 1.5 s).
+  for (const id of r.pending || []) if (vis.get(id)?.vis) figWant.add(id);
+  if (figWant.size) figT = setTimeout(() => pullFigs(1500), 150);
+}
+/** Width over height of a picture (a multi-image figure: of its arrangement). */
+function arOf(p, n = p.lay) {
+  if (!p.parts) return p.w && p.h ? p.w / p.h : 4 / 3;
+  if (n == null) n = ['r', ...p.parts.map((_, j) => j)];
+  if (typeof n === 'number') return p.parts[n].w / p.parts[n].h;
+  const a = n.slice(1).map((x) => arOf(p, x));
+  return n[0] === 'r' ? a.reduce((s, x) => s + x, 0) : 1 / a.reduce((s, x) => s + 1 / x, 0);
+}
+const clampAr = (a) => Math.max(0.3, Math.min(5, a));
+const FIG_BOX = 1.1; // the figure area's width over height, about (a .772 face less the label)
+/** The pictures a cover shows: the top one, or the top two or three when they are small. */
+function figPick(v) {
+  const ps = v.pics || [];
+  const small = (p) => Math.max(p.w || 0, p.h || 0) > 0 && Math.max(p.w, p.h) <= 400;
+  return v.show === 'few' && ps.length > 1 && small(ps[0]) ? ps.slice(0, 3) : ps.slice(0, 1);
+}
+/** A collage's grid: of the arrangements for 2 or 3 pictures, the one whose shape is nearest the box's. */
+function figGrid(ars) {
+  const fit = (a) => Math.abs(Math.log(a / FIG_BOX));
+  const fr = (xs) => { const m = Math.max(...xs); return xs.map((x) => Math.max(0.45, x / m).toFixed(3) + 'fr').join(' '); };
+  const [a, b, c] = ars;
+  if (ars.length === 2) {
+    const side = a + b, stack = 1 / (1 / a + 1 / b);
+    return fit(side) <= fit(stack) ? { cls: 'g2r', cols: fr([a, b]), rows: '1fr' } : { cls: 'g2c', cols: '1fr', rows: fr([1 / a, 1 / b]) };
+  }
+  const top = 1 / (1 / a + 1 / (b + c)), left = a + 1 / (1 / b + 1 / c); // a over b|c, or a beside b/c
+  return fit(top) <= fit(left)
+    ? { cls: 'g3t', cols: fr([b, c]), rows: fr([1 / a, 1 / (b + c)]) }
+    : { cls: 'g3l', cols: fr([a, 1 / (1 / b + 1 / c)]), rows: fr([1 / b, 1 / c]) };
+}
+const figSrc = (u, c) => (c ? PI(u) : u);
+/** One picture: an image, or a multi-image figure's parts in their arrangement (as features/figures.js figArt). */
+function figArt(p, ims) {
+  const img = (u, c) => { const im = h('img', { alt: '', decoding: 'async', draggable: false }); im.referrerPolicy = 'no-referrer'; im.src = figSrc(u, c); ims.push(im); return im; };
+  if (!p.parts) return h('div', { className: 'fc' }, img(p.img, p.c));
+  const node = (n) => {
+    if (typeof n === 'number') return h('div', { className: 'fp' }, img(p.parts[n].img, p.parts[n].c));
+    const kids = n.slice(1), a = kids.map((x) => arOf(p, x)), row = n[0] === 'r';
+    const tot = row ? a.reduce((s, x) => s + x, 0) : a.reduce((s, x) => s + 1 / x, 0);
+    const el = h('div', { className: row ? 'fr' : 'fcol' });
+    kids.forEach((k, j) => { const c = node(k); c.style[row ? 'width' : 'height'] = ((100 * (row ? a[j] : 1 / a[j])) / tot).toFixed(2) + '%'; el.append(c); });
+    return el;
+  };
+  return h('div', { className: 'fc' }, h('div', { className: 'fa', style: `--ar:${arOf(p).toFixed(3)}` }, node(p.lay ?? ['r', ...p.parts.map((_, j) => j)])));
+}
+/** Put the figure cover over the typeset one; it shows once every image is decoded. */
+function showFig(T, v, only1 = false) {
+  if (T.fig || !figOk(T) || figNo.has(T.it.id)) return;
+  const { it } = T;
+  const pics = only1 ? v.pics.slice(0, 1) : figPick(v);
+  const ims = [];
+  const box = h('div', { className: 'fg' }, ...pics.map((p) => figArt(p, ims)));
+  if (pics.length > 1) {
+    const g = figGrid(pics.map((p) => clampAr(arOf(p))));
+    box.classList.add(g.cls);
+    box.style.gridTemplate = `${g.rows} / ${g.cols}`;
+  }
+  const dt = fmtDate(it);
+  const el = h('div', { className: 'cv paper p-fig' }, box,
+    h('div', { className: 'lb' }, div('hd', [it.src || 'paper', dt].filter(Boolean).join(' · ')), div('tt ' + tsize(it.t), it.t)));
+  T.fig = el; T.figIms = ims;
+  T.cv.after(el);
+  const loaded = (im) => (im.complete && im.naturalWidth ? Promise.resolve() : new Promise((ok, no) => { im.onload = ok; im.onerror = no; })).then(() => im.decode().catch(() => {}));
+  const ars = pics.flatMap((p) => (p.parts ? p.parts.map((x) => x.w / x.h) : [arOf(p)]));
+  Promise.allSettled(ims.map(loaded)).then((rs) => {
+    if (T.fig !== el) return;
+    if (rs.every((r) => r.status === 'fulfilled')) {
+      // Each image drawn once into a canvas of about the tile's size, in idle time: a large
+      // PNG or a busy SVG drawn scaled at every paint made scrolling stutter (STATUS.md).
+      const k = pics.length > 1 ? 0.7 : 1, bw = Math.round(faceW(T) * DPR * 0.9 * k), bh = Math.round(bw / FIG_BOX);
+      bake(() => {
+        if (T.fig !== el) return;
+        ims.forEach((im, j) => { const c = toCanvas(im, bw, bh, ars[j]); if (c) { im.replaceWith(c); im.src = ''; } });
+        el.classList.add('shown'); T.figIms = null;
+        setTimeout(() => { if (T.fig === el) T.face.classList.add('figd'); }, 300); // the typeset cover under it stops painting
+      });
+      return;
+    }
+    dropFig(T);
+    // A collage with a broken picture falls back to the top one alone; a broken top one to the typeset cover.
+    if (pics.length > 1 && rs[0].status === 'fulfilled' && (!pics[0].parts || rs.slice(0, pics[0].parts.length).every((r) => r.status === 'fulfilled'))) showFig(T, v, true);
+    else figNo.add(it.id);
+  });
+}
+// Baking runs in idle time, at least one cover per callback.
+const bakeQ = []; let baking = false;
+const idle = window.requestIdleCallback ? (fn) => requestIdleCallback(fn, { timeout: 300 }) : (fn) => setTimeout(() => fn({ timeRemaining: () => 8 }), 16);
+function bake(fn) { bakeQ.push(fn); if (!baking) { baking = true; idle(pumpBake); } }
+function pumpBake(dl) {
+  do bakeQ.shift()(); while (bakeQ.length && dl.timeRemaining() > 4);
+  if (bakeQ.length) idle(pumpBake); else baking = false;
+}
+/** An image drawn into a canvas that fits bw × bh px (raster images never enlarged; SVGs drawn sharp at that size). */
+function toCanvas(im, bw, bh, ar) {
+  let nw = im.naturalWidth, nh = im.naturalHeight;
+  if (!nw || !nh) { nw = bw; nh = Math.round(bw / (ar || 4 / 3)); }
+  const vector = /\.svg(\?|$)|\/figures\/svg/.test(im.src);
+  const s = vector ? Math.min(bw / nw, bh / nh) : Math.min(1, bw / nw, bh / nh);
+  const c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(nw * s)); c.height = Math.max(1, Math.round(nh * s));
+  const g = c.getContext('2d');
+  g.imageSmoothingQuality = 'high';
+  try { g.drawImage(im, 0, 0, c.width, c.height); } catch { return null; }
+  return c;
+}
+function dropFig(T) {
+  if (!T.fig) return;
+  for (const im of T.figIms || []) im.src = ''; // still loading: stop it
+  T.fig.remove(); T.fig = T.figIms = null;
+  T.face.classList.remove('figd');
+}
+/** Settings › Wall › Paper covers. */
+function setPaperCovers(v) {
+  if (v === W.pc) return;
+  W.pc = v; saveW();
+  for (const T of tiles) if (T.kind === 'paper') { if (v === 'page') dropFig(T); else if (T.vis && !T.later) figFor(T); }
+}
+on('boot', () => import('./features/settings.js').then((m) => m.registerSettings?.((ui) => ({
+  id: 'wall', title: 'Wall', note: 'the covers view (w)',
+  reset: () => { setPaperCovers('figure'); ui.sync(); },
+  rows: [ui.row('Paper covers', 'Top figure: an arXiv paper shows its best figure (or its top two or three, when they are small) over its title, once its figures are known; other papers, and those without a figure, keep the typeset title page.',
+    ui.seg([['page', 'First page'], ['figure', 'Top figure']], () => W.pc, setPaperCovers))],
+}))).catch(() => { /* no Settings sheet */ }));
+
 function repaintCover(T) {
   const c = COVERS[T.kind](T);
   c.classList.add('fresh');
@@ -528,14 +711,20 @@ function settle(T) {
       }).catch(() => {});
     }
   }
+  if (T.kind === 'paper') figFor(T);
   apply(T);
 }
 function leave(T) {
   if (!T.vis) return;
   T.vis = false; T.later = false;
+  if (T.figIms) dropFig(T); // a figure cover still loading: stop it (it starts again on settling)
   for (const L of [T.gl, T.sl]) if (L) { for (const ld of L.loads) if (ld) ld.im.src = ''; L.loads = []; L.gen++; L.busy = false; L.ks = null; }
   // Free the page renders once the tile has been away for a while.
-  T.dropT = setTimeout(() => { if (T.vis) return; for (const L of [T.gl, T.sl]) if (L) { L.el.remove(); } T.gl = T.sl = null; T.face.classList.remove('paged'); }, 6000);
+  T.dropT = setTimeout(() => {
+    if (T.vis) return;
+    for (const L of [T.gl, T.sl]) if (L) { L.el.remove(); } T.gl = T.sl = null; T.face.classList.remove('paged');
+    if (T.fig && tiles.filter((x) => x.fig).length > 60) dropFig(T); // keep about 60 figure covers' canvases
+  }, 6000);
 }
 
 // ---------- the global mode: covers, depth or contact sheets ----------

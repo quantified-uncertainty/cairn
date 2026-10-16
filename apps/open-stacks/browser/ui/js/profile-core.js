@@ -9,7 +9,7 @@
 
 export const SCHEMA = 1;
 /** Analysis generation: bump whenever an algorithm below changes, so stored profiles recompile lazily. */
-export const GEN = 4; // 2: born-digital pages are not scanner beds; full-bleed pages show whole; shared crops never cut ink. 3: a thin strip alone in a side margin (arXiv's stamp, line numbers) is not part of the ink box. 4: running heads and feet (the same band on most pages) are left out of the ink box
+export const GEN = 5; // 2: born-digital pages are not scanner beds; full-bleed pages show whole; shared crops never cut ink. 3: a thin strip alone in a side margin (arXiv's stamp, line numbers) is not part of the ink box. 4: running heads and feet (the same band on most pages) are left out of the ink box. 5: a band's shape alone counts only in a slot whose bands mostly repeat (widely spaced body text kept its first line); faint text between a cut band and the page stays
 /** Display hints both layers may give (analysis here, the augmentation from the model). */
 export const HINTS = {
   'one-up': 'One page at a time reads best (slides, landscape reports).',

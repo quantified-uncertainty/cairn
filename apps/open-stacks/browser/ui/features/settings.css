@@ -34,8 +34,13 @@ html[data-st-filter="dim"] :is(:is(#spread .pg, #scrub .th, #peek .pk-page, .til
 html[data-st-filter="invert"] :is(:is(#spread .pg, #scrub .th, #peek .pk-page, .tile .face, #skim .sk-pic, .ovp-page, .ovp-row) > :is(canvas, img, .spr), :is(.ov-pg, .ovp-page) > .ov-m) { filter: invert(.9) hue-rotate(180deg); }
 html[data-st-filter="invert"] #skim .sk-pic > :is(canvas, .spr) { box-shadow: none; filter: invert(.9) hue-rotate(180deg) drop-shadow(0 2px 18px #0006); } /* a filter would turn its own shadow into a glow */
 /* Placeholders: --paper as the filter would turn it; scrubbing scans shown approximately keep their blur. */
-html[data-st-filter="dim"] #spread .pg:is(.loading, .scrubbing) { background-color: #c2beb5; }
-html[data-st-filter="invert"] #spread .pg:is(.loading, .scrubbing) { background-color: #2a261d; }
+html[data-st-filter="dim"] #spread .pg.scrubbing { background-color: #c2beb5; }
+html[data-st-filter="invert"] #spread .pg.scrubbing { background-color: #2a261d; }
+/* A loading page (style.css #spread .pg.loading) is --ph-page mixed into the stage at --ph-mix: dimmed paper, or the
+   inverted page, already dark, shown as it is; dark paper is quiet as it is. */
+html[data-st-filter="dim"] { --ph-page: color-mix(in srgb, var(--paper) 76%, #000); }
+html[data-st-filter="invert"] { --ph-page: #2a261d; --ph-mix: 100%; }
+html[data-st-paper="dark"]:not([data-st-filter="invert"]) { --ph-mix: 100%; }
 html[data-st-filter="invert"] #spread .pg.loading::after { background-image: linear-gradient(100deg, transparent 30%, #fff1 50%, transparent 70%); }
 html[data-st-filter="invert"] #spread .pg.scrubbing::before { color: #fff3; }
 html[data-st-filter="dim"] #spread .pg.scrubbing.approx > img { filter: brightness(.78) contrast(1.06) blur(1px); }

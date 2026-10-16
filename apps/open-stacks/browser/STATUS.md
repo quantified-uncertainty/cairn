@@ -95,9 +95,17 @@ by area (effort: M a day or less, L more):
   file per item with front matter for Bear or Obsidian (M). Two-column
   split that ignores running heads and full-width figures (M). Tighter
   crops for Google-digitized scans in compiled profiles (M). Placeholders
-  of the right shape before a profile exists (M). Running headers cropped
-  across a PDF's pages (in progress). More ergonomic navigation from the
-  brainstorm: a leader-key keymap, save-and-advance, tap zones (M).
+  of the right shape before a profile exists: done (`GET /shapes`,
+  `shapes.js`; quiet and page-coloured, not white; size error of the first
+  placeholder over 15 mixed items, median 14.1% → 9.5%, mean 25.9% →
+  17.4%; covers and pages a lane does not usually crop like are still
+  off; checked in headless Chromium only). Running headers cropped
+  across a PDF's pages (in progress). The brainstorm's last navigation ideas
+  are built (16 October; checked in headless Chromium only, not Firefox):
+  a leader key (`'` or F19, then a home-row letter), save-and-advance
+  (`.`) and tap zones on the pages (`features/leader.js`,
+  `features/tapzones.js`); left: the doc's Colemak-DH preset for the
+  frequent keys (`n e i u`) and named, rebindable actions.
 - **Library.** A "Later" queue prefetched and summarized overnight (M).
   Topic folders inside DeepMind safety › Blog & posts, 344 items (M).
 - **Header and chrome.** The metadata indicators of `docs/meta/` (M;

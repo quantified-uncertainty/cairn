@@ -559,6 +559,7 @@ export default function (app) {
   }
 
   // ----------------------------------------------------------- routes ----
+  app.extract = { stored, getExtract, viewOf, loadCorpus }; // for routes/68-wallfigs.mjs (the wall's figure covers)
   const bad = (id) => !id || id.length > 400 || /[\u0000-\u001f]/.test(id);
   app.route('GET', '/extract', async (req, res, url) => {
     const id = url.searchParams.get('id') || '';

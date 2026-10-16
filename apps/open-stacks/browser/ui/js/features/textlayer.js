@@ -16,7 +16,7 @@
 // currentWords() again to continue. Find: F or Cmd/Ctrl+F. Quote: select
 // text, then q (or the floating button). Emits 'textlayer:ready' {i, it, k, el}
 // when a page's layer is attached.
-import { $, h, P, PI, on, emit, registerKey, toast, lru } from '../util.js';
+import { $, h, P, PI, on, emit, registerKey, toast, lru, freeCanvas } from '../util.js';
 import { items } from '../corpus.js';
 import { state, current } from '../state.js';
 import { openDoc, isFlow, pdfjs, scanUrl } from '../docs.js';
@@ -152,10 +152,11 @@ async function trimBoxes(it, k, o) {
   for (let j = 1; j < o.words.length; j++) if (o.words[j].l === o.words[j - 1].l) { pairs++; if (o.words[j].x0 - o.words[j - 1].x1 <= 2) touching++; }
   if (!pairs || touching < pairs * 0.6) return;
   let im; try { im = await loadImg(PI(scanUrl(it, k, 1000))); } catch { return; }
-  const W = im.naturalWidth, H = im.naturalHeight;
+  const W = im.naturalWidth || im.width, H = im.naturalHeight || im.height;
   const c = document.createElement('canvas'); c.width = W; c.height = H;
-  const g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(im, 0, 0);
+  const g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(im, 0, 0); im.close?.();
   const px = g.getImageData(0, 0, W, H).data;
+  freeCanvas(c);
   const sx = W / o.w, sy = H / o.h;
   const ink = (x, y0, y1) => { let n = 0; for (let y = y0; y <= y1; y++) { const i = (y * W + x) * 4; if (px[i] * 0.3 + px[i + 1] * 0.59 + px[i + 2] * 0.11 < 150 && ++n > 1) return true; } return false; };
   for (const w of o.words) {

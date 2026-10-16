@@ -1,5 +1,5 @@
 // Shared configuration for the Stacks Browser server and its route modules.
-import { mkdirSync } from 'fs';
+import { mkdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { homedir } from 'os';
 import { fileURLToPath } from 'url';
@@ -15,5 +15,7 @@ export const CACHE = process.env.STACKS_CACHE || join(homedir(), '.cache', 'open
 // Haiku by default: about 40x cheaper than Opus and fast enough to keep up with skimming.
 export const MODEL = process.env.STACKS_MODEL || 'claude-haiku-5-5';
 export const UA = 'OpenStacksBrowser/0.3 (personal research reader; https://github.com/quantified-uncertainty/cairn)';
+/** The enrichment file (rel, hook, best per item): enrich-batch.mjs's CACHE/enrich.json, else the browser folder's. */
+export const enrichFile = () => (existsSync(join(CACHE, 'enrich.json')) ? join(CACHE, 'enrich.json') : join(HERE, 'enrich.json'));
 export const hasKey = () => !!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
 for (const d of ['', 'summaries']) mkdirSync(join(CACHE, d), { recursive: true });

@@ -119,8 +119,9 @@ document.addEventListener('keydown', (e) => {
   const k = e.key;
   if (!$('#keys').hidden && k === 'Escape') { $('#keys').hidden = true; return; }
   if (/^[0-9]$/.test(k)) { const lanes = ['all', ...Object.keys(LANES).filter((l) => COUNTS[l])]; if (lanes[Number(k)] && !e.repeat) setLane(lanes[Number(k)]); return; }
-  const b = keymap.get(k);
-  if (!b || (b.view && b.view !== state.view)) return;
+  let b = keymap.get(k);
+  while (b && b.view && b.view !== state.view) b = b.else; // util.js registerKey: one key, two views
+  if (!b) return;
   e.preventDefault();
   if (e.repeat && !b.repeat) return; // one press, one step
   b.fn(e);
