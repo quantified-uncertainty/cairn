@@ -1,13 +1,18 @@
-// Peek: rest the pointer on a small card and it opens large in a panel on the
-// right (or on the left when the card lies under that side), over the
-// content. Nothing in the view moves when it opens, swaps or closes.
+// Peek: rest the pointer on a small card and a preview opens beside it, at
+// most 420 px wide and only as tall as what it shows, so the rest of the view
+// stays in sight. Pinned (z), or for a root attached with { panel: true } (the
+// page overview), it is a panel the full height under the bar on the side away
+// from the card. Over the content: nothing in the view moves when it opens,
+// swaps or closes.
 //
-//   attachPeek(root, { selector, cardOf(el), render(card, body, ctx), delay, grace, onOpen, onClose }) -> detach()
+//   attachPeek(root, { selector, cardOf(el), render(card, body, ctx), delay, grace, width, panel, onOpen, onClose }) -> detach()
+//     width: the hover preview's (default 420); render's ctx: { width, height (the most it may take), pinned, live() }
 //   showPeek(root, card, el)  open or swap at once (keyboard selection while pinned)
 //   closePeek()  ·  pinPeek(on)  ·  peekState() -> { open, pinned, card, side }
 //
-// Used by the Feeds view (features/feeds.js) and the Figures river
-// (features/figures.js). Styles live in ui/features/feeds.css (#pk-panel, pk-).
+// Used by the Feeds view (features/feeds.js), the Figures river
+// (features/figures.js) and the page overview (features/overview.js). Styles
+// live in ui/features/feeds.css (#pk-panel, pk-; #pk-panel.card is the preview).
 // Only real pointer movement counts: content scrolling under a still pointer
 // (Chrome sends mouse events then) never opens or swaps anything. Scrolling closes
 // an open panel (unless pinned) and keeps it shut for a moment, the pointer has to
@@ -22,33 +27,62 @@ const body = h('div', { className: 'pk-body' });
 panel.append(pinMark, body);
 document.body.append(panel);
 
-const P = { open: false, pinned: false, card: null, el: null, side: 'right', root: null, o: null, t0: 0, gen: 0, top: 0, w: 0, inPanel: false };
+const P = { open: false, pinned: false, full: false, card: null, el: null, side: 'right', root: null, o: null, t0: 0, gen: 0, top: 0, w: 0, maxH: 0, anchor: 0, h: 0, inPanel: false };
 const roots = new Map(); // root -> options
 let restT = null, closeT = null, swapT = null;
 let px = -1, py = -1, vx = 0; // last pointer position; smoothed horizontal speed
 
-const panelW = () => Math.round(Math.max(380, Math.min(760, innerWidth * 0.34))); // a third of the window: the columns stay in view
+const panelW = () => Math.round(Math.max(380, Math.min(760, innerWidth * 0.34))); // pinned: a third of the window, the columns stay in view
+const CARD_W = 420, GAP = 16, M = 8; // a hover preview: its width, its gap to the card, its margin to the window's edges
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const towardPanel = () => (P.side === 'right' ? vx > 2.5 : vx < -2.5);
+/** A hover preview's top: level with the card, moved up as far as its height `hh` needs to stay on screen. */
+const fitTop = (hh) => Math.round(Math.max(P.top, Math.min(P.anchor, innerHeight - M - (hh || 0))));
 
-function place(el) {
-  // One layout read per open or swap: which side keeps the card visible.
-  const W = panelW();
+function place(el, root) {
+  // One layout read per open or swap: the bar, and where the card is.
   const bar = document.getElementById('bar');
   const top = bar ? Math.round(bar.getBoundingClientRect().bottom) : 0;
-  let side = 'right';
-  if (el?.isConnected) { const r = el.getBoundingClientRect(); if ((r.left + r.right) / 2 > innerWidth - W) side = 'left'; }
-  P.side = side; P.top = top; P.w = W;
-  panel.style.top = top + 'px';
-  panel.style.width = W + 'px';
-  panel.classList.toggle('left', side === 'left');
+  const r = el?.isConnected ? el.getBoundingClientRect() : null;
+  const s = panel.style;
+  P.full = P.pinned || !!roots.get(root)?.panel;
+  if (P.full) {
+    const W = panelW();
+    P.side = r && (r.left + r.right) / 2 > innerWidth - W ? 'left' : 'right';
+    P.top = top; P.w = W; P.maxH = innerHeight - top;
+    Object.assign(s, { top: top + 'px', left: '', width: W + 'px', maxHeight: '' });
+  } else {
+    // Beside the card: on its right when it fits there, else on its left, else on the roomier side over the card's edge.
+    const W = Math.min(roots.get(root)?.width || CARD_W, innerWidth - 2 * M);
+    let side = 'right', x = innerWidth - M - W;
+    if (r) {
+      const roomR = innerWidth - M - GAP - r.right, roomL = r.left - GAP - M;
+      side = roomR >= W ? 'right' : roomL >= W ? 'left' : roomR >= roomL ? 'right' : 'left';
+      x = Math.max(M, Math.min(innerWidth - M - W, side === 'right' ? r.right + GAP : r.left - GAP - W));
+    }
+    P.side = side; P.w = W; P.top = top + M; P.maxH = innerHeight - P.top - M;
+    P.anchor = r ? Math.round(r.top) : P.top;
+    // The last preview's height is the first guess; the ResizeObserver below corrects it before the frame is painted.
+    Object.assign(s, { top: fitTop(P.h) + 'px', left: Math.round(x) + 'px', width: W + 'px', maxHeight: P.maxH + 'px' });
+  }
+  panel.classList.toggle('card', !P.full);
+  panel.classList.toggle('left', P.full && P.side === 'left');
 }
+// A hover preview grows as it fills (pictures decode, a figure strip arrives): keep its bottom on
+// screen. The observer runs after layout, so this reads nothing the browser has not just computed.
+if (typeof ResizeObserver === 'function') new ResizeObserver((es) => {
+  if (!P.open || P.full) return;
+  const e = es[es.length - 1];
+  const hh = e.borderBoxSize?.[0]?.blockSize ?? panel.offsetHeight;
+  if (!hh) return;
+  P.h = hh; panel.style.top = fitTop(hh) + 'px';
+}).observe(panel);
 function paint(card, el, root) {
   const o = roots.get(root); if (!o) return;
   const gen = ++P.gen;
   P.card = card; P.el = el; P.root = root; P.o = o;
   body.replaceChildren(); body.scrollTop = 0; body.onclick = null;
-  const ctx = { width: P.w, height: innerHeight - P.top, pinned: P.pinned, live: () => gen === P.gen && P.open };
+  const ctx = { width: P.w, height: P.maxH, pinned: P.pinned, live: () => gen === P.gen && P.open };
   try {
     const r = o.render(card, body, ctx);
     if (r?.catch) r.catch((e) => console.warn('peek render', e));
@@ -59,12 +93,12 @@ function open(root, card, el) {
   const was = P.open;
   if (was && P.card === card) return;
   if (was) { endTiming(); }
-  place(el);
+  place(el, root);
   P.open = true; P.t0 = performance.now();
   panel.hidden = false;
   paint(card, el, root);
   if (!was) {
-    const dx = P.side === 'right' ? 16 : -16;
+    const dx = (P.side === 'right' ? 1 : -1) * (P.full ? 16 : 8);
     panel.animate(reduced() ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0, transform: `translateX(${dx}px)` }, { opacity: 1, transform: 'none' }], { duration: 120, easing: 'ease-out' });
     addEventListener('keydown', onKey, true);
     document.addEventListener('pointerdown', onDown, true);
@@ -91,6 +125,8 @@ export function showPeek(root, card, el) { if (card && roots.has(root)) open(roo
 export function pinPeek(on) {
   P.pinned = on === undefined ? !P.pinned : !!on;
   panel.classList.toggle('pinned', P.pinned);
+  // A hover preview that gets pinned grows into the full panel, drawn again at that size.
+  if (P.pinned && P.open && !P.full && P.card) { place(P.el, P.root); paint(P.card, P.el, P.root); }
   return P.pinned;
 }
 export const peekState = () => ({ open: P.open, pinned: P.pinned, card: P.card, side: P.side, el: P.el, root: P.root });
@@ -128,9 +164,9 @@ registerKey('P', () => {
 }, { help: ['P', 'hover previews in Feeds and Figures on or off'], order: 56, view: null });
 
 /** Watch `root` for cards to peek at. Returns a function that stops watching. */
-export function attachPeek(root, { selector, cardOf, render, delay = 450, grace = 250, onOpen, onClose } = {}) {
+export function attachPeek(root, { selector, cardOf, render, delay = 450, grace = 250, width = CARD_W, panel: full = false, onOpen, onClose } = {}) {
   delay = Math.max(delay, 450); // a deliberate rest, not a pass on the way somewhere else
-  const o = { selector, cardOf, render, delay, grace, onOpen, onClose };
+  const o = { selector, cardOf, render, delay, grace, width, panel: full, onOpen, onClose };
   roots.set(root, o);
   let restEl = null, ax = 0, ay = 0;
   // Scrolling (wheel or trackpad, the columns or the page) closes an unpinned panel and

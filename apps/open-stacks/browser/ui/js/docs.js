@@ -70,7 +70,9 @@ export function openDoc(it) {
     const r = await fetch(P(it.url));
     if (!r.ok) throw new Error('fetch ' + r.status);
     const html = await (extractors[it.kind] || extractors.web)(it, r);
-    return prepareFlow(it, html);
+    let d = prepareFlow(it, html);
+    for (const f of flowAfter) { try { d = (await f(d, it)) || d; } catch (e) { console.warn('flow step failed', e); } }
+    return d;
   }, 16);
 }
 /** The cached document if it is already open (no fetch). */
@@ -127,6 +129,10 @@ export function markWidgets(doc, page) {
   return n;
 }
 export const flowFilters = [];
+/** Async hooks fn(d, it) → d after prepareFlow, when a document opens for reading (openDoc; not
+ *  the wall's digests), before it is laid out: they may change d.html, not its stable pages
+ *  (features/flowblocks.js draws Mermaid diagrams here). */
+export const flowAfter = [];
 
 const VP_WORDS = 280; // words per stable "page" of a flow document
 const BLOCKS = 'p,li,h1,h2,h3,h4,h5,h6,pre,table,figure,blockquote,dt,dd,img,iframe,hr';

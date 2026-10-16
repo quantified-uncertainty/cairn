@@ -8,6 +8,7 @@
 // soon as it is no longer wanted.
 import { $, h, P, PI, on, store, lru, fmtDate, registerView, registerKey, keyHelp } from './util.js';
 import { items, LANES, LANE_COLORS, laneMax } from './corpus.js';
+import { itemIcon } from './icons.js';
 import { state } from './state.js';
 import { openDoc, peekDoc, isFlow, scanUrl, pdfjs, extractors, prepareFlow } from './docs.js';
 import { setView } from './chrome.js';
@@ -295,8 +296,9 @@ function coverPost(T) {
 function coverPaper(T) {
   const { it } = T;
   const style = ['classic', 'swiss', 'journal', 'series', 'mono'][hash(it.id) % 5];
-  const yr = it.y ? String(it.y) : '';
-  const venue = [it.src || 'paper', style === 'swiss' ? '' : yr].filter(Boolean).join(' · ');
+  const dt = fmtDate(it), yr = it.y ? String(it.y) : dt.slice(-4);
+  // The month when it is known ("ARXIV · APR 2025"); Swiss covers print the year large below.
+  const venue = [it.src || 'paper', style === 'swiss' && dt === yr ? '' : dt].filter(Boolean).join(' · ');
   const n = nOf(it);
   return h('div', { className: 'cv paper p-' + style },
     div('hd', venue),
@@ -310,7 +312,7 @@ function coverBook(T) {
   const { it } = T; const ia = iaOf(it);
   const im = h('img', { className: 'cov', alt: '', decoding: 'async', loading: 'lazy', crossOrigin: 'anonymous', src: PI(`https://archive.org/services/img/${ia}`) });
   const cv = h('div', { className: 'cv book' }, im,
-    h('div', { className: 'lbl' }, subject(it) ? div('sj', subject(it)) : null, div('tt', it.t.replace(/\s*\.\.+\s*$/, '')), div('yr', [it.y, nOf(it) ? nOf(it) + ' pp' : ''].filter(Boolean).join(' · '))));
+    h('div', { className: 'lbl' }, subject(it) ? div('sj', subject(it)) : null, div('tt', it.t.replace(/\s*\.\.+\s*$/, '')), div('yr', [fmtDate(it), nOf(it) ? nOf(it) + ' pp' : ''].filter(Boolean).join(' · '))));
   im.onerror = () => { const c = coverCloth(T); cv.replaceWith(c); T.cv = c; };
   return cv;
 }
@@ -454,8 +456,8 @@ function makeTile(i, canWide) {
   const zone = h('div', { className: 'zone' }, h('i'));
   const face = h('div', { className: 'face' }, zone);
   const pill = h('span', { className: 'pill-slot' });
-  const date = it.d ? fmtDate(it) : it.y ? String(it.y) : '';
-  const meta = h('div', { className: 'meta' }, h('i', { className: 'dot', title: LANES[it.lane] || '' }),
+  const date = fmtDate(it);
+  const meta = h('div', { className: 'meta' }, h('i', { className: 'dot', title: LANES[it.lane] || '' }), itemIcon(it, 11),
     h('span', { className: 'au', textContent: cleanAu(it.a) || it.src || '' }), date ? h('span', { className: 'dt', textContent: date }) : null, pill);
   const el = h('div', { className: `tile k-${kind}${wide ? ' wide' : ''}`, tabIndex: 0, title: it.t }, face, meta);
   el.style.setProperty('--c', LANE_COLORS[it.lane] || '#7a6f60');
@@ -864,7 +866,7 @@ export { setDepth, toggleSheet, setSize };
 export function typoFace(it) {
   return h('div', { className: 'typo', style: `--c:${LANE_COLORS[it.lane] || '#6b5a3a'}` },
     h('div', { className: 'tt', textContent: it.t }),
-    h('div', { className: 'aa', textContent: [it.a, it.y].filter(Boolean).join(' · ') }),
+    h('div', { className: 'aa', textContent: [it.a, fmtDate(it)].filter(Boolean).join(' · ') }),
     h('div', { className: 'xx', textContent: it.hook || it.why || '' }));
 }
 /** Item i's wall cover, for use outside the wall (features/upnext.js): the same

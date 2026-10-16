@@ -84,7 +84,7 @@ function picture(i, H) {
     return c;
   }
   const P = profileOf(it), cell = P && spriteCell(P, k, H), a = P && spriteAspect(P);
-  if (cell && a) { const d = h('div'); Object.assign(d.style, cell, { width: Math.round(H * a) + 'px', height: H + 'px' }); return d; }
+  if (cell && a) { const d = h('div', { className: 'spr' }); Object.assign(d.style, cell, { width: Math.round(H * a) + 'px', height: H + 'px' }); return d; }
   return null;
 }
 function paintSkim(i) {

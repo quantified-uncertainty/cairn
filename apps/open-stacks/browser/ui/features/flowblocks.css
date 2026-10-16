@@ -1,0 +1,109 @@
+/* Code, diagrams and wide tables in flow documents (features/flowblocks.js). */
+
+/* ---------- code: one line per line, wrapped under its own indentation ---------- */
+/* Wrapped, not scrolled: a sideways scroller inside a column fights the wheel (which turns
+   pages) and hides the end of long lines; a wrapped line hangs 2ch under its indentation. */
+.flow pre.wv-code { font: .8em/1.45 var(--mono); white-space: pre-wrap; tab-size: 4; text-align: left; text-indent: 0; hyphens: manual; -webkit-hyphens: manual; overflow-wrap: anywhere; word-break: normal; letter-spacing: 0; font-variant-ligatures: none; padding: .55em .75em; border-radius: 3px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.flow pre.wv-code code { font: inherit; white-space: inherit; background: none; padding: 0; border-radius: 0; }
+.flow pre.wv-code .wv-ln { display: block; padding-left: calc((var(--i, 0) + 2) * 1ch); text-indent: calc((var(--i, 0) + 2) * -1ch); }
+.flow pre.wv-code .wv-ln:is(.wv-mark, .wv-highlight, .wv-hl) { background: color-mix(in srgb, var(--paper-link, #7a4f12) 12%, transparent); }
+.flow pre.wv-code .wv-ln.wv-ins { background: color-mix(in srgb, #2f8a3e 14%, transparent); }
+.flow pre.wv-code .wv-ln.wv-del { background: color-mix(in srgb, #b3402e 14%, transparent); }
+.flow pre.wv-code[data-title]::before { content: attr(data-title); display: block; margin: -.15em 0 .45em; padding-bottom: .3em; border-bottom: 1px solid var(--paper-rule, #d8cfbd); color: var(--paper-ink-3, #5d5446); font-size: .92em; }
+/* The site's own token colours: one set for light papers, one for the dark paper. */
+.flow pre.wv-code .wv-tc { color: var(--cl, inherit); }
+html[data-st-paper="dark"] .flow pre.wv-code .wv-tc { color: var(--cd, inherit); }
+.flow pre.wv-code .wv-fi { font-style: italic; }
+.flow pre.wv-code .wv-fb { font-weight: 600; }
+/* Highlighters that name tokens with classes (highlight.js, Prism, Pygments and Rouge, pandoc, GitHub). */
+.flow pre.wv-code { --tk-kw: #7b3b8e; --tk-str: #3d6b22; --tk-com: #6f6757; --tk-num: #9a4a12; --tk-fn: #1d5a85; --tk-type: #7d5600; --tk-bi: #12686a; --tk-meta: #6a5a96; --tk-err: #a3261b; }
+html[data-st-paper="dark"] .flow pre.wv-code { --tk-kw: #cf9cf0; --tk-str: #a9d38a; --tk-com: #948b7c; --tk-num: #eea56f; --tk-fn: #86b4ef; --tk-type: #e6c487; --tk-bi: #7fd0c8; --tk-meta: #b9a8ec; --tk-err: #f08a7c; }
+.flow pre.wv-code:is([data-hl="hljs"], [data-hl="prism"]) :is(.tk-keyword, .tk-selector-tag, .tk-literal, .tk-boolean, .tk-important, .tk-atrule, .tk-rule) { color: var(--tk-kw); }
+.flow pre.wv-code:is([data-hl="hljs"], [data-hl="prism"]) :is(.tk-string, .tk-char, .tk-regexp, .tk-template-string, .tk-attr-value, .tk-addition, .tk-url) { color: var(--tk-str); }
+.flow pre.wv-code:is([data-hl="hljs"], [data-hl="prism"]) :is(.tk-comment, .tk-quote, .tk-prolog, .tk-doctype, .tk-cdata) { color: var(--tk-com); font-style: italic; }
+.flow pre.wv-code:is([data-hl="hljs"], [data-hl="prism"]) :is(.tk-number, .tk-constant, .tk-symbol) { color: var(--tk-num); }
+.flow pre.wv-code:is([data-hl="hljs"], [data-hl="prism"]) :is(.tk-title, .tk-function, .tk-section, .tk-selector-id) { color: var(--tk-fn); }
+.flow pre.wv-code:is([data-hl="hljs"], [data-hl="prism"]) :is(.tk-type, .tk-class-name, .tk-tag, .tk-name, .tk-namespace) { color: var(--tk-type); }
+.flow pre.wv-code:is([data-hl="hljs"], [data-hl="prism"]) :is(.tk-built_in, .tk-builtin, .tk-attr, .tk-attribute, .tk-property, .tk-variable, .tk-params) { color: var(--tk-bi); }
+.flow pre.wv-code:is([data-hl="hljs"], [data-hl="prism"]) :is(.tk-meta, .tk-decorator, .tk-annotation, .tk-doctag) { color: var(--tk-meta); }
+.flow pre.wv-code:is([data-hl="hljs"], [data-hl="prism"]) :is(.tk-deletion, .tk-error) { color: var(--tk-err); }
+.flow pre.wv-code[data-hl="pyg"] :is(.tk-k, .tk-kc, .tk-kd, .tk-kn, .tk-kp, .tk-kr, .tk-ow) { color: var(--tk-kw); }
+.flow pre.wv-code[data-hl="pyg"] :is(.tk-s, .tk-s1, .tk-s2, .tk-sa, .tk-sb, .tk-sc, .tk-sd, .tk-se, .tk-sh, .tk-si, .tk-sx, .tk-sr, .tk-ss, .tk-dl) { color: var(--tk-str); }
+.flow pre.wv-code[data-hl="pyg"] :is(.tk-c, .tk-c1, .tk-cm, .tk-cs, .tk-ch, .tk-cpf) { color: var(--tk-com); font-style: italic; }
+.flow pre.wv-code[data-hl="pyg"] :is(.tk-m, .tk-mi, .tk-mf, .tk-mh, .tk-mo, .tk-mb, .tk-il, .tk-no) { color: var(--tk-num); }
+.flow pre.wv-code[data-hl="pyg"] :is(.tk-nf, .tk-fm) { color: var(--tk-fn); }
+.flow pre.wv-code[data-hl="pyg"] :is(.tk-nc, .tk-nn, .tk-kt, .tk-nt) { color: var(--tk-type); }
+.flow pre.wv-code[data-hl="pyg"] :is(.tk-nb, .tk-bp, .tk-na, .tk-nv, .tk-vc, .tk-vg, .tk-vi) { color: var(--tk-bi); }
+.flow pre.wv-code[data-hl="pyg"] :is(.tk-nd, .tk-cp) { color: var(--tk-meta); }
+.flow pre.wv-code[data-hl="pandoc"] :is(.tk-kw, .tk-cf) { color: var(--tk-kw); }
+.flow pre.wv-code[data-hl="pandoc"] :is(.tk-st, .tk-ch, .tk-vs, .tk-ss, .tk-sc) { color: var(--tk-str); }
+.flow pre.wv-code[data-hl="pandoc"] :is(.tk-co, .tk-do, .tk-an, .tk-cv, .tk-in) { color: var(--tk-com); font-style: italic; }
+.flow pre.wv-code[data-hl="pandoc"] :is(.tk-dv, .tk-bn, .tk-fl, .tk-cn) { color: var(--tk-num); }
+.flow pre.wv-code[data-hl="pandoc"] .tk-fu { color: var(--tk-fn); }
+.flow pre.wv-code[data-hl="pandoc"] :is(.tk-dt, .tk-im) { color: var(--tk-type); }
+.flow pre.wv-code[data-hl="pandoc"] :is(.tk-bu, .tk-va, .tk-at, .tk-ex) { color: var(--tk-bi); }
+.flow pre.wv-code[data-hl="pandoc"] :is(.tk-pp, .tk-ot) { color: var(--tk-meta); }
+.flow pre.wv-code[data-hl="pandoc"] :is(.tk-al, .tk-er, .tk-wa) { color: var(--tk-err); }
+.flow pre.wv-code[data-hl="gh"] .tk-k { color: var(--tk-kw); }
+.flow pre.wv-code[data-hl="gh"] :is(.tk-s, .tk-pds, .tk-sr) { color: var(--tk-str); }
+.flow pre.wv-code[data-hl="gh"] .tk-c { color: var(--tk-com); font-style: italic; }
+.flow pre.wv-code[data-hl="gh"] :is(.tk-c1, .tk-v) { color: var(--tk-num); }
+.flow pre.wv-code[data-hl="gh"] .tk-en { color: var(--tk-fn); }
+.flow pre.wv-code[data-hl="gh"] .tk-ent { color: var(--tk-type); }
+.flow pre.wv-code[data-hl="gh"] :is(.tk-smi, .tk-e) { color: var(--tk-bi); }
+
+/* Inline code: a quiet tint, never hyphenated, broken only where it must. */
+.flow code:not(pre code) { padding: .04em .26em; border-radius: 3px; background: var(--paper-code, #ebe4d6); hyphens: manual; -webkit-hyphens: manual; overflow-wrap: anywhere; white-space: normal; font-size: .84em; line-height: inherit; }
+.flow :is(h1, h2, h3, h4, h5) code:not(pre code) { font-size: .9em; }
+
+/* ---------- mermaid diagrams ---------- */
+#wv-mm-host { position: fixed; left: -12000px; top: 0; width: 1600px; visibility: hidden; pointer-events: none; contain: layout style; }
+.flow figure.wv-diagram { margin: .5em 0 .8em; break-inside: avoid; text-align: center; }
+.flow figure.wv-diagram img.wv-dgimg { width: min(100%, var(--w), calc(var(--flow-img-h, 42vh) * var(--r))); height: auto; aspect-ratio: var(--r); margin: 0 auto; }
+/* Drawn in the paper's colours when the document opened; after a switch between light and dark
+   paper, a card of the old paper keeps it readable. */
+html[data-st-paper="dark"] .flow figure.wv-diagram.dk img.wv-dgimg { background: none; padding: 0; }
+html:not([data-st-paper="dark"]) .flow figure.wv-diagram.dk img.wv-dgimg { background: #22201c; padding: .35em; border-radius: 3px; box-sizing: content-box; }
+.flow pre.wv-mermaid { font: .8em/1.45 var(--mono); white-space: pre-wrap; text-align: left; hyphens: manual; -webkit-hyphens: manual; padding: .55em .75em; border-radius: 3px; }
+.flow pre.wv-mermaid.wv-dg-fail::before { content: "Diagram could not be drawn · its source:"; display: block; margin-bottom: .35em; font: italic .95em var(--sans); color: var(--paper-ink-3, #5d5446); }
+
+/* ---------- wide tables ---------- */
+/* Data tables are tables, not sideways scrollers (which cannot break and would lose the rows
+   under the column's foot): their rows continue in the next column. wt-fixed: the longest words
+   would not fit a column, so the widths are fixed (colgroup, in proportion to the text) and long
+   words break rather than spill into the next column. */
+.flow table:is(.wt-fit, .wt-fixed) { display: table; overflow: visible; }
+.flow table.wt-fixed { table-layout: fixed; width: 100%; }
+.flow table.wt-fixed :is(td, th) { overflow-wrap: anywhere; hyphens: auto; -webkit-hyphens: auto; }
+.flow table:is(.wt-fit, .wt-fixed) tr { break-inside: avoid; }
+/* In the column: compact, no hyphenation, top-aligned; the caption holds the wide-view control. */
+.flow table.wt-wide { font-size: .78em; hyphens: manual; -webkit-hyphens: manual; }
+.flow table.wt-wide :is(td, th) { vertical-align: top; padding: 2px 4px; }
+.flow table.wt-wide.wt-fit :is(td, th) { overflow-wrap: normal; }
+.flow caption.wt-cap, .flow figcaption.wt-cap { caption-side: top; text-align: right; padding: 0 0 .25em; font-size: 1em; }
+.flow figcaption.wt-cap { text-align: center; padding: .3em 0 0; }
+.flow .wt-open { font: 500 .86em/1.2 var(--sans); color: var(--paper-link, #7a4f12); background: none; border: 1px solid color-mix(in srgb, var(--paper-link, #7a4f12) 45%, transparent); border-radius: 99px; padding: .12em .65em .16em; cursor: pointer; text-indent: 0; letter-spacing: 0; }
+.flow table .wt-open { font-size: 1.05em; }
+.flow .wt-open.wt-tbl::after { content: "⤢ Wide table · view it across the screen"; }
+.flow .wt-open.wt-dgm::after { content: "⤢ Wide diagram · view it across the screen"; }
+.flow .wt-open:hover { background: color-mix(in srgb, var(--paper-link, #7a4f12) 10%, transparent); }
+.flow .wt-open:focus-visible { outline: 2px solid var(--paper-link, #7a4f12); outline-offset: 1px; }
+.flow caption:not(.wt-cap) > .wt-open { float: right; margin: 0 0 .2em .6em; }
+
+/* Over the pages: the table at its natural width, up to the whole spread. */
+#wt-ov { position: fixed; z-index: 30; display: flex; align-items: center; justify-content: center; padding: 6px 12px; box-sizing: border-box; background: color-mix(in srgb, var(--bg, #1b1916) 72%, transparent); }
+#wt-ov .wt-sheet { display: flex; flex-direction: column; max-width: 100%; max-height: 100%; min-width: min(420px, 100%); background: var(--paper); box-shadow: 0 1px 0 #0006, 0 14px 40px #000b; }
+#wt-ov .wt-bar { flex: none; display: flex; align-items: center; gap: 12px; padding: 6px 8px 6px 16px; border-bottom: 1px solid var(--paper-rule, #d8cfbd); font: 12px var(--sans); color: var(--paper-ink-3, #5d5446); }
+#wt-ov .wt-t { color: var(--paper-ink, #26211a); font-weight: 600; }
+#wt-ov .wt-k { margin-left: auto; }
+#wt-ov .wt-x { border: 0; background: none; color: var(--paper-ink-2, #4a4236); font-size: 16px; line-height: 1; padding: 3px 8px; cursor: pointer; }
+#wt-ov .wt-x:hover { color: var(--paper-ink, #26211a); }
+#wt-ov .wt-body { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: .9em 1.4em 1.2em; }
+#wt-ov .wt-flow { transition: none; will-change: auto; text-align: left; hyphens: manual; -webkit-hyphens: manual; }
+#wt-ov .wt-flow > :first-child { margin: 0; }
+#wt-ov .wt-flow table { display: table; table-layout: auto; width: max-content; max-width: 100%; overflow: visible; font-size: .9em; margin: 0 auto; }
+#wt-ov .wt-flow table > colgroup { display: none; }
+#wt-ov .wt-flow table :is(td, th) { vertical-align: top; overflow-wrap: normal; hyphens: manual; -webkit-hyphens: manual; padding: 3px 8px; }
+#wt-ov .wt-flow thead th { position: sticky; top: -.9em; background: var(--paper); box-shadow: inset 0 -1px 0 var(--paper-rule, #d8cfbd); }
+#wt-ov .wt-flow figure { margin: 0; }
+#wt-ov .wt-dg img.wv-dgimg { width: auto; max-width: 100%; max-height: none; }

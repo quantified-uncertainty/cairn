@@ -10,8 +10,9 @@
 //   changed (at most every 20 s), and on an item shown more than 60 s after the last
 //   fetch. A change big enough to matter re-ranks with buildOrder(true): the item on
 //   screen and the next 3 stay put.
-// - Why lines in the panel: the features that moved this item, how far it moved in
-//   All, where a new find came from (Keep / Dismiss), and how you read it.
+// - Why lines in the panel: the features that moved this item (click one to boost,
+//   mute or ignore it, as on the Dashboard), how far it moved in All, where a new find
+//   came from (Keep / Dismiss), and how you read it.
 // - NEW badges on items agent jobs added that you have not read (header, wall tiles,
 //   library rows, Up Next), the NEW chip in the top bar (walks them; Shift: Dashboard),
 //   a toast when a batch arrives, and a reload pill when the corpus grew underneath.
@@ -468,14 +469,54 @@ function showUndo(box, undo, paint, done, until, id) {
   box.replaceChildren(h('span', { className: 'lw-done', textContent: done === 'kept' ? '★ kept' : 'dismissed' }), btn);
   t = setTimeout(() => { if (id && undos.get(id)?.until === until) undos.delete(id); paint(done); }, Math.max(0, until - Date.now()));
 }
+// A topic chip in the panel corrects itself: it opens a row under the chips with the Dashboard's
+// controls for its feature (More of this = boost, Less of this = mute, Not a reason = ignore), or
+// Reset once one is set. The row is the chip's own: nothing else in the panel moves.
+const FIX = [
+  ['boost', 'More of this', 'Boost: more of this in For you (and agents may look for more)'],
+  ['mute', 'Less of this', 'Mute: less of this, and no jobs for it'],
+  ['ignore', 'Not a reason', 'Ignore: a spurious feature; leave it out of the ranking and the chips'],
+];
+const FIXED = { boost: 'boosted', mute: 'muted', ignore: 'ignored' };
+/** The features behind a chip: the title-words chip ('w:a,b,…') stands for the words its label names. */
+const featsOf = (f) => (f.startsWith('w:') ? f.slice(2).split(',').slice(0, 4).map((w) => 'w:' + w) : [f]);
+function fixChip(c, row) {
+  const b = h('button', { type: 'button', className: 'lw-c' + (c.d < 0 ? ' neg' : '') + (c.ctl ? ' ctl' : ''), title: [c.label, c.text].filter(Boolean).join(': ') + ' · click to correct it' }, h('b', { textContent: fmtD(c.d) }), c.label);
+  b.setAttribute('aria-expanded', 'false');
+  b.onclick = () => toggleFix(c, b, row);
+  return b;
+}
+function toggleFix(c, btn, row) {
+  const was = row._btn;
+  if (was) { was.classList.remove('open'); was.setAttribute('aria-expanded', 'false'); row._btn = null; }
+  if (was === btn) { row.hidden = true; return; }
+  row._btn = btn; btn.classList.add('open'); btn.setAttribute('aria-expanded', 'true');
+  paintFix(c, btn, row); row.hidden = false;
+}
+function paintFix(c, btn, row) {
+  const set = async (mode) => {
+    for (const b of row.querySelectorAll('button')) b.disabled = true;
+    try { await Promise.all(featsOf(c.f).map((f) => setControl(f, mode))); }
+    catch { toast('Could not change it', { icon: 'circle-alert', kind: 'bad' }); paintFix(c, btn, row); return; }
+    c.ctl = mode; btn.classList.toggle('ctl', !!mode); // the cached why keeps it until the profile is recomputed
+    toast(mode ? FIXED[mode][0].toUpperCase() + FIXED[mode].slice(1) : 'Reset', { icon: mode === 'mute' ? 'thumbs-down' : mode === 'ignore' ? 'circle-alert' : 'thumbs-up', kind: 'ok', sub: clip(c.label, 40) });
+    paintFix(c, btn, row);
+  };
+  row.replaceChildren(
+    h('span', { className: 'lw-fl', textContent: c.ctl ? `${clip(c.label, 32)} · ${FIXED[c.ctl]}` : clip(c.label, 32), title: c.label }),
+    ...(c.ctl ? [h('button', { type: 'button', className: 'lw-btn', textContent: 'Reset', title: 'Back to what it learned', onclick: () => set(null) })]
+      : FIX.map(([mode, text, title]) => h('button', { type: 'button', className: 'lw-btn', textContent: text, title, onclick: () => set(mode) }))),
+    h('button', { type: 'button', className: 'lw-btn lw-x', textContent: '×', title: 'Close', onclick: () => toggleFix(c, btn, row) }));
+}
 function fillWhy(box, it, i, v) {
   const kids = [];
-  const chips = (v.chips || []).filter((c) => Math.abs(c.d) >= 0.005).map(chipEl);
+  const fix = h('div', { className: 'lw-fix', hidden: true });
+  const chips = (v.chips || []).filter((c) => Math.abs(c.d) >= 0.005).map((c) => fixChip(c, fix));
   // The share of features too small for a chip (field, style, level, year…): often most of the move, so say so.
   if (Math.abs(v.rest || 0) >= 0.05) chips.push(h('span', { className: 'lw-c rest' + (v.rest < 0 ? ' neg' : ''), title: 'Many smaller matches with what you read (field, style, level, year, title words…), each under 0.05' }, h('b', { textContent: fmtD(v.rest) }), (v.chips || []).length ? 'smaller matches' : 'many small matches'));
   const fam = phiChip(v);
   if (fam) chips.push(fam);
-  if (chips.length) kids.push(h('div', { className: 'lw-chips' }, ...chips));
+  if (chips.length) kids.push(h('div', { className: 'lw-chips' }, ...chips), fix);
   const rank = h('div', { className: 'lw-rank', hidden: true });
   kids.push(rank);
   if (v.find) kids.push(findLine(it, v.find));

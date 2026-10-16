@@ -19,7 +19,7 @@
 import { $, h, on, emit, store, css, registerKey, toast } from './util.js';
 import { items, LANES, byId } from './corpus.js';
 import { state, current, buildOrder, SORT_KEYS } from './state.js';
-import { before, go } from './nav.js';
+import { before, go, jumpers } from './nav.js';
 import { showFeed, paintHead, paintPos } from './feed.js';
 import { planAround } from './prefetch.js';
 import { isFlow } from './docs.js';
@@ -144,10 +144,12 @@ function findPos(i) {
   for (let k = state.pos - 1; k >= 0; k--) if (o[k] === i) return k;
   return -1;
 }
-/** Move to item i inside the stack (it comes next when it is not in it). */
+/** Move to item i inside the stack (it comes next when it is not in it; outside the folder
+ *  or tag you stay in, openOutside). */
 export function goTo(i, label = 'up next') {
   if (i == null || !items[i]) return false;
   let p = findPos(i);
+  if (p < 0 && state.scope && !state.scope.has(i)) return openOutside(i, label);
   if (p === state.pos && state.view === 'feed') return false;
   before(label, p < 0 ? { order: state.order.slice() } : undefined);
   if (p < 0) { state.order.splice(state.pos + 1, 0, i); p = state.pos + 1; }
@@ -156,6 +158,28 @@ export function goTo(i, label = 'up next') {
   changed();
   return true;
 }
+/** Open item i from outside what you walk (another folder, tag or lane): leave the folder or
+ *  tag you stay in and walk i's own lane from its place (All stays All), so j/k go on from it
+ *  as the Library shows it. False, and nothing done, when i is in the stack. */
+export function openOutside(i, label = 'open item') {
+  const it = items[i];
+  if (!it || (state.scope ? state.scope.has(i) : state.lane === 'all' || it.lane === state.lane)) return false;
+  const cur = current(), was = state.scope ? state.stack?.label : null;
+  const lane = state.lane !== 'all' && it.lane !== state.lane && LANES[it.lane] ? it.lane : null;
+  before(label, { order: state.order.slice(), ...(lane ? { lane: state.lane } : {}) });
+  state.scope = null; ret = null;
+  if (lane) { state.lane = lane; store.set('lane', lane); paintLanes(); }
+  buildOrder(false, i);
+  persist();
+  if (state.view !== 'feed') { state.zoom = false; setView('feed'); emit('nav', { type: 'item', i, it }); }
+  else show(cur);
+  changed();
+  if (was) toast(`Left ${was}`, { icon: 'maximize', sub: `All of ${LANES[state.lane] || 'the lanes'}, from here · Back returns to it` });
+  return true;
+}
+// Related, Today, Saved, search, History, the Dashboard (nav.js jumpTo): an item outside the
+// folder or tag you stay in leaves it, as in the Library.
+jumpers.push((j) => !!state.scope && !state.scope.has(j) && !state.order.includes(j) && openOutside(j));
 
 // ---------- Back, lane switches, search results ----------
 // Every recorded place carries the stack it was in (features/back.js keeps the
@@ -225,10 +249,12 @@ registerKey('S', () => {
   if (old) store.set('libScope', null);
   if (s && s.lane === state.lane && Array.isArray(s.ids)) {
     const set = new Set(s.ids.map((id) => byId.get(id)).filter((i) => i != null));
+    // A folder comes back with the files it has now: one added to it since joins it (features/local.js does the same live).
+    if (s.kind === 'folder' && set.size && typeof s.id === 'string') { const [lane, ...path] = s.id.split('/'); for (const i of folderStack(lane, path).items) set.add(i); }
     if (set.size) {
       state.scope = set;
       state.stack = { kind: s.kind, id: s.id, label: s.label, crumb: s.crumb || [s.label], size: set.size };
-      store.set('stack', { lane: s.lane, kind: s.kind, id: s.id, label: s.label, crumb: state.stack.crumb, ids: s.ids });
+      store.set('stack', { lane: s.lane, kind: s.kind, id: s.id, label: s.label, crumb: state.stack.crumb, ids: [...set].map((i) => items[i].id) });
     } else store.set('stack', null);
   }
 }

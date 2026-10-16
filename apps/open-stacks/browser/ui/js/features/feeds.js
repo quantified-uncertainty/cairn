@@ -1007,7 +1007,24 @@ function peekMeta(it) {
     h('div', { className: 'pk-title', textContent: it.t }),
     h('div', { className: 'pk-by' }, h('i', { className: 'dot', style: `background:${laneColor(it)}` }), [it.a, yearOf(it), lane].filter(Boolean).join(' · ')),
     it.ab || it.why ? h('p', { className: 'pk-ab', textContent: it.ab || it.why }) : null,
+    whyEl(it),
   ];
+}
+/** Why For you ranks it where it does (learn.js, while learning is on): its strongest reasons, as in
+ *  the panel's Why this, where a click on one corrects it. Arrives after the rest; one cached request. */
+function whyEl(it) {
+  const box = h('div', { className: 'pk-whyl', hidden: true, title: 'What it learned from your reading. To correct a reason, open the item and click it under Why this in the panel.' });
+  import('./learn.js').then(async (Lm) => {
+    if (!Lm.learnState?.().on) return;
+    const v = (await Lm.whyOf([it.id]))[it.id];
+    if (!v || !box.isConnected) return;
+    const els = (v.chips || []).filter((c) => Math.abs(c.d) >= 0.05).slice(0, 3).map((c) => Lm.chipEl(c));
+    const fam = Lm.phiChip?.(v); if (fam) els.push(fam);
+    if (!els.length) return;
+    box.append(h('span', { className: 'pk-sl', textContent: 'Why this' }), ...els);
+    box.hidden = false;
+  }).catch(() => {});
+  return box;
 }
 const peekKeys = () => h('div', { className: 'pk-keys', textContent: 'Enter open here · q quote to note · s save · x hide · o original · z pin' });
 function bigPic(p, W, H) {

@@ -255,12 +255,12 @@ async function manual(c) {
   const o = c.dataset.orig;
   const from = prompt('Address of a copy of this image (an image file; it is checked before it is used):', '');
   if (!from || !from.trim()) return;
-  toast('Checking that copy…', 4000);
+  toast('Checking the copy…', 4000, { icon: 'loader-circle', kind: 'busy' });
   try {
     const r = await (await fetch('/rescue/manual', { method: 'POST', body: JSON.stringify({ u: o, from: from.trim() }) })).json();
-    if (r.st === 'rescued') { remember(o, { st: 'rescued', via: r.via, w: r.w, h: r.h, from: from.trim() }); fromChip(c); toast('Image restored from your copy'); }
-    else toast('Could not use it: ' + (r.why || 'not an image'), 3500);
-  } catch { toast('The server did not answer', 2500); }
+    if (r.st === 'rescued') { remember(o, { st: 'rescued', via: r.via, w: r.w, h: r.h, from: from.trim() }); fromChip(c); toast('Image restored', { icon: 'image', kind: 'ok', sub: 'From your copy' }); }
+    else toast('Copy not used', 3500, { icon: 'image-off', kind: 'bad', sub: upper1(r.why || 'not an image') });
+  } catch { toast('Server did not answer', { icon: 'circle-alert', kind: 'bad' }); }
 }
 
 // ---------------------------------------------------------------- hover: where it came from / wrong image?
@@ -276,6 +276,7 @@ function infoFor(o) {
   return p;
 }
 const year = (ts) => (ts ? String(ts).slice(0, 4) : '');
+const upper1 = (s) => String(s).charAt(0).toUpperCase() + String(s).slice(1);
 async function showBadge(img) {
   clearTimeout(hideT);
   if (badgeImg === img && !badge.hidden) return;
@@ -305,7 +306,7 @@ document.addEventListener('mouseover', (e) => {
 async function flag(img) {
   const o = img.dataset.orig;
   badge.hidden = true;
-  toast('Looking for the real image…', 6000);
+  toast('Looking for the image…', 6000, { icon: 'search', kind: 'busy' });
   try {
     const r = (await (await fetch('/rescue/report', { method: 'POST', body: JSON.stringify({ imgs: [{ u: o, flag: 'placeholder', alt: altOf(img) || undefined }] }) })).json())[o] || {};
     infoOnce.delete(o);
@@ -313,9 +314,9 @@ async function flag(img) {
     if (r.st === 'ok' || r.st === 'rescued') {
       img.classList.remove('rs-sized'); img.removeAttribute('srcset');
       img.src = viaImg(o) + '&r=' + Date.now();
-      toast(r.via ? `Found it: via ${r.via}${r.ts ? ' (' + year(r.ts) + ')' : ''}` : 'Reloaded the image');
-    } else { const c = toChip(img, known.get(o)); if (r.st === 'pending') watch(c, o); toast('No other copy found yet; it will keep looking', 2600); }
-  } catch { toast('The server did not answer', 2500); }
+      toast(r.via ? 'Image found' : 'Image reloaded', { icon: 'image', kind: 'ok', sub: r.via ? `Via ${r.via}${r.ts ? ' · ' + year(r.ts) : ''}` : '' });
+    } else { const c = toChip(img, known.get(o)); if (r.st === 'pending') watch(c, o); toast('No copy found yet', 2600, { icon: 'search-x', sub: 'It keeps looking' }); }
+  } catch { toast('Server did not answer', { icon: 'circle-alert', kind: 'bad' }); }
 }
 
 // ---------------------------------------------------------------- archived documents: a note in the header

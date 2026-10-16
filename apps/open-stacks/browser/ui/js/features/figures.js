@@ -530,9 +530,10 @@ registerView('figures', {
 });
 keyHelp.push({ label: 'R', text: 'figure river: the figures of the lane’s arXiv papers (hover to see one large · j k ← → move · Enter open at the figure · z enlarge · Z pin the large view · o arXiv)', order: 64 });
 
-// Peek (peek.js): rest on a tile to see it large on the right, with its full
-// caption and the paper's other figures (hover a thumbnail to swap it in).
-attachPeek(root, { selector: '.fg-tile', cardOf: (el) => (tileOf.get(el)?.f ? tileOf.get(el) : null), render: peekFigure });
+// Peek (peek.js): rest on a tile to see it larger beside the tile, with its full
+// caption and the paper's other figures (hover a thumbnail to swap it in); Z pins
+// it as the full-height panel. 560 px wide, not Feeds' 420: tiles are 290-360 px.
+attachPeek(root, { selector: '.fg-tile', cardOf: (el) => (tileOf.get(el)?.f ? tileOf.get(el) : null), render: peekFigure, width: 560 });
 function peekFigure(t, body, { width }) {
   const it = items[t.i]; const W = width - 40, H = innerHeight * 0.62;
   const show = (f) => [h('div', { className: 'pk-art' + (f.table && f.html ? ' tbl' : '') }, f.table && f.html ? Object.assign(h('div', { className: 'pk-tbl fg-tbl-in' }), { innerHTML: f.html }) : figArt(f, W, H)),

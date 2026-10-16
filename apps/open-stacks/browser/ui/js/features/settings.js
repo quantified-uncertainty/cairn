@@ -522,16 +522,19 @@ function secVoice() {
   let sig = '';
   const fill = () => {
     const all = typeof speechSynthesis !== 'undefined' ? speechSynthesis.getVoices() : [];
-    const base = (navigator.language || 'en').slice(0, 2).toLowerCase();
-    const mine = all.filter((v) => v.lang.toLowerCase().startsWith(base) || v.voiceURI === P.browserVoice);
     const now = [P.engine, P.geminiVoice, P.browserVoice, all.length, gem.voices?.length].join('|');
     if (now === sig) return;
     sig = now;
+    // The browser's voices as the player lists them (readaloud.js): Premium, then
+    // Enhanced, then the rest, labeled "Ava · Premium"; novelty voices under Older voices.
+    const vs = P.engine === 'gemini' ? [] : RA.readAloudEngines?.get('browser')?.voices?.() || [];
+    const opt = (v) => h('option', { value: 'b:' + v.id, textContent: v.label });
     const opts = P.engine === 'gemini'
       ? (gem.voices?.length ? gem.voices : ['Kore', 'Puck', 'Charon', 'Aoede', 'Gacrux', 'Achird', 'Autonoe', 'Erinome']).map((n) => h('option', { value: 'g:' + n, textContent: n }))
-      : [h('option', { value: 'b:', textContent: 'The browser’s default voice' }), ...mine.map((v) => h('option', { value: 'b:' + v.voiceURI, textContent: v.name + (v.localService ? '' : ' (online)') }))];
+      : [h('option', { value: 'b:', textContent: 'The browser’s default voice' }), ...vs.filter((v) => !v.group).map(opt),
+        ...[...new Set(vs.filter((v) => v.group).map((v) => v.group))].map((g) => h('optgroup', { label: g }, ...vs.filter((v) => v.group === g).map(opt)))];
     voice.replaceChildren(...opts);
-    voice.value = P.engine === 'gemini' ? 'g:' + P.geminiVoice : 'b:' + (mine.some((v) => v.voiceURI === P.browserVoice) ? P.browserVoice : '');
+    voice.value = P.engine === 'gemini' ? 'g:' + P.geminiVoice : 'b:' + (vs.some((v) => v.id === P.browserVoice) ? P.browserVoice : '');
   };
   voicesFill = fill; // one listener for the life of the page, filling the current sheet's list
   if (!voicesHooked && typeof speechSynthesis !== 'undefined') { voicesHooked = true; speechSynthesis.addEventListener?.('voiceschanged', () => voicesFill?.()); }
@@ -544,6 +547,8 @@ function secVoice() {
       row('Voice engine', gem.enabled ? 'Gemini voices sound better and cost a little; the browser’s are free and instant.' : 'Gemini voices need GEMINI_API_KEY set where the server runs.',
         seg([['browser', 'This browser'], ['gemini', 'Gemini']], () => P.engine, (v) => RA.setReadVoice(v === 'gemini' ? 'g:' + P.geminiVoice : 'b:' + P.browserVoice), { disabled: (v) => v === 'gemini' && !gem.enabled })),
       row('Voice', null, voice, hear, msg),
+      row('Mac voices', 'Premium and Enhanced voices sound best; they come first in the list.',
+        h('span', { className: 'st-msg' }, 'To add one: System Settings → Accessibility → Read & Speak (Spoken Content before macOS 26) → System voice → Manage Voices… → English, download Ava (Premium), then quit and reopen Firefox.')),
       row('Speed', [kb('<'), ' ', kb('>'), ' change it while reading.'], seg(SPEEDS.map((v) => [v, v + '×']), () => P.rate, (v) => RA.setReadRate(v))),
     ],
   };

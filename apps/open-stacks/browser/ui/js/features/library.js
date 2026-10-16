@@ -33,14 +33,14 @@
 // only while it is showing.
 import { $, h, on, store, registerKey, keyHelp, fmtDate } from '../util.js';
 import { items, byId, LANES, COUNTS, LANE_COLORS, LANE_ORDERED } from '../corpus.js';
-import { state, current, topicRank, SORTERS, buildOrder } from '../state.js';
-import { jumpTo, goPage, before } from '../nav.js';
+import { state, current, topicRank, SORTERS } from '../state.js';
+import { jumpTo, goPage } from '../nav.js';
 import { openDoc, pdfOutline, isFlow } from '../docs.js';
 import { flowRange } from '../flow.js';
 import { profileOf } from '../profile.js';
 import { registerTrackLayer, repaintTrack } from '../feed.js';
-import { setView, setLane, togglePanel, paintLanes } from '../chrome.js';
-import { SORTS, setSort, stayIn, leave, goTo } from '../stack.js';
+import { setView, setLane, togglePanel } from '../chrome.js';
+import { SORTS, setSort, stayIn, leave, goTo, openOutside } from '../stack.js';
 
 const RH = 24; // row height, px (matches library.css)
 const SEP = '\u0001';
@@ -225,19 +225,12 @@ function browse(n, at) {
 }
 /** Open an item: in its place when it is in the stack; a wiki page from elsewhere stays in its site; otherwise it comes next. */
 function openItem(i, r) {
-  const it = items[i];
   if (r != null && state.order[r] === i) { if (r !== state.pos || state.view !== 'feed') goTo(i, 'open from library'); }
   else if (state.order.includes(i)) goTo(i, 'open from library');
   else {
     // Outside what you are walking (another folder, tag or lane): stop staying in it and
     // walk this item's own lane from its place, so the next item is the next row here.
-    if (state.scope) leave();
-    if (state.lane !== 'all' && it.lane !== state.lane) {
-      before('lane switch', { lane: state.lane, order: state.order.slice() });
-      state.lane = it.lane; store.set('lane', it.lane);
-      buildOrder(false, i); paintLanes();
-    }
-    if (state.order.includes(i)) goTo(i, 'open from library'); else jumpTo(i);
+    if (!openOutside(i, 'open from library')) jumpTo(i);
   }
   done();
 }
@@ -668,10 +661,11 @@ let byRank = null, byRankOf = null; // tree place → item index (topicRank inve
 function itemNext(i, d) {
   const R = topicRank();
   if (byRankOf !== R) { byRankOf = R; byRank = new Int32Array(R.length); R.forEach((x, k) => { byRank[x] = k; }); }
-  const lane = items[i].lane, sn = stackNode(), scoped = sn && state.scope.has(i);
+  const lane = state.lane === 'all' ? null : items[i].lane, sn = stackNode(), scoped = sn && state.scope.has(i);
   for (let x = R[i] + d; x >= 0 && x < byRank.length; x += d) {
     const j = byRank[x];
-    if (items[j].lane !== lane || (scoped && !state.scope.has(j))) return null;
+    if (lane && items[j].lane !== lane) return null; // in All, By topic, j/k go on into the next lane: so do these
+    if (scoped && !state.scope.has(j)) continue; // not in the folder you stay in: j/k pass it too
     if (!match || match[j]) return j;
   }
   return null;

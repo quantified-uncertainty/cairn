@@ -30,8 +30,21 @@ html[data-st-paper="dark"] :is(.fg-tbl-in, .fg-lb-tbl) { color: var(--paper-ink)
 /* ---------- hooks: pages (PDFs and scans) ---------- */
 #spread { gap: var(--page-gap, 10px); }
 html[data-st-fit="width"] #spread:not(.flowmode) { align-items: flex-start; overflow-y: auto; scrollbar-gutter: stable; }
-html[data-st-filter="dim"] :is(#spread .pg, #scrub .th, #peek .pk-page, .tile .face) > :is(canvas, img) { filter: brightness(.78) contrast(1.06); }
-html[data-st-filter="invert"] :is(#spread .pg, #scrub .th, #peek .pk-page, .tile .face) > :is(canvas, img) { filter: invert(.9) hue-rotate(180deg); }
+html[data-st-filter="dim"] :is(:is(#spread .pg, #scrub .th, #peek .pk-page, .tile .face, #skim .sk-pic, .ovp-page, .ovp-row) > :is(canvas, img, .spr), :is(.ov-pg, .ovp-page) > .ov-m) { filter: brightness(.78) contrast(1.06); }
+html[data-st-filter="invert"] :is(:is(#spread .pg, #scrub .th, #peek .pk-page, .tile .face, #skim .sk-pic, .ovp-page, .ovp-row) > :is(canvas, img, .spr), :is(.ov-pg, .ovp-page) > .ov-m) { filter: invert(.9) hue-rotate(180deg); }
+html[data-st-filter="invert"] #skim .sk-pic > :is(canvas, .spr) { box-shadow: none; filter: invert(.9) hue-rotate(180deg) drop-shadow(0 2px 18px #0006); } /* a filter would turn its own shadow into a glow */
+/* Placeholders: --paper as the filter would turn it; scrubbing scans shown approximately keep their blur. */
+html[data-st-filter="dim"] #spread .pg:is(.loading, .scrubbing) { background-color: #c2beb5; }
+html[data-st-filter="invert"] #spread .pg:is(.loading, .scrubbing) { background-color: #2a261d; }
+html[data-st-filter="invert"] #spread .pg.loading::after { background-image: linear-gradient(100deg, transparent 30%, #fff1 50%, transparent 70%); }
+html[data-st-filter="invert"] #spread .pg.scrubbing::before { color: #fff3; }
+html[data-st-filter="dim"] #spread .pg.scrubbing.approx > img { filter: brightness(.78) contrast(1.06) blur(1px); }
+html[data-st-filter="invert"] #spread .pg.scrubbing.approx > img { filter: invert(.9) hue-rotate(180deg) blur(1px); }
+/* A sprite cell drawn as a placeholder's own background (feed.js .sprite), whose shadow, number and
+   shimmer a filter would turn too: blended instead (sheets are opaque). Multiply by .78 is
+   brightness(.78); difference from .9 grey is invert(.9) for greys, hues left turned until the page comes. */
+html[data-st-filter="dim"] #spread .pg.sprite { background-color: #c7c7c7; background-blend-mode: multiply; }
+html[data-st-filter="invert"] #spread .pg.sprite { background-color: #e6e6e6; background-blend-mode: difference; }
 html[data-st-filter="invert"] .pg > .tl { mix-blend-mode: screen; } /* highlights stay visible on dark pages */
 html[data-st-lowres="off"] .pg.lowres > img { visibility: hidden; }
 

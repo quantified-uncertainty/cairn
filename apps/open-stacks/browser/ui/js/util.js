@@ -44,12 +44,27 @@ export function lru(map, key, make, cap) {
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+/** [year, month, day?] as strings: from it.d (corpus.js fills it from new-style arXiv
+ *  ids at load), else the month an arXiv id gives (YYMM: old style math/0406077 too) or
+ *  a dated web address (metr.org/blog/2025-06-05-…), when that agrees with the item's
+ *  year (a paper sent on 31 December gets a January id). null when only the year, or
+ *  nothing, is known. */
+export function dateOf(it) {
+  let m = /^(\d{4})-(\d{2})(?:-(\d{2}))?/.exec(it.d ? String(it.d) : '');
+  if (m) return [m[1], m[2], m[3]];
+  const ok = (y, mo) => mo >= 1 && mo <= 12 && (!it.y || +it.y === +y);
+  if ((m = /^arxiv:(?:[a-z-]+(?:\.[A-Za-z-]+)?\/)?(\d{2})(\d{2})/.exec(it.id || ''))) {
+    const y = String((+m[1] >= 91 ? 1900 : 2000) + +m[1]);
+    return ok(y, +m[2]) ? [y, m[2]] : null;
+  }
+  m = /^https?:\/\/[^?#]*?\/((?:19|20)\d\d)-(\d\d)-(\d\d)(?=[-._/]|$)/.exec(it.url || '');
+  return m && ok(m[1], +m[2]) ? [m[1], m[2], m[3]] : null;
+}
 /** "Oct 3, 2026" for the last two months, "Mar 2025" when the month is known, else the year. */
 export function fmtDate(it) {
-  const d = it.d ? String(it.d) : '';
-  const m = d.match(/^(\d{4})-(\d{2})(?:-(\d{2}))?/);
+  const m = dateOf(it);
   if (!m) return it.y ? String(it.y) : '';
-  const [, y, mo, da] = m;
+  const [y, mo, da] = m;
   if (da && Date.now() - Date.parse(`${y}-${mo}-${da}`) < 62 * 864e5) return `${MONTHS[mo - 1]} ${Number(da)}, ${y}`;
   return `${MONTHS[mo - 1]} ${y}`;
 }

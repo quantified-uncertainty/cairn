@@ -66,9 +66,10 @@ input.depth:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px #e2a54a5
 #grid .tile:hover .face { transform: translateY(-3px); box-shadow: 0 1px 1px #0009, 0 20px 30px -12px #000e, 0 6px 14px -4px #0009; outline: none; }
 #grid .tile:focus-visible .face { outline: 2px solid var(--accent); outline-offset: 4px; }
 
-/* The shelf label under each cover: lane dot, author, date, verdict. */
+/* The shelf label under each cover: lane dot, type icon, author, date, verdict. */
 #grid .meta { display: flex; align-items: center; gap: 6px; height: 16px; font: 11.5px/16px var(--sans); color: var(--ink-2); white-space: nowrap; min-width: 0; padding: 0 1px; }
 #grid .meta .dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+#grid .meta .ticon { margin: 0; color: var(--ink-3); }
 #grid .meta .au { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 #grid .meta .dt { flex: none; font: 10px var(--mono); color: var(--ink-3); }
 #grid .meta .dt::before { content: "·"; margin-right: 6px; color: var(--ink-3); }

@@ -20,7 +20,7 @@ import { state, current, buildOrder } from '../state.js';
 import { extractors } from '../docs.js';
 import { showFeed } from '../feed.js';
 import { paintLanes } from '../chrome.js';
-import { stack } from '../stack.js';
+import { stack, folderStack } from '../stack.js';
 
 const isLocal = (it) => it?.src === 'local' && String(it.id).startsWith('local:');
 // The Local lane kept from last time, but no files now (the folder is gone, or iCloud is not
@@ -109,7 +109,15 @@ export async function refresh() {
   // j/k walk the order the Library draws (state.js topicRank, from it.ord): build it again when
   // files came or moved, so the next item is still the next row there.
   const moved = state.sort !== 'ranked' && changed.some((i) => placed.get(i) !== place(items[i]));
-  if (((added.length && !state.scope) || moved) && (state.lane === 'local' || state.lane === 'all')) { buildOrder(true); emit('stack:changed', { stack: stack() }); }
+  // A file that appears inside the folder you stay in joins it (the Library shows it there), so
+  // j/k and the Library's ↓ walk it and do not leave the folder at it.
+  let joined = 0;
+  if (added.length && state.scope && state.stack?.kind === 'folder') {
+    const [lane, ...path] = String(state.stack.id).split('/');
+    for (const i of folderStack(lane, path).items) if (!state.scope.has(i)) { state.scope.add(i); joined++; }
+    if (joined) state.stack.size = state.scope.size;
+  }
+  if (((added.length && !state.scope) || joined || moved) && (state.lane === 'local' || state.lane === 'all')) { buildOrder(true); emit('stack:changed', { stack: stack() }); }
   // The file on screen changed (saved again, or arrived from iCloud): show it as it is now.
   if (cur && current() === ci && was && (cur.url !== was.url || cur.kind !== was.kind) && state.view === 'feed') {
     state.start.set(ci, 0); state.hist.set(ci, []);

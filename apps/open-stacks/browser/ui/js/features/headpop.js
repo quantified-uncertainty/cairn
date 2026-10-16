@@ -27,7 +27,7 @@
 // Speed: nothing here runs on a page turn. On an item change an observer gives
 // the header's plain parts a tab stop (a few attributes, no layout); everything
 // else waits for a rest, a click or a key.
-import { $, h, on, emit, esc, fmtDate, toast } from '../util.js';
+import { $, h, on, emit, esc, fmtDate, dateOf, toast } from '../util.js';
 import { items, LANES, COUNTS, LANE_COLORS } from '../corpus.js';
 import { state, current, SORTERS, score } from '../state.js';
 import { stayIn, leave, goTo, folderStack } from '../stack.js';
@@ -374,12 +374,12 @@ const FILL = {
   },
 
   date(it) {
-    const m = String(it.d || '').match(/^(\d{4})-(\d{2})(?:-(\d{2}))?/);
-    const y = m ? +m[1] : it.y; if (!y) return null;
-    const when = m ? new Date(Date.UTC(+m[1], +m[2] - 1, +(m[3] || 15))) : new Date(Date.UTC(y, 6, 1));
-    const full = m ? when.toLocaleDateString('en-GB', { timeZone: 'UTC', year: 'numeric', month: 'long', ...(m[3] ? { day: 'numeric' } : {}) }) : String(y);
+    const m = dateOf(it); // [y, month, day?]: it.d, else the month of an arXiv id or a dated address
+    const y = m ? +m[0] : it.y; if (!y) return null;
+    const when = m ? new Date(Date.UTC(y, +m[1] - 1, +(m[2] || 15))) : new Date(Date.UTC(y, 6, 1));
+    const full = m ? when.toLocaleDateString('en-GB', { timeZone: 'UTC', year: 'numeric', month: 'long', ...(m[2] ? { day: 'numeric' } : {}) }) : String(y);
     const what = /^arxiv:/.test(it.id) ? 'arXiv submission' : it.kind === 'scan' ? 'Published' : it.lane === 'lesswrong' || /forum|lesswrong/i.test(it.src || '') ? 'Posted' : 'Dated';
-    return [hdr(ic('calendar'), full, null), line(`${what} · ${age(when, m?.[3] ? 'day' : m ? 'month' : 'year')}`)];
+    return [hdr(ic('calendar'), full, null), line(`${what} · ${age(when, m?.[2] ? 'day' : m ? 'month' : 'year')}`)];
   },
 
   flag() {

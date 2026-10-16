@@ -161,7 +161,7 @@ async function showProfiled(gen, i, it, pf, s, n, per, boxW, boxH) {
   for (const x of slots) {
     if (!pageAspect(pf, x.k)) continue;
     const cell = state.crop !== false && pf.pages[x.k]?.cg !== 'own' && spriteCell(pf, x.k, parseFloat(x.el.style.height) || 0);
-    if (cell) { Object.assign(x.el.style, cell); continue; }
+    if (cell) { Object.assign(x.el.style, cell); x.el.classList.add('sprite'); continue; } // .sprite: settings.css dims/inverts it
     if (it.kind === 'scan') {
       const im = h('img', { alt: '' }); im.onerror = () => im.remove();
       im.src = `/ia/preview?u=${encodeURIComponent(scanUrl(it, x.k, SCAN_W))}&w=600,400,200${scanPreview.fetch ? '&fetch=1' : ''}`;
@@ -552,7 +552,7 @@ async function fillScrub(it, k, el) {
     Object.assign(el.style, cell); el.classList.add('sprite');
     // Scrubbing replaces these elements whenever the page under the pointer
     // changes, so a page the pointer has left is never sharpened.
-    const swap = (node) => { if (!el.isConnected) return; node.style.objectFit = 'contain'; el.style.backgroundImage = 'none'; el.replaceChildren(node); };
+    const swap = (node) => { if (!el.isConnected) return; node.style.objectFit = 'contain'; el.style.backgroundImage = 'none'; el.classList.remove('sprite'); el.replaceChildren(node); };
     const sharpen = () => {
       if (!el.isConnected) return;
       if (it.kind === 'scan') { loadThumb(it, k, () => swap(h('img', { crossOrigin: 'anonymous', src: PI(scanUrl(it, k, 200)), alt: '' }))); return; }

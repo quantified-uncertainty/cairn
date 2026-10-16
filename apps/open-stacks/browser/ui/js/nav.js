@@ -29,9 +29,12 @@ export function go(pos) {
   emit('nav', { type: 'item', i: current(), it: items[current()] });
   return true;
 }
+/** Hooks fn(j) → true when they opened item j themselves (stack.js: one outside the folder or tag you stay in). */
+export const jumpers = [];
 /** Open item j. In a fixed sort (topic, newest, oldest: stack.js) an item already in the
  *  order opens in its place, so j/k go on in the order the Library shows; otherwise it comes next. */
 export function jumpTo(j) {
+  if (jumpers.some((fn) => fn(j))) return;
   const at = state.sort && state.sort !== 'ranked' ? state.order.indexOf(j) : -1;
   if (at >= 0) { if (at !== state.pos || state.view !== 'feed') { before('open item'); setView('feed'); go(at); } return; }
   before('open item', { order: state.order.slice() }); state.order.splice(state.pos + 1, 0, j); setView('feed'); go(state.pos + 1);

@@ -25,6 +25,7 @@ import { extractors, openDoc, peekDoc, markWidgets } from '../docs.js';
 import { applyPageSvgStyles } from '../svgstyle.js';
 import { showFeed } from '../feed.js';
 import { live as flowLive } from '../flow.js';
+import { prepCode } from './flowblocks.js';
 
 const KATEX = 'https://cdn.jsdelivr.net/npm/katex@0.16.22/';
 const READABILITY = 'https://cdn.jsdelivr.net/npm/@mozilla/readability@0.6.0/+esm';
@@ -438,6 +439,7 @@ export async function extractWeb(it, src) {
   fixLazy(doc);
   absolutize(doc, base);
   applyPageSvgStyles(doc); // the page's own CSS onto its SVG diagrams, before styles are dropped
+  prepCode(doc); // code blocks and diagram sources, before Readability drops their lines and colours
   markWidgets(doc, it.page || base); // before extraction flattens them
   const rawDelims = !!doc.querySelector('script[src*="mathjax" i], script[src*="katex" i], script[src*="auto-render" i]') || /MathJax\.Hub|renderMathInElement/.test(src.slice(0, 300000));
   let out, how;
@@ -453,7 +455,7 @@ export async function extractWeb(it, src) {
     } catch (e) { console.warn('readability failed', e); }
     if (!out) {
       doc = new DOMParser().parseFromString(src, 'text/html');
-      setBase(doc, base); fixLazy(doc); absolutize(doc, base); applyPageSvgStyles(doc); markWidgets(doc, it.page || base); collectMath(doc, { rawDelims });
+      setBase(doc, base); fixLazy(doc); absolutize(doc, base); applyPageSvgStyles(doc); prepCode(doc); markWidgets(doc, it.page || base); collectMath(doc, { rawDelims });
       out = heuristic(doc); how = 'heuristic';
     }
   }

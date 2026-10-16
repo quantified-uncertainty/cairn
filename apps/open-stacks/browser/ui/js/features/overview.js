@@ -481,7 +481,11 @@ function spriteInto(k) {
   const cell = spriteCell(S.P, k, S.g.ch);
   if (!cell) return;
   const pg = el.querySelector('.ov-pg');
-  Object.assign(pg.style, cell, { width: S.g.cw + 'px', height: S.g.ch + 'px' });
+  Object.assign(pg.style, { width: S.g.cw + 'px', height: S.g.ch + 'px' });
+  // On a child, as pictures are, so dim and invert (settings.css) reach it and not the cell's marks.
+  let d = pg.querySelector('.ov-m');
+  if (!d || !el.classList.contains('spr')) { d?.remove(); d = h('div', { className: 'ov-m' }); pg.prepend(d); }
+  Object.assign(d.style, cell);
   el.classList.add('ld', 'spr');
   S.st[k] = 1;
   if (S.t && !S.t.first) S.t.first = Math.round(performance.now() - S.t.t0);
@@ -767,9 +771,9 @@ function fillPeek(body, k, W, H, cap = false) {
     return;
   }
   const m = el.querySelector('.ov-m');
-  if (m?.tagName === 'CANVAS') pg.append(scaled(m, m.height));
+  if (el.classList.contains('spr')) { const cell = spriteCell(S.P, k, hh); if (cell) { const d = h('div', { className: 'ov-m' }); Object.assign(d.style, cell); pg.append(d); } }
+  else if (m?.tagName === 'CANVAS') pg.append(scaled(m, m.height));
   else if (m) pg.append(m.cloneNode(true));
-  else if (el.classList.contains('spr')) { const cell = spriteCell(S.P, k, hh); if (cell) Object.assign(pg.style, cell); }
   if (el.classList.contains('blank')) return;
   // The sharp picture only once the pointer rests on the page.
   setTimeout(() => { if (fresh()) sharpPeek(pg, k, W, H, hh, fresh); }, 140);
@@ -837,7 +841,7 @@ function attachPeekOnce() {
   peekAttached = true;
   try {
     opt.peek.attachPeek(grid, {
-      selector: '.ov-cell', delay: 120,
+      selector: '.ov-cell', delay: 120, panel: true, // a page, large: the full-height panel, not the hover card
       cardOf,
       render: (card, body, ctx) => fillPeek(body, card.k, ctx.width - 44, ctx.height - 48, true),
     });

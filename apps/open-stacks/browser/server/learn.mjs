@@ -385,7 +385,8 @@ export function evidenceText(c, positive = true, ctl = null) {
 /**
  * Why an item ranks where it does (spec §2.8). Each feature's share Δ adds up to B·I.
  * counters: {f: {deep, skim, …}} or (f) → counters; ctls: {f: mode} or Map.
- * → {I, r, chips: [{f, label, g, d, text}], rest (Σ Δ not in chips), all: [{f, g, d}]}
+ * → {I, r, chips: [{f, label, g, d, text, ctl?}], rest (Σ Δ not in chips), all: [{f, g, d}]}; ctl: the reader's
+ * boost or mute on the chip's feature (the panel offers Reset then).
  */
 export function explainItem(feats, lam, labels = new Map(), counters = {}, ctls = null) {
   const M = new Float64Array(GROUPS.length);
@@ -412,7 +413,8 @@ export function explainItem(feats, lam, labels = new Map(), counters = {}, ctls 
   const neg = cands.filter((x) => x.d <= -0.05).sort((a, b) => a.d - b.d).slice(0, 1);
   const chips = [...pos, ...neg].sort((a, b) => Math.abs(b.d) - Math.abs(a.d)).map((x) => {
     const key = x.lead || x.f;
-    return { f: x.f, label: x.label, g: x.g, d: r3(x.d), text: evidenceText(cnt(key), x.d >= 0, ctl(key)) };
+    const c = ctl(key);
+    return { f: x.f, label: x.label, g: x.g, d: r3(x.d), text: evidenceText(cnt(key), x.d >= 0, c), ...(c ? { ctl: c } : {}) };
   });
   const shown = chips.reduce((s, x) => s + x.d, 0);
   return { I: Math.tanh(r / LEARN.rho), r, chips, rest: r3(LEARN.B * Math.tanh(r / LEARN.rho) - shown), all };

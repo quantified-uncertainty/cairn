@@ -1,5 +1,5 @@
 // Search over titles, authors, lanes and reasons.
-import { $, h, on, registerKey } from './util.js';
+import { $, h, on, registerKey, fmtDate } from './util.js';
 import { itemIcon } from './icons.js';
 import { items, LANES } from './corpus.js';
 import { state } from './state.js';
@@ -18,7 +18,7 @@ function runSearch() {
 }
 function paintResults() {
   $('#s-results').replaceChildren(...results.slice(0, 40).map((i, r) => h('li', { className: r === sel ? 'sel' : '', onclick: () => pick(i) },
-    h('span', { className: 'st' }, itemIcon(items[i]), items[i].t), h('span', { className: 'sm', textContent: [LANES[items[i].lane], items[i].y].filter(Boolean).join(' · ') }))));
+    h('span', { className: 'st' }, itemIcon(items[i]), items[i].t), h('span', { className: 'sm', textContent: [LANES[items[i].lane], fmtDate(items[i])].filter(Boolean).join(' · ') }))));
 }
 function pick(i, all = false) {
   $('#search').hidden = true;

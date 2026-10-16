@@ -125,7 +125,9 @@ function place(i) {
 // block starts the following one. A heading moves when fewer than three
 // lines of what follows would fit under it; a paragraph moves when it would
 // leave one line at the bottom of a column, or (if short) carry one line
-// over to the top of the next.
+// over to the top of the next. A table or code block that would leave only
+// its head (a caption and the header row, a line or two of code) at the foot
+// of a column starts the next one (features/flowblocks.js lets both break).
 const isHeading = (b) => /^H[1-6]$/.test(b.tagName)
   || (b.tagName === 'P' && b.children.length === 1 && /^(STRONG|B)$/.test(b.firstElementChild.tagName)
       && b.textContent.trim() === b.firstElementChild.textContent.trim() && b.textContent.length < 100);
@@ -159,6 +161,7 @@ function typeset(L) {
       if (rs.length > 1 || (nr && colOf(nr) !== colOf(r0)) || roomBelow < lh * 3.2) { push(b, r0); pushes++; }
       continue;
     }
+    if (rs.length > 1 && /^(TABLE|PRE)$/.test(b.tagName) && r0.height < (b.tagName === 'PRE' ? lh * 2.2 : Math.max(lh * 5, H * 0.16))) { push(b, r0); pushes++; continue; }
     if (rs.length > 1 && !/^(IMG|FIGURE|TABLE|PRE|IFRAME)$/.test(b.tagName)) {
       const orphan = r0.height < lh * 1.8;
       const widow = rs.length === 2 && rs[1].height < lh * 1.8 && r0.height < lh * 5.5;
