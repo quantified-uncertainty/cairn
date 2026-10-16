@@ -7,7 +7,9 @@ README says how to use it, ARCHITECTURE.md how it fits together.*
 ## Built and checked
 
 Each of these was built, then checked by a separate QA pass in headless
-Chromium (not Firefox) against a test server; the numbers are in the commit
+Chromium against a test server (**nothing has been run in Firefox**, the
+reader's browser: Playwright's Firefox is not installed in the build
+environment, so the checks read the code for Chromium-only APIs instead); the numbers are in the commit
 messages and the design notes under `docs/`.
 
 | Area | What | Where |
