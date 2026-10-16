@@ -200,7 +200,7 @@ try {
     const b = await page.evaluate(() => { const x = document.querySelector('#spread .flow table.wt-wide .wt-open').getBoundingClientRect(); return [x.left + x.width / 2, x.top + x.height / 2]; });
     await page.mouse.click(b[0], b[1]);
     await page.waitForSelector('#wt-ov', { timeout: 3000 }).catch(() => {});
-    const ov = await page.evaluate(() => { const o = document.querySelector('#wt-ov'); if (!o) return null; const t = o.querySelector('table').getBoundingClientRect(); return { w: Math.round(t.width), label: o.querySelector('.wt-t').textContent, colw: document.querySelector('#spread .flow table.wt-wide').getBoundingClientRect().width }; });
+    const ov = await page.evaluate(() => { const o = document.querySelector('#wt-ov'); if (!o) return null; const t = o.querySelector('table').getBoundingClientRect(); return { w: Math.round(t.width), label: o.querySelector('.wt-t').textContent, colw: document.querySelector('#spread .flow table.wt-wide').getClientRects()[0].width }; });
     await page.screenshot({ path: join(SHOTS, 'wide-view.jpg'), type: 'jpeg', quality: 60 });
     check('the wide view opens across the spread, wider than a column', ov && ov.w > ov.colw * 1.3, ov ? `${ov.w} px against ${Math.round(ov.colw)} · "${ov.label}"` : 'did not open');
     await page.keyboard.press('Escape'); await sleep(250);

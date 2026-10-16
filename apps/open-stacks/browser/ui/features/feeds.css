@@ -186,7 +186,7 @@
 #pk-panel.card .pk-cap { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 8; overflow: hidden; }
 #pk-panel.card .pk-text { font-size: 17px; }
 #pk-panel.card .pk-text .pk-ctx { font-size: 15.5px; }
-#pk-panel.card .pk-lead { max-height: 220px; }
+#pk-panel.card :is(.pk-others, .pk-leadbox) { display: none; } /* a text card's other cards and lead picture: pinned only */
 .pk-pin { display: none; flex: none; padding: 4px 20px; font: 10px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--bg); background: var(--accent); }
 #pk-panel.pinned .pk-pin { display: block; }
 .pk-body { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 18px 20px 26px; }
