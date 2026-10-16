@@ -579,7 +579,7 @@ function showPop(m) {
     body ? h('div', { className: 'ap-b', textContent: body }) : null,
     quote ? h('div', { className: 'ap-q', textContent: `On “${quote.length > 110 ? quote.slice(0, 108) + '…' : quote}”` }) : null);
   document.body.append(pop);
-  const r = m.getBoundingClientRect(), W = 320;
+  const r = m.getBoundingClientRect(), W = 290; // .aug-pop width (augment.css)
   const leftSide = m.classList.contains('l');
   let x = leftSide ? r.right + 8 : r.left - W - 8;
   x = Math.max(8, Math.min(innerWidth - W - 8, x));
