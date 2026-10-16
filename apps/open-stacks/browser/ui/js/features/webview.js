@@ -22,6 +22,7 @@ import { $, h, P, on, store, toast, registerKey } from '../util.js';
 import { items, LANES, COUNTS, byId, laneMax } from '../corpus.js';
 import { state, current } from '../state.js';
 import { extractors, openDoc, peekDoc, markWidgets } from '../docs.js';
+import { applyPageSvgStyles } from '../svgstyle.js';
 import { showFeed } from '../feed.js';
 import { live as flowLive } from '../flow.js';
 
@@ -436,6 +437,7 @@ export async function extractWeb(it, src) {
   const base = setBase(doc, await fin);
   fixLazy(doc);
   absolutize(doc, base);
+  applyPageSvgStyles(doc); // the page's own CSS onto its SVG diagrams, before styles are dropped
   markWidgets(doc, it.page || base); // before extraction flattens them
   const rawDelims = !!doc.querySelector('script[src*="mathjax" i], script[src*="katex" i], script[src*="auto-render" i]') || /MathJax\.Hub|renderMathInElement/.test(src.slice(0, 300000));
   let out, how;
@@ -451,7 +453,7 @@ export async function extractWeb(it, src) {
     } catch (e) { console.warn('readability failed', e); }
     if (!out) {
       doc = new DOMParser().parseFromString(src, 'text/html');
-      setBase(doc, base); fixLazy(doc); absolutize(doc, base); markWidgets(doc, it.page || base); collectMath(doc, { rawDelims });
+      setBase(doc, base); fixLazy(doc); absolutize(doc, base); applyPageSvgStyles(doc); markWidgets(doc, it.page || base); collectMath(doc, { rawDelims });
       out = heuristic(doc); how = 'heuristic';
     }
   }

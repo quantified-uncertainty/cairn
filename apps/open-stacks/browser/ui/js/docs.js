@@ -2,6 +2,7 @@
 // posts, web articles and plain texts become "flow" documents that are laid
 // out live in columns (flow.js).
 import { P, PDFJS, h, esc, lru } from './util.js';
+import { applyPageSvgStyles } from './svgstyle.js';
 
 let pdfjsP = null;
 export const pdfjs = () => (pdfjsP ||= import(P(PDFJS + 'pdf.min.mjs')).then((m) => { m.GlobalWorkerOptions.workerSrc = P(PDFJS + 'pdf.worker.min.mjs'); return m; }));
@@ -33,6 +34,7 @@ export const extractors = {
     // A plain reader-mode extraction: the main content element, minus page chrome.
     const doc = new DOMParser().parseFromString(await r.text(), 'text/html');
     const base = it.url;
+    applyPageSvgStyles(doc); // the page's own CSS onto its SVG diagrams, before styles are dropped
     markWidgets(doc, it.page || it.url);
     for (const [sel, attr] of [['img', 'src'], ['a', 'href'], ['source', 'srcset'], ['img', 'srcset']]) {
       doc.querySelectorAll(`${sel}[${attr}]`).forEach((el) => {
