@@ -9,6 +9,26 @@ The reader uses the app only on macOS (an Apple-silicon MacBook, and a 32-inch 4
 
 It builds on the compiled-document profiles (`docs/profiles/spec.md`, "the profiles spec" below): the rendered pages go **into the profile asset store** (`server/profile.mjs`), so `render.js`'s existing display-image path, the sprite for the track, riffle and overview, and the LRU eviction all keep working.
 
+## Status (16 October 2026)
+
+**Built, first version:** `server/pdfnative.mjs` (Quartz, poppler and MuPDF engines with the self-test on the Appendix C geometry PDF, falling through on failure), `server/native/stacks-render.swift` and `server/native/mu-render.js`, `server/render.mjs` (the pool and the fg / near / ahead lanes, plans from hints, the LRU store), `server/routes/16-render.mjs` (`/render/page`, `/render/hint`, `/render/state`, `/render/forget`), the client in `render.js` and `prefetch.js` (server pages from the second origin, 700 ms cap, pdf.js fallback), tests (`test/render-*.test.mjs`) and the bench (`test/render-bench.mjs`). ARCHITECTURE.md § Server-side page rendering describes it as built; where it differs from this spec, it wins.
+
+**Measured here** (Linux, 4 cores, poppler, headless Chromium at 1512 × 982 @2, five arXiv PDFs, three rounds; p50 / p90 ms from the action to `spread:rendered`):
+
+| | server on | pdf.js only |
+|---|---|---|
+| first spread, pages rendered ahead | 119 / 191 | 572 / 1081 |
+| first spread, rendered on demand | 136 / 228 | 546 / 1078 |
+| turns every 400 ms (prepared ahead) | 7 / 33 | 8 / 10 |
+| turns with the tab's renders dropped | 135 / 299 | 168 / 569 |
+| hops to the next PDF, 1 s apart | 13 / 104 | 52 / 215 |
+
+715 of 715 page requests were served by the server (no fallbacks). Text-layer words over server pages sit within 0.72 CSS px of where they sit over pdf.js pages; crop boxes match exactly.
+
+**Not built:** the scans and whole-book PDFs question (8.5 q4), the idle-lane corpus warm-up, battery and AC awareness, exact server-side crops (pages are stored whole and cropped in the browser, as scans are), the byte-capped memory caches of 5.4 and the caching fixes of section 6, `ui/js/render-bench.js` (`?bench=render`) and `prerender.mjs --bench` / `--self-test`.
+
+**Untested:** the Quartz helper has never been compiled or run (no macOS here). On the Mac the server builds it in the background on first start when the Xcode command-line tools are present and uses it only if its self-test passes; `/status` → `render.report` and `CACHE/render/bin/build.log` say what happened. Without it, `brew install poppler` gives the engine measured above.
+
 ## Contents
 
 0. [Summary](#0-summary)

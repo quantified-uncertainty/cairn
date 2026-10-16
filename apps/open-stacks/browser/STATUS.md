@@ -31,6 +31,8 @@ messages and the design notes under `docs/`.
   `routes/16-render.mjs`; spec `docs/performance/prerender.md`). PDF pages
   are rendered on the server by native tools on all cores and the client
   shows them as it shows scans, falling back to pdf.js within about 0.7 s.
+  Measured here with poppler: first spread 119 ms against 572 (p50), hops
+  between PDFs 13 against 52, text layer within 0.7 px of pdf.js.
   Engines: Quartz (a Swift helper compiled on first run when the Xcode
   command-line tools are present; **never run yet: it can only be tested on
   the Mac**), then poppler (`brew install poppler`), then MuPDF, then none
