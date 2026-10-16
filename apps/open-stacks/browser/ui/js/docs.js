@@ -95,16 +95,21 @@ export function dropDocs(it = null) {
 // widget, with a link to it on the original page.
 const CONTROLS = 'input:not([type=hidden]), select, textarea, [role=slider]';
 const CHROME = 'header, nav, aside, footer, [role=navigation], [role=banner], [role=search]';
+// Site furniture that is not an interactive part of the piece: search boxes and sign-up forms.
+const FORMISH = (c) => /^(search|email)$/i.test(c.type || '') || !!c.closest('form[role=search], form[action*=search i], form[action*=subscribe i], form[action*=newsletter i], [class*=newsletter i], [class*=subscribe i], [class*=search i]');
+const wordsIn = (el) => (el.textContent.match(/\S+/g) || []).length;
 const titleCase = (s) => s.replace(/[-_]+/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/\s+/g, ' ').trim().replace(/^./, (c) => c.toUpperCase());
 export function markWidgets(doc, page) {
   const roots = new Set();
   for (const el of doc.querySelectorAll('astro-island, [data-reactroot], [data-v-app], [data-svelte-h], [data-widget]'))
     if (el.querySelector(CONTROLS + ', canvas, button') && !el.closest(CHROME)) roots.add(el);
-  for (const c of doc.querySelectorAll(CONTROLS)) {
-    if (c.closest(CHROME)) continue;
+  const controls = [...doc.querySelectorAll(CONTROLS)].filter((c) => !c.closest(CHROME) && !FORMISH(c));
+  const total = Math.max(1, wordsIn(doc.body));
+  for (const c of controls) {
     let el = c.parentElement, k = 0;
-    while (el && el !== doc.body && k++ < 12 && el.querySelectorAll(CONTROLS).length < 3) el = el.parentElement;
-    if (!el || el === doc.body || el.querySelectorAll(CONTROLS).length < 3) continue;
+    const count = (x) => controls.filter((y) => x.contains(y)).length;
+    while (el && el !== doc.body && k++ < 12 && count(el) < 3) el = el.parentElement;
+    if (!el || el === doc.body || count(el) < 3) continue;
     // Grow to take in the widget's outputs and chart, but not the article around it.
     while (el.parentElement && el.parentElement !== doc.body && !/^(MAIN|ARTICLE)$/.test(el.parentElement.tagName)
       && !el.parentElement.querySelector('h1, h2') && el.parentElement.textContent.length < 4000) el = el.parentElement;
@@ -113,6 +118,8 @@ export function markWidgets(doc, page) {
   let n = 0;
   for (const el of roots) {
     if (!el.isConnected || [...roots].some((o) => o !== el && o.isConnected && o.contains(el))) continue;
+    // Never the piece itself: a "widget" holding most of the page's words is the article around some controls.
+    if (wordsIn(el) > Math.max(400, total * 0.4)) continue;
     const inputs = el.querySelectorAll(CONTROLS).length, charts = el.querySelectorAll('canvas, svg').length;
     const comp = /([A-Za-z][\w-]*?)(?:\.[\w-]+)?\.(?:m?js|tsx?|jsx|svelte|vue)/.exec(el.getAttribute('component-url') || '')?.[1];
     let head = null;
