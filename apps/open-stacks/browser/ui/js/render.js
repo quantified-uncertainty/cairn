@@ -2,7 +2,7 @@
 // With a profile (profile.js), the crop, blank pages and gutters come from it,
 // and a stored display image stands in for a pdf.js render when it is sharp
 // enough: decoded and cropped off the main thread (createImageBitmap).
-import { P, PI, SHARD, lru, emit } from './util.js';
+import { P, PI, SHARD, lru, emit, store } from './util.js';
 import { state } from './state.js';
 import { openDoc, scanUrl } from './docs.js';
 import { analyzeLum } from './profile-core.js';
@@ -119,6 +119,38 @@ function bitmapCanvas(bm) {
   if (ctx) ctx.transferFromImageBitmap(bm); else { c.getContext('2d').drawImage(bm, 0, 0); bm.close?.(); }
   return c;
 }
+// A crop shown through 'bitmaprenderer' costs no copy, but a browser may show the whole bitmap
+// behind a cropped ImageBitmap that way. In Firefox on the reader's Mac, server-drawn pages looked
+// uncropped while their crop boxes were right, which fits that; so Firefox draws crops with a 2D
+// canvas, and elsewhere one check at load, on the same path (an image from a Blob, cropped with
+// createImageBitmap, shown through bitmaprenderer, read back), decides.
+let fastCrop = null;
+async function probeFastCrop() {
+  const force = store.get('cropPath'); // stacks2:cropPath = "2d" or "bitmaprenderer" overrides
+  if (force === '2d' || (force !== 'bitmaprenderer' && /Firefox\//.test(navigator.userAgent))) return false;
+  try {
+    const c = document.createElement('canvas'); c.width = 8; c.height = 4;
+    const g = c.getContext('2d'); g.fillStyle = '#f00'; g.fillRect(0, 0, 4, 4); g.fillStyle = '#00f'; g.fillRect(4, 0, 4, 4);
+    const blob = await new Promise((res) => c.toBlob(res, 'image/png'));
+    const whole = await createImageBitmap(blob), right = await createImageBitmap(whole, 4, 0, 4, 4);
+    whole.close?.();
+    const r = document.createElement('canvas'); r.width = 4; r.height = 4;
+    const ctx = r.getContext('bitmaprenderer'); if (!ctx) return false;
+    ctx.transferFromImageBitmap(right);
+    const o = document.createElement('canvas'); o.width = 4; o.height = 4;
+    const og = o.getContext('2d', { willReadFrequently: true }); og.drawImage(r, 0, 0);
+    const a = og.getImageData(0, 0, 1, 1).data, b = og.getImageData(3, 3, 1, 1).data;
+    return a[2] > 200 && a[0] < 60 && b[2] > 200 && b[0] < 60; // all blue: the crop was kept
+  } catch { return false; }
+}
+/** A canvas showing rect [sx, sy, sw, sh] of an image or ImageBitmap. */
+async function cropCanvas(src, [sx, sy, sw, sh]) {
+  if (await (fastCrop ||= probeFastCrop())) return bitmapCanvas(await createImageBitmap(src, sx, sy, sw, sh));
+  const c = document.createElement('canvas'); c.width = sw; c.height = sh;
+  c.getContext('2d').drawImage(src, sx, sy, sw, sh, 0, 0, sw, sh);
+  return c;
+}
+export const cropPath = async () => ((await (fastCrop ||= probeFastCrop())) ? 'bitmaprenderer' : '2d');
 /** Panels cut from a decoded image showing region `ibox` of the page (the whole
  *  page for scans); each crop is an ImageBitmap shown without a copy. Images come
  *  through loadImg, so a page seen again is in the browser's memory cache. */
@@ -130,8 +162,8 @@ async function panelsFromImage(im, k, ibox, box, gutter, extra) {
     return [sx, sy, Math.max(1, Math.min(iw - sx, Math.round((b.x1 - b.x0) * fw))), Math.max(1, Math.min(ih - sy, Math.round((b.y1 - b.y0) * fh)))];
   };
   const parts = partsOf(box, gutter);
-  const bms = await Promise.all(parts.map((x) => createImageBitmap(im, ...rect(x.box))));
-  return parts.map((x, j) => ({ k, canvas: bitmapCanvas(bms[j]), box: x.box, srcW: Math.round(fw), srcH: Math.round(fh), ...(x.part ? { part: x.part } : {}), ...extra }));
+  const cs = await Promise.all(parts.map((x) => cropCanvas(im, rect(x.box))));
+  return parts.map((x, j) => ({ k, canvas: cs[j], box: x.box, srcW: Math.round(fw), srcH: Math.round(fh), ...(x.part ? { part: x.part } : {}), ...extra }));
 }
 
 // PDF pages render at about the screen's physical height, so text stays sharp
@@ -275,7 +307,7 @@ async function panelsFromBitmap(bm, k, box, gutter, extra) {
   const parts = partsOf(box, gutter);
   const rect = (b) => { const sx = Math.max(0, Math.round(b.x0 * W)), sy = Math.max(0, Math.round(b.y0 * H)); return [sx, sy, Math.max(1, Math.min(W - sx, Math.round((b.x1 - b.x0) * W))), Math.max(1, Math.min(H - sy, Math.round((b.y1 - b.y0) * H)))]; };
   const whole = parts.length === 1 && rect(parts[0].box).every((v, i) => Math.abs(v - [0, 0, W, H][i]) <= 1);
-  const bms = whole ? [bm] : await Promise.all(parts.map((x) => createImageBitmap(bm, ...rect(x.box))));
+  const cs = whole ? [bitmapCanvas(bm)] : await Promise.all(parts.map((x) => cropCanvas(bm, rect(x.box))));
   if (!whole) bm.close();
-  return parts.map((x, j) => ({ k, canvas: bitmapCanvas(bms[j]), box: x.box, srcW: W, srcH: H, ...(x.part ? { part: x.part } : {}), ...extra }));
+  return parts.map((x, j) => ({ k, canvas: cs[j], box: x.box, srcW: W, srcH: H, ...(x.part ? { part: x.part } : {}), ...extra }));
 }
