@@ -1,6 +1,6 @@
 // Moving around: items (j/k), pages (h/l), Advance and Back, jumps, zoom, the
 // mouse wheel and the trackpad (docs/navigation-ergonomics.md, items 1-3 and 5).
-import { $, h, css, store, emit, on, registerKey, steppers, toast } from './util.js';
+import { $, h, css, store, emit, on, registerKey, steppers, toast, keymap } from './util.js';
 import { items, related } from './corpus.js';
 import { state, current, buildOrder, learn, saveScreenPref } from './state.js';
 import { isFlow } from './docs.js';
@@ -96,7 +96,7 @@ const stepped = (dir, e) => steppers.some((x) => x.fn(dir, e));
 const brief = (t, n = 44) => (t.length > n ? t.slice(0, n).replace(/[\s:,;.–—-]+\S*$/, '') + '…' : t);
 // A narrowed stack (stack.js: a folder or a tag you stay in) is named.
 const inStack = () => (state.scope && state.stack?.label ? state.stack.label : null);
-const laneEnd = () => { const s = inStack(); toast(s ? `Last in ${s}` : 'Last item in this lane', { icon: 'arrow-down-to-line', kind: 'edge', sub: s ? 'u leaves it: the whole lane, from here · 0–9 other lanes' : 'Pick another lane at the top (keys 0–9)' }); };
+const laneEnd = () => { const s = inStack(); toast(s ? `Last in ${s}` : 'Last item in this lane', { icon: 'arrow-down-to-line', kind: 'edge', sub: s ? `u leaves it: the whole lane, from here${state.stack?.kind === 'tag' && keymap.has(';') ? ' · ; the next tag' : ''} · 0–9 other lanes` : 'Pick another lane at the top (keys 0–9)' }); };
 const laneStart = () => { const s = inStack(); toast(s ? `First in ${s}` : 'First item in this lane', { icon: 'arrow-up-to-line', kind: 'edge' }); };
 /** Page forward; on the last spread, the next item at its opening page, but only
  *  on a fresh press or stroke (not key repeat, not later in the same wheel gesture).

@@ -2,7 +2,7 @@
 // With a profile (profile.js), the crop, blank pages and gutters come from it,
 // and a stored display image stands in for a pdf.js render when it is sharp
 // enough: decoded and cropped off the main thread (createImageBitmap).
-import { P, PI, SHARD, lru } from './util.js';
+import { P, PI, SHARD, lru, emit } from './util.js';
 import { state } from './state.js';
 import { openDoc, scanUrl } from './docs.js';
 import { analyzeLum } from './profile-core.js';
@@ -213,6 +213,8 @@ export const serverRender = { on: false, engine: null, asked: 0, served: 0, fell
 const SERVER_WAIT = 700; // ms the reader waits for a server page before pdf.js draws it
 const NEAR_WAIT = 2500; // prefetch: the page is not on screen yet, so the server may take longer
 const NEAR_MAX = 2; // prefetch requests waiting on the server at once (the second origin has 6 connections)
+const slow = { n: 0, until: 0 };
+const tooSlow = () => { serverRender.late = (serverRender.late || 0) + 1; if (++slow.n >= 2) { slow.n = 0; slow.until = Date.now() + 20000; } };
 const onServer = (it) => serverRender.on && it.kind === 'pdf' && /^https?:\/\//.test(it.url || '');
 const nearAsks = new Set(); // render keys whose page is being asked for at near
 const taken = new Set(); // ... and those a foreground call took over
@@ -222,6 +224,7 @@ const nearFree = () => { const r = nearQ.shift(); if (r) r(); else nearBusy--; }
 (function probe(tries = 0) {
   fetch('/render/state').then((r) => r.json()).then((j) => {
     serverRender.engine = j.engine || null; serverRender.on = !!j.engine;
+    if (j.engine) emit('render:ready', { engine: j.engine }); // prefetch.js sends its first hint
     if (j.pending && tries < 10) setTimeout(() => probe(tries + 1), 2000); // the server is still testing its engines
   }).catch(() => {});
 })();
@@ -237,13 +240,17 @@ export async function serverCount(it) {
 async function serverPage(it, k, pf, pg, lane, key) {
   const near = lane !== 'fg';
   if (near) { nearAsks.add(key); await nearSlot(); }
-  const wait = near ? NEAR_WAIT : SERVER_WAIT;
+  // Two foreground pages in a row not ready in time (a busy machine): for 20 s the reader waits only
+  // for pages already rendered (wait=0 is a readiness check: the server answers at once, and still
+  // renders the page for next time), so pdf.js is never held up behind a slow server.
+  const wait = near ? NEAR_WAIT : Date.now() < slow.until ? 0 : SERVER_WAIT;
   const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), wait + 150);
   serverRender.asked++;
   try {
     if (near && !nearAsks.has(key)) return null; // a foreground call took this page over meanwhile
     const r = await fetch(`${SHARD}/render/page?u=${encodeURIComponent(it.url)}&k=${k}&w=${RENDER_H}&lane=${near ? 'near' : 'fg'}&wait=${wait}`, { signal: ctl.signal, credentials: 'omit' });
-    if (r.status !== 200) { r.body?.cancel?.().catch?.(() => {}); serverRender.fellBack++; return null; }
+    if (r.status !== 200) { r.body?.cancel?.().catch?.(() => {}); serverRender.fellBack++; if (r.status === 202 && !near && wait) tooSlow(); return null; }
+    if (!near) slow.n = 0;
     const x = JSON.parse(r.headers.get('X-Render') || '{}');
     if (x.n > 0 && !it.n) it.n = x.n;
     const bm = await createImageBitmap(await r.blob());
@@ -253,8 +260,9 @@ async function serverPage(it, k, pf, pg, lane, key) {
     const a = analyze(bm, { scan: false }); // born-digital pages, as a pdf.js render is analysed
     if (a.blank) { bm.close(); return [{ blank: true, k }]; }
     return panelsFromBitmap(bm, k, state.crop ? a.box : FULL, a.gutter, extra);
-  } catch {
+  } catch (e) {
     serverRender.fellBack++;
+    if (e?.name === 'AbortError' && !near && wait) tooSlow();
     return null; // aborted (too slow), offline, or not an image: pdf.js draws it
   } finally {
     clearTimeout(t);

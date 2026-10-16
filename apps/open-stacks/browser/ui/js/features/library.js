@@ -636,11 +636,14 @@ list.addEventListener('focus', () => { if (selIndex() < 0) { const k = curIndex(
 list.addEventListener('blur', paint);
 
 const page = () => Math.max(1, Math.floor((list.clientHeight || 600) / RH) - 1);
+// ↓ ↑ step over the position row (it follows each item the arrows open, so every item would
+// take two presses); → on the current item lists its sections, as on that row.
+const over = (r, d) => (rows[r + d]?.here === 'pos' && rows[r + 2 * d] ? r + 2 * d : r + d);
 function treeKey(e) {
   const r = selIndex(), row = rows[r];
   switch (e.key) {
-    case 'ArrowDown': move(r + 1); break;
-    case 'ArrowUp': move(r < 0 ? 0 : r - 1); break;
+    case 'ArrowDown': move(r < 0 ? 0 : over(r, 1)); break;
+    case 'ArrowUp': move(r < 0 ? 0 : over(r, -1)); break;
     case 'PageDown': move(r + page()); break;
     case 'PageUp': move(r - page()); break;
     case 'Home': move(0); break;
@@ -648,6 +651,7 @@ function treeKey(e) {
     case 'ArrowRight':
       if (row?.node) { if (!isOpen(row.node)) toggle(row.node, true); else move(r + 1); }
       else if (row?.here === 'pos') { if (!secsOn) showSecs(true); else move(r + 1); }
+      else if (row?.i != null && rows[r + 1]?.here === 'pos') { if (!secsOn) showSecs(true); else move(r + 2); }
       break;
     case 'ArrowLeft':
       if (row?.node && isOpen(row.node)) toggle(row.node, false);

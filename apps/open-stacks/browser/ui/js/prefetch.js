@@ -173,6 +173,7 @@ export function planAround(i, s) {
 // The render server works ahead of the reader (server/render.mjs): where you are and the next PDFs
 // in the stack, sent as a hint that replaces its plan, at most every 150 ms while you move. Its reply
 // carries page counts of PDFs on its disk, so they need no pdf.js parse to be shown.
+on('render:ready', () => sendHint());
 const isWebPdf = (x) => x && x.kind === 'pdf' && /^https?:\/\//.test(x.url || '');
 let hintT = null;
 export function sendHint() {
