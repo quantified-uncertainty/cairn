@@ -179,8 +179,10 @@ async function main() {
       if (left <= 0 && !MOCK) { S.steps[name] = { status: 'skipped', note: 'the AI cap is used up' }; log('\n-- enrich: skipped (the AI cap is used up).'); save(); continue; }
       r = await run(name, 'enrich-batch.mjs', ['--yes', '--max-usd', String(left), ...(limit ? ['--limit', String(limit)] : []), ...common], HOURS.enrich);
     } else if (name === 'augment') {
-      const sp = (await status())?.spend, srvLeft = sp ? Math.max(0, sp.budget - sp.today) : left;
+      const ss = await status(), sp = ss?.spend, srvLeft = sp ? Math.max(0, sp.budget - sp.today) : left;
       const m = Math.min(left, srvLeft);
+      // The guides are made by the server, so its mock mode is what counts: a mock night on a real server would spend.
+      if (ss && typeof ss.mockAI === 'boolean' && ss.mockAI !== MOCK) { S.steps[name] = { status: 'skipped', note: MOCK ? `the server on port ${PORT} is not in mock mode, so its batch would be real (start it with STACKS_MOCK_AI=1 too)` : `the server on port ${PORT} is in mock mode (STACKS_MOCK_AI), so its guides would be canned` }; log(`\n-- augment: skipped (${S.steps[name].note}).`); save(); continue; }
       if (m <= 0.005 && !MOCK) { S.steps[name] = { status: 'skipped', note: left <= 0 ? 'the AI cap is used up' : 'today\'s AI budget in Settings is used up' }; log(`\n-- augment: skipped (${S.steps[name].note}).`); save(); continue; }
       r = await run(name, 'augment-batch.mjs', [...(limit ? ['--limit', String(limit)] : ['--all']), '--yes', '--no-wait', '--max-usd', String(m), '--port', String(PORT), ...common], HOURS.augment);
     } else if (name === 'threads') {

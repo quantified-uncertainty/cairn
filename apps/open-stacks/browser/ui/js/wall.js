@@ -25,7 +25,7 @@ const saveW = () => store.set('wall', { size: W.size, sheet: W.sheet, f: W.f, pc
 const DPR = Math.min(2, window.devicePixelRatio || 1);
 const STALE = new Error('stale');
 // Where the time goes (wallStats().perf): [count, total ms] per kind of work.
-const perf = { fetch: [0, 0], open: [0, 0], render: [0, 0], digest: [0, 0] };
+const perf = { fetch: [0, 0], open: [0, 0], render: [0, 0], digest: [0, 0], figDecode: [0, 0], figBake: [0, 0] };
 const timed = async (k, p) => { const t = performance.now(); try { return await p; } finally { perf[k][0]++; perf[k][1] += performance.now() - t; } };
 
 // Small per-item facts kept between sessions so covers come up complete at
@@ -443,7 +443,7 @@ function showFig(T, v, only1 = false) {
     h('div', { className: 'lb' }, div('hd', [it.src || 'paper', dt].filter(Boolean).join(' · ')), div('tt ' + tsize(it.t), it.t)));
   T.fig = el; T.figIms = ims;
   T.cv.after(el);
-  const loaded = (im) => (im.complete && im.naturalWidth ? Promise.resolve() : new Promise((ok, no) => { im.onload = ok; im.onerror = no; })).then(() => im.decode().catch(() => {}));
+  const loaded = (im) => (im.complete && im.naturalWidth ? Promise.resolve() : new Promise((ok, no) => { im.onload = ok; im.onerror = no; })).then(() => timed('figDecode', im.decode().catch(() => {})));
   const ars = pics.flatMap((p) => (p.parts ? p.parts.map((x) => x.w / x.h) : [arOf(p)]));
   Promise.allSettled(ims.map(loaded)).then((rs) => {
     if (T.fig !== el) return;
@@ -451,9 +451,11 @@ function showFig(T, v, only1 = false) {
       // Each image drawn once into a canvas of about the tile's size, in idle time: a large
       // PNG or a busy SVG drawn scaled at every paint made scrolling stutter (STATUS.md).
       const k = pics.length > 1 ? 0.7 : 1, bw = Math.round(faceW(T) * DPR * 0.9 * k), bh = Math.round(bw / FIG_BOX);
-      bake(() => {
+      bake(async () => {
         if (T.fig !== el) return;
-        ims.forEach((im, j) => { const c = toCanvas(im, bw, bh, ars[j]); if (c) { im.replaceWith(c); im.src = ''; } });
+        const cs = await Promise.all(ims.map((im, j) => toCanvas(im, bw, bh, ars[j])));
+        if (T.fig !== el) return;
+        ims.forEach((im, j) => { if (cs[j]) { im.replaceWith(cs[j]); im.src = ''; } });
         el.classList.add('shown'); T.figIms = null;
         setTimeout(() => { if (T.fig === el) T.face.classList.add('figd'); }, 300); // the typeset cover under it stops painting
       });
@@ -465,27 +467,39 @@ function showFig(T, v, only1 = false) {
     else figNo.add(it.id);
   });
 }
-// Baking runs in idle time, at least one cover per callback.
+// Baking: one cover at a time, in idle time and never while the wall scrolls (like page loads).
 const bakeQ = []; let baking = false;
-const idle = window.requestIdleCallback ? (fn) => requestIdleCallback(fn, { timeout: 300 }) : (fn) => setTimeout(() => fn({ timeRemaining: () => 8 }), 16);
+const idle = window.requestIdleCallback ? (fn) => requestIdleCallback(fn, { timeout: 500 }) : (fn) => setTimeout(fn, 30);
 function bake(fn) { bakeQ.push(fn); if (!baking) { baking = true; idle(pumpBake); } }
-function pumpBake(dl) {
-  do bakeQ.shift()(); while (bakeQ.length && dl.timeRemaining() > 4);
-  if (bakeQ.length) idle(pumpBake); else baking = false;
+function pumpBake() {
+  if (scrolling) { setTimeout(() => idle(pumpBake), 160); return; }
+  const fn = bakeQ.shift();
+  Promise.resolve().then(fn).catch(() => {}).finally(() => { if (bakeQ.length) idle(pumpBake); else baking = false; });
 }
-/** An image drawn into a canvas that fits bw × bh px (raster images never enlarged; SVGs drawn sharp at that size). */
-function toCanvas(im, bw, bh, ar) {
+/** An image drawn into a canvas that fits bw × bh px (raster images never enlarged; SVGs drawn sharp at that
+ *  size). Raster images are scaled by createImageBitmap (off the main thread where the browser can), SVGs by drawImage. */
+async function toCanvas(im, bw, bh, ar) {
   let nw = im.naturalWidth, nh = im.naturalHeight;
   if (!nw || !nh) { nw = bw; nh = Math.round(bw / (ar || 4 / 3)); }
   const vector = /\.svg(\?|$)|\/figures\/svg/.test(im.src);
   const s = vector ? Math.min(bw / nw, bh / nh) : Math.min(1, bw / nw, bh / nh);
   const c = document.createElement('canvas');
   c.width = Math.max(1, Math.round(nw * s)); c.height = Math.max(1, Math.round(nh * s));
+  if (!vector && window.createImageBitmap) {
+    try {
+      const bmp = await createImageBitmap(im, { resizeWidth: c.width, resizeHeight: c.height, resizeQuality: 'high' });
+      c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height); bmp.close(); // a browser that ignores the resize options still gets it scaled
+      return c;
+    } catch { /* no resize options here: drawImage below */ }
+  }
   const g = c.getContext('2d');
   g.imageSmoothingQuality = 'high';
+  const t0 = performance.now();
   try { g.drawImage(im, 0, 0, c.width, c.height); } catch { return null; }
+  const ms = performance.now() - t0; perf.figBake[0]++; perf.figBake[1] += ms; figMax = Math.max(figMax, ms);
   return c;
 }
+let figMax = 0;
 function dropFig(T) {
   if (!T.fig) return;
   for (const im of T.figIms || []) im.src = ''; // still loading: stop it
@@ -1047,7 +1061,7 @@ export function wallStats() {
   const inView = vis.filter((T) => { const r = T.el.getBoundingClientRect(); return r.bottom > 0 && r.top < wallEl.clientHeight; });
   const pending = mode() === 'cover' ? 0 : inView.filter((T) => !T.gl || T.gl.ready !== T.gl.gen || T.gl.busy).length;
   return { tiles: tiles.length, visible: vis.length, inView: inView.length, pending, mode: mode(), f: W.f, size: SIZES[W.size], queued: netQ.jobs.length + cpuQ.jobs.length, running: netQ.running.size + cpuQ.running.size,
-    perf: Object.fromEntries(Object.entries(perf).map(([k, [c, ms]]) => [k, c ? `${c} × ${Math.round(ms / c)} ms` : '-'])) };
+    perf: Object.fromEntries(Object.entries(perf).map(([k, [c, ms]]) => [k, c ? `${c} × ${Math.round(ms / c)} ms` : '-'])), figBakeMax: Math.round(figMax) };
 }
 export { setDepth, toggleSheet, setSize };
 

@@ -47,7 +47,7 @@
  * It lives in the cache folder, not the repository, because rel follows the
  * reader's own learned interests; a hand-made enrich.json in the browser
  * folder is used when the cache has none, and its hooks are kept. --out
- * writes elsewhere. STACKS_MOCK_AI=1: deterministic answers without the API,
+ * writes elsewhere (what it did is kept beside it, in <file>.done.json). STACKS_MOCK_AI=1: deterministic answers without the API,
  * written to CACHE/enrich.mock.json (and done.mock.json) unless --out.
  */
 import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from 'fs';
@@ -248,7 +248,7 @@ export function mockAnswer(batch) {
   return JSON.stringify({ items: batch.map(({ it, places, keepHook }, k) => {
     const j = parseInt(sha1(it.id).slice(0, 4), 16) % 21 - 10;
     const best = [...places.cand].sort((a, b) => a - b).slice(0, 2).map((q) => ({ page: q + 1, printed: null }));
-    return { k, rel: Math.max(0, Math.min(100, (LANE_REL[it.lane] ?? 50) + j)), hook: keepHook ? '' : clip(String(it.ab || it.why || it.t).split(/(?<=[.;:])\s/)[0], 110), best };
+    return { k, rel: Math.max(0, Math.min(100, (LANE_REL[it.lane] ?? 50) + j)), hook: keepHook ? '' : clip(String(it.ab || it.why || it.t).split(/(?<=[.;])\s/)[0], 110), best };
   }) });
 }
 
@@ -330,7 +330,8 @@ async function main() {
   const price = P.PRICES[MODEL];
   if (!price) throw new Error(`Unknown model ${MODEL}; one of ${Object.keys(P.PRICES).join(', ')}`);
   const OUT = resolve(opt('out') || join(P.CACHE, MOCK ? 'enrich.mock.json' : 'enrich.json'));
-  const DONE = join(P.CACHE, 'enrich', MOCK ? 'done.mock.json' : 'done.json');
+  // What was done goes with the file it went into: an --out run of its own is not skipped for what went elsewhere.
+  const DONE = opt('out') ? OUT.replace(/(\.json)?$/, '.done.json') : join(P.CACHE, 'enrich', MOCK ? 'done.mock.json' : 'done.json');
   const corpus = readJson(resolve(opt('corpus') || join(HERE, 'corpus.json')), null);
   if (!corpus?.items) throw new Error('Cannot read corpus.json');
   const items = corpus.items, order = new Map(items.map((it, k) => [it.id, k])), byId = new Map(items.map((it) => [it.id, it]));

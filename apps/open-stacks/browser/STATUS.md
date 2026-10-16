@@ -104,8 +104,11 @@ by area (effort: M a day or less, L more):
   are built (16 October; checked in headless Chromium only, not Firefox):
   a leader key (`'` or F19, then a home-row letter), save-and-advance
   (`.`) and tap zones on the pages (`features/leader.js`,
-  `features/tapzones.js`); left: the doc's Colemak-DH preset for the
-  frequent keys (`n e i u`) and named, rebindable actions.
+  `features/tapzones.js`; a second check found no key clashes and no
+  turn on a drag, a selection, a modifier or a link; a double click on a
+  word in the outer fifths turns rather than selects, by design); left:
+  the doc's Colemak-DH preset for the frequent keys (`n e i u`) and
+  named, rebindable actions.
 - **Library.** A "Later" queue prefetched and summarized overnight (M).
   Topic folders inside DeepMind safety › Blog & posts, 344 items (M).
 - **Header and chrome.** The metadata indicators of `docs/meta/` (M;
@@ -114,13 +117,29 @@ by area (effort: M a day or less, L more):
   (L; see voices above).
 - **Views and learning.** Feeds ordered by For you with an exploration
   slot, and Feeds signals (saves, hides, dwell) sent to the learning
-  model (M). Paper covers
-  on the wall showing their top figure (M). Figures from non-arXiv PDFs (L).
+  model (M). Paper covers on the wall showing their top figure: done
+  for arXiv papers (`wall.js` `showFig`, `GET /extract/leads`; Settings ›
+  Wall › Paper covers, default Top figure; checked in headless Chromium
+  only: 56 of the LLM lane's first 60 papers have one; frame times over
+  60 tiles, steady scroll p95 33-50 ms with figures against 17-50 without,
+  after drawing each figure once into a tile-sized canvas off the scroll
+  (plain `<img>`s had made it 83-250 ms); a scroll-and-rest run still
+  shows an occasional single long task of 0.5-0.7 s, not the drawing
+  (at most 52 ms): probably a large SVG parsed when it arrives; Up next's
+  covers do not use them yet). Figures from non-arXiv PDFs (L).
   Threads for the rest of the corpus (`node threads.mjs`, needs a key).
-- **Data and speed.** A Haiku pass for relevance and best entry pages
-  (M), citation-following lane growth and syllabus readings (M), the
-  whole-corpus compile and guide passes (`compile.mjs --assets full`,
-  `augment-batch.mjs`, run on the Mac), deeper prefetch for large scans
+- **Data and speed.** The Haiku pass for relevance, hooks and best entry
+  pages is built (`enrich-batch.mjs`, into `CACHE/enrich.json`; best pages
+  only from an outline, never front matter; about $0.15-0.35 for the
+  corpus; tested in mock mode only, never against the API), and so is the
+  whole-corpus run as one command (`bin/stacks overnight`: warm, compile
+  `--assets full`, enrich, guides, threads, one `--max-usd`; checked in
+  mock mode on 2-6 items here, and again by a second check: a run killed
+  mid-way resumes, and a mock night on a server not in mock mode skips
+  the guide batch; not yet run on the Mac). Left: posts' best
+  pages are written but nothing opens or jumps to them (`nav.js` `r`
+  walks best pages only for PDFs and scans). Citation-following lane
+  growth and syllabus readings (M), deeper prefetch for large scans
   and the byte-capped caches of `docs/performance/prerender.md` §5.4 and
   §6 (L), the Quartz self-test on the Mac (S).
 - **The Open Stacks wiki.** Two prototypes never built (Front Table,
