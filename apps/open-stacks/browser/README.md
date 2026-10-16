@@ -13,17 +13,21 @@ Needs Node 20+. Everything you open is cached in `~/.cache/open-stacks` (`STACKS
 
 ## Lanes
 
-| Lane | What | Source |
-|---|---|---|
-| LessWrong | top 300 posts by karma | LessWrong API |
-| AI safety | landmark papers, plus top Alignment Forum posts | arXiv, Alignment Forum |
-| LLM papers | landmark language-model papers | arXiv |
-| Information theory | Shannon, MacKay and other free texts | author / publisher hosted |
-| Cybernetics | Ashby and other legally free classics | various |
-| TTRPG manuals | openly licensed rulebooks and SRDs | publishers, Gutenberg |
-| Old technical oddities | the most-read public-domain technical scans | Internet Archive |
+| Lane | Items | What | Source |
+|---|---|---|---|
+| DeepMind safety | 593 | Google DeepMind's safety papers and posts | arXiv, DeepMind, Alignment Forum |
+| AI safety | 548 | landmark papers and reports, plus top Alignment Forum posts | arXiv, labs, Alignment Forum |
+| Old technical oddities | 437 | the most-read public-domain technical scans | Internet Archive |
+| Forecasting | 356 | papers, open PDFs and the best posts | journals, authors, forums |
+| LessWrong | 289 | top posts by karma | LessWrong API |
+| QURI wikis | 155 | QURI's wiki sites, in their own section order | the sites |
+| Technical books | 105 | free, legal technical textbooks (Murphy, Prince, Kochenderfer, Think Bayes…) | author / publisher hosted |
+| LLM papers | 70 | landmark language-model papers | arXiv |
+| Information theory | 26 | Shannon, MacKay and other free texts | author / publisher hosted |
+| Cybernetics | 25 | Ashby and other legally free classics | various |
+| TTRPG manuals | 24 | openly licensed rulebooks and SRDs | publishers, Gutenberg |
 
-The curated lanes come from `seeds.json` (every arXiv ID and URL was checked against the live source). `node build-corpus.mjs` rebuilds `corpus.json`.
+The curated lanes come from `seeds.json` and `data/lanes/*.json` (every arXiv ID and URL was checked against the live source). `node build-corpus.mjs` rebuilds `corpus.json` from the network; `node build-corpus.mjs --merge` adds new lane-file items offline without moving any existing item (`--all-lanes` takes every curated item the corpus lacks).
 
 ## Your own folders
 
