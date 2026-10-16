@@ -106,7 +106,7 @@ by area (effort: M a day or less, L more):
   (L; see voices above).
 - **Views and learning.** Feeds ordered by For you with an exploration
   slot, and Feeds signals (saves, hides, dwell) sent to the learning
-  model (M). Why-chips that open boost, mute and ignore (S). Paper covers
+  model (M). Paper covers
   on the wall showing their top figure (M). Figures from non-arXiv PDFs (L).
   Threads for the rest of the corpus (`node threads.mjs`, needs a key).
 - **Data and speed.** A Haiku pass for relevance and best entry pages
