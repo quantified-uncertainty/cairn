@@ -185,7 +185,8 @@ function sheet(parts) {
     }
   };
   for (const p of parts) {
-    if (p.text != null) { fill(p.x0 ?? 0.18, p.y0, p.x1 ?? 0.6, p.y1); lines.push({ t: p.text, x: p.x0 ?? 0.18, y0: p.y0, y1: p.y1 }); }
+    if (p.faint != null) lines.push({ t: p.faint, x: 0.17, y0: p.y0, y1: p.y1 }); // text too light to show on the grid
+    else if (p.text != null) { fill(p.x0 ?? 0.18, p.y0, p.x1 ?? 0.6, p.y1); lines.push({ t: p.text, x: p.x0 ?? 0.18, y0: p.y0, y1: p.y1 }); }
     else if (p.rule) fill(0.17, p.y0, 0.83, p.y0 + 1 / H + 1e-6);
     else if (p.body) { fill(0.17, p.y0, 0.83, p.y1, 4); for (let y = p.y0; y < p.y1 - 0.01; y += 0.05) lines.push({ t: p.body + ' ' + y.toFixed(2), x: 0.17, y0: y, y1: y + 0.008 }); }
     else fill(p.x0 ?? 0.17, p.y0, p.x1 ?? 0.83, p.y1); // a figure: solid ink
@@ -281,8 +282,8 @@ test('page-number footers alone; scans are left alone', () => {
 });
 
 test('books: chapter heads that change by chapter, section heads seen once, a figure close under the head', () => {
-  // Even pages: "<n> <chapter>", odd pages: "<section> <n>"; the 7th page's section is on that page only.
-  const sect = (k) => (k === 7 ? '2.4 Only here' : `${1 + Math.floor(k / 10)}.${1 + Math.floor((k % 10) / 4)} A section`);
+  // Odd pages: "<n> <chapter>", even pages: "<section> <n>"; page 8's section is on that page only.
+  const sect = (k) => (k === 8 ? '2.4 Only here' : `${1 + Math.floor(k / 10)}.${1 + Math.floor((k % 10) / 4)} A section`);
   const P = doc(30, (k) => {
     if (k % 10 === 0) return [{ text: `Chapter ${k / 10 + 1}`, y0: 0.2, y1: 0.22 }, { body: 'text', y0: 0.3, y1: 0.9 }]; // chapter openings: no running head
     const h = HEAD(k % 2 ? `${k + 1} Chapter ${1 + Math.floor(k / 10)} title` : `${sect(k)} ${k + 1}`);
@@ -291,9 +292,34 @@ test('books: chapter heads that change by chapter, section heads seen once, a fi
   });
   assert.equal(core.validate(P), null);
   for (const p of P.pages) assert.equal(!!p.head, p.k % 10 !== 0, `page ${p.k}`);
-  assert.ok(top(P, 7) > 0.095, 'a section head seen once has the running head shape');
+  assert.ok(top(P, 8) > 0.095, 'a section head seen once has the running head shape');
   assert.ok(Math.abs(P.pages[13].ink[1] - 0.064) < 0.005, 'the figure is kept whole');
   notCut(P);
+});
+
+test('never cut: the first or last line of widely spaced body text, the same place and height on every page', () => {
+  // Double-spaced lines (gaps of about 1.2%): every line is a band of its own (tight), and every
+  // page's first and last lines sit where the slot is, but no two say the same thing.
+  const spaced = (k) => Array.from({ length: 34 }, (_, j) => ({ text: `page ${'abcdefghijklmnopqrstuvwxyz'[k]} line ${'abcdefghijklmnopqrstuvwxyzABCDEFGH'[j]} words`, x0: 0.17, x1: 0.83, y0: 0.07 + j * 0.025, y1: 0.082 + j * 0.025 }));
+  const P = doc(12, spaced);
+  assert.equal(P.pages.filter((p) => p.head || p.foot).length, 0);
+  assert.ok(top(P, 5) < 0.075 && bottom(P, 5) > 0.895, JSON.stringify(core.cropOf(P, 5, 0)));
+  // Short first paragraphs, a clear gap under each: the same shape on every page, other words.
+  const paras = doc(12, (k) => [{ text: `paragraph ${'abcdefghijkl'[k]} ends here`, x0: 0.17, x1: 0.83, y0: 0.07, y1: 0.082 }, { body: 'text', y0: 0.11, y1: 0.9 }]);
+  assert.equal(paras.pages.filter((p) => p.head).length, 0);
+  assert.ok(top(paras, 4) < 0.075);
+  notCut(P); notCut(paras);
+});
+
+test('a running foot goes, a faint footnote over it stays', () => {
+  const P = doc(10, (k) => [...BODY, ...(k % 3 === 1 ? [{ faint: 'a footnote in light grey type, too faint for the grid', y0: 0.915, y1: 0.926 }] : []), ...FOOT(k)]);
+  assert.equal(P.pages.filter((p) => p.foot).length, 10);
+  assert.ok(bottom(P, 4) >= 0.926, JSON.stringify(core.cropOf(P, 4, 0)));
+  assert.ok(bottom(P, 3) < 0.94, 'the foot is gone on every page');
+  // Pieces of a formula that pdf.js sets apart are not text that would be lost.
+  const Q = doc(10, (k) => [...BODY, ...(k === 4 ? [{ faint: 'i=1', y0: 0.915, y1: 0.926 }] : []), ...FOOT(k)]);
+  assert.ok(bottom(Q, 4) < 0.905);
+  assert.equal(core.validate(P), null);
 });
 
 test('bandKey: page numbers match, words do not', () => {

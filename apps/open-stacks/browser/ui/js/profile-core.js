@@ -257,7 +257,10 @@ export function headsOf(lines, k, body = 0) {
  * it, toward the page's edge, with its middle on the band's side of the gap, is that
  * band's: a thin page number or rule may show on the grid as one row, or not at all.
  * Each band gets `t` (its lines left to right, top to bottom) and `ty` (the top of its
- * first line), and keeps neither when no line is in it. Changes `bands` in place.
+ * first line), and keeps neither when no line is in it; and `tx`, the outer edge of the
+ * other lines (three words or more) that lie wholly in the gap between the rest of the
+ * page and the band: text too faint for the grid, kept when the band is cut. Changes
+ * `bands` in place.
  */
 export function bandTexts(bands, lines) {
   if (!bands) return bands;
@@ -271,6 +274,12 @@ export function bandTexts(bands, lines) {
     }).sort((a, c) => (Math.abs(a.y0 - c.y0) < 0.005 ? a.x - c.x : a.y0 - c.y0));
     const t = ls.map((l) => String(l.t)).join(' ').replace(/\s+/g, ' ').trim();
     if (t) { b.t = t.slice(0, 200); b.ty = r4(Math.min(...ls.map((l) => l.y0))); }
+    // Other lines wholly in the gap between the rest of the page and the band: text too faint to
+    // show on the grid (a grey footnote over a running foot). Cutting the band keeps them: `tx`,
+    // their outer edge. Three words at least (of two letters or more), so the pieces of a formula
+    // that pdf.js sets apart do not count.
+    const gap = (lines || []).filter((l) => l?.t && (String(l.t).match(/\p{L}{2,}/gu) || []).length >= 3 && Number.isFinite(l.y0) && Number.isFinite(l.y1) && !ls.includes(l) && (top ? l.y0 > b.y1 + e && l.y1 < b.next : l.y0 > b.prev && l.y1 < b.y0 - e));
+    if (gap.length) b.tx = r4(top ? Math.min(...gap.map((l) => l.y0)) : Math.max(...gap.map((l) => l.y1)));
   }
   return bands;
 }
@@ -352,10 +361,13 @@ const RUN_AT = 0.005; // "the same place": within half a percent of the page hei
  *   - a band in the slot is running when its text (bandKey: digits as #, so page
  *     numbers match) is that of another band in the slot (a paper's one running head;
  *     a book's chapter head on the pages of its chapter), or when the slot holds at
- *     least 3/4 of the scope and the band has the slot's shape (its outer edge, and its
- *     inner edge or the start of the rest of the page, within 0.5% of the slot's: a
- *     book's section head, the same line and rule with other words), except on the
- *     first page, whose own header (a journal's) may sit just where the running head does.
+ *     least 3/4 of the scope, at least half of its bands repeat so, and the band has the
+ *     slot's shape (its outer edge, and its inner edge or the start of the rest of the
+ *     page, within 0.5% of the slot's: a book's section head, the same line and rule with
+ *     other words), except on the first page, whose own header (a journal's) may sit just
+ *     where the running head does. Without repeats the shape says nothing: the first line
+ *     of the body text has the same place and height on every page (widely spaced lines
+ *     are bands of their own).
  * A tight band (a figure set close under the header) counts only with its outer and
  * inner edges within 0.5% of the slot's. A page's own header (a first page's), section
  * titles, figures that reach the top, and a header on only some pages are not in a
@@ -384,7 +396,9 @@ export function runningBands(pages) {
       if (slot.length < Math.max(3, Math.ceil(0.5 * S.length))) continue;
       const count = new Map();
       for (const x of slot) count.set(x.key, (count.get(x.key) || 0) + 1);
-      const strong = slot.length >= 0.75 * S.length;
+      // The shape alone says nothing in a slot whose bands do not repeat: there the first (last)
+      // line of the body text sits in the same place, at the same height, on every page.
+      const strong = slot.length >= 0.75 * S.length && slot.filter((x) => count.get(x.key) >= 2).length >= 0.5 * slot.length;
       // The shape: the band's outer edge, and its inner edge or where the rest of the page
       // starts (ends), so a rule a little higher on one page, or a figure that starts lower,
       // does not count; a band that took in more of the page moves both.
@@ -629,8 +643,10 @@ export function finalize(raw) {
     for (const p of pages) {
       const b = rb[p.k], h = R.head.get(p.k), f = R.foot.get(p.k);
       if (!h && !f) continue;
-      const ink = h && f ? b.both : h ? b.top.ink : b.bot.ink;
+      let ink = h && f ? b.both : h ? b.top.ink : b.bot.ink;
       if (!isBox(ink)) continue; // a page that is nothing but its head and foot keeps them
+      // Faint text between the rest of the page and a band that goes (bandTexts' tx) stays in.
+      ink = [ink[0], h && Number.isFinite(h.tx) ? Math.min(ink[1], h.tx) : ink[1], ink[2], f && Number.isFinite(f.tx) ? Math.max(ink[3], f.tx) : ink[3]];
       p.ink = ink.map(r4);
       if (h) p.head = [r4(h.y0), r4(h.y1)];
       if (f) p.foot = [r4(f.y0), r4(f.y1)];
