@@ -15,14 +15,14 @@ messages and the design notes under `docs/`.
 | Reader | spreads, crops (born-digital PDFs are never treated as scanner beds), two-column split, zoom, hold `l`/`h` to riffle and `j`/`k` to skim, wheel and trackpad maps, Back, notes, saves, read-aloud | `feed.js`, `render.js`, `riffle.js`, `nav.js` |
 | Header | two bars, one bar, Focus (no bars), position line at the top or bottom, per-screen layout; links to the original in the item header | `header.js`, `chrome.js` |
 | Library (`L`) | the stack j/k walk, in its sort (By topic, For you, Newest, Oldest); stay in a folder or tag; position row with load marks; sections behind `§` | `stack.js`, `features/library.js` |
-| Tags | 336 model-suggested clusters; each of the first 1,948 corpus items in at least two | `data/tags.json`, `tag-corpus.mjs` |
+| Tags | 362 model-suggested clusters; every corpus item in at least two | `data/tags.json`, `tag-corpus.mjs` |
 | Up Next | the next items as tiles in the empty band under the pages | `features/upnext.js` |
 | Learning | reading time and judgments reweight For you; explanations; boost, mute, ignore | `server/learn.mjs`, `features/learn.js` |
 | Dashboard (`Y`) | new items, reading, what it learned, how ranking moved, agent jobs | `features/dashboard.js` |
 | Agent jobs | the app writes job files; an outside agent (Claude Code) does them by `jobs/README.md`; `node jobs.mjs check --live` guards sources | `server/jobs.mjs`, `jobs.mjs`, `jobs/` |
 | Local folders | your own folders read in place (PDF, EPUB, Markdown, HTML, text, Word on a Mac, pictures, sound); iCloud placeholders | `server/local.mjs`, `features/local.js` |
 | Widgets | an interactive component on a web page is replaced by a note and a link to the live page | `docs.js` `markWidgets` |
-| Corpus | 2,628 items in 11 lanes, including Technical books and the full DeepMind safety and Forecasting lanes (merged offline 16 October; the 680 new items have no model-suggested tags yet: `node tag-corpus.mjs` adds them) | `corpus.json`, `data/lanes/` |
+| Corpus | 2,628 items in 11 lanes, including Technical books and the full DeepMind safety and Forecasting lanes (merged offline 16 October and tagged) | `corpus.json`, `data/lanes/` |
 | Speed | disk cache and warm-up of every lane's opening spreads; `/ready` load marks; page images from a second origin (127.0.0.1 beside localhost) so they never take the app's six connections | `server/cache.mjs`, `routes/60-warm.mjs`, `util.js` `PI` |
 
 ## Built, first version (see the notes before relying on it)
