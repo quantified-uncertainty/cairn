@@ -17,7 +17,9 @@
 // So j moves the highlight to the next item row below, k to the one above; a
 // closed folder on the way opens (the folders you walk through stay open).
 //
-// In the list: type to filter titles, ↑ ↓ move, → opens a folder (or steps
+// In the list: type to filter titles, ↑ ↓ move (from an item, to the next or
+// previous item in the order j/k go, into subfolders and on to the next folder,
+// opening them; from a folder row, row by row), → opens a folder (or steps
 // into it), ← closes it (or steps out), Enter opens an item, or on a folder
 // stays in it (stack.js stayIn: at the current item when it is in the folder,
 // else at the folder's first item); Esc goes back to the page. Opening a wiki
@@ -648,11 +650,45 @@ const page = () => Math.max(1, Math.floor((list.clientHeight || 600) / RH) - 1);
 // ↓ ↑ step over the position row (it follows each item the arrows open, so every item would
 // take two presses); → on the current item lists its sections, as on that row.
 const over = (r, d) => (rows[r + d]?.here === 'pos' && rows[r + 2 * d] ? r + 2 * d : r + d);
+// In the tree, ↓ ↑ on an item go to the next or previous item in the tree's order, depth first,
+// as j/k do: into a subfolder, on to the next folder, the folders on the way opening (and the
+// ones walked out of closing behind, as for j). Only the current item's branch is open, so
+// stepping over the rows alone stopped on closed folders and never reached their files. In a
+// folder you stay in, they stay in it; past its ends, and on a folder row, they move row by row.
+let byRank = null, byRankOf = null; // tree place → item index (topicRank inverted)
+function itemNext(i, d) {
+  const R = topicRank();
+  if (byRankOf !== R) { byRankOf = R; byRank = new Int32Array(R.length); R.forEach((x, k) => { byRank[x] = k; }); }
+  const lane = items[i].lane, sn = stackNode(), scoped = sn && state.scope.has(i);
+  for (let x = R[i] + d; x >= 0 && x < byRank.length; x += d) {
+    const j = byRank[x];
+    if (items[j].lane !== lane || (scoped && !state.scope.has(j))) return null;
+    if (!match || match[j]) return j;
+  }
+  return null;
+}
+/** ↓ (d 1) or ↑ (-1) from row r to an item, opening its folders; false: a row-by-row move instead. */
+function stepItem(r, d) {
+  const row = rows[r];
+  if (flat || !row || row.node) return false;
+  // The sections listed under the current item are rows to walk through.
+  if (row.here ? d < 0 || rows[r + 1]?.here === 'sec' : d > 0 ? rows[r + 1]?.here === 'pos' && rows[r + 2]?.here === 'sec' : rows[r - 1]?.here === 'sec') return false;
+  const j = itemNext(row.here ? row.of : row.i, d);
+  if (j == null) return false;
+  const keep = new Set(ancestors(j).map((a) => a.key));
+  for (const k of keep) { userClosed.delete(k); fClosed.delete(k); }
+  autoOpen = keep; // the branch the cursor walks into; follow() keeps it when the item opens
+  flatten();
+  const k = rows.findIndex((x) => x.i === j && !x.here);
+  if (k < 0) return false;
+  move(k);
+  return true;
+}
 function treeKey(e) {
   const r = selIndex(), row = rows[r];
   switch (e.key) {
-    case 'ArrowDown': move(r < 0 ? 0 : over(r, 1)); break;
-    case 'ArrowUp': move(r < 0 ? 0 : over(r, -1)); break;
+    case 'ArrowDown': if (!stepItem(r, 1)) move(r < 0 ? 0 : over(r, 1)); break;
+    case 'ArrowUp': if (!stepItem(r, -1)) move(r < 0 ? 0 : over(r, -1)); break;
     case 'PageDown': move(r + page()); break;
     case 'PageUp': move(r - page()); break;
     case 'Home': move(0); break;
