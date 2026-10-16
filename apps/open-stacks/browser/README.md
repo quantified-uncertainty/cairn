@@ -1,5 +1,7 @@
 # Stacks Browser
 
+> **Moved.** Since 16 October 2026 this app lives in its own repository, `pagesgobrrr` (renamed PagesGoBrrr). This copy is frozen at cairn commit `c5775fb`: make changes there, not here.
+
 A desktop app for browsing many open books, papers and posts quickly, the way you would scan a bookstore table or walk the stacks, without waiting when you open something. Part of [Open Stacks](../).
 
 **It runs on your Mac, not in the cloud.** A small server on your own computer (Node) fetches and caches the open sources, and your browser shows the app at http://localhost:4747, which only this computer can reach. Your notes, reading history and own files stay on the Mac; the AI features send the text of the item you are on to Claude (§ AI summaries).

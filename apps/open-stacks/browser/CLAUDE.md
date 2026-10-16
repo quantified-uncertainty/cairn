@@ -1,5 +1,7 @@
 # Stacks Browser — instructions for coding agents
 
+> **Moved.** Since 16 October 2026 this app lives in its own repository, `pagesgobrrr` (renamed PagesGoBrrr). This copy is frozen at cairn commit `c5775fb`: make changes there, not here.
+
 A local web app for reading open books, papers, posts and wikis fast: a Node
 server (no framework, `server.mjs` + `server/`) and a browser client of plain
 ES modules (`ui/`, no build step). The README says how to run and use it,
