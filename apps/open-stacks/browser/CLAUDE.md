@@ -13,8 +13,9 @@ not. Read ARCHITECTURE.md before adding anything.
   feature and the hooks in `ui/js/util.js` over editing core modules.
 - A server feature is one file in `server/routes/NN-name.mjs`, loaded in
   name order; logic that tests import lives beside it in `server/*.mjs`.
-- Every `STACKS_*` setting is read in the module that owns it and listed in
-  STATUS.md § Settings. Design notes go in `docs/<topic>/`.
+- Every `STACKS_*` setting is read in the module that owns it and described
+  in the README, ARCHITECTURE.md or STATUS.md § Settings. Design notes go
+  in `docs/<topic>/`.
 - Data the app ships: `seeds.json` → `node build-corpus.mjs` → `corpus.json`;
   `data/tags.json` (`node tag-corpus.mjs`). Everything a reader does (cache,
   notes, memory, summaries, profiles, Local-folder metadata) lives in
