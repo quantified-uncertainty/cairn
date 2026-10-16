@@ -92,7 +92,7 @@ Posts, in this order:
 1. hook (always): the single most interesting true thing, which is (a), not the known result the document builds on. State the result itself, with the condition it depends on (the model, the sample, the assumption, "in a toy model"). If it rests on one example, call it one example and give the aggregate if the document has one. At most 3 sentences and 260 characters.
 2. finding (always): what they found, with numbers and conditions. Give an overall or pooled estimate before a subgroup's, and keep "not significant" when the document says it.
 3. method: how, in one or two sentences, starting "How:". Say "a model, not data" when it is one.
-4. figure: the figure, table or plate that carries the result, cited by its marker, and what to see in it. Values you read off a chart rather than from the text: say "about", end with "Values read off the chart.", and set approx to true. If a reading disagrees with a number the text states, say so. Leave this post out when nothing is worth looking at, or when you cannot see the figure (PDF pages).
+4. figure: the figure, table or plate that carries the result, cited by its marker, and what to see in it. You are given no images, only captions and text: say only what the caption and the text say the figure shows, give only numbers the text states, and set approx to false. Leave this post out when nothing is worth looking at, or when the text says too little about the figure (PDF pages).
 5. implication: start "What it changes:" and name the decision, practice or belief that should change, and when. Never "anyone who".
 6. caveat (always): start "Caveat:" or "Limits:". One caveat: the one that, if true, most weakens the hook. Prefer one from (c). No asides.
 7. read (always): "Read it if" and a specific reader, then which sections or pages are worth the time, and what to skip; give spans as marker pairs for the recommended ranges only.
@@ -102,7 +102,7 @@ Every post cites one place: loc, the marker of the block its quote comes from; f
 
 Words:
 - Plain words, short sentences. No hype words, emoji, hashtags or "a thread". No questions you don't answer, no cliffhangers.
-- Every number, and every number word (half, twice, a tenth, hundreds, thousands, nine-tenths), must appear in the document, except chart readings in the figure post. No size words the document does not use ("short", "large pool"). Do not compute new numbers. If the document gives two values for the same thing, give both, each with where it comes from, or neither; prefer neither when the post does not need it.
+- Every number, and every number word (half, twice, a tenth, hundreds, thousands, nine-tenths), must appear in the document. No size words the document does not use ("short", "large pool"). Do not compute new numbers. If the document gives two values for the same thing, give both, each with where it comes from, or neither; prefer neither when the post does not need it.
 - Paraphrase may shorten, never strengthen. Keep the direction of a rule ("if not A then B" is not "if A then not B"), its units, its scope and its comparisons. Describe a selection as it was done.
 - Keep every hedge from (b) in the sentence that makes the claim, in the document's own word. What the authors expect, hypothesise or illustrate is not what they showed.
 - Put words in quotation marks only when they are copied exactly from the document.
@@ -126,7 +126,8 @@ export function asAnswer(id, th) {
   const k = kindOfId(id);
   const mark = (x) => (typeof x !== 'number' ? x : k === 'scan' ? `k${x}` : `p. ${x + 1}`);
   return {
-    posts: th.posts.map((p) => {
+    // A figure post that reads values off a chart (approx) is left out: the model is given no images.
+    posts: th.posts.filter((p) => !p.approx).map((p) => {
       const c = p.cite || {};
       const loc = c.loc || (c.page != null ? mark(c.page) : '');
       const spans = p.kind === 'read' ? (SPAN_MARKERS[id] || (c.spans || []).map((s) => s.map(mark))) : [];
@@ -154,7 +155,7 @@ export const SCHEMA = obj({
     items: obj({
       kind: { type: 'string', enum: KINDS },
       t: str('One paragraph. Hook at most 260 characters, others at most 280.'),
-      approx: { type: 'boolean', description: 'True only for a figure post giving values read off a chart.' },
+      approx: { type: 'boolean', description: 'Always false: you are given no images, so a figure post gives only numbers the text states.' },
       cite: obj({
         loc: str('The marker of the block the quote comes from, copied exactly without brackets: S5.SS3.p1, abstract, p52, img6, k72, p. 7.'),
         fig: str('Figure post: the marker of the figure, table, image or page it describes (S1.F4, img6, tbl0, k27, p. 7); otherwise "".'),
@@ -352,7 +353,7 @@ function figureOf(D, ref) {
  * nowhere is dropped, and the rest become flags.
  * → {thread | null, reasons, flags, dropped: [{n, kind, why}]}
  */
-export function verifyThread(D, raw, { mode = 'strict', keep = null } = {}) {
+export function verifyThread(D, raw, { mode = 'strict', keep = null, images = true } = {}) {
   const strict = mode === 'strict';
   const flags = [], dropped = [], posts = [];
   const fullN = numText(D.full || '');
@@ -398,7 +399,8 @@ export function verifyThread(D, raw, { mode = 'strict', keep = null } = {}) {
       });
     }
     // 3. numbers and number words; 4. quoted phrases.
-    const nums = p.approx ? [] : numbersIn(t);
+    // Chart readings are exempt only for a writer who saw the charts (agents); the generator sees text.
+    const nums = p.approx && images ? [] : numbersIn(t);
     const miss = nums.filter((x) => !numIn(x, fullN));
     nTot += nums.length; nOk += nums.length - miss.length;
     if (miss.length) { if (strict) return drop(`number ${miss.join(', ')} not in the source`); flag(`number ${miss.join(', ')} not in the fetched text`); }
@@ -665,7 +667,7 @@ async function cmdWrite(out, C, P, model) {
         return;
       }
       stats.cost += cost;
-      const r = verifyThread(D, raw, { mode: 'strict', keep: { model: MOCK ? `${model} (mock)` : model, usd: cost ? +cost.toFixed(5) : undefined, tok: usage ? [usage.input_tokens + (usage.cache_read_input_tokens || 0) + (usage.cache_creation_input_tokens || 0), usage.output_tokens] : undefined } });
+      const r = verifyThread(D, raw, { mode: 'strict', images: false, keep: { model: MOCK ? `${model} (mock)` : model, usd: cost ? +cost.toFixed(5) : undefined, tok: usage ? [usage.input_tokens + (usage.cache_read_input_tokens || 0) + (usage.cache_creation_input_tokens || 0), usage.output_tokens] : undefined } });
       stats.dropped += r.dropped.length;
       if (!r.thread) {
         stats.rejected++; failed[it.id] = { at: new Date().toISOString(), why: r.reasons.join('; '), dropped: r.dropped }; saveFailed();

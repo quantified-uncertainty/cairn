@@ -48,6 +48,18 @@ test('numbersIn() skips section and page references', () => {
   assert.deepEqual(numbersIn('In §5.3 on p. 19 and pp. 18–21, 52B params, 1,277 letters, −0.39 and 4.5.'), ['52', '1277', '-0.39', '4.5']);
 });
 
+test('verifyThread(images: false): a chart reading the writer could not see is checked like any number', () => {
+  const D = POST();
+  const fig = { ...post('figure', 'img0: the estimate peaks near 3.7, then falls. Values read off the chart.', 'The chart shows the estimate peaking near a result of 2.8', { loc: 'p4', fig: 'img0' }), approx: true };
+  const base = [post('hook', 'In 120 trials the effect halves once the noise doubles, in all three settings of a toy model.', 'We ran 120 trials and found that the measured effect halves once the noise doubles', { loc: 'p0' }),
+    post('caveat', 'Caveat: it may not hold for fat-tailed distributions, which the authors expect are common.', 'the result may not hold for fat-tailed distributions', { loc: 'p1' }),
+    post('read', 'Read it if you are in a hurry: part two carries the argument.', 'Readers in a hurry should start with part two', { loc: 'p3', spans: [['p3', 'p4']] })];
+  const seen = verifyThread(D, { posts: [base[0], fig, base[1], base[2]], tags: ['noise'] }, { mode: 'strict' });
+  assert.ok(seen.thread.posts.some((p) => p.kind === 'figure'), 'an agent that saw the chart may read values off it');
+  const blind = verifyThread(D, { posts: [base[0], fig, base[1], base[2]], tags: ['noise'] }, { mode: 'strict', images: false });
+  assert.match(blind.dropped.find((d) => d.kind === 'figure')?.why || '', /number 3.7/);
+});
+
 test('verifyThread(strict): drops posts whose quote, number or quoted phrase is not in the source', () => {
   const D = POST();
   const raw = { posts: [
