@@ -234,6 +234,7 @@
 
 /* ---- Threads (features/threads.js): a short thread per item, numbered posts on a thread line ---- */
 select.fd-lane { field-sizing: content; font: 10px var(--mono); color: var(--accent); text-transform: uppercase; letter-spacing: .08em; background: var(--bg); border: 1px solid transparent; border-radius: 3px; padding: 2px 2px; max-width: 330px; cursor: pointer; flex: none; }
+@supports not (field-sizing: content) { select.fd-lane { max-width: 180px; } } /* Firefox: a select is as wide as its longest option */
 select.fd-lane:hover, select.fd-lane:focus { border-color: var(--line); outline: 0; }
 select.fd-lane option { text-transform: none; letter-spacing: 0; font: 12px var(--sans); color: var(--ink); background: var(--bg-2); }
 .fd-card.t-thread { cursor: default; }

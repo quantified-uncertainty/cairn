@@ -45,18 +45,21 @@ messages and the design notes under `docs/`.
   for the rest with Claude Haiku (`node threads.mjs`; needs
   `ANTHROPIC_API_KEY`; `--dry-run` prints the cost first, about $7.70 for
   the corpus; tested only in mock mode). Threads are labeled AI-written in
-  the UI. An independent check of 20 of the 38 against fresh sources found
-  21 of 136 posts wrong (7 material, mostly figure posts reading values off
-  a chart; 14 minor: dropped hedges, a page off by one) and fixed them; the
-  other 18 have not had that check, and the quote verifier cannot catch
-  this kind of error, so expect a similar rate from the generator.
+  the UI. Independent checks of all 38 against fresh sources found 27 of
+  255 posts wrong (8 material, mostly figure posts reading values off a
+  chart; 19 minor: dropped hedges and qualifiers, a page off by one) and
+  fixed them. The quote verifier cannot catch this kind of error, so expect
+  about one post in ten to need fixing in what the generator writes.
 - **Header popovers and the icon view switcher** (`features/headpop.js`,
   `header.js`): Reader, Wall and Feeds as icons with a ▾ menu of every view;
   small popovers on the title, lane, author or site, crumb, date and flag
   after a 350 ms rest; Auto picks one bar on the 14-inch MacBook (window
   under 1600 px wide). Checked by its builder's 95-check script and an
-  item-switch A/B (no slower); the separate adversarial review was lost to
-  a container restart, and it has not been run in Firefox.
+  item-switch A/B (no slower), then by a separate reviewer at four window
+  sizes (fixed: authors hidden or cut at laptop widths, a dismissed card
+  reopening on a pointer twitch). Left: keyboard focus on a header part is
+  lost on a page turn (the header is rebuilt), and Esc with nothing open
+  goes to the Wall.
 
 ## Asked for, not done
 

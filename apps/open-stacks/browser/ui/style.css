@@ -107,9 +107,11 @@ a { color: var(--accent); }
    their flex-shrink is tiny beside the title's, so their share rounds to 0 px),
    then the authors, the stack crumb and the source links (ellipsis); narrower, the header
    drops details in this order: the next item's title; the PDF link, the resume chip's
-   age and the printed page numbers; the authors (cut to 8em below 1180 px, so a laptop
-   still has them to point at for their card; the side panel and the title's card,
-   features/headpop.js, show them in full); the lane; the source links (container queries below). */
+   age and the printed page numbers; the authors and the lane together (before that the
+   authors are cut, to 10em below 1180 px and 8em below 960, so a laptop at 100 % or
+   120 % still has them to point at for their card; one short name fits at 10em; the
+   side panel and the title's card, features/headpop.js, show them in full); the source
+   links (container queries below). */
 #item-head { order: -2; padding: 6px 16px 2px; display: flex; align-items: baseline; gap: 12px; flex: none; min-width: 0; container: ihead / inline-size; }
 /* At least 12em of the title, or all of a shorter one: the automatic minimum is min(width, content), and overflow: clip (not hidden) keeps it. */
 #item-head h1 { flex: 0 4 content; width: 12em; min-width: auto; font: 500 16px/1.2 var(--serif); margin: 0; overflow: clip; text-overflow: ellipsis; white-space: nowrap; }
@@ -122,13 +124,15 @@ a { color: var(--accent); }
 @container ihead (min-width: 1600px) { #item-head .meta > .au { max-width: 520px; } } /* a 4K screen has room for the authors */
 #item-head .lane { font: 10px var(--mono); text-transform: uppercase; letter-spacing: .07em; color: var(--accent); }
 #item-head .pos { margin-left: auto; flex: none; color: var(--ink-3); font: 11px var(--mono); white-space: nowrap; }
-@container ihead (max-width: 1180px) { #item-head .meta > .au { max-width: 8em; } }
+@container ihead (max-width: 1180px) { #item-head .meta > .au { max-width: 10em; } }
 @container ihead (max-width: 1080px) { #item-head .pos-next { display: none; } }
 @container ihead (max-width: 980px) { #item-head .meta > .src ~ .src, #item-head .mem-chip .mem-dim, #item-head .pos .plabel { display: none; } }
 /* and the stack crumb's count (#pos says the same) and the scan download's details (its title says them) */
 @container ihead (max-width: 980px) { #item-head .stk-crumb .sc-n, #item-head #loadpct .lp-x { display: none; } }
-@container ihead (max-width: 960px) { #item-head .meta > .au { display: none; } }
-@container ihead (max-width: 680px) { #item-head .meta > .lane { display: none; } }
+@container ihead (max-width: 960px) { #item-head .meta > .au { max-width: 8em; } }
+/* one bar at 120 % (1260 px): the title's floor drops to 10em, so a long title beside the authors, a long lane and a scan's download chip still leaves #pos whole */
+@container ihead (max-width: 820px) { #item-head h1 { width: 10em; } }
+@container ihead (max-width: 680px) { #item-head .meta > :is(.lane, .au) { display: none; } }
 @container ihead (max-width: 560px) { #item-head .meta > :is(.src, .rs-arch, .wv-chip) { display: none; } }
 #item-head .star { color: var(--accent); }
 #item-head h1 a.ttl { color: inherit; text-decoration: none; }

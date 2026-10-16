@@ -19,7 +19,8 @@
 // ignored; a wheel waits it out). It is one element, at most about 360 × 320 px,
 // position: fixed under the part (nothing moves), and it goes when the pointer
 // leaves the part and the card, on Esc, a click elsewhere, a wheel, or any key
-// that does something else (j k l h Space…: the key still does it). From the
+// that does something else (j k l h Space…: the key still does it); sent away while the
+// pointer is still on its part, it waits until the pointer leaves that part. From the
 // keyboard: Tab to a part, ↓ (or Enter on the lane, author and date) opens it
 // and puts the keyboard in it (↑ ↓ move, Enter acts, Esc goes back).
 //
@@ -75,6 +76,9 @@ function untitle(p) {
 // ---------------------------------------------------------------- resting
 let open = null; // { part, kind, byKey, i }
 let rest = null, restT = 0, closeT = 0, last = [NaN, NaN], moved = false, quietTill = 0;
+// The kind of part a card was sent away from (Esc, l, j, Space, the wheel, a click on the part) while the
+// pointer stayed on it: not again until the pointer leaves that part, so a twitch does not bring it back.
+let dismissed = null;
 const busy = () => state.view !== 'feed' || document.hidden || !!$('.hd-menu') || !!$('#wheel-menu') || ($('#more') && !$('#more').hidden)
   || !!document.querySelector('#flag-dlg:not([hidden]), #st:not([hidden]), #keys:not([hidden])') || performance.now() < quietTill;
 function cancelRest() { clearTimeout(restT); restT = 0; rest = null; }
@@ -86,14 +90,16 @@ addEventListener('pointermove', (e) => { moved = e.clientX !== last[0] || e.clie
 head?.addEventListener('pointermove', (e) => {
   if (e.pointerType === 'touch' || !moved) return; // the pointer did not move: something moved under it
   const part = e.buttons ? null : partOf(e.target);
+  if (dismissed && (!part || kindOf(part) !== dismissed)) dismissed = null;
   if (open && part === open.part) { keepOpen(); cancelRest(); return; }
   if (!part) { cancelRest(); if (open && !open.byKey) closeSoon(); return; }
+  if (dismissed) { cancelRest(); return; } // sent away from this part: wait until the pointer leaves it
   if (rest?.part === part && Math.hypot(e.clientX - rest.x, e.clientY - rest.y) <= NEAR) return; // still resting
   rest = { part, x: e.clientX, y: e.clientY };
   clearTimeout(restT);
   restT = setTimeout(() => { const r = rest; restT = 0; rest = null; if (r?.part.isConnected && !busy()) show(r.part, false); }, open ? SWITCH_MS : REST_MS);
 }, { passive: true });
-head?.addEventListener('pointerleave', (e) => { cancelRest(); if (open && !open.byKey && !pop.contains(e.relatedTarget)) closeSoon(); });
+head?.addEventListener('pointerleave', (e) => { cancelRest(); dismissed = null; if (open && !open.byKey && !pop.contains(e.relatedTarget)) closeSoon(); });
 pop.addEventListener('pointerenter', keepOpen);
 pop.addEventListener('pointerleave', (e) => { if (open && !open.part.contains(e.relatedTarget)) closeSoon(); });
 // A wheel turns pages under a still pointer: no card for a moment, and an open one goes.
@@ -162,7 +168,7 @@ function show(part, byKey) {
   let kids = null;
   try { kids = FILL[kind](it, i, part); } catch (err) { console.error('headpop', kind, err); }
   if (!kids) return;
-  keepOpen();
+  keepOpen(); dismissed = null;
   if (open && open.part !== part) open.part.setAttribute('aria-expanded', 'false');
   pop.replaceChildren(...kids.filter(Boolean));
   pop.className = 'hp-' + kind;
@@ -186,7 +192,10 @@ function show(part, byKey) {
 function hide(back = false) {
   keepOpen(); cancelRest();
   if (!open) return;
-  const { part, byKey } = open; open = null;
+  const { part, kind, byKey } = open; open = null;
+  // Closed while the pointer is still on its part (a key, the wheel, a click): dismissed. (After an item
+  // change the part is a new element: the pointer is then still on the header.)
+  dismissed = (part.isConnected ? part : head).matches(':hover') ? kind : null;
   const had = pop.contains(document.activeElement);
   pop.hidden = true; pop.replaceChildren();
   part.setAttribute('aria-expanded', 'false');

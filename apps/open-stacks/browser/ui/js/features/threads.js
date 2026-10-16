@@ -96,12 +96,13 @@ function textOf(t) {
   const m = LEADS.exec(t);
   return m ? [h('b', { className: 'th-lead', textContent: m[1] }), t.slice(m[1].length)] : [t];
 }
-/** "Opus · by hand" / "Haiku" / "mock": who wrote it, briefly. */
+/** "Opus" / "Opus, revised in an editing pass" / "Haiku" / "mock": who wrote it, briefly. A model's
+ *  "hand-written" means written in an agent session rather than by the generator: no person checked it. */
 export function writer(th) {
   const m = String(th?.model || '');
   if (/mock/i.test(m)) return 'mock';
   const fam = (/fable/i.test(m) && 'Fable') || (/opus/i.test(m) && 'Opus') || (/sonnet/i.test(m) && 'Sonnet') || (/haiku/i.test(m) && 'Haiku') || 'a model';
-  return /hand|exemplar|editor/i.test(m) ? `${fam}, checked by hand` : fam;
+  return /editor/i.test(m) ? `${fam}, revised in an editing pass` : fam;
 }
 const okCount = (th) => { const q = th?.checks?.quotes; const n = th.posts.filter((p) => p.cite?.ok).length; return q ? `${n}/${th.posts.length}` : ''; };
 const minutes = (th) => Math.max(1, Math.round(th.posts.reduce((a, p) => a + p.t.split(/\s+/).length, 0) / 240));
@@ -164,13 +165,17 @@ function fetchPdf(it, pri = 40) {
 /** A crop of a page image (box in fractions of the page) contained in w × hh, positioned once the image has loaded. */
 function cropEl(spec, it, w, hh) {
   const box = spec.box || [0, 0, 1, 1];
-  const el = h('div', { className: 'th-crop', style: `width:${Math.round(w)}px;height:${Math.round(hh)}px` });
+  const el = h('div', { className: 'th-crop', style: `width:${Math.round(w)}px;height:${Math.round(hh)}px${spec.pdf ? ';background:#fff' : ''}` });
   const im = h('img', { alt: '', decoding: 'async', draggable: false, loading: 'lazy' });
   const fit = () => {
     const iw = im.naturalWidth, ih = im.naturalHeight; if (!iw || !ih) return;
     const bw = (box[2] - box[0]) * iw, bh = (box[3] - box[1]) * ih;
     const s = Math.min(w / bw, hh / bh);
-    Object.assign(im.style, { width: iw * s + 'px', height: ih * s + 'px', left: (w - bw * s) / 2 - box[0] * iw * s + 'px', top: (hh - bh * s) / 2 - box[1] * ih * s + 'px' });
+    // Clipped to the box: when the box is narrower (or flatter) than the frame, the rest of the page (a
+    // neighbouring panel, its cut-off legend) would otherwise show beside it.
+    const px = (v) => (v * s).toFixed(1) + 'px';
+    Object.assign(im.style, { width: iw * s + 'px', height: ih * s + 'px', left: (w - bw * s) / 2 - box[0] * iw * s + 'px', top: (hh - bh * s) / 2 - box[1] * ih * s + 'px',
+      clipPath: `inset(${px(box[1] * ih)} ${px((1 - box[2]) * iw)} ${px((1 - box[3]) * ih)} ${px(box[0] * iw)})` });
     el.classList.add('ok');
   };
   let tries = 0;
