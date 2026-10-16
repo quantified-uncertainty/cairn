@@ -84,6 +84,40 @@ messages and the design notes under `docs/`.
 - PDFs in Local folders are drawn by pdf.js in the browser; the server
   renders only web PDFs (`routes/16-render.mjs`).
 
+## Open items from the request audit (16 October)
+
+Every request the reader made in the first two days (188, from their own
+messages) was checked against the code: 124 done, 5 answered, 38 partly
+done, 3 not done; the 14 small gaps were fixed the same day. What is left,
+by area (effort: M a day or less, L more):
+
+- **Reader.** Real highlights (marked on the page, kept) and one Markdown
+  file per item with front matter for Bear or Obsidian (M). Two-column
+  split that ignores running heads and full-width figures (M). Tighter
+  crops for Google-digitized scans in compiled profiles (M). Placeholders
+  of the right shape before a profile exists (M). Running headers cropped
+  across a PDF's pages (in progress). More ergonomic navigation from the
+  brainstorm: a leader-key keymap, save-and-advance, tap zones (M).
+- **Library.** A "Later" queue prefetched and summarized overnight (M).
+  Topic folders inside DeepMind safety › Blog & posts, 344 items (M).
+- **Header and chrome.** The metadata indicators of `docs/meta/` (M;
+  `data/meta/part-*.json` to merge and 874 items to fill). The current
+  section's name beside the page numbers (M). A local read-aloud engine
+  (L; see voices above).
+- **Views and learning.** Feeds ordered by For you with an exploration
+  slot, and Feeds signals (saves, hides, dwell) sent to the learning
+  model (M). Why-chips that open boost, mute and ignore (S). Paper covers
+  on the wall showing their top figure (M). Figures from non-arXiv PDFs (L).
+  Threads for the rest of the corpus (`node threads.mjs`, needs a key).
+- **Data and speed.** A Haiku pass for relevance and best entry pages
+  (M), citation-following lane growth and syllabus readings (M), the
+  whole-corpus compile and guide passes (`compile.mjs --assets full`,
+  `augment-batch.mjs`, run on the Mac), deeper prefetch for large scans
+  and the byte-capped caches of `docs/performance/prerender.md` §5.4 and
+  §6 (L), the Quartz self-test on the Mac (S).
+- **The Open Stacks wiki.** Two prototypes never built (Front Table,
+  Epoch Slider) and eight chapters still marked planned.
+
 ## Moving the browser to its own directory or repository
 
 The folder is self-contained: no code reads anything outside it (checked
