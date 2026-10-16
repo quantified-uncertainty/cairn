@@ -78,7 +78,7 @@ test('every refusal is quick: no page, a host off the allowlist, a PDF not on di
   const host = await page(S, 'https://example.com/a.pdf', 0); assert.equal(host.status, 403); await host.arrayBuffer();
   const local = await page(S, '/local/file/local:0123456789abcdef0123', 0); assert.equal(local.status, 403); await local.arrayBuffer(); // the Local lane is not rendered here
   const miss = await page(S, MISSING, 0);
-  assert.equal(miss.status, 503); assert.equal(miss.headers.get('retry-after'), '1'); await miss.arrayBuffer();
+  assert.equal(miss.status, 204); assert.equal(miss.headers.get('x-render-why'), 'not on disk'); await miss.arrayBuffer(); // not an error the console logs
   const bad = await page(S, GEO, -1); assert.equal(bad.status, 400); await bad.arrayBuffer();
   assert.ok(Date.now() - t0 < 2000, `${Date.now() - t0} ms`);
 });

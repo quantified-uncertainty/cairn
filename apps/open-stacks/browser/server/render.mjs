@@ -309,7 +309,9 @@ export function createService({ dir, cache, workers = defaultWorkers(), max = 6 
     if (b) return { now: { ok: false, error: b.error, code: 422 } };
     const n = knownN(u);
     if (n != null && k >= n) return { now: { ok: false, error: `no page ${k + 1} (${n} pages)`, code: 404 } };
-    if (!cache.cached(u)) return { now: { ok: false, error: 'not on disk', code: 503 } };
+    // Not on disk yet: 204 at once (not an error the browser logs; the client draws the page with pdf.js,
+    // whose /proxy request brings the PDF in, and the hint's jobs for it run when it lands).
+    if (!cache.cached(u)) return { now: { ok: false, error: 'not on disk', code: 204 } };
     const pri = lane === 'fg' ? 100 : 96;
     let job = jobs.get(jobKey(sha, k, w));
     if (!job) { job = newJob(u, k, w, lane, pri); enqueue(job); }

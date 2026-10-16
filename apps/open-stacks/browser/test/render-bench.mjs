@@ -19,6 +19,7 @@ const argv = process.argv.slice(2);
 const arg = (n, d) => { const i = argv.indexOf('--' + n); return i < 0 ? d : argv[i + 1]; };
 const IDS = arg('ids', 'arxiv:1706.03762,arxiv:2212.08073,arxiv:2304.06528,arxiv:2401.05566,arxiv:1606.06565').split(',');
 const TRIALS = Number(arg('trials', 6));
+const VERBOSE = argv.includes('--verbose');
 const VIEW = { width: Number(arg('w', 1512)), height: Number(arg('h', 982)) }, DPR = Number(arg('dpr', 2));
 const SRV = { on: `http://localhost:${arg('on', 4747)}`, off: `http://localhost:${arg('off', 4748)}` };
 let pw = null;
@@ -112,7 +113,8 @@ async function quiet(name) { // the render server's queues empty, so one side's 
 }
 const forget = (id) => fetch(SRV.on + '/render/forget', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ u: `https://arxiv.org/pdf/${id.replace(/^arxiv:/, '')}` }) });
 
-const acc = {}; const put = (k, side, v) => { ((acc[k] ||= { on: [], off: [], srcOn: {}, srcOff: {} })[side]).push(...[].concat(v.ms ?? v).filter((x) => x != null)); for (const s of v.src || []) { const m = acc[k][side === 'on' ? 'srcOn' : 'srcOff']; m[s] = (m[s] || 0) + 1; } };
+const t00 = Date.now();
+const acc = {}; const put = (k, side, v) => { if (VERBOSE) console.log(`${((Date.now() - t00) / 1000).toFixed(0)} s\t${k}\t${side}\t${JSON.stringify(v.ms)}\t${[...new Set(v.src || [])].join(',')}`); ((acc[k] ||= { on: [], off: [], srcOn: {}, srcOff: {} })[side]).push(...[].concat(v.ms ?? v).filter((x) => x != null)); for (const s of v.src || []) { const m = acc[k][side === 'on' ? 'srcOn' : 'srcOff']; m[s] = (m[s] || 0) + 1; } };
 const pages = { on: await open('on'), off: await open('off') };
 // First visit in the tab: the page count is not known, so the feed opens the PDF with pdf.js on both
 // sides; with the server on, the pages then come from it (rendered on demand: forgotten first).

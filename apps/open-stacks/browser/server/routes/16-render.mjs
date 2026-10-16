@@ -3,8 +3,9 @@
 //   GET  /render/page?u=<pdf url>&k=<page, 0-based>&w=<px>[&lane=fg|near][&wait=ms]
 //        200 the page as a JPEG (whole page, ASPECT·w × w at most; header X-Render: {n, pw, ph, w, ms, by}),
 //        rendered now at fg priority when missing (waits up to `wait`, default 1500, at most 5000 ms);
-//        204 no engine (or still starting); 202 {state} not ready within `wait`; 503 the PDF is not on
-//        the server's disk yet; 403 a host off the allowlist; 404 no such page; 422 the engine failed.
+//        204 (no body) no engine, still starting, or the PDF is not on the server's disk yet (X-Render-Why
+//        says which); 202 {state} not ready within `wait`; 403 a host off the allowlist; 404 no such
+//        page; 422 the engine failed. The client draws the page with pdf.js on anything but a 200.
 //        Answered with Access-Control-Allow-Origin: * so the page can come from the second origin.
 //   POST /render/hint {open: {u, k, w, n?, per?}, next: [{u, k}]}: replaces the background plan
 //        -> {ok, seq, engine, n: {url: pages}} (page counts of the documents on disk).
@@ -33,10 +34,10 @@ export default function (app) {
   app.render = svc;
   app.onStart(() => svc.start());
 
-  const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'X-Render' };
+  const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'X-Render, X-Render-Why' };
   function reply(res, code, obj) {
-    const head = { ...CORS, 'Cache-Control': 'no-store', ...(code === 503 ? { 'Retry-After': '1' } : {}) };
-    if (code === 204 || obj == null) { res.writeHead(code, head); res.end(); return; }
+    const head = { ...CORS, 'Cache-Control': 'no-store' };
+    if (code === 204 || obj == null) { res.writeHead(code, obj?.error ? { ...head, 'X-Render-Why': obj.error } : head); res.end(); return; }
     res.writeHead(code, { 'Content-Type': 'application/json', ...head });
     res.end(JSON.stringify(obj));
   }
@@ -57,7 +58,7 @@ export default function (app) {
     const q = url.searchParams, u = q.get('u') || '';
     const k = Number(q.get('k')), w = sizeClass(q.get('w'));
     const lane = q.get('lane') === 'near' ? 'near' : 'fg';
-    if (!svc.engine) return reply(res, 204);
+    if (!svc.engine) return reply(res, 204, { error: svc.pending ? 'starting' : 'off' });
     if (!/^https?:\/\//.test(u) || !app.cache.allowed(u)) return reply(res, 403, { error: 'host not allowed' }); // /local/ files are not rendered here
     if (!Number.isInteger(k) || k < 0 || k > 100000) return reply(res, 400, { error: 'bad page' });
     const r = svc.request(u, k, w, lane);

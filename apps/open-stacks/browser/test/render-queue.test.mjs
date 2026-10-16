@@ -152,7 +152,7 @@ test('a waiting request promotes a queued job; one nobody waits for any more dro
 test('pages whose PDF is not on disk wait without a worker, then run when it lands', async () => {
   const { svc, engine, disk } = setup({ onDisk: [U(1)] });
   await svc.start();
-  assert.equal(svc.request(U(2), 0, 1800, 'fg').now.code, 503); // never a slow error for the reader
+  assert.equal(svc.request(U(2), 0, 1800, 'fg').now.code, 204); // never a slow error for the reader
   await svc.hint({ open: { u: U(1), k: 0, w: 1800 }, next: [{ u: U(2), k: 0 }] });
   await tick();
   assert.ok(disk.has(U(2)), 'a near document is fetched'); // cache.ensure in the background
