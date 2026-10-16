@@ -159,6 +159,10 @@ function remask() {
 // rebuild: the row you just clicked or moved to, else the keyboard's row, else the current item.
 let anchor = null; // { id, t }: a row you pointed at, held still for a few seconds
 const anchored = () => anchor && performance.now() - anchor.t < 3000;
+// When fewer rows are left above the held row than its place on screen (a position row or a
+// branch above it gone, near the top of the list), the difference is empty room above the
+// first row, so the row still does not move; it goes when the list next scrolls to the current item.
+let lift = 0; // px
 function heldRow() {
   if (anchored()) return anchor.id;
   if (browsing() && sel) return sel;
@@ -166,11 +170,14 @@ function heldRow() {
 }
 function flatten() {
   const id = heldRow();
-  const r0 = id ? rows.findIndex((x) => rowId(x) === id) : -1, y = r0 >= 0 ? r0 * RH - list.scrollTop : null;
+  const r0 = id ? rows.findIndex((x) => rowId(x) === id) : -1, y = r0 >= 0 ? r0 * RH + lift - list.scrollTop : null;
   rowsNow();
   if (y == null) return;
   const r1 = rows.findIndex((x) => rowId(x) === id);
-  if (r1 >= 0 && r1 !== r0) { sizePad(); list.scrollTop = Math.max(0, r1 * RH - y); }
+  if (r1 >= 0 && r1 !== r0) {
+    lift = y > 0 && y < (list.clientHeight || 600) ? Math.max(0, y - r1 * RH) : 0; // only for a row on screen
+    sizePad(); list.scrollTop = Math.max(0, r1 * RH + lift - y);
+  }
 }
 function rowsNow() {
   if (!T) return;
@@ -299,15 +306,15 @@ const readCount = (n) => { if (!progressOf) return 0; if (!readN.has(n.key)) { l
 const icons = new Map(); // item -> its icon, cloned for each paint
 const icon = (i) => { if (!itemIcon) return h('span', { className: 'lr-b' }); if (!icons.has(i)) icons.set(i, itemIcon(items[i], 12)); return icons.get(i).cloneNode(true); };
 // Room below the last row, so the current row can stay a quarter from the top even near the end.
-const sizePad = () => { pad.style.height = rows.length * RH + Math.max(0, Math.round((list.clientHeight || 600) * 0.75) - RH) + 'px'; };
+const sizePad = () => { pad.style.height = lift + rows.length * RH + Math.max(0, Math.round((list.clientHeight || 600) * 0.75) - RH) + 'px'; };
 function paintNow() {
   if (!showing() || !T) return;
   paintTop();
   qn.textContent = q() ? String(flat ? rows.length : match.reduce((s, x) => s + x, 0)) : '';
   sizePad();
   const top = list.scrollTop, H = list.clientHeight || 600;
-  const a = Math.max(0, Math.floor(top / RH) - 6), b = Math.min(rows.length, Math.ceil((top + H) / RH) + 6);
-  slice.style.transform = `translateY(${a * RH}px)`;
+  const a = Math.max(0, Math.floor((top - lift) / RH) - 6), b = Math.min(rows.length, Math.ceil((top - lift + H) / RH) + 6);
+  slice.style.transform = `translateY(${a * RH + lift}px)`;
   paintedTop = top;
   const cur = current(), s = sel;
   const dates = flat && (state.sort === 'newest' || state.sort === 'oldest');
@@ -527,12 +534,14 @@ function follow(i, force = false) {
   // The list is made again only when the stack, its sort or its order changed.
   const fresh = mk.o !== state.order || mk.n !== state.order.length || mk.s !== state.sort || mk.sc !== state.scope || mk.l !== state.lane;
   if (fresh) { mk = { o: state.order, n: state.order.length, s: state.sort, sc: state.scope, l: state.lane }; pickMode(); remask(); }
+  const held = !force && anchored() && anchor.id === 'i' + i; // you clicked it: it stays under the pointer
   if (!flat) {
     const anc = ancestors(i);
     // Only the current item's branch is opened for you: folders you walk out of close behind
     // you (ones you opened by hand stay open). The current row keeps its height on screen
-    // (below), so a folder closing above it does not move it.
-    const keep = new Set();
+    // (below), so a folder closing above it does not move it. A click closes nothing: the
+    // folders it left close on the next move, when the list scrolls to the current item anyway.
+    const keep = new Set(held ? autoOpen : []);
     let reopened = false;
     for (const a of anc) { keep.add(a.key); if (userClosed.delete(a.key) | fClosed.delete(a.key)) reopened = true; }
     if (reopened || keep.size !== autoOpen.size || [...keep].some((k) => !autoOpen.has(k))) { autoOpen = keep; flatten(); }
@@ -542,10 +551,10 @@ function follow(i, force = false) {
   { const r0 = curIndex(); if (r0 >= 0 && rows[r0 + 1]?.of !== i) flatten(); }
   if (!browsing() || force) sel = 'i' + i;
   const r = curIndex();
-  if (anchored() && anchor.id === 'i' + i && !force) { paint(); return; } // you clicked it: it stays under the pointer
+  if (held) { paint(); return; }
   if (r >= 0 && (!browsing() || force)) {
     const H = list.clientHeight || 600;
-    sizePad(); // before scrolling: the rows may have just changed
+    lift = 0; sizePad(); // before scrolling: the rows may have just changed
     list.scrollTop = Math.max(0, r * RH - Math.round(H * 0.25));
   }
   paint();
@@ -559,7 +568,7 @@ function revealNode(n) {
 }
 function scrollTo(r, center) {
   if (r < 0) return;
-  const H = list.clientHeight || 600, y = r * RH;
+  const H = list.clientHeight || 600, y = r * RH + lift;
   if (center) { if (y < list.scrollTop + RH || y > list.scrollTop + H - 2 * RH) list.scrollTop = Math.max(0, y - H / 2 + RH / 2); }
   else if (y < list.scrollTop) list.scrollTop = y;
   else if (y + RH > list.scrollTop + H) list.scrollTop = y + RH - H;
@@ -725,7 +734,7 @@ function onInput() {
   // The cursor goes to the first matching item.
   const k = q() ? rows.findIndex((x) => x.i != null) : -1;
   if (k >= 0) sel = rowId(rows[k]);
-  list.scrollTop = 0;
+  lift = 0; list.scrollTop = 0;
   if (!q()) follow(current(), true); else paint();
 }
 input.addEventListener('input', onInput);
